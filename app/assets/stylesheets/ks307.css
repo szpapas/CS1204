@@ -1,0 +1,397 @@
+
+.zoomin {
+  background-image:url(/javascripts/mfbase/mapfish/img/icon_zoomin.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.zoomout {
+  background-image:url(/javascripts/mfbase/mapfish/img/icon_zoomout.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.zoomfull {
+  background-image:url(/javascripts/mfbase/mapfish/img/icon_zoomfull.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.pan {
+  background-image:url(/javascripts/mfbase/mapfish/img/icon_pan.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawpoint {
+  background-image:url(/javascripts/mfbase/mapfish/img/draw_point_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawline {
+  background-image:url(/javascripts/mfbase/mapfish/img/draw_line_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.drawpolygon {
+  background-image:url(/javascripts/mfbase/mapfish/img/draw_polygon_off.png) !important;
+  height:20px !important;
+  width:20px !important;
+}
+.next {
+    background-image:url(/javascripts/mfbase/mapfish/img/resultset_next.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+.back {
+    background-image:url(/javascripts/mfbase/mapfish/img/resultset_previous.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+.refresh {
+    background-image:url(/javascripts/mfbase/mapfish/img/refresh.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+/*
+.search {
+    background-image:url(/images/search-small.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+*/
+.favorite {
+    background-image:url(/images/favirte-small.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+
+.wizard {
+    background-image:url(/images/wizard-small.png) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+
+.play {
+    background-image:url(/images/play.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+
+.pause {
+    background-image:url(/images/pause.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+
+/*
+.delete {
+    background-image:url(/images/delete3.gif) !important;
+    height:20px !important;
+    width:20px !important;
+}
+*/
+
+.tasks {
+    background-image:url(/images/taskIcon1.png) !important;
+    height:20px !important;
+    width:20px !important;
+}
+
+.map {
+    background-image:url(/images/mapIcon.png) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+
+.cop {
+    background-image:url(/images/copIcon.png) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+
+/*
+.user {
+    background-image:url(/images/user-icon.png) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+*/
+
+.track {
+    background-image:url(/images/track-icon.png) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+
+
+.add {
+    background-image:url(/images/addIcon.gif) !important;
+    height:20px !important;
+    width:20px !important;
+}	
+
+.update {
+    background-image:url(/images/upload.png) !important;
+    height:20px !important;
+    width:20px !important;
+}				
+			
+.archive {
+    background-image:url(/images/archive.png) !important;
+    height:20px !important;
+    width:20px !important;
+}			
+					
+.x-form-field-wrap .x-form-color-trigger {
+	background-image: url(/javascripts/mfbase/ext-community-extensions/color-trigger.png);
+}
+
+.ie6 .x-form-field-wrap .x-form-color-trigger {
+	background-image: url(/javascripts/mfbase/ext-community-extensions/color-trigger.gif);
+}	
+
+.logo {
+   background-image:url(/images/logo1.png) !important;
+   height: 44px !important;
+	margin: ;
+}
+
+ .customEditingToolbar {
+     float: right;
+     right: 0px;
+     height: 30px; 
+     width: 200px;
+ }
+ .customEditingToolbar div {
+     float: right;
+     margin: 5px;
+     width: 24px;
+     height: 24px;
+ }
+ .olControlNavigationItemActive { 
+     background-image: url("/images/editing_tool_bar.png");
+     background-repeat: no-repeat;
+     background-position: -103px -23px; 
+ }
+ .olControlNavigationItemInactive { 
+     background-image: url("/images/editing_tool_bar.png");
+     background-repeat: no-repeat;
+     background-position: -103px -0px; 
+ }
+ .olControlDrawFeaturePointItemInactive { 
+     background-image: url("/images/editing_tool_bar.png");
+     background-repeat: no-repeat;
+     background-position: -26px 0px; 
+ }
+ .olControlDrawFeaturePointItemActive { 
+     background-image: url("/images/editing_tool_bar.png");
+     background-repeat: no-repeat;
+     background-position: -26px -23px ;                                                                   
+ }
+ .olControlModifyFeatureItemActive { 
+     background-image: url("/images/move_feature_on.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }
+ .olControlModifyFeatureItemInactive { 
+     background-image: url("/images/move_feature_off.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }
+ .olControlDeleteFeatureItemActive { 
+     background-image: url("/images/remove_point_on.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }
+ .olControlDeleteFeatureItemInactive { 
+     background-image: url("/images/remove_point_off.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }			
+ .olControlSaveFeaturesItemActive { 
+     background-image: url("/images/save_features_on.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }
+ .olControlSaveFeaturesItemInactive { 
+     background-image: url("/images/save_features_off.png");
+     background-repeat: no-repeat;
+     background-position: 0px 1px;
+ }
+
+#class .loading-indicator{
+	font-size:12px;
+	height:18px;
+	float:left;
+	margin: 2 2 10px 10px;
+}
+
+#wlegend {
+	position:absolute;
+	right:-10px;
+	bottom:-10px;
+	z-index:7000;
+}
+
+#legendbg {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:#FFFFFF none repeat scroll 0 0;
+	height:285px;
+	position:absolute;
+	right:0;
+	bottom:20px;
+	width:66px;
+	z-index:6000;
+}
+
+#tslide {
+	position:absolute;
+	z-index: 900;
+	right: 2px;
+	top: 2px;
+	height: 38px;
+	width: 190px;
+	background: rgb(0,0,139);
+	text-align: center;
+	color:#FFFFFF;
+	float:right;
+}
+
+#tslidebut {
+	position:absolute;
+	z-index: 901;
+	right: 2px;
+	top: 10px;
+	float:right;
+}			
+.collapse
+{
+    border-collapse:collapse;
+}
+.border
+{
+  border:1px solid #000000;
+	align:center;
+}
+
+table.sample {
+	border: 6px inset #8B8378;
+	-moz-border-radius: 6px;
+}
+table.sample td {
+	border: 1px solid black;
+	padding: 0.2em 2ex 0.2em 2ex;
+	color: black;
+}
+table.sample tr.d0 td {
+	background-color: #FCF6CF;
+}
+table.sample tr.d1 td {
+	background-color: #FEFEF2;
+}
+
+.delete_icon {
+    background-image:url(/images/delete-icon.png) !important;
+}
+
+.edit_icon {
+  background-image:url(/images/edit-icon.png) !important;
+}
+
+.file_save_icon {
+  background-image:url(/images/file-save-icon.png) !important;
+}
+
+
+.x-form-imagefield {
+	text-align:left;
+	padding-right:17px;
+}
+
+.ext-safari .x-form-field-wrap .x-form-trigger {
+   	right:-17px !important;
+}
+
+.x-form-imagefield-image {
+	width:64px;
+	height:64px;
+	background:#fff;
+	border: 1px solid #B5B8C8;
+}
+
+
+.images-view .x-window-body{
+	background: #ffffff;
+	color: #000000;
+}
+
+.images-view .thumb{
+  border:1px solid #dddddd;
+	padding: 0px;
+	height: 64px;
+	width: 64px;
+}
+
+.images-view .thumb-wrap{
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.images-view .x-view-over{
+    border:1px solid #cccccc;
+    background: #eeeeee;
+	padding: 4px;
+}
+
+.images-view .x-view-selected{
+    background: #ccddee;
+	border:1px solid #6699cc;
+	padding: 4px;
+}
+
+.images-view .x-view-selected .thumb{
+	border:1px solid #6699cc;
+}
+
+.newadd {
+    background-image:url(/images/gmap/newadd.png) !important;
+}
+
+.newdel {
+    background-image:url(/images/gmap/newdel.png) !important;
+}
+
+.newedit {
+    background-image:url(/images/gmap/newedit.png) !important;
+}
+
+.newsearch {
+    background-image:url(/images/gmap/search.png) !important;
+}
+
+.newpost {
+    background-image:url(/images/gmap/post.gif) !important;
+}
+
+.newarchive {
+  	background-image:url(/images/gmap/archive.png) !important;
+}
+
+.newinspect {
+  	background-image:url(/images/gmap/add.gif) !important;
+}
+
+.newrefresh {
+  	background-image:url(/images/gmap/refresh.png) !important;
+}
+
+td.x-grid3-td-0 {
+    overflow: hidden;
+}
+td.x-grid3-td-0 div.x-grid3-cell-inner {
+    white-space: normal;
+}
+
+

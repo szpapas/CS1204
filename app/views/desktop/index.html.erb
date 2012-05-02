@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>激扬软件</title>
+    <link rel="stylesheet" type="text/css" href="/assets/mfbase/ext/resources/themes/ext-all.css" />
+    <%= stylesheet_link_tag "desktop" %> 
+    <%= stylesheet_link_tag "mfbase/mapfish/mapfish.css"%> 
+    
+    <!-- Ajax -->
+    <%= javascript_include_tag "prototype" %>  
+
+    <!-- ext base -->
+    <script type="text/javascript" src="/assets/mfbase/ext/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="/assets/mfbase/ext/ext-all-debug.js"></script>
+
+    <!-- open layers and mapfish -->
+    
+    <script src="http://www.openlayers.org/api/2.11/OpenLayers.js"></script>
+    <script type="text/javascript" src="/assets/mfbase/mapfish/MapFish.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAFwQ4TyS9XxQgbF6ZrmjVyRRi_j0U6kJrkFvY4-OX2XYmEAa76BSNeRb5DDX_nRKUn1N2N0F6ka_3Iw"></script>
+    <!--script  type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAFwQ4TyS9XxQgbF6ZrmjVyRT0GOLjoms-QzPW2x8VBiltxN_twhRHgJQ1D_rVJuLLtzFfk4Hamvac1A"></script-->
+    <script type="text/javascript" src="/assets/mfbase/state/SessionProvider.js"></script>
+
+    <!-- print component -->
+    <script type="text/javascript" src="/assets/LodopFuncs.js"></script>
+    
+    
+    <!-- Desktop Windows -->
+    <script type="text/javascript" src="/assets/desktop/StartMenu.js"></script>
+    <script type="text/javascript" src="/assets/desktop/TaskBar.js"></script>
+    <script type="text/javascript" src="/assets/desktop/Desktop.js"></script>
+    <script type="text/javascript" src="/assets/desktop/App.js"></script>
+    <script type="text/javascript" src="/assets/desktop/Module.js"></script>
+
+    <%= javascript_include_tag "common" %> 
+    <%= javascript_include_tag "App" %> 
+    
+    <%= javascript_include_tag "TaskMan" %> 
+    <%= javascript_include_tag "ReportMan" %> 
+    <%= javascript_include_tag "SystemMan" %> 
+    <%= javascript_include_tag "SystemStatus" %> 
+    <%= javascript_include_tag "AccordionWindow" %> 
+    
+    
+    
+    <%= csrf_meta_tags %>
+
+  <!--object id="LODOP" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
+    <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="install_lodop.exe"></embed>
+  </object-->
+  
+</head>
+
+<body scroll="no">
+
+<div id="x-desktop">
+    <a href="http://extjs.com" target="_blank" style="margin:5px; float:right;"><img src="/assets/powered.gif" /></a>
+
+    <dl id="x-shortcuts">
+        <dt id="taskman-shortcut">
+            <a href="#"><img src="/assets/s.gif" />
+            <div>任务管理</div></a>
+        </dt>
+        <dt id="reportman-shortcut">
+            <a href="#"><img src="/assets/s.gif" />
+            <div>统计报表</div></a>
+        </dt>
+        <dt id="systemman-shortcut">
+            <a href="#"><img src="/assets/s.gif" />
+            <div>系统管理</div></a>
+        </dt>
+        <dt id="systemstatus-shortcut">
+            <a href="#"><img src="/assets/s.gif" />
+            <div>系统状态</div></a>
+        </dt>
+        <dt id="acc-win-shortcut">
+            <a href="#"><img src="/assets/s.gif" />
+            <div>通讯录</div></a>
+        </dt>
+    </dl>
+</div>
+
+<div id="ux-taskbar">
+	<div id="ux-taskbar-start"></div>
+	<div id="ux-taskbuttons-panel"></div>
+	<div class="x-clear"></div>
+</div>
+
+</body>
+</html>

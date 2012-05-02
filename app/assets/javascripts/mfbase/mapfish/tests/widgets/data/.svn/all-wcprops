@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data
+END
+test_FeatureStoreMediator.html
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_FeatureStoreMediator.html
+END
+test_FeatureReader.html
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_FeatureReader.html
+END
+test_GridRowFeatureMediator.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_GridRowFeatureMediator.html
+END
+test_LayerStoreMediator.html
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_LayerStoreMediator.html
+END
+test_SearchStoreMediator.html
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_SearchStoreMediator.html
+END
+test_FeatureStore.html
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/5/trunk/public/javascripts/mfbase/mapfish/tests/widgets/data/test_FeatureStore.html
+END
