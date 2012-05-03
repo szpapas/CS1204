@@ -207,6 +207,13 @@ class DesktopController < ApplicationController
       User.find_by_sql("insert into location_points(session_id, lon_lat, report_time ) values ('#{session_id}','#{lon_lat}','#{ss[3]}');")  
       k = k-1;
     end
+    
+    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by id desc limit 1;")
+    
+    if user.size > 0
+      User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
+    end
+    
     render :text => 'Success'
   end
   
@@ -217,62 +224,34 @@ class DesktopController < ApplicationController
     if state=="on"
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      session_id = params['session_id']
       
-      if params['session_id'].nil?
-        session_id = Users.find_by_sql("select session_id from plans where id=#{params['task_id']};")[0].session_id
-      else
-        session_id = params['session_id']
-      end
+      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
       
-      #第一次添加locations 数据, 也可能是从pause 转过来，就不需要添加了
-      count = User.find_by_sql("select count(*) from locations where session_id = '#{session_id}';")[0].count.to_i
-      
-      if count == 0
-        task = Users.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
-        icon = task[0].icon.nil? ? 'default.png' : task[0].icon
+      User.find_by_sql("update plan set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}' zt='执行' where session_id ='#{session_id}';")
 
-        User.find_by_sql("insert into locations (task_id, device, username, session_id, icon, color, start_time, state)
-           values ('#{task[0].id}','#{params['device']}','#{params['username']}','#{session_id}', '#{icon}', '#FF0000', '#{time}', '开始');")
-        User.find_by_sql("update plans set taskbegintime='#{time}' where session_id = '#{session_id}';")
-        User.find_by_sql("update plans set task_zt='执行' where session_id = '#{session_id}';")
-      else
-        User.find_by_sql("update plans set taskbegintime='#{time}' where session_id = '#{session_id}';")
-        User.find_by_sql("update locations set state='执行' where session_id='#{session_id}';")
-      end
-      
+      User.find_by_sql("update plans set taskbegintime='#{time}' where session_id = '#{session_id}';")
+      User.find_by_sql("update plans set zt='执行' where session_id = '#{session_id}';")
       render :text => "Success:#{session_id}"
     elsif state=="off"
-      
       session_id=params["session_id"]
-      user = User.find_by_sql("select * from locations where session_id='#{session_id}'")
-      if user.size > 0 
-        time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-        User.find_by_sql("update locations set end_time='#{time}' where session_id='#{session_id}';")
-        
-        #generate geometry
-        user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")    
-        
-        points=[]
-        for k in 0..user.size-1 
-          points[k]=user[k].lon_lat
-        end
-        
-        geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
-        Users.find_by_sql("update locations set the_geom=#{geomtext}, state='结束' where session_id='#{session_id}';")
-        Users.find_by_sql("update plans set taskendtime='#{time}',  where session_id='#{session_id}';")
-        Users.find_by_sql("update plans set zt='结束' where session_id = '#{session_id}';")
-        render :text => 'Success'  
-      else
-        render :text => 'Failure:unknown session id'
-      end
-    elsif state=="pause"
-       session_id=params["session_id"]
-       Users.find_by_sql("update locations set state='暂停' where session_id = '#{session_id}';")
-       render :text => 'Success:Paused'
+      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      
+      #这个地方是Multiple-Line, 先忽略过去
+      #generate geometry
+      #user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")    
+      #points=[]
+      #for k in 0..user.size-1 
+      #  points[k]=user[k].lon_lat
+      #end
+      #geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
+      
+      User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
+      render :text => 'Success'  
     else
-       render :text => 'Failure:unknown state'      
+      render :text => 'Failure:unknown state'      
     end  
-    
+
     render :text => 'Successs'
   end
   
@@ -296,7 +275,6 @@ class DesktopController < ApplicationController
     end
     render :text => text.to_json
   end
-  
   
   
   #add at 04/29
