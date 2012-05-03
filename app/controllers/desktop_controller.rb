@@ -228,7 +228,7 @@ class DesktopController < ApplicationController
       
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
       
-      User.find_by_sql("update plan set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
+      User.find_by_sql("update plans set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
 
       render :text => "Success:#{session_id}"
     elsif state=="off"
