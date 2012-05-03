@@ -249,8 +249,6 @@ class DesktopController < ApplicationController
     else
       render :text => 'Failure:unknown state'      
     end  
-
-    render :text => 'Successs'
   end
   
   def get_ygtree
