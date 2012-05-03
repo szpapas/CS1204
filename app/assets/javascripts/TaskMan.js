@@ -420,10 +420,24 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     };
 
                     var map  = new OpenLayers.Map($('map_task'), options);
-                    var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_SATELLITE_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
-                    var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
+                    //var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_SATELLITE_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
+                    //var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
 
-                    map.addLayers([gsat, gmap]);
+                    var gmap = new OpenLayers.Layer.Google(
+                        "谷歌地图", // the default
+                        {numZoomLevels: 20}
+                    );
+                    var ghyb = new OpenLayers.Layer.Google(
+                        "混合地图",
+                        {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
+                    );
+                    var gsat = new OpenLayers.Layer.Google(
+                        "谷歌卫星图",
+                        {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+                    );
+
+
+                    map.addLayers([gsat, gmap, ghyb]);
                     
                     var zjzj_map = new OpenLayers.Layer.WMS("行政区划", host_url, 
                       { layers: 'cs1204:zjzj', srs: 'EPSG:2364', transparent: true, format: format }, s_option3t);
@@ -432,7 +446,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       { layers: 'cs1204:dltb', srs: 'EPSG:2364', transparent: true, format: format }, s_option5f);
 
                     var xmdk = new OpenLayers.Layer.WMS("项目地块", host_url, 
-                        { layers: 'cs1204:xmdk', srs: 'EPSG:2364', transparent: true, format: format }, s_option8); 
+                        { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8); 
                         
                     map.addLayers([zjzj_map, dltb_line, xmdk]);
                     

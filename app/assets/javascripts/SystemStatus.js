@@ -112,10 +112,23 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         };
         
         var map  = new OpenLayers.Map($('task_track'), options);
-        var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_HYBRID_MAP, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
-        var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
+        //var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_HYBRID_MAP, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
+        //var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
+        
+        var gmap = new OpenLayers.Layer.Google(
+            "谷歌地图", // the default
+            {numZoomLevels: 20}
+        );
+        var gsat = new OpenLayers.Layer.Google(
+            "谷歌卫星图",
+            {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+        );
+        var gphy = new OpenLayers.Layer.Google(
+            "谷歌地形图",
+            {type: google.maps.MapTypeId.TERRAIN}
+        );
 
-        map.addLayers([gmap, gsat]);
+        map.addLayers([gphy,gmap, gsat]);
 
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
@@ -123,7 +136,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
 
         var xmdks_map = new OpenLayers.Layer.WMS("项目地块", host_url, 
-          { layers: 'KS304:xmdks_map', srs: 'EPSG:2364', transparent: true, format: format }, s_option8);
+          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
         map.addLayers([xmdks_map]);
 
 
@@ -156,7 +169,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             styleMap: styles
         });
 
-
         map.addLayers([xmdk_vectors, vectors, markers]);
 
         map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -174,7 +186,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           style:'margin:0px 0px',
           layout:'fit',
           tbar:[{
-            text:'用户',
+            text:'刷新人员',
             handler : function() {
               showUserPosition(map,vectors);
             }
@@ -184,7 +196,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               map: map
           }]
         });
- 
         
         win = desktop.createWindow({
             id: 'systemstatus',
