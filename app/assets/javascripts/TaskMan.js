@@ -56,8 +56,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
             var wizPanel = new Ext.form.FormPanel({
               id : 'wizard_panel_id',
               autoScroll : true,
-              height:400,
               width:800,
+              height:400,
               layout:'absolute',
               items: [{ 
                   xtype: 'label',
@@ -210,8 +210,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
             var planPanel = new Ext.form.FormPanel({
               id : 'plan_panel_id',
               autoScroll : true,
-              height:400,
               width:800,
+              height:400,
               layout:'absolute',
               items: [
                   {
@@ -1011,8 +1011,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
           win = desktop.createWindow({
               id: 'taskman',
               title:'任务管理',
-              width:1200,
-              height:600,
+              width:800,
+              height:500,
               iconCls: 'taskman',
               animCollapse:false,
               border: false,

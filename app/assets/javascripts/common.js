@@ -203,5 +203,56 @@ var s_option6 =	 { opacity: 0.6,	visibility: true,  isBaseLayer: false};
 var s_option8 =	 { opacity: 0.8,	visibility: true,  isBaseLayer: false};
 
 
+var styles = new OpenLayers.StyleMap({
+		 "default": new OpenLayers.Style(null, {
+				 rules: [
+						 new OpenLayers.Rule({
+								 symbolizer: {
+										 "Point": {
+												 pointRadius: 5,
+												 graphicName: "square",
+												 fillColor: "white",
+												 fillOpacity: 0.25,
+												 strokeWidth: 1,
+												 strokeOpacity: 1,
+												 strokeColor: "#333333"
+										 },
+										 "Line": {
+												 strokeWidth: 3,
+												 strokeOpacity: 1,
+												 //strokeColor: "#666666"
+												strokeColor: "#FF0000"
+										 }
+								 }
+						 })
+				 ]
+		 }),
+		 "select": new OpenLayers.Style({
+				 strokeColor: "#00ccff",
+				 strokeWidth: 4
+		 }),
+		 "temporary": new OpenLayers.Style(null, {
+				 rules: [
+						 new OpenLayers.Rule({
+								 symbolizer: {
+										 "Point": {
+												 pointRadius: 5,
+												 graphicName: "square",
+												 fillColor: "white",
+												 fillOpacity: 0.25,
+												 strokeWidth: 1,
+												 strokeOpacity: 1,
+												 strokeColor: "#333333"
+										 },
+										 "Line": {
+												 strokeWidth: 3,
+												 strokeOpacity: 1,
+												 strokeColor: "#00ccff"
+										 }
+								 }
+						 })
+				 ]
+		 })
+});
 
 

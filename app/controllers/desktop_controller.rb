@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position]
   before_filter :set_current_user
   
   def index
@@ -422,7 +422,13 @@ class DesktopController < ApplicationController
 	    render :text => ''
 	  end  
 	end
-
+  
+  # get all current_active user postion, 当前Area内的。
+  def get_task_position
+    txt = '[{"users":{"lon_lat":"13433188 3715760","id":32,"icon":"bee.png","username":"高飞","color":"#800000"}}]'
+    render :text=> txt  
+  end
+  
   #==================
   def get_mulu
     user = User.find_by_sql("select * from mulu order by id;")
