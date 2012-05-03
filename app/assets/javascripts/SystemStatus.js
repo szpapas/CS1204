@@ -51,6 +51,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             method: "POST",
             parameters: pars,
             onComplete:  function(request) {
+              //"[{\"report_at\":\"2012-05-03 17:46:19\",\"device\":\" 8618621361840\",\"astext\":\"POINT(13439889.5503971 3723340.88865353)\",\"username\":\"\\u9ad8\\u98de\",\"id\":184}]"
               //[{"users":{"lon_lat":"13470500 3683278","id":32,"icon":"monkey.png","color":"#800000"}}]
               var features = [];
               if (request.responseText.length > 30) {           
@@ -59,22 +60,17 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
                 for (var k=0; k < places.length; k++) {
                   place = places[k];
-                  var pointText = place["users"]["lon_lat"]; //13470500 3683278
+                  var pointText = place["lon_lat"]; //13470500 3683278
 
                   if (pointText == null || pointText == "undefined") continue;
 
-                  var id =  place["users"]["id"];
-                  var icon = place["users"]["icon"];
-                  var username = place['users']['username'];
-                  var pt = pointText.split(" ");
-                  var x0 = parseFloat(pt[0]);
-                  var y0 = parseFloat(pt[1]);
-
-                  if (k==(places.length-1)) {
-                    x_end = x0;
-                    y_end = y0;
-                  }
-
+                  var id =  place["id"];
+                  //var icon = place["icon"];
+                  var username = place['username'];
+                  ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
+                  var x0 = parseFloat(ss[1]);
+                  var y0 = parseFloat(ss[2]);
+                  
                   var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
                   //style.externalGraphic = '/assets/avator/'+icon;
                   style.backgroundXOffset = 0;

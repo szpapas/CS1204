@@ -399,8 +399,9 @@ class DesktopController < ApplicationController
   
   # get all current_active user postion, 当前Area内的。
   def get_task_position
-    txt = '[{"users":{"lon_lat":"13433188 3715760","id":32,"icon":"bee.png","username":"高飞","color":"#800000"}}]'
-    render :text=> txt  
+    #txt = '[{"users":{"lon_lat":"13433188 3715760","id":32,"icon":"bee.png","username":"高飞","color":"#800000"}}]'
+    user = User.find_by_sql("select id, lon_lat, username, device, report_at from users where zt='执行' order by report_at desc;")
+    render :text => user.to_json
   end
   
   #==================
