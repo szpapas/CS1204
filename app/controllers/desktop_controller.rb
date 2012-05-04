@@ -400,9 +400,26 @@ class DesktopController < ApplicationController
   # get all current_active user postion, 当前Area内的。
   def get_task_position
     #txt = '[{"users":{"lon_lat":"13433188 3715760","id":32,"icon":"bee.png","username":"高飞","color":"#800000"}}]'
-    user = User.find_by_sql("select id, lon_lat, username, device, report_at from users where zt='执行' order by report_at desc;")
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, report_at from plans where zt='执行' order by report_at desc;")
     render :text => user.to_json
   end
+  
+  #====add at 05/04
+  def get_phone_list
+    user = User.find_by_sql("selet id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
+    size = user.count.to_i;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
   
   #==================
   def get_mulu

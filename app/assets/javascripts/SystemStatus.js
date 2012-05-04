@@ -177,8 +177,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           id : 'task_track',
           autoScroll: true,
           xtype:"panel",
-          width:600,
-          height:600,
+          width:500,
+          height:500,
           style:'margin:0px 0px',
           layout:'fit',
           tbar:[{
@@ -192,6 +192,62 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               map: map
           }]
         });
+        
+        var  phone_store = new Ext.data.Store({
+            proxy: new Ext.data.HttpProxy({
+                url: '/desktop/get_phone_list'
+            }),
+            reader: new Ext.data.JsonReader({
+              totalProperty: 'results', 
+              root: 'rows',             
+              fields: [
+                {name: 'id',    type: 'integer'},
+                {name: 'username',  type: 'string'},
+                {name: 'device',  type: 'string'},
+                {name: 'report_at',   type: 'date', dateFormat: 'Y-m-d H:i:s'}
+              ]    
+            }),
+            sortInfo:{field: 'id', direction: "ASC"}
+        });
+        
+        
+        var phone_grid = new Ext.grid.GridPanel({
+          id: 'phone_grid_id',
+          store: phone_store,
+          columns: [
+            //sm,
+            { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
+            { header : '人员',  width : 75, sortable : true, dataIndex: 'username'},
+            { header : '电话',  width : 100, sortable : true, dataIndex: 'device'},
+            { header : '时间',  width : 75, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
+            ],
+          //sm:sm,  
+          columnLines: true,
+          layout:'fit',
+          viewConfig: {
+            stripeRows:true,
+          },
+          tbar:[]
+        });
+        
+        
+        var phone_panel = new Ext.Panel({
+          id : 'phone_panel_id',
+          autoScroll: true,
+          xtype:"panel",
+          width:250,
+          height:500,
+          style:'margin:0px 0px',
+          layout:'fit',
+          tbar:[{
+            text:'刷新人员',
+            handler : function() {
+              //showUserPosition(map,vectors);
+            }
+          }],
+          items: [phone_grid]
+        });
+        
         
         win = desktop.createWindow({
             id: 'systemstatus',
@@ -214,7 +270,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 width:250,
                 split:true,
                 collapsible:true,
-                titleCollapse:true
+                titleCollapse:true,
+                layout:"fit",
+                items:[phone_panel]
               }]
         });
       
