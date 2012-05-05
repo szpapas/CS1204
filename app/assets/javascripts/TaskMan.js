@@ -193,7 +193,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                         wizWin.close();
                         plan_store.load();
                       } else {
-                        msg('失败', '新增任务失败!');
+                        //msg('失败', '新增任务失败!');
+                        plan_store.load();
                       }
                     }
                   });
@@ -436,7 +437,10 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                         {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
                     );
 
-
+                    demolayer = new OpenLayers.Layer.WMS("cite:dltb","../service/wms",
+                    {layers: 'cite:dltb', format: 'image/jpeg' },
+                    { tileSize: new OpenLayers.Size(256,256)});
+                    
                     map.addLayers([gsat, gmap, ghyb]);
                     
                     var zjzj_map = new OpenLayers.Layer.WMS("行政区划", host_url, 
@@ -895,7 +899,6 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   var gsm =Ext.getCmp('plan_grid_id').getSelectionModel();
                   add_planwin(gsm);
                 }
-                 
               },{
                 text : '删除任务',
                 iconCls : 'delete',
@@ -910,6 +913,19 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     }
                   }
                   pars = {id:id_str};
+                  new Ajax.Request("/desktop/delete_selected_plan", { 
+                    method: "POST",
+                    parameters: pars,
+                    onComplete:  function(request) {
+                      plan_store.load();
+                    }
+                  });
+                }                 
+              },{
+                text : '全部任务',
+                iconCls : 'delete',
+                handler : function(){
+                  pars = {id:"all"};
                   new Ajax.Request("/desktop/delete_selected_plan", { 
                     method: "POST",
                     parameters: pars,

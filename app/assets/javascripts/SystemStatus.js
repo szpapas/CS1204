@@ -72,7 +72,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   var y0 = parseFloat(ss[2]);
                   
                   var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                  //style.externalGraphic = '/assets/avator/'+icon;
+                  style.externalGraphic = '/assets/chrome.png';
                   style.backgroundXOffset = 0;
                   style.backgroundYOffset = 0;
                   style.graphicWidth = 32;
@@ -89,7 +89,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   style.fontWeight = "bold";
                   style.labelAlign = "cm";            
                   style.label = username;
-                  style.fontColor = "blue";
+                  style.fontColor = "black";
 
                   features.push(
                       new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
@@ -124,18 +124,25 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             {type: google.maps.MapTypeId.TERRAIN}
         );
 
-        map.addLayers([gphy,gmap, gsat]);
+        map.addLayers([gmap, gphy, gsat]);
+
+        var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
+          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+
+        var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
+          { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+
+        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
+            { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+
+        
+        map.addLayers([dltb, dltb_m, xmdks_map]);
 
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
             styleMap: styles
         });
-
-        var xmdks_map = new OpenLayers.Layer.WMS("项目地块", host_url, 
-          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
-        map.addLayers([xmdks_map]);
-
-
+        
         var markers = new OpenLayers.Layer.Vector("巡查点标记", {
                 styleMap: new OpenLayers.StyleMap({
                     // Set the external graphic and background graphic images.
@@ -156,7 +163,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                     pointRadius: 10
                 }),
                 isBaseLayer: false,
-                opacity: 1,
+                opacity: 0.8,
                 rendererOptions: {yOrdering: true}
         });
 
@@ -166,11 +173,26 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
 
         map.addLayers([xmdk_vectors, vectors, markers]);
-
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        
+        var layserSwitch = new OpenLayers.Control.LayerSwitcher();
+        
+        map.events.register("changebaselayer", map, function (e) {
+          //alert("visibility changed (" + e.layer.name + ")");
+          if (e.layer.name == '谷歌卫星图') {
+            map.getLayersByName('二调数据2')[0].setVisibility(false);
+            map.getLayersByName('二调数据')[0].setVisibility(true);
+          }else{
+            map.getLayersByName('二调数据2')[0].setVisibility(true);
+            map.getLayersByName('二调数据')[0].setVisibility(false);
+          }
+      	});
+        
+        
+        map.addControl(layserSwitch);
         map.addControl(new OpenLayers.Control.MousePosition());
         
         var zoomLevel = 14;
+        
         map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
         
         var map_view = new Ext.Panel({
@@ -193,7 +215,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }]
         });
         
-        var  phone_store = new Ext.data.Store({
+        var phone_store = new Ext.data.Store({
             proxy: new Ext.data.HttpProxy({
                 url: '/desktop/get_phone_list'
             }),
@@ -201,15 +223,17 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               totalProperty: 'results', 
               root: 'rows',             
               fields: [
-                {name: 'id',    type: 'integer'},
+                {name: 'id',        type: 'integer'},
                 {name: 'username',  type: 'string'},
-                {name: 'device',  type: 'string'},
+                {name: 'device',    type: 'string'},
+                {name: 'lon_lat',   type: 'string'},
                 {name: 'report_at',   type: 'date', dateFormat: 'Y-m-d H:i:s'}
               ]    
             }),
             sortInfo:{field: 'id', direction: "ASC"}
         });
         
+        phone_store.load();
         
         var phone_grid = new Ext.grid.GridPanel({
           id: 'phone_grid_id',
@@ -217,9 +241,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           columns: [
             //sm,
             { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
-            { header : '人员',  width : 75, sortable : true, dataIndex: 'username'},
+            { header : '人员',  width : 50, sortable : true, dataIndex: 'username'},
             { header : '电话',  width : 100, sortable : true, dataIndex: 'device'},
-            { header : '时间',  width : 75, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
+            { header : '时间',  width : 100, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
             ],
           //sm:sm,  
           columnLines: true,
@@ -230,6 +254,16 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           tbar:[]
         });
         
+        phone_grid.on('rowclick', function(grid, row, e){
+          var data = grid.store.data.items[row].data;
+          pointText = data.lon_lat;
+          ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
+          var x0 = parseFloat(ss[1]);
+          var y0 = parseFloat(ss[2]);
+
+          var lonlat = new OpenLayers.LonLat(x0, y0);
+          map.panTo(lonlat,{animate: false});
+        });
         
         var phone_panel = new Ext.Panel({
           id : 'phone_panel_id',
@@ -242,7 +276,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           tbar:[{
             text:'刷新人员',
             handler : function() {
-              //showUserPosition(map,vectors);
+              phone_store.load();
             }
           }],
           items: [phone_grid]
@@ -261,12 +295,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             layout: 'border',
             items:[{
                 region:"center",
-                title:"center",
                 layout:"fit",
                 items:[map_view]
               },{
                 region:"east",
-                title:"east",
+                //title:"east",
                 width:250,
                 split:true,
                 collapsible:true,
@@ -278,6 +311,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       }
       win.show();
+      showUserPosition(map,vectors);
       return win;
   }
 });

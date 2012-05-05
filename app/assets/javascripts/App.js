@@ -24,9 +24,9 @@ MyDesktop = new Ext.app.App({
 	getModules : function(){
 		return [
 			new MyDesktop.TaskMan(),
+      new MyDesktop.SystemStatus(),
       new MyDesktop.ReportMan(),
       new MyDesktop.SystemMan(),
-      new MyDesktop.SystemStatus(),
       new MyDesktop.AccordionWindow()
 		];
 	},
@@ -45,8 +45,8 @@ MyDesktop = new Ext.app.App({
               model: 'Ext.ux.desktop.ShortcutModel',
               data: [
                   { name: '任务管理', iconCls: 'taskman-shortcut',     module: 'taskman' },
-                  { name: '统计报表', iconCls: 'reportman-shortcut',   module: 'reportman' },
                   { name: '状态监视', iconCls: 'cpu-shortcut',   module: 'systemstatus' },
+                  { name: '统计报表', iconCls: 'reportman-shortcut',   module: 'reportman' },
                   { name: '系统管理', iconCls: 'systemman-shortcut',   module: 'systemman' }
               ]
           }),

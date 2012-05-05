@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2]
   before_filter :set_current_user
   
   def index
@@ -170,6 +170,7 @@ class DesktopController < ApplicationController
   def print_selected_plan
     user = User.find_by_sql("select * from plans where id in (#{params['id']});")
     for k in 0..user.size-1
+      puts "ruby ./dady/bin/print_plan.rb #{user[k].id}"
       system("ruby ./dady/bin/print_plan.rb #{user[k].id}")
     end
     render :text => 'Success'
@@ -406,7 +407,7 @@ class DesktopController < ApplicationController
   
   #====add at 05/04
   def get_phone_list
-    user = User.find_by_sql("selet id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
     size = user.count.to_i;
     if size > 0
       txt = "{results:#{size},rows:["
@@ -421,6 +422,14 @@ class DesktopController < ApplicationController
   end
   
   
+  #add at 05/05
+  #Started POST "/desktop/upload_pic2" for 127.0.0.1 at Sat May 05 10:31:57 +0800 2012
+  #  Processing by DesktopController#upload_pic2 as HTML
+  #  Parameters: {"tpbz"=>"", "task_id"=>"931", "image_file"=>#<ActionDispatch::Http::UploadedFile:0x12d6390d8 @content_type="image/jpeg", @headers="Content-Disposition: form-data; name=\"image_file\"; filename=\"image1.jpg\"\r\nContent-Type: image/jpeg\r\n", @tempfile=#<File:/var/folders/42/w4dvmhl9257dj09078s22xch0000gn/T/RackMultipart20120505-24444-1yec73m-0>, @original_filename="image1.jpg">, "tpjd"=>"\344\270\234", "session_id"=>"6j7lewtyujbp8ge6rvd3k0adr2hahu1o", "image_name"=>"20120505102613", "xkz"=>"\346\230\257", "yjx"=>"\346\230\257", "inspect_id"=>"0"}
+  def upload_pic2
+    
+    render :text => 'Success'
+  end
   #==================
   def get_mulu
     user = User.find_by_sql("select * from mulu order by id;")

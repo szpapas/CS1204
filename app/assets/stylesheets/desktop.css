@@ -727,18 +727,13 @@ td.ux-taskButtons-edge {
 */
 
 #systemstatus-shortcut img {
-    background-image: url(/assets/status46.png);
+    background-image: url(/assets/geoserver46.png);
     width: 46px;
     height: 46px;
 }
 
-.x-ie6 .systemstatus-shortcut {
-    background-image: none;
-    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/status46.png', sizingMethod='scale');
-}
-
 .systemstatus {
-	background-image: url(/assets/status16.png ) !important;
+	background-image: url(/assets/geoserver16.png ) !important;
 }
 
 

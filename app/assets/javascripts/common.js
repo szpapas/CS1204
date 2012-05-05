@@ -5,6 +5,10 @@ var user_id="";
 //var base_url = "http://218.4.152.78:8080/geoserver/wms";
 //var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
 
+//var base_url = "http://10.5.6.23:8080/geoserver/wms";
+//var host_url = "http://10.5.6.23:8080/geoserver/cs1204/wms";
+
+
 var base_url = "http://127.0.0.1:8080/geoserver/wms";
 var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
 
@@ -53,7 +57,9 @@ var xcqy_data = [
   ['4' ,'碧溪镇'],
   ['2' ,'梅李镇'],
   ['7' ,'支塘镇'],
-  ['8' ,'董浜镇']
+  ['8' ,'董浜镇'],
+  ['12','沿江分局'],
+  ['13', '东南分局']
 ];
 
 
@@ -75,6 +81,8 @@ var xzqmc_data = [
   ['2' ,'梅李镇'],
   ['7' ,'支塘镇'],
   ['8' ,'董浜镇'],
+  ['12','沿江分局'],
+  ['13', '东南分局']
 ];
 
 
@@ -204,6 +212,7 @@ var s_option5f =	 { opacity: 0.5,	visibility: false, isBaseLayer: false};
 var s_option5 =	 { opacity: 0.5,	visibility: false,  isBaseLayer: false, displayInLayerSwitcher: false} ;
 var s_option6 =	 { opacity: 0.6,	visibility: true,  isBaseLayer: false};
 var s_option8 =	 { opacity: 0.8,	visibility: true,  isBaseLayer: false};
+var s_option8f =	 { opacity: 0.8,	visibility: false,  isBaseLayer: false};
 
 
 var styles = new OpenLayers.StyleMap({
