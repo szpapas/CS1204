@@ -428,8 +428,77 @@ class DesktopController < ApplicationController
   #  Parameters: {"tpbz"=>"", "task_id"=>"931", "image_file"=>#<ActionDispatch::Http::UploadedFile:0x12d6390d8 @content_type="image/jpeg", @headers="Content-Disposition: form-data; name=\"image_file\"; filename=\"image1.jpg\"\r\nContent-Type: image/jpeg\r\n", @tempfile=#<File:/var/folders/42/w4dvmhl9257dj09078s22xch0000gn/T/RackMultipart20120505-24444-1yec73m-0>, @original_filename="image1.jpg">, "tpjd"=>"\344\270\234", "session_id"=>"6j7lewtyujbp8ge6rvd3k0adr2hahu1o", "image_name"=>"20120505102613", "xkz"=>"\346\230\257", "yjx"=>"\346\230\257", "inspect_id"=>"0"}
   def upload_pic2
     
-    render :text => 'Success'
+    logger.debug("========filename: #{params['value1']} ")
+
+  	task_id = params['task_id'].to_i
+  	session_id = params['session_id']
+  	inspect_id = params['inspect_id']
+  	pic_name = params['image_name']+'.jpg'
+  	thumb_name = pic_name.gsub('.jpg', '_s.jpg')
+
+  	params.each do |k,v|
+  		logger.debug("#{k} , #{v}")
+
+  		if k.include?("image_file")
+  			logger.debug("#{v.path}")
+
+  			FileUtils.makedirs "/assets/dady/images/inspect/#{inspect_id}" if !File.exists?("/assets/dady/images/inspect/#{task_id}")
+  			system("cp #{v.path} ./dady/images/inspect/#{inspect_id}/#{pic_name}")
+  			system("chmod 644 ./dady/images/inspect/#{inspect_id}/#{pic_name}")
+        system("convert ./dady/images/inspect/#{inspect_id}/#{pic_name} -resize 64x64 public/images/inspect/#{inspect_id}/#{thumb_name} ")
+        
+  			#insert into database	 
+  			#exif_file = ActiveSupport::SecureRandom.hex(16)
+  			exif_file =rand(36**32).to_s(36)
+  			system("exif ./dady/images/inspect/#{inspect_id}/#{pic_name} > #{exif_file}")
+  			File.open("#{exif_file}").each_line do |line|
+  				if line.include?('Longitude')
+  					ll = line.chomp.split("|")[1].strip.split(",")
+  					$lon = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
+  				end
+  				if line.include?('Latitude')
+  					ll = line.chomp.split("|")[1].strip.split(",")
+  					$lat = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
+  				end
+  				if line.include?('Date and Time') 
+  					dd = line.chomp.split("|")[1].strip.split(" ")
+  					$tpsj = dd[0].gsub(":", "-") + " " + dd[1]
+  				end		
+  			end
+
+  			lonlat = "geomFromText('Point(#{$lon} #{$lat})',4326)"
+
+  			#update database
+  			path = "./dady/images/inspect/#{inspect_id}/#{pic_name}"
+  			yxdx=File.open(path).read.size
+        edata=PGconn.escape_bytea(File.open(path).read) 
+  			 
+  			Users.find_by_sql("insert into xcimages (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
+  					('#{pic_name}',	 #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
+  					
+  			Users.find_by_sql("update inspects set photo_count = (select count(*) from jcimages where inspect_id = #{params['inspect_id']}) where id=#{params['inspect_id']};")
+  			
+        Users.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
+
+  			FileUtils.rm exif_file
+
+  		end
+
+  	end
+  	render :text => "Success"
   end
+  
+  def change_password
+    if params['password_confirmation'] == params['password']
+      User.current.password = params['password']
+      User.current.password_confirmation=params['password']
+      User.current.save
+      render :text => 'Success'
+    else
+      render :text => 'Falied'
+    end
+  end  
+  
   #==================
   def get_mulu
     user = User.find_by_sql("select * from mulu order by id;")

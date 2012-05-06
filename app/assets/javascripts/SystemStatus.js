@@ -188,12 +188,30 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       	});
         
         
-        map.addControl(layserSwitch);
-        map.addControl(new OpenLayers.Control.MousePosition());
-        
-        var zoomLevel = 14;
-        
-        map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
+        /*
+        var mapPanel = new GeoExt.MapPanel({
+            title: "GeoExt MapPanel",
+            stateId: "mappanel",
+            height: 400,
+            width: 600,
+            map: map,
+            center: new OpenLayers.LonLat(5, 45),
+            zoom: 4,
+            // getState and applyState are overloaded so panel size
+            // can be stored and restored
+            getState: function() {
+                var state = GeoExt.MapPanel.prototype.getState.apply(this);
+                state.width = this.getSize().width;
+                state.height = this.getSize().height;
+                return state;
+            },
+            applyState: function(state) {
+                GeoExt.MapPanel.prototype.applyState.apply(this, arguments);
+                this.width = state.width;
+                this.height = state.height;
+            }
+        });
+        */
         
         var map_view = new Ext.Panel({
           id : 'task_track',
@@ -210,7 +228,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           }],
           items: [{
-              xtype: 'mapcomponent',
+              //xtype: 'mapcomponent',
+              xtype: 'gx_mappanel',
               map: map
           }]
         });
@@ -308,8 +327,14 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 items:[phone_panel]
               }]
         });
+      };
       
-      }
+      
+      map.addControl(layserSwitch);
+      map.addControl(new OpenLayers.Control.MousePosition());
+      var zoomLevel = 14;
+      map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
+      
       win.show();
       showUserPosition(map,vectors);
       return win;
