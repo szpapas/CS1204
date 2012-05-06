@@ -5,12 +5,6 @@ var user_id="";
 var base_url = "http://218.4.152.78:8080/geoserver/wms";
 var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
 
-//var base_url = "http://10.5.6.23:8080/geoserver/wms";
-//var host_url = "http://10.5.6.23:8080/geoserver/cs1204/wms";
-
-//var base_url = "http://127.0.0.1:8080/geoserver/wms";
-//var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
-
 new Ajax.Request("/desktop/get_userid", { 
   method: "POST",
   onComplete:  function(request) {
@@ -326,14 +320,14 @@ MyDesktop = new Ext.app.App({
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/update.html";
+                   window.location = "/update/iphone_new.zip";
                 }             
             },{
                 text:'使用帮助',
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/help.html";
+                   window.location = "/update/iphone软件更新.doc";
                 }             
             },{  
               text:'修改密码',
@@ -2670,7 +2664,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   var y0 = parseFloat(ss[2]);
                   
                   var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                  style.externalGraphic = '/assets/chrome.png';
+                  style.externalGraphic = '/images/chrome.png';
                   style.backgroundXOffset = 0;
                   style.backgroundYOffset = 0;
                   style.graphicWidth = 32;
@@ -2744,8 +2738,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var markers = new OpenLayers.Layer.Vector("巡查点标记", {
                 styleMap: new OpenLayers.StyleMap({
                     // Set the external graphic and background graphic images.
-                    externalGraphic:   "/assets/marker-gold.png",
-                    backgroundGraphic: "/assets/marker_shadow.png",
+                    externalGraphic:   "/images/marker-gold.png",
+                    backgroundGraphic: "/images/marker_shadow.png",
 
                     // Makes sure the background graphic is placed correctly relative
                     // to the external graphic.

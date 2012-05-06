@@ -442,7 +442,7 @@ class DesktopController < ApplicationController
   		if k.include?("image_file")
   			logger.debug("#{v.path}")
 
-  			FileUtils.makedirs "/assets/dady/images/inspect/#{inspect_id}" if !File.exists?("/assets/dady/images/inspect/#{task_id}")
+  			FileUtils.makedirs "/images/dady/images/inspect/#{inspect_id}" if !File.exists?("/images/dady/images/inspect/#{task_id}")
   			system("cp #{v.path} ./dady/images/inspect/#{inspect_id}/#{pic_name}")
   			system("chmod 644 ./dady/images/inspect/#{inspect_id}/#{pic_name}")
         system("convert ./dady/images/inspect/#{inspect_id}/#{pic_name} -resize 64x64 public/images/inspect/#{inspect_id}/#{thumb_name} ")
@@ -476,7 +476,7 @@ class DesktopController < ApplicationController
   			Users.find_by_sql("insert into xcimages (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
   					('#{pic_name}',	 #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
   					
-  			Users.find_by_sql("update inspects set photo_count = (select count(*) from jcimages where inspect_id = #{params['inspect_id']}) where id=#{params['inspect_id']};")
+  			Users.find_by_sql("update inspects set photo_count = (select count(*) from xcimages where inspect_id = #{params['inspect_id']}) where id=#{params['inspect_id']};")
   			
         Users.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
 
@@ -928,7 +928,7 @@ class DesktopController < ApplicationController
     
     logger.debug "zip #{outPath}.zip #{outPath}/*"
     system "zip -0 #{outPath}.zip #{outPath}/*"
-    render :text => "/assets/dady/#{data.mlh}.zip"
+    render :text => "/images/dady/#{data.mlh}.zip"
     
   end
   
@@ -1564,7 +1564,7 @@ class DesktopController < ApplicationController
       small_filename = './dady/img_tmp/'+user[0]["yxmc"]
       File.open(local_filename, 'w') {|f| f.write(ss) }
       system("convert -resize 20% -quality 75 #{local_filename} #{small_filename}")
-      txt = "/assets/dady/img_tmp/#{user[0]['yxmc']}"
+      txt = "/images/dady/img_tmp/#{user[0]['yxmc']}"
     end
     render :text => txt    
   end
