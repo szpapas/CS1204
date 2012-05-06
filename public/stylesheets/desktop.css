@@ -5,7 +5,7 @@
  * http://www.sencha.com/license
  */
 html, body {
-	background:#3d71b8 url(../wallpapers/desktop.jpg) no-repeat left top;
+	background:#3d71b8 url(/images/wallpapers/desktop.jpg) no-repeat left top;
     font: normal 12px tahoma, arial, verdana, sans-serif;
 	margin: 0;
 	padding: 0;
@@ -15,25 +15,25 @@ html, body {
 }
 
 .logo {
-   background-image:url(/assets/logo1.png) !important;
+   background-image:url(/images/logo1.png) !important;
  	 background-repeat: no-repeat;
    height: 44px !important;
 }
 
 .start {
-	background-image: url( /assets/taskbar/black/startbutton-icon.gif ) !important;
+	background-image: url( /images/taskbar/black/startbutton-icon.gif ) !important;
 }
 
 .bogus {
-	background-image: url( /assets/bogus.png ) !important;
+	background-image: url( /images/bogus.png ) !important;
 }
 
 .logout {
-	background-image: url( /assets/logout.gif ) !important;
+	background-image: url( /images/logout.gif ) !important;
 }
 
 .settings {
-	background-image: url( /assets/gears.gif ) !important;
+	background-image: url( /images/gears.gif ) !important;
 }
 
 #dpanels {
@@ -147,12 +147,12 @@ html, body {
 .ux-taskbutton-left{
 	width:4px;
 	height:28px;
-	background:url( /assets/taskbar/black/taskbutton.gif ) no-repeat 0 0;
+	background:url( /images/taskbar/black/taskbutton.gif ) no-repeat 0 0;
 }
 .ux-taskbutton-right{
 	width:4px;
 	height:28px;
-	background:url( /assets/taskbar/black/taskbutton.gif ) no-repeat 0 -28px;
+	background:url( /images/taskbar/black/taskbutton.gif ) no-repeat 0 -28px;
 }
 .ux-taskbutton-left i, .ux-taskbutton-right i{
 	display:block;
@@ -162,7 +162,7 @@ html, body {
     line-height:1px;
 }
 .ux-taskbutton-center{
-	background:url( /assets/taskbar/black/taskbutton.gif ) repeat-x 0 -56px;
+	background:url( /images/taskbar/black/taskbutton.gif ) repeat-x 0 -56px;
 	vertical-align: middle;
 	text-align:center;
 	padding:0 5px;
@@ -204,10 +204,10 @@ html, body {
 	background-position:0 -84px;
 }
 #ux-taskbar .active-win  .ux-taskbutton-right{
-	background:url( /assets/taskbar/black/taskbutton.gif ) no-repeat 0 -112px;
+	background:url( /images/taskbar/black/taskbutton.gif ) no-repeat 0 -112px;
 }
 #ux-taskbar .active-win .ux-taskbutton-center{
-	background:url( /assets/taskbar/black/taskbutton.gif ) repeat-x 0 -140px;
+	background:url( /images/taskbar/black/taskbutton.gif ) repeat-x 0 -140px;
 }
 #ux-taskbar .active-win .ux-taskbutton-center button {
     color:#fff;
@@ -231,55 +231,55 @@ html, body {
 }
 
 .icon-grid {
-    background-image:url( /assets/grid.png ) !important;
+    background-image:url( /images/grid.png ) !important;
 }
 .add {
-    background-image:url(/assets/fam/add.gif) !important;
+    background-image:url(/images/fam/add.gif) !important;
 }
 .option {
-    background-image:url(/assets/fam/plugin.gif) !important;
+    background-image:url(/images/fam/plugin.gif) !important;
 }
 .remove {
-    background-image:url(/assets/fam/delete.gif) !important;
+    background-image:url(/images/fam/delete.gif) !important;
 }
 .save {
-    background-image:url(/assets/save.gif) !important;
+    background-image:url(/images/save.gif) !important;
 }
 .accordion {
-    background-image:url(/assets/accordian.gif) !important;
+    background-image:url(/images/accordian.gif) !important;
 }
 .tabs {
-    background-image:url(/assets/tabs.gif) !important;
+    background-image:url(/images/tabs.gif) !important;
 }
 
 /* IM window icons */
 
 .user {
-    background-image:url( /assets/fam/user.gif ) !important;
+    background-image:url( /images/fam/user.gif ) !important;
 }
 
 .user-add {
-    background-image:url(/assets/fam/user_add.gif) !important;
+    background-image:url(/images/fam/user_add.gif) !important;
 }
 
 .user-delete {
-    background-image:url(/assets/fam/user_delete.gif) !important;
+    background-image:url(/images/fam/user_delete.gif) !important;
 }
 
 .connect {
-    background-image:url(/assets/fam/connect.gif) !important;
+    background-image:url(/images/fam/connect.gif) !important;
 }
 
 .user-girl {
-    background-image:url(/assets/fam/user_female.gif) !important;
+    background-image:url(/images/fam/user_female.gif) !important;
 }
 
 .user-kid {
-    background-image:url(/assets/fam/user_green.gif) !important;
+    background-image:url(/images/fam/user_green.gif) !important;
 }
 
 .user-suit {
-    background-image:url(/assets/fam/user_suit.gif) !important;
+    background-image:url(/images/fam/user_suit.gif) !important;
 }
 
 .ux-start-menu {
@@ -301,7 +301,7 @@ html, body {
 }
 
 .ux-start-menu-tl {
-	background: transparent url( /assets/taskbar/black/start-menu-left-corners.png ) no-repeat 0 0;
+	background: transparent url( /images/taskbar/black/start-menu-left-corners.png ) no-repeat 0 0;
 	padding-left:6px;
     zoom:1;
     z-index:1;
@@ -309,24 +309,24 @@ html, body {
 }
 
 .ux-start-menu-tr {
-	background: transparent url( /assets/taskbar/black/start-menu-right-corners.png ) no-repeat right 0;
+	background: transparent url( /images/taskbar/black/start-menu-right-corners.png ) no-repeat right 0;
 	padding-right:6px;
 }
 
 .ux-start-menu-tc {
-	background: transparent url( /assets/taskbar/black/start-menu-top-bottom.png ) repeat-x 0 0;
+	background: transparent url( /images/taskbar/black/start-menu-top-bottom.png ) repeat-x 0 0;
 	overflow:hidden;
     zoom:1;
 }
 
 .ux-start-menu-ml {
-	background: transparent url( /assets/taskbar/black/start-menu-left-right.png ) repeat-y 0 0;
+	background: transparent url( /images/taskbar/black/start-menu-left-right.png ) repeat-y 0 0;
 	padding-left:6px;
     zoom:1;
 }
 
 .ux-start-menu-bc {
-	background: transparent url( /assets/taskbar/black/start-menu-top-bottom.png ) repeat-x 0 bottom;
+	background: transparent url( /images/taskbar/black/start-menu-top-bottom.png ) repeat-x 0 bottom;
     zoom:1;
 }
 
@@ -338,13 +338,13 @@ html, body {
 }
 
 .ux-start-menu-bl {
-	background: transparent url( /assets/taskbar/black/start-menu-left-corners.png ) no-repeat 0 bottom;
+	background: transparent url( /images/taskbar/black/start-menu-left-corners.png ) no-repeat 0 bottom;
 	padding-left:6px;
     zoom:1;
 }
 
 .ux-start-menu-br {
-	background: transparent url( /assets/taskbar/black/start-menu-right-corners.png ) no-repeat right bottom;
+	background: transparent url( /images/taskbar/black/start-menu-right-corners.png ) no-repeat right bottom;
 	padding-right:6px;
     zoom:1;
 }
@@ -375,11 +375,11 @@ html, body {
 
 .ux-start-menu-tools-panel {
 	border:0px none;
-	background:transparent url( /assets/taskbar/black/start-menu-right.png ) repeat-y scroll right 0pt;
+	background:transparent url( /images/taskbar/black/start-menu-right.png ) repeat-y scroll right 0pt;
 }
 
 #ux-taskbar-start {
-	background:#000000 url( /assets/taskbar/black/taskbar-start-panel-bg.gif ) repeat-x left top;
+	background:#000000 url( /images/taskbar/black/taskbar-start-panel-bg.gif ) repeat-x left top;
 	left:0px;
 	padding:0;
 	position:absolute;
@@ -392,7 +392,7 @@ html, body {
 }
 
 #ux-taskbuttons-panel {
-	background:#000000 url( /assets/taskbar/black/taskbuttons-panel-bg.gif ) repeat-x left top;
+	background:#000000 url( /images/taskbar/black/taskbuttons-panel-bg.gif ) repeat-x left top;
 	padding-top:0;
 	position:relative;
 }
@@ -464,7 +464,7 @@ td.ux-taskButtons-edge {
 }
 
 .ux-taskbuttons-scroller-left {
-    background: transparent url( /assets/taskbar/black/scroll-left.gif ) no-repeat -18px 0;
+    background: transparent url( /images/taskbar/black/scroll-left.gif ) no-repeat -18px 0;
     width:18px;
     position:absolute;
     left:1px;
@@ -483,7 +483,7 @@ td.ux-taskButtons-edge {
     cursor:default;
 }
 .ux-taskbuttons-scroller-right {
-    background: transparent url( /assets/taskbar/black/scroll-right.gif ) no-repeat 0 0;
+    background: transparent url( /images/taskbar/black/scroll-right.gif ) no-repeat 0 0;
     width:18px;
     position:absolute;
     right:0;
@@ -520,13 +520,13 @@ td.ux-taskButtons-edge {
 }
 
 .ux-start-menu-tools-panel .x-menu-item-active {
-	background: #525456 url( /assets/taskbar/black/item-over.gif ) repeat-x left bottom;
+	background: #525456 url( /images/taskbar/black/item-over.gif ) repeat-x left bottom;
 	border:1px solid #000000;
 	padding: 0;
 }
 
 #ux-taskbar .x-splitbar-h {
-	background:#000000 url( /assets/taskbar/black/taskbar-split-h.gif ) no-repeat 0 0;
+	background:#000000 url( /images/taskbar/black/taskbar-split-h.gif ) no-repeat 0 0;
 	width:8px;
 }
 
@@ -544,12 +544,12 @@ td.ux-taskButtons-edge {
 .ux-startbutton-left{
 	width:10px;
 	height:28px;
-	background:url( /assets/taskbar/black/startbutton.gif ) no-repeat 0 0;
+	background:url( /images/taskbar/black/startbutton.gif ) no-repeat 0 0;
 }
 .ux-startbutton-right{
 	width:10px;
 	height:30px;
-	background:url( /assets/taskbar/black/startbutton.gif ) no-repeat 0 -28px;
+	background:url( /images/taskbar/black/startbutton.gif ) no-repeat 0 -28px;
 }
 .ux-startbutton-left i, .ux-startbutton-right i{
 	display:block;
@@ -559,7 +559,7 @@ td.ux-taskButtons-edge {
     line-height:1px;
 }
 .ux-startbutton-center{
-	background:url( /assets/taskbar/black/startbutton.gif ) repeat-x 0 -56px;
+	background:url( /images/taskbar/black/startbutton.gif ) repeat-x 0 -56px;
 	vertical-align: middle;
 	text-align:center;
 	padding:0;
@@ -601,10 +601,10 @@ td.ux-taskButtons-edge {
 	background-position:0 -90px;
 }
 #ux-taskbar .active-win  .ux-startbutton-right{
-	background:url( /assets/taskbar/black/startbutton.gif ) no-repeat 0 -120px;
+	background:url( /images/taskbar/black/startbutton.gif ) no-repeat 0 -120px;
 }
 #ux-taskbar .active-win .ux-startbutton-center{
-	background:url( /assets/taskbar/black/startbutton.gif ) repeat-x 0 -150px;
+	background:url( /images/taskbar/black/startbutton.gif ) repeat-x 0 -150px;
 }
 #ux-taskbar .active-win .ux-startbutton-center button {
     color:#fff;
@@ -656,14 +656,14 @@ td.ux-taskButtons-edge {
 #grid-win-shortcut img {
     width:48px;
     height:48px;
-    background-image: url(/assets/grid48x48.png);
+    background-image: url(/images/grid48x48.png);
     filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/grid48x48.png', sizingMethod='scale');
 }
 
 #acc-win-shortcut img {
     width:48px;
     height:48px;
-    background-image: url(/assets/im48x48.png);
+    background-image: url(/images/im48x48.png);
     filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/im48x48.png', sizingMethod='scale');
 }
 
@@ -672,54 +672,54 @@ td.ux-taskButtons-edge {
   TaskMan
 */
 #taskman-shortcut img{
-    background-image: url(/assets/plan46.png);
+    background-image: url(/images/plan46.png);
     width: 46px;
     height: 46px;
 }
 
 .x-ie6 .taskman-shortcut {
     background-image: none;
-    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/assets/plan46.png', sizingMethod='scale');
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/plan46.png', sizingMethod='scale');
 }
 
 .taskman {
-	background-image: url(/assets/plan16.png ) !important;
+	background-image: url(/images/plan16.png ) !important;
 }
 
 /*
   SettingMan
 */
 #systemman-shortcut img{
-    background-image: url(/assets/setting46.png);
+    background-image: url(/images/setting46.png);
     width: 46px;
     height: 46px;
 }
 
 .x-ie6 .systemman-shortcut {
     background-image: none;
-    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/assets/setting46.png', sizingMethod='scale');
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/setting46.png', sizingMethod='scale');
 }
 
 .systemman {
-	background-image: url(/assets/setting16.png ) !important;
+	background-image: url(/images/setting16.png ) !important;
 }
 
 /*
   ReportMan
 */
 #reportman-shortcut img {
-    background-image: url(/assets/report46.png);
+    background-image: url(/images/report46.png);
     width: 46px;
     height: 46px;
 }
 
 .x-ie6 .reportman-shortcut {
     background-image: none;
-    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/assets/report46.png', sizingMethod='scale');
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/report46.png', sizingMethod='scale');
 }
 
 .reportman {
-	background-image: url(/assets/report16.png ) !important;
+	background-image: url(/images/report16.png ) !important;
 }
 
 /*
@@ -727,13 +727,13 @@ td.ux-taskButtons-edge {
 */
 
 #systemstatus-shortcut img {
-    background-image: url(/assets/geoserver46.png);
+    background-image: url(/images/geoserver46.png);
     width: 46px;
     height: 46px;
 }
 
 .systemstatus {
-	background-image: url(/assets/geoserver16.png ) !important;
+	background-image: url(/images/geoserver16.png ) !important;
 }
 
 
@@ -741,26 +741,26 @@ td.ux-taskButtons-edge {
  * Task Man Icons
 */
 .edit {
-	background-image: url(/assets/edit.png ) !important;
+	background-image: url(/images/edit.png ) !important;
 }
 
 .delete {
-	background-image: url(/assets/delete.png ) !important;
+	background-image: url(/images/delete.png ) !important;
 }
 
 .print {
-	background-image: url(/assets/print.png ) !important;
+	background-image: url(/images/print.png ) !important;
 }
 
 .detail {
-	background-image: url(/assets/detail.png ) !important;
+	background-image: url(/images/detail.png ) !important;
 }
 
 .exit {
-	background-image: url(/assets/exit.png ) !important;
+	background-image: url(/images/exit.png ) !important;
 } 
  
 .key {
-  background-image: url(/assets/key16.png ) !important;
+  background-image: url(/images/key16.png ) !important;
 }
  
