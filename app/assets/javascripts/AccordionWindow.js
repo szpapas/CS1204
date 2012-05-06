@@ -872,47 +872,6 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
 					}
 				}, yg_tree);
 				
-				var kh_menu = new Ext.menu.Menu({
-					id : 'kh_menu',
-					items:[{
-						text:'发送短信',
-						handler: send_message
-					},{
-						text:'查看详细',
-						handler: view_kh_detail
-					}]
-				});
-				
-				var kh_tree = Ext.getCmp('kh-tree');
-				kh_tree.on("contextmenu", function(node,e) {
-					//e.preventDefault();
-					e.stopEvent();
-					node.select();
-					kh_menu.showAt(e.getXY());
-				}, kh_tree);
-
-				kh_tree.on("click", function(node,e) {
-					e.stopEvent();
-					node.select();
-					if (Ext.getCmp('lx_customer_add_form') != 'undefined') {
-						var node = Ext.getCmp('acc-win').layout.activeItem.selModel.selNode;
-						var ss = node.id.split("|");  
-
-						var pars = {khxx_id:ss[1]};
-						new Ajax.Request("/desktop/set_customer", { 
-							method: "POST",
-							parameters: pars,
-							onComplete:	 function(request) {
-								var users = eval("("+request.responseText+")");
-								if (users.size() > 0) {
-									Ext.getCmp("lx_customer_add_form").getForm().setValues(users[0].users);
-								}
-							}
-						});
-					}
-				}, kh_tree);
-
-				
 				win.show();
 		}
 });

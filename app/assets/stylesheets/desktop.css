@@ -755,4 +755,12 @@ td.ux-taskButtons-edge {
 .detail {
 	background-image: url(/assets/detail.png ) !important;
 }
+
+.exit {
+	background-image: url(/assets/exit.png ) !important;
+} 
+ 
+.key {
+  background-image: url(/assets/key16.png ) !important;
+}
  

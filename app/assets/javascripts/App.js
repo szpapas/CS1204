@@ -81,47 +81,50 @@ MyDesktop = new Ext.app.App({
               iconCls:'key',
               scope:this,
               handler:function(){
+                
                  var passPanel = new Ext.form.FormPanel({
                    id : 'password_panel_id',
                    autoScroll : true,
-                   width:300,
+                   width:320,
                    height:150,
                    layout:'absolute',
                    items: [{ 
                        xtype: 'label',
-                       text: '请输入新密码',
-                       x: 10,
-                       y: 10
+                       text: '请输入新密码：',
+                       x: 30,
+                       y: 30
                      },{
-                       xtype: 'textedit',
-                       x: 100,
-                       y: 10,
+                       xtype: 'textfield',
+                       x: 130,
+                       y: 30,
                        width: 150,
                        name: 'password',
+                       inputType : 'password'
                      },{
                        xtype: 'label',
-                       text: '请再次输入密码',
-                       x: 10,
-                       y: 40                 
+                       text: '请再次输入密码：',
+                       x: 30,
+                       y: 70
                      },{
-                       xtype: 'textedit',
-                       x: 100,
-                       y: 40,
+                       xtype: 'textfield',
+                       x: 130,
+                       y: 70,
                        width: 150,
                        name: 'password_confirmation',
+                       inputType : 'password'
                    }]
                  });
 
                  var passwdWin = new Ext.Window({
                    id : 'change_password_win',
-                   iconCls : 'edit',
+                   iconCls : 'key',
                    title: '修改密码',
                    floating: true,
                    shadow: true,
                    draggable: true,
                    closable: true,
                    modal: true,
-                   width: 300,
+                   width: 330,
                    height: 200,
                    layout: 'fit',
                    plain: true,
@@ -129,7 +132,7 @@ MyDesktop = new Ext.app.App({
                    buttons: [{
                      text: '确定',
                      handler: function() {
-                       var myForm = Ext.getCmp('wizard_panel_id').getForm();
+                       var myForm = Ext.getCmp('password_panel_id').getForm();
                        pars = myForm.getFieldValues();
 
                        new Ajax.Request("/desktop/change_password", { 
@@ -148,6 +151,7 @@ MyDesktop = new Ext.app.App({
                    }]
 
                  });
+                 
                  passwdWin.show();
               }             
             },'-',{
