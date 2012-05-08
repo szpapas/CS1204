@@ -1292,7 +1292,7 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
           e.stopEvent();
           node.select();
           //yg_menu.showAt(e.getXY());
-          if (Ext.getCmp('view_detail_form') != 'undefined') {
+          if (Ext.getCmp('view_detail_form') != undefined) {
             var node = Ext.getCmp('acc-win').layout.activeItem.selModel.selNode;
             var ss = node.id.split("|");  //业务部|王娅红|13862616066
 
@@ -1322,24 +1322,6 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
           if (node.leaf) {
              if (Ext.getCmp('view_detail_form') == undefined) {
                view_detail();
-             } else {
-               var node = Ext.getCmp('acc-win').layout.activeItem.selModel.selNode;
-               var ss = node.id.split("|");  //业务部|王娅红|13862616066
-
-               var pars = {name:ss[1]};
-               new Ajax.Request("/desktop/get_detail_user", { 
-                 method: "POST",
-                 parameters: pars,
-                 onComplete:  function(request) {
-                   var user = eval("("+request.responseText+")");
-                   Ext.getCmp('view_detail_form').items.items[5].setValue(user.username);
-                   Ext.getCmp('view_detail_form').items.items[6].setValue(user.bm);
-                   Ext.getCmp('view_detail_form').items.items[7].setValue(user.bgdh);
-                   Ext.getCmp('view_detail_form').items.items[8].setValue(user.iphone);
-                   Ext.getCmp('view_detail_form').items.items[9].setValue(user.email);
-
-                 }
-               });
              }
           }
         }, yg_tree);
@@ -2685,7 +2667,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   place = places[k];
                   var pointText = place["lon_lat"]; //13470500 3683278
 
-                  if (pointText == null || pointText == "undefined") continue;
+                  if (pointText == null || pointText == undefined) continue;
 
                   var id =  place["id"];
                   //var icon = place["icon"];
