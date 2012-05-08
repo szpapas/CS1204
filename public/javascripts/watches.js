@@ -489,12 +489,12 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                   text: '查找',
                   iconCls :'search',
                   handler : function(){
-                    var tree = Ext.getCmp('kh-tree');
+                    var tree = Ext.getCmp('yg-tree');
                     tree.body.mask('Loading', 'x-mask-loading');
                     tree.loader.baseParams = { yg_id:currentUser.id, filter: Ext.getCmp('fiter-user').getValue()},
                     tree.root.reload();
                     tree.root.collapse(true, false);
-                    setTimeout(function(){ // mimic a server call
+                    setTimeout(function(){ 
                         tree.body.unmask();
                         tree.root.expand(true, true);
                     }, 1000);                   
@@ -663,13 +663,13 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                   },
                   {
                       xtype: 'label',
-                      text: '电话',
+                      text: '办公电话',
                       x: 20,
                       y: 70
                   },
                   {
                       xtype: 'label',
-                      text: '家庭地址',
+                      text: 'iPhone',
                       x: 20,
                       y: 100
                   },
@@ -727,11 +727,11 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
             method: "POST",
             parameters: pars,
             onComplete:  function(request) {
-              var user = eval("("+request.responseText+")").users;
-              Ext.getCmp('view_detail_form').items.items[5].setValue(user.login);
+              var user = eval("("+request.responseText+")");
+              Ext.getCmp('view_detail_form').items.items[5].setValue(user.username);
               Ext.getCmp('view_detail_form').items.items[6].setValue(user.bm);
-              Ext.getCmp('view_detail_form').items.items[7].setValue(user.mobile);
-              Ext.getCmp('view_detail_form').items.items[8].setValue(user.jtdz);
+              Ext.getCmp('view_detail_form').items.items[7].setValue(user.bgdh);
+              Ext.getCmp('view_detail_form').items.items[8].setValue(user.iphone);
               Ext.getCmp('view_detail_form').items.items[9].setValue(user.email);
               detail_win.show();
             }
@@ -1301,15 +1301,46 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
               method: "POST",
               parameters: pars,
               onComplete:  function(request) {
-                var user = eval("("+request.responseText+")").users;
-                Ext.getCmp('view_detail_form').items.items[5].setValue(user.login);
+                var user = eval("("+request.responseText+")");
+                Ext.getCmp('view_detail_form').items.items[5].setValue(user.username);
                 Ext.getCmp('view_detail_form').items.items[6].setValue(user.bm);
-                Ext.getCmp('view_detail_form').items.items[7].setValue(user.mobile);
-                Ext.getCmp('view_detail_form').items.items[8].setValue(user.jtdz);
+                Ext.getCmp('view_detail_form').items.items[7].setValue(user.bgdh);
+                Ext.getCmp('view_detail_form').items.items[8].setValue(user.iphone);
                 Ext.getCmp('view_detail_form').items.items[9].setValue(user.email);
 
               }
             });
+          }
+        }, yg_tree);
+
+
+        yg_tree.on("dblClick", function(node,e) {
+          //e.preventDefault();
+          e.stopEvent();
+          node.select();
+          
+          if (node.leaf) {
+             if (Ext.getCmp('view_detail_form') == undefined) {
+               view_detail();
+             } else {
+               var node = Ext.getCmp('acc-win').layout.activeItem.selModel.selNode;
+               var ss = node.id.split("|");  //业务部|王娅红|13862616066
+
+               var pars = {name:ss[1]};
+               new Ajax.Request("/desktop/get_detail_user", { 
+                 method: "POST",
+                 parameters: pars,
+                 onComplete:  function(request) {
+                   var user = eval("("+request.responseText+")");
+                   Ext.getCmp('view_detail_form').items.items[5].setValue(user.username);
+                   Ext.getCmp('view_detail_form').items.items[6].setValue(user.bm);
+                   Ext.getCmp('view_detail_form').items.items[7].setValue(user.bgdh);
+                   Ext.getCmp('view_detail_form').items.items[8].setValue(user.iphone);
+                   Ext.getCmp('view_detail_form').items.items[9].setValue(user.email);
+
+                 }
+               });
+             }
           }
         }, yg_tree);
         

@@ -256,7 +256,12 @@ class DesktopController < ApplicationController
     text = []
     node = params["node"].chomp
     if node == "root"
-      data = User.find_by_sql("select distinct bm from users order by bm;")
+      if !params['filter'].nil?
+        data = User.find_by_sql("select distinct bm from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%' order by bm;")
+      else
+        data = User.find_by_sql("select distinct bm from users order by bm;")
+      end
+      
       data.each do |dd|
         text << {:text => dd["bm"], :id => dd["bm"], :cls  => "folder"}
       end
@@ -264,7 +269,11 @@ class DesktopController < ApplicationController
       pars = node.split('|') || []
   
       if pars.length == 1
-        data = User.find_by_sql("select distinct username, bgdh, iphone from users where bm=\'#{pars[0]}\';")
+        if !params['filter'].nil?
+          data = User.find_by_sql("select distinct username, bgdh, iphone from users where bm=\'#{pars[0]}\' and (username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%') ;")
+        else
+          data = User.find_by_sql("select distinct username, bgdh, iphone from users where bm=\'#{pars[0]}\';")
+        end  
         data.each do |dd|
           text << {:text => dd["username"], :id => pars[0]+"|#{dd["username"]}|#{dd['bgdh']}", :iconCls => "user",  :leaf => true}
         end     
@@ -273,6 +282,10 @@ class DesktopController < ApplicationController
     render :text => text.to_json
   end
   
+  def get_detail_user
+	  user = User.find_by_sql("select * from users where username='#{params['name']}';");
+	  render :text => user[0].to_json
+	end
   
   #add at 04/29
   

@@ -4,8 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>激扬软件</title>
     <link rel="stylesheet" type="text/css" href="/javascripts/mfbase/ext/resources/themes/ext-all.css" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/desktop.css" />
- 
+    <!--link rel="stylesheet" type="text/css" href="/stylesheets/desktop.css" /-->
+    <%= stylesheet_link_tag 'desktop' %>
+    
     <!-- Ajax -->
     <script type="text/javascript" src="/javascripts/prototype.js"></script>
 
@@ -30,7 +31,9 @@
     <!-- print component -->
     <script type="text/javascript" src="/javascripts/LodopFuncs.js"></script>
     
-    <script type="text/javascript" src="/javascripts/watches.js"></script>
+    <!--script type="text/javascript" src="/javascripts/watches.js"></script-->
+    
+    <%= javascript_include_tag "watches" %> 
     
     <!--%= javascript_include_tag "common" %--> 
     <!--%= javascript_include_tag "TaskMan" %--> 
