@@ -327,7 +327,7 @@ MyDesktop = new Ext.app.App({
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/update/iphone软件更新.doc";
+                   window.location = "/update/xc_help.doc";
                 }             
             },{  
               text:'修改密码',
