@@ -183,6 +183,7 @@ var week_store = new Ext.data.SimpleStore({
 });
 
 var pd_data = [
+  ['0','1周2次'],
   ['1','1周1次'],
   ['2','2周1次'],
   ['3','1月1次'],

@@ -93,11 +93,21 @@ class DesktopController < ApplicationController
   end
   
   def delete_selected_plan
-    User.find_by_sql("delete from plans where id in (#{params['id']});")
-    User.find_by_sql("delete from inspects where plan_id in (#{params['id']});") 
+    if params['id'] == 'all'
+      User.find_by_sql("delete from plans where zt='计划';")
+      #User.find_by_sql('delete from inspects;')
+    else  
+      User.find_by_sql("delete from plans where id in (#{params['id']});")
+      User.find_by_sql("delete from inspects where plan_id in (#{params['id']});") 
+    end
     render :text => 'Success'
   end  
   
+  def delete_all_plan
+    User.find_by_sql("delete from plans;")
+    User.find_by_sql("delete from inspects;") 
+    render :text => 'Success'
+  end
   
   def get_plan
     params['start'] = params['start'] || "0"
@@ -337,7 +347,21 @@ class DesktopController < ApplicationController
         qrq = week_start.strftime( "%Y-%m-%d" ) 
         zrq = week_end.strftime( "%Y-%m-%d" )
         User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
-
+      end
+    when '1周2次'
+      for week in 1..52
+        week_start = Date.commercial(nd, week, 1)
+        week_end   = Date.commercial(nd, week, 7 )
+        xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-01"
+        session_id =rand(36**32).to_s(36)
+        qrq = week_start.strftime( "%Y-%m-%d" ) 
+        zrq = week_end.strftime( "%Y-%m-%d" )
+        User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+        xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
+        session_id =rand(36**32).to_s(36)
+        qrq = week_start.strftime( "%Y-%m-%d" ) 
+        zrq = week_end.strftime( "%Y-%m-%d" )
+        User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
       end
     when '1月1次'
       for month in 1..12
@@ -511,6 +535,52 @@ class DesktopController < ApplicationController
       render :text => 'Falied'
     end
   end  
+  
+  
+  #change at 05/13
+  #获得用户列表
+  def  get_user_grid
+    user = User.find_by_sql("select * from  users order by id;")
+
+    size = user.size;
+    if size > 0 
+     txt = "{results:#{size},rows:["
+     for k in 0..user.size-1
+       txt = txt + user[k].to_json + ','
+     end
+     txt = txt[0..-2] + "]}"
+    else
+     txt = "{results:0,rows:[]}"  
+    end  
+    render :text => txt
+  end
+  
+   #Parameters: {"qxcode"=>"管理员", "hide"=>"否", "email"=>"user4@189.cn", "username"=>"陈建刚", "id"=>"5", "iphone"=>"", "bgdh"=>"52707352", "bm"=>"局领导"}
+  def add_user
+    if !params['id'].nil? && params['id'] != ''  
+      User.find_by_sql("update users set qxcode='#{params['qxcode']}', hide='#{params['hide']}', email='#{params['email']}', username='#{params['username']}', bgdh='#{params['bgdh']}', bm='#{params['bm']}', iphone='#{params['iphone']}' where id=#{params['id']}; ")
+    else
+      User.find_by_sql("insert into users (username, email, qxcode, bm, bgdh, iphone) values('#{params['username']}','#{params['email']}', '#{params['qxcode']}', '#{params['bm']}', '#{params['bgdh']}', '#{params['iphone']}'); ")
+    end  
+    render :text => 'Success'
+  end 
+  
+  def delete_selected_user
+    User.find_by_sql("delete from users where id in (#{params['id']});")
+    render :text => 'Success'
+  end
+  
+  def reset_password
+    ss=params['id'].split(',')
+    for k in 0..ss.size-1
+      user = User.find(ss[k].to_i)
+      puts user.username
+      user.password='123!@#'
+      user.password_confirmation='123!@#'
+      user.save
+    end  
+    render :text => 'Success'
+  end
   
   #==================
   def get_mulu
@@ -1659,22 +1729,7 @@ class DesktopController < ApplicationController
     end
   end
 
-  #获得用户列表
-  def  get_user_grid
-    user = User.find_by_sql("select * from  users order by id;")
 
-    size = user.size;
-    if size > 0 
-     txt = "{results:#{size},rows:["
-     for k in 0..user.size-1
-       txt = txt + user[k].to_json + ','
-     end
-     txt = txt[0..-2] + "]}"
-    else
-     txt = "{results:0,rows:[]}"  
-    end  
-    render :text => txt
-  end
   
   #获得用户树
   def get_user_tree

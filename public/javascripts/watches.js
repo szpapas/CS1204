@@ -2493,7 +2493,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                 iconCls : 'delete',
                 handler : function(){
                   pars = {id:"all"};
-                  new Ajax.Request("/desktop/delete_selected_plan", { 
+                  new Ajax.Request("/desktop/delete_all_plan", { 
                     method: "POST",
                     parameters: pars,
                     onComplete:  function(request) {
