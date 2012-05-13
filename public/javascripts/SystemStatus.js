@@ -72,7 +72,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   var y0 = parseFloat(ss[2]);
                   
                   var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                  style.externalGraphic = '/assets/chrome.png';
+                  style.externalGraphic = '/images/chrome.png';
                   style.backgroundXOffset = 0;
                   style.backgroundYOffset = 0;
                   style.graphicWidth = 32;
@@ -146,8 +146,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var markers = new OpenLayers.Layer.Vector("巡查点标记", {
                 styleMap: new OpenLayers.StyleMap({
                     // Set the external graphic and background graphic images.
-                    externalGraphic:   "/assets/marker-gold.png",
-                    backgroundGraphic: "/assets/marker_shadow.png",
+                    externalGraphic:   "/images/marker-gold.png",
+                    backgroundGraphic: "/images/marker_shadow.png",
 
                     // Makes sure the background graphic is placed correctly relative
                     // to the external graphic.
