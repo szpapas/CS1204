@@ -49,6 +49,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
           
           //load data
           plan_store.baseParams.zt = "全部";
+          plan_store.baseParams.limit = "20";
           plan_store.load();
           
           //plan add/edit windows
@@ -925,6 +926,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                 text : '全部任务',
                 iconCls : 'delete',
                 handler : function(){
+                  
                   pars = {id:"all"};
                   new Ajax.Request("/desktop/delete_selected_plan", { 
                     method: "POST",
@@ -933,6 +935,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       plan_store.load();
                     }
                   });
+                  
+                  
                 }
               },{
                 text : '打印任务',
@@ -947,11 +951,62 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       id_str = id_str + ',' +items[i].data.id 
                     }
                   }
-                  pars = {id:id_str};
+                  //pars = {id:id_str};
+                  pars = {id:items[0].data.id}
                   new Ajax.Request("/desktop/print_selected_plan", { 
                     method: "POST",
                     parameters: pars,
                     onComplete:  function(request) {
+
+                      //var path = request.responseText;
+                      var path = request.responseText;
+                      var previewWin = Ext.getCmp('preview-win-id'); 
+                      
+                      if  (!previewWin) {
+                        previewWin = new Ext.Window({
+                          id : 'preview-win-id',
+                          iconCls : 'detail',
+                          title: '图像预览',
+                          floating: true,
+                          shadow: true,
+                          draggable: true,
+                          closable: true,
+                          modal:  false,
+                          width:  462,
+                          height: 650,
+                          layout: 'fit',
+                          plain:  true,
+                          tbar :[{
+                              text: '打印图像',
+                              handler : function() {
+                                LODOP=getLodop(document.getElementById('LODOP'),document.getElementById('LODOP_EM'));   
+                                LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_打印图片2");
+                                //LODOP.ADD_PRINT_BARCODE(0,0,200,100,"Code39","*123ABC4567890*");
+                                image_path = Ext.getCmp('preview_img').getEl().dom.src;
+                                LODOP.ADD_PRINT_IMAGE(0,0,1000,1410,"<img border='0' src='"+image_path+"' width='100%' height='100%'/>");
+                                LODOP.SET_PRINT_STYLEA(0,"Stretch",2);//(可变形)扩展缩放模式
+                                LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Full-Page");
+                                LODOP.PREVIEW();
+                              }
+                            }],
+                          items:[{
+                            xtype: 'box', //或者xtype: 'component',
+                            id: 'preview_img',
+                            width: 462, //图片宽度
+                            height: 600,
+                            autoEl: {
+                              tag: 'img',    //指定为img标签
+                              alt: ''      //指定url路径
+                            }
+                          }]
+                       
+                        });
+                      };
+                      
+                      previewWin.show();
+                      if (path != undefined) { 
+                        Ext.getCmp('preview_img').getEl().dom.src = path;
+                      }
                       
                     }
                   });
@@ -1024,10 +1079,10 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   }
                 }  
             }],
-            bbar:[
+            bbar:['->',
               new Ext.PagingToolbar({
                 store: plan_store,
-                pageSize: 25,
+                pageSize: 20,
                 width : 350,
                 border : false,
                 displayInfo: true,
@@ -1042,7 +1097,9 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               id: 'taskman',
               title:'任务管理',
               width:800,
-              height:500,
+              height:550,
+              x : 100,
+              y : 30,
               iconCls: 'taskman',
               animCollapse:false,
               border: false,

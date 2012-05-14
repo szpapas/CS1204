@@ -82,11 +82,9 @@ class DesktopController < ApplicationController
     id = params['id']
     qrq, zrq = params['qrq'], params['zrq']
     session_id=Time.now.to_i.to_s
-    xcbh = "XC#{session_id}"
     if id.nil? || id == ''
-      User.find_by_sql("insert into plans (xcbh, xcqy, xclx, xcry, xcfs, xmdk, qrq, zrq, zt, session_id) values('#{xcbh}', '#{params['xcqy']}', '#{params['xclx']}' , '#{params['xcry']}', '#{params['xcfs']}', '#{params['xmdk']}', TIMESTAMP '#{qrq}', TIMESTAMP '#{zrq}', '计划', '#{session_id}');")
     else
-      User.find_by_sql("update plans set xcbh='#{xcbh}', xcqy= '#{params['xcqy']}', xclx = '#{params['xclx']}', xcry='#{params['xcry']}', xcfs='#{params['xcfs']}', xcnr='#{params['xcnr']}', xmdk='#{params['xmdk']}', qrq=TIMESTAMP '#{qrq}', zrq=TIMESTAMP '#{zrq}', xcjg= '#{params['xcjg']}', clyj='#{params['clyj']}' where id = #{params['id']};")
+      User.find_by_sql("update plans set xcqy= '#{params['xcqy']}', xclx = '#{params['xclx']}', xcry='#{params['xcry']}', xcfs='#{params['xcfs']}', xcnr='#{params['xcnr']}', xmdk='#{params['xmdk']}', qrq=TIMESTAMP '#{qrq}', zrq=TIMESTAMP '#{zrq}', xcjg= '#{params['xcjg']}', clyj='#{params['clyj']}' where id = #{params['id']};")
     end
     
     render :text => 'Success'
@@ -185,7 +183,7 @@ class DesktopController < ApplicationController
       puts "ruby ./dady/bin/print_plan.rb #{user[k].id}"
       system("ruby ./dady/bin/print_plan.rb #{user[k].id}")
     end
-    render :text => 'Success'
+    render :text => "/images/dady/images/#{user[0].xcbh}-01.png"
   end
   
   #?lat=31.722044&lon=120.584175

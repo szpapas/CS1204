@@ -223,8 +223,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           id : 'task_track',
           autoScroll: true,
           xtype:"panel",
-          width:500,
-          height:500,
+          width:800,
+          height:600,
           style:'margin:0px 0px',
           layout:'fit',
           tbar:[{
@@ -295,7 +295,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           autoScroll: true,
           xtype:"panel",
           width:250,
-          height:500,
+          height:600,
           style:'margin:0px 0px',
           layout:'fit',
           tbar:[{
@@ -311,8 +311,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         win = desktop.createWindow({
             id: 'systemstatus',
             title:'系统监视',
-            width:850,
-            height:600,
+            width:1050,
+            height:550,
+            x : 100,
+            y : 30,
             iconCls: 'systemstatus',
             animCollapse:false,
             border: false,

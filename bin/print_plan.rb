@@ -33,7 +33,6 @@ def print_plan(plan_id)
   xclx=split_string(dd['xclx'],15).split("\n")
   xcry=split_string(dd['xcry'],15).split("\n")
   xcfs=split_string(dd['xcfs'],15).split("\n")
-
   xcnr=split_string(dd['xcnr'],40).split("\n")
   draw_xcnr=''
   for kk in 0..xcnr.size-1
@@ -52,7 +51,7 @@ def print_plan(plan_id)
      draw_clyj=draw_clyj+" -draw \"text 180, #{900+30*kk} '#{xcnr[kk]}'\" "
   end
 
-  convert_str="convert ./dady/xc_image_01.png -font  ./dady/STZHONGS.ttf  -pointsize 22 -draw \"text 280, 235 '#{dd['taskbegintime']}'\" -draw \"text 280, 265 '#{dd['taskendtime']}'\" -draw \"text 725, 235 '#{xclx[0]}'\"  -draw \"text 725, 265 '#{xclx[1]}'\" -draw \"text 280, 295 '#{xcry[0]}'\" -draw \"text 280, 325 '#{xcry[1]}'\"  -draw \"text 725, 295 '#{xcfs[0]}'\"-draw \"text 725, 325 '#{xcfs[1]}'\" #{draw_xcnr} #{draw_xcjg} #{draw_clyj} ./dady/images/#{dd['xcbh']}-01.png "
+  convert_str="convert ./dady/xc_image_01.png -font  ./dady/STZHONGS.ttf  -pointsize 22 -draw \"text 280, 235 '#{dd['taskbegintime']}'\" -draw \"text 280, 265 '#{dd['taskendtime']}'\" -draw \"text 725, 235 '#{xclx[0]}'\"  -draw \"text 725, 265 '#{xclx[1]}'\" -draw \"text 280, 295 '#{xcry[0]}'\" -draw \"text 280, 325 '#{xcry[1]}'\"  -draw \"text 725, 295 '#{xcfs[0]}'\" -draw \"text 725, 325 '#{xcfs[1]}'\" #{draw_xcnr} #{draw_xcjg} #{draw_clyj} ./dady/images/#{dd['xcbh']}-01.png "
   puts convert_str
   
   system convert_str

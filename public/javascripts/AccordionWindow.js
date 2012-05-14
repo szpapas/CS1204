@@ -25,9 +25,9 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                 id: 'acc-win',
                 title: '联系人',
                 width:250,
-                height:400,
-                x : 100,
-                y : 150,
+                height:550,
+                x : 900,
+                y : 30,
                 iconCls: 'accordion',
                 shim:false,
                 animCollapse:false,
@@ -841,7 +841,7 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
               }
             });
             track_win.show();           
-          };
+        };
         
         var yg_menu = new Ext.menu.Menu({
           id : 'yg_menu',
