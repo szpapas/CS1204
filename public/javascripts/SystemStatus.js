@@ -33,6 +33,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
   },
   
   createWindow : function(){
+    
+      if (currentUser.qxcode == '巡查员') {
+        msg('Message','权限不够. 请与管理员联系后再试！');
+        return;
+      }
+    
       var desktop = this.app.getDesktop();
       var win = desktop.getWindow('systemstatus');
       if(!win){

@@ -150,8 +150,10 @@ class DesktopController < ApplicationController
     username = params['username'] || ""
     if username == ""
       txt = ""
-    else  
-      plan = User.find_by_sql("select id, xcbh, session_id,xcqy,xcfs,xcry,qrq,zrq,zt from plans where xcry like '%#{username}%';")
+    else
+      ts1 = Time.now.strftime('%Y-%m-%d')  
+      ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
+      plan = User.find_by_sql("select id, xcbh, session_id,xcqy,xcfs,xcry,qrq,zrq,zt from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
       txt = plan.to_json
     end
     render :text  => txt
@@ -267,24 +269,46 @@ class DesktopController < ApplicationController
     node = params["node"].chomp
     if node == "root"
       if !params['filter'].nil?
-        data = User.find_by_sql("select distinct bm from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%' order by bm;")
+        data = User.find_by_sql("select distinct dw from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%';")
       else
-        data = User.find_by_sql("select distinct bm from users order by bm;")
+        data = User.find_by_sql("select distinct dw from users;")
       end
       
       data.each do |dd|
-        text << {:text => dd["bm"], :id => dd["bm"], :cls  => "folder"}
+        text << {:text => dd["dw"], :id => dd["dw"], :cls  => "folder"}
       end
     else
       pars = node.split('|') || []
   
       if pars.length == 1
-        if !params['filter'].nil?
-          data = User.find_by_sql("select distinct username, bgdh, iphone from users where bm=\'#{pars[0]}\' and (username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%') ;")
-        else
-          data = User.find_by_sql("select distinct username, bgdh, iphone from users where bm=\'#{pars[0]}\';")
-        end  
-        data.each do |dd|
+        if pars[0]=='常熟市局'
+            if !params['filter'].nil?
+              data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}' and (username like '%#{params['filter']}%' or uname like  '%#{params['filter']}%') ;")
+            else
+              data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}';")
+            end
+            data.each do |dd|
+            text << {:text => dd["bm"], :id => pars[0]+"|#{dd["bm"]}", :iconCls => "folder"}
+          end     
+        else 
+          if !params['filter'].nil?
+            data = User.find_by_sql("select distinct username, bgdh, iphone, uname from users where dw='#{pars[0]}' and (username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%') order by uname;")
+          else
+            data = User.find_by_sql("select distinct username, bgdh, iphone, uname from users where dw='#{pars[0]}' order by uname;")
+          end
+          data.each do |dd|
+          text << {:text => dd["username"], :id => pars[0]+"|#{dd["username"]}|#{dd['bgdh']}", :iconCls => "user",  :leaf => true}
+        end     
+        end
+      end
+      
+      if pars.length == 2
+          if !params['filter'].nil?
+            data = User.find_by_sql("select distinct username, bgdh, iphone, uname from users where dw='#{pars[0]}' and bm='#{pars[1]}' and (username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%') order by uname ;")
+          else
+            data = User.find_by_sql("select distinct username, bgdh, iphone, uname from users where dw='#{pars[0]}' and bm='#{pars[1]}' order by uname;")
+          end
+          data.each do |dd|
           text << {:text => dd["username"], :id => pars[0]+"|#{dd["username"]}|#{dd['bgdh']}", :iconCls => "user",  :leaf => true}
         end     
       end
@@ -2076,101 +2100,6 @@ class DesktopController < ApplicationController
     @users = User.find(:all)
   end
   
-  #通过用户id来获得此用户可查看的目录tree
-  def get_treeforuserid
-    text = "[]"
-    userid=""
-    node, style = params["node"], params['style']
-      if node == "root"
-        user= User.find_by_sql("select jsid from u_js where userid=  '#{params["userid"]}' order by id;")
-        user.each do |us|
-          logger.debug us['jsid']
-          if userid==""
-            userid=us['jsid']
-          else
-            userid=userid + "," +us['jsid']
-          end
-        end
-        if userid!=""
-          data = User.find_by_sql("select distinct qxdm ,qxmc from  qx_mlqx where user_id in (#{userid}) and qxlb=0 order by qxdm;")
-          text="["
-          data.each do |dd|
-            text=text+"{'text':'#{dd['qxmc']}','id' :'#{dd['qxdm']}','leaf':false,'cls':'folder','children':["
-            logger.debug "权限名称"+dd['qxmc']
-            dalb = User.find_by_sql("select distinct qxdm,qxmc,qxid,sx from  qx_mlqx,d_dalb where qx_mlqx.qxid = d_dalb.id and qx_mlqx.qxlb=1 and d_dalb.sx<100 and qx_mlqx.user_id in (#{userid}) and qxdm like '#{dd['qxdm']}\\_%' order by d_dalb.sx;")
-            dalb.each do |lb|
-              if lb['qxid'].to_i>99  
-                text=text+"{'text':'#{lb['qxmc']}','id':'#{lb['qxdm']}','leaf':false,'cls':'folder','children':["
-                logger.debug "权限名称"+lb['qxmc']
-                dalbej=User.find_by_sql("select distinct qxdm,qxmc,qxid,d_dalb.id from  qx_mlqx,d_dalb where qx_mlqx.qxid = d_dalb.id and qx_mlqx.qxlb=1 and d_dalb.ownerid='#{lb['qxid']}' and qx_mlqx.user_id in (#{userid}) and qxdm like '#{dd['qxdm']}\\_%' order by d_dalb.id;")
-                dalbej.each do |lbml|
-                  
-                  text=text+"{'text':'#{lbml['qxmc']}','id':'#{lbml['qxdm']}','leaf':false,'cls':'folder','children':["
-                  dalbml=User.find_by_sql("select distinct qx_mlqx.qxdm, d_dw_lb_ml.mlhjc from  qx_mlqx,d_dw_lb_ml where qx_mlqx.qxid = d_dw_lb_ml.id and qxlb=2 and user_id in (#{userid})  and qxdm like '#{lbml['qxdm']}\\_%' order by qxdm;")
-                  dalbml.each do |ml|
-                    text=text+"{'text':'#{ml['mlhjc']}','id' :'#{ml['qxdm']}','leaf':true,'cls':'folder'},"                  
-                  end  
-                  text=text+"]},"               
-                end
-                
-              else
-                text=text+"{'text':'#{lb['qxmc']}','id':'#{lb['qxdm']}','leaf':false,'cls':'folder','children':["
-                dalbml=User.find_by_sql("select distinct qx_mlqx.qxdm, d_dw_lb_ml.mlhjc from  qx_mlqx,d_dw_lb_ml where qx_mlqx.qxid = d_dw_lb_ml.id and qxlb=2 and user_id in (#{userid})  and qxdm like '#{lb['qxdm']}\\_%' order by qxdm;")
-                dalbml.each do |ml|
-                  text=text+"{'text':'#{ml['mlhjc']}','id' :'#{ml['qxdm']}','leaf':true,'cls':'folder'},"                  
-                end
-              end
-             text=text+"]},"
-           end
-           text=text+"]},"
-          end
-          text=text + "]"  
-        
-        end 
-      end
-   #     data = User.find_by_sql("select d_dw_lb.id, d_dw_lb.dwid, d_dw_lb.lbid, d_dw_lb.lbmc,d_dalb.ownerid from  d_dw_lb,d_dalb where d_dw_lb.lbid = d_dalb.id and d_dalb.sx<100 and dwid = #{params['id']} order by d_dalb.sx;")
-   #     text="["
-        
-   #     data.each do |dd|
-          
-  #     if dd['lbid'].to_i>99  
-  #       text=text+"{'text':'#{dd['lbmc']}','id' :'#{dd['id']}','checked':false,'cls':'folder','children':["        
-  #       dalbrj=User.find_by_sql("select d_dw_lb.id, d_dw_lb.dwid, d_dw_lb.lbid, d_dw_lb.lbmc from  d_dw_lb,d_dalb where d_dw_lb.lbid = d_dalb.id  and d_dalb.ownerid=#{dd['lbid']} and dwid=#{params['id']};")
-  #       dalbrj.each do |dalbrj|            
-  #         text=text+"{'text':'#{dalbrj['lbmc']}','id' :'#{dalbrj['id']}','leaf':true,'checked':false,'cls':'folder'},"
-  #       end
-  #       text=text+"]},"
-  #     else
-  #        text=text+"{'text':'#{dd['lbmc']}','id' :'#{dd['id']}','leaf':true,'checked':false,'cls':'folder'}," 
-  #     end
-  #     
-  #   end
-  #   text=text + "]"   
-  #     data = User.find_by_sql("select * from  qx_mlqx where user_id=  #{params["userid"]} and qxlb=0 order by id;")
-  #     text="["
-  #     data.each do |dd|
-  #       text=text+"{'text':'#{dd['qxmc']}','id' :'#{dd['qxdm']}','leaf':false,'cls':'folder','children':["
-  #
-  #       dalb=User.find_by_sql("select * from  qx_mlqx where user_id=  #{params["userid"]} and qxlb=1 and qxdm like '#{dd['qxdm']}_%' order by id;")
-  #       dalb.each do |lb|
-  #         text=text+"{'text':'#{lb['qxmc']}','id' :'#{lb['qxdm']}','leaf':false,'cls':'folder','children':["
-  #         dalbml=User.find_by_sql("select * from  qx_mlqx where user_id=  #{params["userid"]} and qxlb=2 and qxdm like '#{lb['qxdm']}_%' order by id;")
-  #         dalbml.each do |lbml|
-  #           text=text+"{'text':'#{lbml['qxmc']}','id' :'#{lbml['qxdm']}','leaf':true,'cls':'folder'},"
-  #           
-  #
-  #        end
-  #        text=text+"]},"
-  #      end
-  #      text=text+"]},"
-  #     end
-  #     text=text + "]"
-        
-     
-
-    render :text => text
-  end
-
   def get_mlh
     ss = params['dalb']
        txt=""

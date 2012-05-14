@@ -43,7 +43,23 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                 new Ext.form.TextField({
                   id : 'fiter-user',
                   width:100,
-                  enableKeyEvents: true
+                  enableKeyEvents: true,
+                  initEvents: function() { 
+                    var keyPress = function(e){ 
+                      if (e.getKey() == e.ENTER) { 
+                        var tree = Ext.getCmp('yg-tree');
+                        tree.body.mask('Loading', 'x-mask-loading');
+                        tree.loader.baseParams = { yg_id:currentUser.id, filter: Ext.getCmp('fiter-user').getValue()},
+                        tree.root.reload();
+                        tree.root.collapse(true, false);
+                        setTimeout(function(){ 
+                            tree.body.unmask();
+                            tree.root.expand(true, true);
+                        }, 1000);
+                      }
+                    }; 
+                    this.el.on("keypress", keyPress, this);
+                  }
                 }),' ', {
                   text: '查找',
                   iconCls :'search',
@@ -866,7 +882,6 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                 Ext.getCmp('view_detail_form').items.items[7].setValue(user.bgdh);
                 Ext.getCmp('view_detail_form').items.items[8].setValue(user.iphone);
                 Ext.getCmp('view_detail_form').items.items[9].setValue(user.email);
-
               }
             });
           }
