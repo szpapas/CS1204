@@ -215,7 +215,7 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
             draggable: true,
             closable: true,
             resizable: false,
-            modal: true,
+            modal: false,
             width: 330,
             height: 300,
             layout: 'fit',

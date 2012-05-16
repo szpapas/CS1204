@@ -243,24 +243,35 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
                 iconCls:'delete',
                 handler : function(){
                   items = Ext.getCmp('sysman_user_grid_id').getSelectionModel().selections.items;
-                  id_str = '';
-                  for (var i=0; i < items.length; i ++) {
-                    if (i==0) {
-                      id_str = id_str+items[i].data.id 
-                    } else {
-                      id_str = id_str + ',' +items[i].data.id 
-                    }
+                  if (items.length > 0) {
+                    
+                    Ext.Msg.confirm("确认", "删除所选用户,该操作不可恢复?", 
+                      function(btn){
+                        if (btn=='yes') {
+                          id_str = '';
+                          for (var i=0; i < items.length; i ++) {
+                            if (i==0) {
+                              id_str = id_str+items[i].data.id 
+                            } else {
+                              id_str = id_str + ',' +items[i].data.id 
+                            }
+                          }
+                          pars = {id:id_str};
+                          new Ajax.Request("/desktop/delete_selected_user", { 
+                            method: "POST",
+                            parameters: pars,
+                            onComplete:  function(request) {
+                              user_store.load();
+                            }
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    Ext.Msg.alert('错误','请先选择用户！');
                   }
-                  pars = {id:id_str};
-                  new Ajax.Request("/desktop/delete_selected_user", { 
-                    method: "POST",
-                    parameters: pars,
-                    onComplete:  function(request) {
-                      user_store.load();
-                    }
-                  });
+
                 }                 
-              
               },{
                 text:'重设密码',
                 iconCls:'key',

@@ -67,14 +67,14 @@ MyDesktop = new Ext.app.App({
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/update.html";
+                   window.location = "/update/iphone_new.zip";
                 }             
             },{
                 text:'使用帮助',
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/help.html";
+                   window.location = "/update/xc_help.doc";
                 }             
             },{  
               text:'修改密码',
