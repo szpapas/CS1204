@@ -3,7 +3,7 @@ jive-global.css : styles common throughout Jive SBS.
 */
 
 .logo {
-   background-image:url(/assets/logo1.png) !important;
+   background-image:url(/images/logo1.png) !important;
  	 background-repeat: no-repeat;
    height: 44px !important;
 }
