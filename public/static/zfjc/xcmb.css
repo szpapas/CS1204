@@ -1,0 +1,54 @@
+body{
+	font-size : 12px;	
+	background: #F6FAFF;	
+	height : 100%;
+}
+
+.labeltd{
+	text-align : right;
+	width : 80px;
+}
+
+fieldset{
+	padding:5px;
+	font-size: 120%
+}
+
+fieldset legend{
+	font-weight : bold;
+	cursor : hand;
+	cursor : pointer;
+}
+
+.panel-t{
+	width: 100%;
+}
+
+.panel-t input,textarea{
+	width : 100%;
+	border : 1px solid #CCCC99;
+}		
+
+.t-tool {
+    background: url("/images/tool-sprites.gif") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    float: left;
+    height: 15px;
+    margin-left: 2px;
+    overflow: hidden;
+    width: 15px;
+}
+
+.t-tool-toggle {
+    background-position: 0 -75px;
+}
+
+.t-tool-toggle2 {
+    background-position: 0 -60px;
+}
+
+.footer-date {
+		text-align : right;
+		margin : 15px;
+		margin-right:20px;
+}
