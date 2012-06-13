@@ -510,7 +510,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                         { header : 'id',    width : 75, sortable : true, dataIndex: 'gid', hidden:true},
                         { header : '序号',    width : 75, sortable : true, dataIndex: 'xh'},
                         { header : '建设状态',  width : 75, sortable : true, dataIndex: 'sfjs'},
-                        { header : '行政区',   width : 75, sortable : true, dataIndex: 'xzqmc'},
+                        { header : '行政区',   width : 75, sortable : true, dataIndex: 'xzqmc'}
                         ],
                       columnLines: true,
                       layout: 'fit',
@@ -856,8 +856,58 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
             plan_win.setZIndex(9020);
           }
           
-          
           var sm = new Ext.grid.CheckboxSelectionModel();
+          
+          var showDetail = function() {
+             //msg('失败', '新增任务失败!');
+             var size = Ext.getCmp('taskman').getSize();
+             var detailWin = new Ext.Window({
+               id : 'add_wizard_win',
+               iconCls : 'add',
+               title: '计划任务',
+               floating: true,
+               shadow: true,
+               draggable: true,
+               closable: true,
+               modal: true,
+               width: 500,
+               height: size.height-5,
+               layout: 'fit',
+               plain: true,
+               items : [{
+                 xtype: 'panel',
+                 autoScroll : true,
+                 items : [{
+                   xtype: 'panel',
+                   id: 'myId',
+                   autoEl: {},
+                   html: '$0.00',
+                   width: 90
+                 }]
+               }],
+               tbar : [{
+                 text : 'update',
+                 handler : function(){
+
+                   var canvas_string =
+                   '<div id="wrapper">'
+                   +' <div id="buttonWrapper">'
+                   +' <input type="button" id="prev" value="<">'
+                   +' <input type="button" id="plus" value="+">'
+                   +' <input type="button" id="minus" value="—">'
+                   +' <input type="button" id="next" value=">">'
+                   +' </div>'
+                   +' <canvas id="myCanvas" width="530" height="800">'
+                   +' </canvas>'
+                   +'</div>';
+
+                   CanvasDemo.init();
+                   
+                 }
+               }]
+             });
+             detailWin.show();
+          };
           
           var planGrid = new Ext.grid.GridPanel({
             id: 'plan_grid_id',
@@ -1011,13 +1061,22 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     }
                   });
                 }
-              },{
+              },{    
                 text : '详细内容',
                 iconCls : 'detail',
                 handler : function(){
-
+                  items = Ext.getCmp('plan_grid_id').getSelectionModel().selections.items;
+                  pars = {id:items[0].data.id};
+                  new Ajax.Request("/desktop/display_selected_plan", { 
+                    method: "POST",
+                    parameters: pars,
+                    onComplete:  function(request) {
+                      var new_url = request.responseText;
+                      window.open(new_url,'','height=500,width=800,top=150, left=100,scrollbars=yes,status=yes');
+                    }  
+                  });
                 }
-              }, '-',  
+              }, '-',
               '<span style=" font-size:12px;font-weight:600;color:#3366FF;">状态</span>:&nbsp;&nbsp;',
               {
                 xtype: 'combo',
@@ -1092,7 +1151,54 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               })
             ]
           });
+          
+          //部门tree
+          var bmTree = new Ext.tree.TreePanel({
+              id:'bm-tree',
+              rootVisible:false,
+              lines:false,
+              title:'按部门',
+              autoScroll:true,
+              tools:[{
+                  id:'refresh',
+                  on:{
+                      click: function(){
+                          var tree = Ext.getCmp('bm-tree');
+                          tree.body.mask('Loading', 'x-mask-loading');
+                          tree.root.reload();
+                          //tree.root.collapse(true, false);
+                          setTimeout(function(){ // mimic a server call
+                              tree.body.unmask();
+                              tree.root.expand(true, true);
+                          }, 1000);
+                      }
+                  }
+              }],
+              loader: new Ext.tree.TreeLoader({
+                dataUrl: '/desktop/get_bmtree',
+                baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+              }),
+              root: {
+                nodeType: 'async',
+                text: '联系人',
+                draggable:false,
+                id:'root'
+              }
+          });
 
+          bmTree.on("click", function(node,e) {
+            e.stopEvent();
+            node.select();
+            if (node.isLeaf()) {
+              Ext.getCmp('xcqy_filter_id').setValue(node.id);
+              plan_store.baseParams.xcqy = node.id;
+              plan_store.load();
+            } else {
+              //var ss = node.id.split("|");
+            }
+          }, bmTree);
+          
+          
           win = desktop.createWindow({
               id: 'taskman',
               title:'任务管理',
@@ -1104,9 +1210,23 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               animCollapse:false,
               border: false,
               hideMode: 'offsets',
-              layout: 'fit',
-              items: planGrid
-          });
+              layout:"border",
+              items:[{
+                  region:"center",
+                  title:"任务计划",
+                  layout: 'fit',
+                  items:[planGrid]
+               },{
+                 region:"west",
+                 title:"部门",
+                 width:200,
+                 split:true,
+                 collapsible:true,
+                 titleCollapse:true,
+                 layout:'fit',
+                 items: [bmTree]
+              }]
+         });
         }
         win.show();
         return win;

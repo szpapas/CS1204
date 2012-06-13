@@ -53,7 +53,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           };  
           
           pars = {};
-          new Ajax.Request("/desktop/get_task_position", { 
+          new Ajax.Request("/desktop/get_user_position", { 
             method: "POST",
             parameters: pars,
             onComplete:  function(request) {
@@ -105,6 +105,143 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               }
             }
           });                       
+        
+          new Ajax.Request("/desktop/get_task_position", {
+            method: "POST",
+            parameters: pars,
+            onComplete:  function(request) {
+              //[{"users":{"lon_lat":"13740496.96 5129894.39","id":13}},{"users":{"lon_lat":"13740496.96 5129894.39","id":14}},{"users":{"lon_lat":"13740721.49 5129134.79","id":15}}]
+
+              var features = [];                        
+              var places = eval("("+request.responseText+")");
+
+              var pointList = []; 
+              var x_end, y_end;
+
+              for (var k=0; k < places.length; k++) {
+                var place = places[k].users;
+                var pt = place.lon_lat.split(" ")
+                var x0 = parseFloat(pt[0]);
+                var y0 = parseFloat(pt[1]);
+                var point = new OpenLayers.Geometry.Point(x0, y0);
+                pointList.push(point);
+
+                if (k==(places.length-1)) {
+                  x_end = x0;
+                  y_end = y0;
+                }
+
+              } 
+
+              var linearRing = new OpenLayers.Geometry.LineString(pointList);
+
+              style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
+              style_line.fillColor = color;
+              style_line.strokeColor = color;
+              style_line.strokeWidth = 3;
+
+              style_line.fontSize  = "12px";
+              style_line.fontFamily = "Courier New, monospace";
+              style_line.fontWeight = "bold";
+              style_line.labelAlign = "rb";           
+              style_line.label = '任务'+session_id;
+              style_line.fontColor = "blue"; 
+
+              var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              vectorLayer.addFeatures([lineFeature]);
+
+              //map pan_to
+              //map.panTo(new OpenLayers.LonLat(x_end, y_end),{animate: false});          
+
+            }
+          });
+
+        };
+        
+        var loopable=false;
+        var loop_data=[];
+
+        function startCheck() {
+          //initialize replay data
+          var pars = {task_id:  Ext.getCmp('track-view').task_id};
+          new Ajax.Request("/feed/get_track_points", { 
+            method: "POST",
+              parameters: pars,
+              onComplete:  function(request) {
+
+                if (request.responseText != '') {
+                  loop_data = request.responseText.split(",")
+
+                  //create Feature
+                  var vectorLayer = markers;
+                  if (vectorLayer.features.length > 0){
+                    while (vectorLayer.features.length > 0) {
+                      var vectorFeature = vectorLayer.features[0];
+                      vectorLayer.removeFeatures(vectorFeature);
+                    };
+                  };
+
+                  var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+                  style.externalGraphic = '/images/avatar/monkey.png';
+                  style.backgroundXOffset = 0;
+                  style.backgroundYOffset = -7;
+                  style.graphicZIndex = MARKER_Z_INDEX;
+                  style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
+                  style.fillOpacity = 1;
+                  style.pointRadius = 20;
+                  //vectorLayer.styleMap.styles.default.defaultStyle.externalGraphic = '/images/avatar/monkey.png';
+
+                  var pts = loop_data[0].split(" ");
+                  var x0 = parseFloat(pts[0]);
+                  var y0 = parseFloat(pts[1]);
+
+                  var feature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 20}, style )
+
+                  vectorLayer.addFeatures([feature]);
+
+                  //Start Move
+                  if (!loopable) {
+                    loopable = true;
+                    loopCheck(0,loopable);
+                  }
+                }
+              }
+          });
+
+        };
+
+        function stopCheck() {
+          loopable = false;
+        };
+
+        function loopCheck(sf,lp) {
+
+          //if (loopCheck == false) return;
+
+          if (lp) {
+            //move to new position
+            var pts = loop_data[sf].split(" ");
+
+            var x0 = parseFloat(pts[0]);
+            var y0 = parseFloat(pts[1]);
+
+            var vectorLayer = markers;
+            var vectorFeature = vectorLayer.features[0];
+
+            vectorFeature.move(new OpenLayers.LonLat(x0, y0));
+
+            //Set Delay
+            sf = sf +1;
+            if (sf==loop_data.length) {
+              sf = 0;
+              td = 5*1000  //60s 
+            } else {
+              td = 1*1000
+            }
+
+            var f = function() { loopCheck(sf,loopable); };
+            var t = setTimeout(f,td);
+          }
         };
         
         //maps here 
@@ -114,8 +251,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         };
         
         var map  = new OpenLayers.Map($('task_track'), options);
-        //var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_HYBRID_MAP, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
-        //var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
         
         var gmap = new OpenLayers.Layer.Google(
             "谷歌地图", // the default
@@ -191,7 +326,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             map.getLayersByName('二调数据2')[0].setVisibility(true);
             map.getLayersByName('二调数据')[0].setVisibility(false);
           }
-      	});
+        });
         
         
         /*
@@ -234,7 +369,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           }],
           items: [{
-              //xtype: 'mapcomponent',
               xtype: 'gx_mappanel',
               map: map
           }]
@@ -264,13 +398,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           id: 'phone_grid_id',
           store: phone_store,
           columns: [
-            //sm,
             { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
             { header : '人员',  width : 50, sortable : true, dataIndex: 'username'},
             { header : '电话',  width : 100, sortable : true, dataIndex: 'device'},
             { header : '时间',  width : 100, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
             ],
-          //sm:sm,  
           columnLines: true,
           layout:'fit',
           viewConfig: {
@@ -326,7 +458,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 items:[map_view]
               },{
                 region:"east",
-                //title:"east",
                 width:250,
                 split:true,
                 collapsible:true,

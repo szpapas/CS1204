@@ -767,4 +767,12 @@ td.ux-taskButtons-edge {
 .search {
   background-image: url(/images/search16.png ) !important;
 }
+
+.save {
+  background-image: url(/images/save.png ) !important;
+}
+
+.text {
+  background-image: url(/images/text16.png ) !important;
+}
  

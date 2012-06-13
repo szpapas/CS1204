@@ -89,57 +89,57 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
               { xtype: 'combo',     x: 70, y: 190, width: 200, name : 'hide', store:hide_store, emptyText:'请选择',mode: 'local', valueField:'value', displayField:'text',triggerAction:'all'}
           ]
         });
-
-        var user_win = new Ext.Window({
-          id : 'add_user_win',
-          iconCls : 'add',
-          title: '计划任务',
-          floating: true,
-          shadow: true,
-          draggable: true,
-          closable: true,
-          modal: true,
-          width: 300,
-          height: 300,
-          layout: 'fit',
-          plain: true,
-          items:userPanel,
-          buttons: [{
-            text: '确定',
-            handler: function() {
-              var myForm = Ext.getCmp('user_panel_id').getForm();
-              pars = myForm.getFieldValues();
-              new Ajax.Request("/desktop/add_user", { 
-                method: "POST",
-                parameters: pars,
-                onComplete:  function(request) {
-                  if (request.responseText == 'Success') {
-                    user_win.close();
-                    user_store.load();
-                  } else {
-                    //msg('失败', '新增任务失败!');
+        
+        var user_win = Ext.getCmp('add_user_win');
+        
+        if (user_win == undefined) {
+          user_win = new Ext.Window({
+            id : 'add_user_win',
+            iconCls : 'add',
+            title: '计划任务',
+            floating: true,
+            shadow: true,
+            draggable: true,
+            closable: true,
+            modal: false,
+            width: 300,
+            height: 550,
+            x: 900,
+            y: 30, 
+            layout: 'fit',
+            plain: true,
+            items:userPanel,
+            buttons: [{
+              text: '确定',
+              handler: function() {
+                var myForm = Ext.getCmp('user_panel_id').getForm();
+                pars = myForm.getFieldValues();
+                new Ajax.Request("/desktop/add_user", { 
+                  method: "POST",
+                  parameters: pars,
+                  onComplete:  function(request) {
+                    if (request.responseText == 'Success') {
+                      user_win.close();
+                      user_store.load();
+                    } else {
+                      //msg('失败', '新增任务失败!');
+                    }
                   }
-                }
-              });
-            }
-          }]
-        });
-
+                });
+              }
+            }]
+          });
+          user_win.show();
+        };
         
         if (gsm == undefined) {
           Ext.getCmp('add_user_win').setTitle('新增用户');
-         
         } else {
           Ext.getCmp('add_user_win').setTitle('修改用户');
           Ext.getCmp('add_user_win').setIconClass('edit');
           var myForm = Ext.getCmp('user_panel_id').getForm();
           myForm.loadRecord(gsm.selections.items[0]);
-          data=gsm.selections.items[0].data;
-          //Ext.getCmp('xcfs_combo_id').setValue(data.xcfs);
-          //Ext.getCmp('xcqy_combo_id').setValue(data.xcqy);
         };
-        user_win.show();
-        //user_win.setZIndex(9020);
       }
       
       var  user_store = new Ext.data.Store({
@@ -201,6 +201,69 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
         }
       });
       
+      //处理双击事件，打开点击窗口
+      userGrid.addListener('rowdblclick',function(t,r,e){
+				//var select = t.getSelectionModel().getSelections()[0].data;
+				var gsm =Ext.getCmp('sysman_user_grid_id').getSelectionModel();
+        addUser(gsm);
+        //user_store.load();
+			});
+      
+      userGrid.addListener('rowclick',function(t,r,e){
+				var select = t.getSelectionModel().getSelections()[0].data;
+        var form = Ext.getCmp('user_panel_id').form;
+				form.findField('id').setValue(select['id']);
+				form.findField('username' ).setValue(select['username']);
+			});
+      
+      var userTree = new Ext.tree.TreePanel({
+          id:'yh-tree',
+          //title: '员工',
+          rootVisible:false,
+          lines:false,
+          autoScroll:true,
+          /*
+          tools:[{
+              id:'refresh',
+              on:{
+                  click: function(){
+                      var tree = Ext.getCmp('yh-tree');
+                      tree.body.mask('Loading', 'x-mask-loading');
+                      tree.root.reload();
+                      tree.root.collapse(true, false);
+                      setTimeout(function(){ // mimic a server call
+                          tree.body.unmask();
+                          tree.root.expand(true, true);
+                      }, 1000);
+                  }
+              }
+          }],
+          */
+          loader: new Ext.tree.TreeLoader({
+            dataUrl: '/desktop/get_yhtree',
+            baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+          }),
+          root: {
+            nodeType: 'async',
+            text: '联系人',
+            draggable:false,
+            id:'root'
+          }
+      });
+      
+      userTree.on("click", function(node,e) {
+        e.stopEvent();
+        node.select();
+        
+        if (node.isLeaf()) {
+          
+        } else {
+          var ss = node.id.split("|");
+          user_store.baseParams = {filter: node.id};
+          user_store.load();
+        }
+        
+      }, userTree);
       
       var win = desktop.createWindow({
         id: 'systemman',
@@ -214,107 +277,121 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
         animCollapse:false,
         border:false,
         //constrainHeader:true,
+        layout:"border",
         items:[{
-        xtype:"tabpanel",
-        activeTab:0,
-        items:[{
-            xtype:"panel",
-            title:"用户管理",
-            layout:'fit',
-            height:500,
-            items:[userGrid],
-            tbar :[{
-                text:'新增用户',
-                iconCls:'add',
-                handler: function () {
-                  addUser();
-                  user_store.load();
-                }
-              },{
-                text:'修改用户',
-                iconCls:'edit',
-                handler: function () {
-                  var gsm =Ext.getCmp('sysman_user_grid_id').getSelectionModel();
-                  addUser(gsm);
-                  user_store.load();
-                }             
-              },{
-                text:'删除用户',
-                iconCls:'delete',
-                handler : function(){
-                  items = Ext.getCmp('sysman_user_grid_id').getSelectionModel().selections.items;
-                  if (items.length > 0) {
-                    
-                    Ext.Msg.confirm("确认", "删除所选用户,该操作不可恢复?", 
-                      function(btn){
-                        if (btn=='yes') {
-                          id_str = '';
-                          for (var i=0; i < items.length; i ++) {
-                            if (i==0) {
-                              id_str = id_str+items[i].data.id 
-                            } else {
-                              id_str = id_str + ',' +items[i].data.id 
-                            }
-                          }
-                          pars = {id:id_str};
-                          new Ajax.Request("/desktop/delete_selected_user", { 
-                            method: "POST",
-                            parameters: pars,
-                            onComplete:  function(request) {
-                              user_store.load();
-                            }
-                          });
-                        }
+            region:"center",
+            title:"人员设置",
+            items:[{
+              xtype:"tabpanel",
+              activeTab:0,
+              items:[{
+                  xtype:"panel",
+                  title:"用户管理",
+                  layout:'fit',
+                  height:500,
+                  items:[userGrid],
+                  tbar :[{
+                      text:'新增用户',
+                      iconCls:'add',
+                      handler: function () {
+                        addUser();
+                        user_store.load();
                       }
-                    );
-                  } else {
-                    Ext.Msg.alert('错误','请先选择用户！');
-                  }
+                    },{
+                      text:'修改用户',
+                      iconCls:'edit',
+                      handler: function () {
+                        var gsm =Ext.getCmp('sysman_user_grid_id').getSelectionModel();
+                        addUser(gsm);
+                        user_store.load();
+                      }             
+                    },{
+                      text:'删除用户',
+                      iconCls:'delete',
+                      handler : function(){
+                        items = Ext.getCmp('sysman_user_grid_id').getSelectionModel().selections.items;
+                        if (items.length > 0) {
 
-                }                 
-              },{
-                text:'重设密码',
-                iconCls:'key',
-                handler : function(){
-                  items = Ext.getCmp('sysman_user_grid_id').getSelectionModel().selections.items;
-                  if (items.length > 0) {
-                    
-                    Ext.Msg.confirm("确认", "重新设置用户为缺省密码?", 
-                      function(btn){
-                        if (btn=='yes') {
-                          id_str = '';
-                          for (var i=0; i < items.length; i ++) {
-                            if (i==0) {
-                              id_str = id_str+items[i].data.id 
-                            } else {
-                              id_str = id_str + ',' +items[i].data.id 
+                          Ext.Msg.confirm("确认", "删除所选用户,该操作不可恢复?", 
+                            function(btn){
+                              if (btn=='yes') {
+                                id_str = '';
+                                for (var i=0; i < items.length; i ++) {
+                                  if (i==0) {
+                                    id_str = id_str+items[i].data.id 
+                                  } else {
+                                    id_str = id_str + ',' +items[i].data.id 
+                                  }
+                                }
+                                pars = {id:id_str};
+                                new Ajax.Request("/desktop/delete_selected_user", { 
+                                  method: "POST",
+                                  parameters: pars,
+                                  onComplete:  function(request) {
+                                    user_store.load();
+                                  }
+                                });
+                              }
                             }
-                          }
-                          pars = {id:id_str};
-                          new Ajax.Request("/desktop/reset_password", { 
-                            method: "POST",
-                            parameters: pars,
-                            onComplete:  function(request) {
-                             Ext.Msg.alert("确认", "密码重设成功！");
-                            }
-                          });
+                          );
+                        } else {
+                          Ext.Msg.alert('错误','请先选择用户！');
                         }
-                      }
-                    );
-                    
-                    
-                  } else {
-                    Ext.Msg.alert('错误','请先选择重新设置密码用户！');
-                  }
-                }            
+
+                      }                 
+                    },{
+                      text:'重设密码',
+                      iconCls:'key',
+                      handler : function(){
+                        items = Ext.getCmp('sysman_user_grid_id').getSelectionModel().selections.items;
+                        if (items.length > 0) {
+
+                          Ext.Msg.confirm("确认", "重新设置用户为缺省密码?", 
+                            function(btn){
+                              if (btn=='yes') {
+                                id_str = '';
+                                for (var i=0; i < items.length; i ++) {
+                                  if (i==0) {
+                                    id_str = id_str+items[i].data.id 
+                                  } else {
+                                    id_str = id_str + ',' +items[i].data.id 
+                                  }
+                                }
+                                pars = {id:id_str};
+                                new Ajax.Request("/desktop/reset_password", { 
+                                  method: "POST",
+                                  parameters: pars,
+                                  onComplete:  function(request) {
+                                   Ext.Msg.alert("确认", "密码重设成功！");
+                                  }
+                                });
+                              }
+                            }
+                          );
+
+                        } else {
+                          Ext.Msg.alert('错误','请先选择重新设置密码用户！');
+                        }
+                      }            
+                  }]
+                },{
+                  xtype:"panel",
+                  title:"角色管理",
+                  items:[],
+                  tbar:[]
+                }]
             }]
           },{
-            xtype:"panel",
-            title:"角色管理",
-            items:[],
-            tbar:[]
-          }]
+            region:"west",
+            title:"部门人员",
+            width:200,
+            split:true,
+            collapsible:true,
+            titleCollapse:true,
+            layout:'fit',
+            items: [userTree]
         }]
+
       });
     }
     win.show();

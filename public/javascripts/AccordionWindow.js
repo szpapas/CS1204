@@ -32,14 +32,7 @@ MyDesktop.AccordionWindow = Ext.extend(Ext.app.Module, {
                 shim:false,
                 animCollapse:false,
                 constrainHeader:true,
-
-                tbar:[{
-                    tooltip:'增加',
-                    iconCls:'user-add'
-                },' ',{
-                    tooltip:'删除',
-                    iconCls:'user-delete'
-                },'->',
+                tbar:['->',
                 new Ext.form.TextField({
                   id : 'fiter-user',
                   width:100,
