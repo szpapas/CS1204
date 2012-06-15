@@ -18,7 +18,7 @@ require 'find'
 $conn = PGconn.open(:dbname=>'CS1204', :user=>'postgres', :password=>'brightechs', :host=>'localhost', :port=>'5432')
 $conn.exec("set standard_conforming_strings = off")
 
-yxpath, pic_name = ARGV[0], ARGV[1], 
+yxpath, pic_name = ARGV[0], ARGV[1]
 tpjd, bz, xmdk_id, task_id = ARGV[2], ARGV[3], ARGV[4], ARGV[5]
 
 puts "task_id: #{task_id}"
