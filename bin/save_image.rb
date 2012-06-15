@@ -45,7 +45,7 @@ path = "#{yxpath}/#{pic_name}"
 fo = File.open(path).read
 yxdx = fo.size
 edata=PGconn.escape_bytea(fo)
-puts "insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', '#{bz}', #{xmdk_id}, #{task_id}, #{yxdx}');")
+puts "insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', '#{bz}', #{xmdk_id}, #{task_id}, #{yxdx}');"
 $conn.exec("insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', '#{bz}', #{xmdk_id}, #{task_id}, #{yxdx}, E'#{edata}');")
 $conn.exec("update plans set photo_count = (select count(*) from xcimage where plan_id=#{task_id}) where id=#{task_id};")
 system("rm -rf #{exif_file}")
