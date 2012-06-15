@@ -509,7 +509,7 @@ class DesktopController < ApplicationController
         system("cp #{v.path} #{yxpath}/#{pic_name}")
         system("chmod 644 #{yxpath}/#{pic_name}")
         logger.debug("./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
-        system("./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
+        system("ruby ./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
       end
       
     end
