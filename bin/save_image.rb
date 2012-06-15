@@ -19,9 +19,7 @@ $conn = PGconn.open(:dbname=>'CS1204', :user=>'postgres', :password=>'brightechs
 $conn.exec("set standard_conforming_strings = off")
 
 yxpath, pic_name = ARGV[0], ARGV[1]
-tpjd, bz, xmdk_id, task_id = ARGV[2], ARGV[3], ARGV[4], ARGV[5]
-
-puts "task_id: #{task_id}"
+tpjd, xmdk_id, task_id = ARGV[2], ARGV[3], ARGV[4]
 
 #insert into database  
 exif_file =rand(36**32).to_s(36)
@@ -48,8 +46,8 @@ path = "#{yxpath}/#{pic_name}"
 fo = File.open(path).read
 yxdx = fo.size
 edata=PGconn.escape_bytea(fo)
-puts "insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', '#{bz}', #{xmdk_id}, #{task_id}, #{yxdx}');"
-$conn.exec("insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', '#{bz}', #{xmdk_id}, #{task_id}, #{yxdx}, E'#{edata}');")
+puts "insert into xcimage (yxmc, the_geom, rq, tpjd, xmdk_id, plan_id, yxdx) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}',  #{xmdk_id}, #{task_id}, #{yxdx}');"
+$conn.exec("insert into xcimage (yxmc, the_geom, rq, tpjd,  xmdk_id, plan_id, yxdx, data) values ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{tpjd}', #{xmdk_id}, #{task_id}, #{yxdx}, E'#{edata}');")
 $conn.exec("update plans set photo_count = (select count(*) from xcimage where plan_id=#{task_id}) where id=#{task_id};")
 system("rm -rf #{exif_file}")
 
