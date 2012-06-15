@@ -500,7 +500,7 @@ class DesktopController < ApplicationController
     pic_name = params['image_name']+'.jpg'
 
     params.each do |k,v|
-      logger.debug("#{k} , #{v}")
+      #logger.debug("#{k} , #{v}")
 
       if k.include?("image_file")
         logger.debug("#{v.path}")
