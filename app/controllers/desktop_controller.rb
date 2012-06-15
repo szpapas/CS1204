@@ -504,7 +504,7 @@ class DesktopController < ApplicationController
 
       if k.include?("image_file")
         logger.debug("#{v.path}")
-        yxpath = "./dady/images/xctp/#{task_id}/#{inspect_id}"
+        yxpath = "./dady/xctp/#{task_id}/#{inspect_id}"
         system("mkdir -p #{yxpath}") if !File.exists?(yxpath)
         system("cp #{v.path} #{yxpath}/#{pic_name}")
         system("chmod 644 #{yxpath}/#{pic_name}")
