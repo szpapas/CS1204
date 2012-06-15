@@ -157,20 +157,20 @@ class DesktopController < ApplicationController
   end
   
   def get_inspect_json
-	  sql_str = "select inspects.*, plans.xmdk from inspects inner join plans on inspects.plan_id = plans.id where "
-		if !params['username'].nil?
-			sql_str = sql_str+" xcry like '%#{params['username']}%' "
-		elsif !params['task_id'].nil?
-			sql_str = sql_str+" and plan_id=#{params['plan_id']} "
-		elsif !params['xmdk_id'].nil?
-			sql_str = sql_str+" and xmdk_id=#{params['xmdk_id']} "
-		end
+    sql_str = "select inspects.*, plans.xmdk from inspects inner join plans on inspects.plan_id = plans.id where "
+    if !params['username'].nil?
+      sql_str = sql_str+" xcry like '%#{params['username']}%' "
+    elsif !params['task_id'].nil?
+      sql_str = sql_str+" and plan_id=#{params['plan_id']} "
+    elsif !params['xmdk_id'].nil?
+      sql_str = sql_str+" and xmdk_id=#{params['xmdk_id']} "
+    end
 
-		inspects = User.find_by_sql("#{sql_str} order by id;")
-		render :text => inspects.to_json
-	end
-	
-	
+    inspects = User.find_by_sql("#{sql_str} order by id;")
+    render :text => inspects.to_json
+  end
+  
+  
   
   def get_user
     render :text => User.current.to_json
@@ -314,9 +314,9 @@ class DesktopController < ApplicationController
   end
   
   def get_detail_user
-	  user = User.find_by_sql("select * from users where username='#{params['name']}';");
-	  render :text => user[0].to_json
-	end
+    user = User.find_by_sql("select * from users where username='#{params['name']}';");
+    render :text => user[0].to_json
+  end
   
   #add at 04/29
   
@@ -439,22 +439,22 @@ class DesktopController < ApplicationController
   end
 
   #====add at 05/02
-	def new_xmdk
-	  if params['xmdk_id'] == '-1'
-	    geom_str = "transform(geomFromText('#{params['the_geom']}', 4326), 900913)"
-	    User.find_by_sql("insert into xmdk (xh, the_geom) values ('#{params['xmmc']}', #{geom_str})")
-	    user = User.find_by_sql("select max(gid) from xmdk;")
-	    xmdk_id = user[0].max.to_i
+  def new_xmdk
+    if params['xmdk_id'] == '-1'
+      geom_str = "transform(geomFromText('#{params['the_geom']}', 4326), 900913)"
+      User.find_by_sql("insert into xmdk (xh, the_geom) values ('#{params['xmmc']}', #{geom_str})")
+      user = User.find_by_sql("select max(gid) from xmdk;")
+      xmdk_id = user[0].max.to_i
       User.find_by_sql("insert into inspects (plan_id, xmdk_id) values (#{params['plan_id']}, #{xmdk_id})")
-	    user = User.find_by_sql("select max(id) from inspects;")
-	    inspect_id = user[0].max.to_i
-	    user = User.find_by_sql("select astext(transform(centroid(the_geom), 4326)) from xmdk where gid = #{xmdk_id}")
-	    center = user[0].astext[6,33]
+      user = User.find_by_sql("select max(id) from inspects;")
+      inspect_id = user[0].max.to_i
+      user = User.find_by_sql("select astext(transform(centroid(the_geom), 4326)) from xmdk where gid = #{xmdk_id}")
+      center = user[0].astext[6,33]
       render :text => "[{\"users\":{\"xmdk_id\":\"#{xmdk_id}\",\"inspect_id\":\"#{inspect_id}\", \"center\":\"#{center}\"}}]"
-	  else
-	    render :text => ''
-	  end  
-	end
+    else
+      render :text => ''
+    end  
+  end
   
   # get all current_active user postion, 当前Area内的。
   def get_user_position
@@ -494,62 +494,54 @@ class DesktopController < ApplicationController
     
     logger.debug("========filename: #{params['value1']} ")
 
-  	task_id = params['task_id'].to_i
-  	session_id = params['session_id']
-  	inspect_id = params['inspect_id']
-  	pic_name = params['image_name']+'.jpg'
-  	thumb_name = pic_name.gsub('.jpg', '_s.jpg')
+    task_id = params['task_id'].to_i
+    session_id = params['session_id']
+    inspect_id = params['inspect_id']
+    pic_name = params['image_name']+'.jpg'
+    thumb_name = pic_name.gsub('.jpg', '_s.jpg')
 
-  	params.each do |k,v|
-  		logger.debug("#{k} , #{v}")
+    params.each do |k,v|
+      logger.debug("#{k} , #{v}")
 
-  		if k.include?("image_file")
-  			logger.debug("#{v.path}")
+      if k.include?("image_file")
+        logger.debug("#{v.path}")
+        yxpath = "./dady/images/xctp/#{task_id}/#{inspect_id}"
+        system("mkdir -p #{yxpath}") if !File.exists?(yxpath)
+        system("cp #{v.path} #{yxpath}/#{pic_name}")
+        system("chmod 644 #{yxpath}/#{pic_name}")
 
-  			system("mkdir -p ./dady/images/inspect/#{inspect_id}") if !File.exists?("./dady/images/inspect/#{inspect_id}")
-  			system("cp #{v.path} ./dady/images/inspect/#{inspect_id}/#{pic_name}")
-  			system("chmod 644 ./dady/images/inspect/#{inspect_id}/#{pic_name}")
-        system("convert ./dady/images/inspect/#{inspect_id}/#{pic_name} -resize 64x64 public/images/inspect/#{inspect_id}/#{thumb_name} ")
-        
-  			#insert into database	 
-  			#exif_file = ActiveSupport::SecureRandom.hex(16)
-  			exif_file =rand(36**32).to_s(36)
-  			system("exif ./dady/images/inspect/#{inspect_id}/#{pic_name} > #{exif_file}")
-  			File.open("#{exif_file}").each_line do |line|
-  				if line.include?('Longitude')
-  					ll = line.chomp.split("|")[1].strip.split(",")
-  					$lon = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
-  				end
-  				if line.include?('Latitude')
-  					ll = line.chomp.split("|")[1].strip.split(",")
-  					$lat = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
-  				end
-  				if line.include?('Date and Time') 
-  					dd = line.chomp.split("|")[1].strip.split(" ")
-  					$tpsj = dd[0].gsub(":", "-") + " " + dd[1]
-  				end		
-  			end
+        #insert into database  
+        exif_file =rand(36**32).to_s(36)
+        system("exif #{yxpath}/#{pic_name} > #{exif_file}")
+        File.open("#{exif_file}").each_line do |line|
+          if line.include?('Longitude')
+            ll = line.chomp.split("|")[1].strip.split(",")
+            $lon = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
+          end
+          if line.include?('Latitude')
+            ll = line.chomp.split("|")[1].strip.split(",")
+            $lat = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
+          end
+          if line.include?('Date and Time') 
+            dd = line.chomp.split("|")[1].strip.split(" ")
+            $tpsj = dd[0].gsub(":", "-") + " " + dd[1]
+          end   
+        end
 
-  			lonlat = "geomFromText('Point(#{$lon} #{$lat})',4326)"
+        lonlat = "geomFromText('Point(#{$lon} #{$lat})',4326)"
 
-  			#update database
-  			path = "./dady/images/inspect/#{inspect_id}/#{pic_name}"
-  			yxdx=File.open(path).read.size
+        #update database
+        path = "#{yxpath}/#{pic_name}"
+        yxdx=File.open(path).read.size
         edata=PGconn.escape_bytea(File.open(path).read) 
-  			 
-  			Users.find_by_sql("insert into xcimages (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
-  					('#{pic_name}',	 #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
-  					
-  			Users.find_by_sql("update inspects set photo_count = (select count(*) from xcimages where inspect_id = #{params['inspect_id']}) where id=#{params['inspect_id']};")
-  			
-        Users.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
-
-  			FileUtils.rm exif_file
-
-  		end
-
-  	end
-  	render :text => "Success"
+         
+        User.find_by_sql("insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
+            ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
+        User.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
+        FileUtils.rm exif_file
+      end
+    end
+    render :text => "Success"
   end
   
   def change_password
@@ -745,15 +737,15 @@ class DesktopController < ApplicationController
   
   
   def uploadfiles
-  	params.each do |k,v|
-  		logger.debug("#{k} , #{v}")
-  	end
-  	
-  	fs = params['fileselect']
-  	for k in 0..fs.size - 1 
-  	  ff = fs[k]
-  	  puts "#{ff.content_type}\t#{ff.original_filename}"
-  	end	
+    params.each do |k,v|
+      logger.debug("#{k} , #{v}")
+    end
+    
+    fs = params['fileselect']
+    for k in 0..fs.size - 1 
+      ff = fs[k]
+      puts "#{ff.content_type}\t#{ff.original_filename}"
+    end 
     
     render :text => 'Success'
   end
