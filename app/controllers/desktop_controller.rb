@@ -493,7 +493,7 @@ class DesktopController < ApplicationController
   def upload_pic2
     
     logger.debug("========filename: #{params['value1']} ")
-
+    
     task_id = params['task_id'].to_i
     session_id = params['session_id']
     inspect_id = params['inspect_id']
@@ -535,6 +535,7 @@ class DesktopController < ApplicationController
         fo = File.open(path).read
         yxdx = fo.size
         edata=PGconn.escape_bytea(fo)
+        User.find_by_sql("set standard_conforming_strings = off")
         User.find_by_sql("insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
             ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
         User.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
