@@ -498,7 +498,6 @@ class DesktopController < ApplicationController
     session_id = params['session_id']
     inspect_id = params['inspect_id']
     pic_name = params['image_name']+'.jpg'
-    thumb_name = pic_name.gsub('.jpg', '_s.jpg')
 
     params.each do |k,v|
       logger.debug("#{k} , #{v}")
@@ -509,38 +508,9 @@ class DesktopController < ApplicationController
         system("mkdir -p #{yxpath}") if !File.exists?(yxpath)
         system("cp #{v.path} #{yxpath}/#{pic_name}")
         system("chmod 644 #{yxpath}/#{pic_name}")
-
-        #insert into database  
-        exif_file =rand(36**32).to_s(36)
-        system("exif #{yxpath}/#{pic_name} > #{exif_file}")
-        File.open("#{exif_file}").each_line do |line|
-          if line.include?('Longitude')
-            ll = line.chomp.split("|")[1].strip.split(",")
-            $lon = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
-          end
-          if line.include?('Latitude')
-            ll = line.chomp.split("|")[1].strip.split(",")
-            $lat = ll[0].to_f + ll[1].to_f/60.0+ll[2].to_f/3600.0
-          end
-          if line.include?('Date and Time') 
-            dd = line.chomp.split("|")[1].strip.split(" ")
-            $tpsj = dd[0].gsub(":", "-") + " " + dd[1]
-          end   
-        end
-
-        lonlat = "geomFromText('Point(#{$lon} #{$lat})',4326)"
-
-        #update database
-        path = "#{yxpath}/#{pic_name}"
-        fo = File.open(path).read
-        yxdx = fo.size
-        edata=PGconn.escape_bytea(fo)
-        User.find_by_sql("set standard_conforming_strings = on")
-        User.find_by_sql("insert into xcimage (yxmc, the_geom, rq, tpjd, bz, xmdk_id, plan_id, yxdx, data) values 
-            ('#{pic_name}',  #{lonlat}, '#{$tpsj}', '#{params['tpjd']}', '#{params['tpbz']}', #{params['inspect_id']}, #{task_id}, #{yxdx}, E'#{edata}');")
-        User.find_by_sql("update plans set photo_count = (select sum(photo_count) from inspects where plan_id=#{params['task_id']}) where id=#{params['task_id']};")
-        FileUtils.rm exif_file
+        system("./dady/bin/save_iamge.rb #{yxpath}, #{pic_name}, #{params['tpjd']}, #{params['tpbz']}, #{inspect_id}, #{task_id} ")
       end
+      
     end
     render :text => "Success"
   end
