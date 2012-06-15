@@ -506,7 +506,7 @@ class DesktopController < ApplicationController
   		if k.include?("image_file")
   			logger.debug("#{v.path}")
 
-  			FileUtils.makedirs "/images/dady/images/inspect/#{inspect_id}" if !File.exists?("/images/dady/images/inspect/#{task_id}")
+  			system("mkdir -p ./dady/images/inspect/#{inspect_id}") if !File.exists?("./dady/images/inspect/#{inspect_id}")
   			system("cp #{v.path} ./dady/images/inspect/#{inspect_id}/#{pic_name}")
   			system("chmod 644 ./dady/images/inspect/#{inspect_id}/#{pic_name}")
         system("convert ./dady/images/inspect/#{inspect_id}/#{pic_name} -resize 64x64 public/images/inspect/#{inspect_id}/#{thumb_name} ")
