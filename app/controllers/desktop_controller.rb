@@ -508,7 +508,7 @@ class DesktopController < ApplicationController
         system("mkdir -p #{yxpath}") if !File.exists?(yxpath)
         system("cp #{v.path} #{yxpath}/#{pic_name}")
         system("chmod 644 #{yxpath}/#{pic_name}")
-        puts  ("./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
+        logger.debug("./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
         system("./dady/bin/save_iamge.rb #{yxpath}  #{pic_name} #{params['tpjd']} #{params['tpbz']} #{inspect_id}  #{task_id} ")
       end
       
