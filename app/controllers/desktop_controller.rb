@@ -21,8 +21,8 @@ class DesktopController < ApplicationController
         points[k]=user[k].lon_lat
       end
       geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
-      puts "update plans set the_lines=#{geomFromText} where session_id='#{session_id}';"
-      User.find_by_sql("update plans set the_lines=#{geomFromText} where session_id='#{session_id}';")
+      #puts "update plans set the_lines=#{geomtext} where session_id='#{session_id}';"
+      User.find_by_sql("update plans set the_lines=#{geomtext} where session_id='#{session_id}';")
     end
   end
   
