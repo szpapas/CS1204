@@ -40,123 +40,135 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       }
     
       var desktop = this.app.getDesktop();
-      var win = desktop.getWindow('systemstatus');
-      if(!win){
+
+      function showUserPosition(map, vectorLayer) {
         
-        function showUserPosition(map, vectorLayer) {
-          
-          if (vectorLayer.features.length > 0){
-            while (vectorLayer.features.length > 0) {
-              var vectorFeature = vectorLayer.features[0];
-              vectorLayer.removeFeatures(vectorFeature);
-            };
-          };  
-          
-          pars = {};
-          new Ajax.Request("/desktop/get_user_position", { 
-            method: "POST",
-            parameters: pars,
-            onComplete:  function(request) {
-              //"[{\"report_at\":\"2012-05-03 17:46:19\",\"device\":\" 8618621361840\",\"astext\":\"POINT(13439889.5503971 3723340.88865353)\",\"username\":\"\\u9ad8\\u98de\",\"id\":184}]"
-              //[{"users":{"lon_lat":"13470500 3683278","id":32,"icon":"monkey.png","color":"#800000"}}]
-              var features = [];
-              if (request.responseText.length > 30) {           
-                var places = eval("("+request.responseText+")");
-                var x_end, y_end;
-
-                for (var k=0; k < places.length; k++) {
-                  place = places[k];
-                  var pointText = place["lon_lat"]; //13470500 3683278
-
-                  if (pointText == null || pointText == "undefined") continue;
-
-                  var id =  place["id"];
-                  //var icon = place["icon"];
-                  var username = place['username'];
-                  ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
-                  var x0 = parseFloat(ss[1]);
-                  var y0 = parseFloat(ss[2]);
-                  
-                  var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                  style.externalGraphic = '/images/chrome.png';
-                  style.backgroundXOffset = 0;
-                  style.backgroundYOffset = 0;
-                  style.graphicWidth = 32;
-                  style.graphicHeight = 32;
-                  style.graphicZIndex = MARKER_Z_INDEX;
-                  style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
-                  style.fillOpacity = 0.8;
-                  style.fillColor = "#ee4400";
-                  //style.graphicName = "star",
-                  style.pointRadius = 8;
-                  
-                  style.fontSize   = "12px";
-                  style.fontFamily = "Courier New, monospace";
-                  style.fontWeight = "bold";
-                  style.labelAlign = "cm";            
-                  style.label = username;
-                  style.fontColor = "black";
-
-                  features.push(
-                      new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
-                  );    
-                }
-                vectorLayer.addFeatures(features);
-              }
-            }
-          });                       
+        if (vectorLayer.features.length > 0){
+          while (vectorLayer.features.length > 0) {
+            var vectorFeature = vectorLayer.features[0];
+            vectorLayer.removeFeatures(vectorFeature);
+          };
+        };  
         
-          new Ajax.Request("/desktop/get_task_position", {
-            method: "POST",
-            parameters: pars,
-            onComplete:  function(request) {
-              //[{"users":{"lon_lat":"13740496.96 5129894.39","id":13}},{"users":{"lon_lat":"13740496.96 5129894.39","id":14}},{"users":{"lon_lat":"13740721.49 5129134.79","id":15}}]
-
-              var features = [];                        
+        pars = {};
+        new Ajax.Request("/desktop/get_user_position", { 
+          method: "POST",
+          parameters: pars,
+          onComplete:  function(request) {
+            var features = [];
+            if (request.responseText.length > 30) {           
               var places = eval("("+request.responseText+")");
-
-              var pointList = []; 
               var x_end, y_end;
 
               for (var k=0; k < places.length; k++) {
-                var place = places[k].users;
-                var pt = place.lon_lat.split(" ")
+                place = places[k];
+                var pointText = place["lon_lat"]; //13470500 3683278
+
+                if (pointText == null || pointText == "undefined") continue;
+
+                var id =  place["id"];
+                //var icon = place["icon"];
+                var username = place['username'];
+                ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
+                var x0 = parseFloat(ss[1]);
+                var y0 = parseFloat(ss[2]);
+                
+                var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+                style.externalGraphic = '/images/chrome.png';
+                style.backgroundXOffset = 0;
+                style.backgroundYOffset = 0;
+                style.graphicWidth = 32;
+                style.graphicHeight = 32;
+                style.graphicZIndex = MARKER_Z_INDEX;
+                style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
+                style.fillOpacity = 0.8;
+                style.fillColor = "#ee4400";
+                //style.graphicName = "star",
+                style.pointRadius = 8;
+                
+                style.fontSize   = "12px";
+                style.fontFamily = "Courier New, monospace";
+                style.fontWeight = "bold";
+                style.labelAlign = "cm";            
+                style.label = username;
+                style.fontColor = "black";
+
+                features.push(
+                    new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
+                );    
+              }
+              vectorLayer.addFeatures(features);
+            }
+          }
+        });                       
+
+      };
+
+      function showUserLines(map, vectorLayer) {
+        
+        if (vectorLayer.features.length > 0){
+          while (vectorLayer.features.length > 0) {
+            var vectorFeature = vectorLayer.features[0];
+            vectorLayer.removeFeatures(vectorFeature);
+          };
+        };  
+        
+        
+        pars = {};
+
+        new Ajax.Request("/desktop/get_task_position", {
+          method: "POST",
+          parameters: pars,
+          onComplete:  function(request) {
+            //[{"users":{"lon_lat":"13740496.96 5129894.39","id":13}},{"users":{"lon_lat":"13740496.96 5129894.39","id":14}},{"users":{"lon_lat":"13740721.49 5129134.79","id":15}}]
+            
+            var features = [];                        
+            var places = eval("("+request.responseText+")");
+
+            for (var k=0; k < places.length; k++) {
+              var place = places[k];
+              
+              var pointText = place["lon_lat"]; //13470500 3683278
+              var session_id= place["session_id"];
+              if (pointText == null || pointText == "undefined") continue;
+              
+              var pointList = []; 
+              
+              var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
+              for (var kk=0; kk < pts.length; kk++) {
+                var pt = pts[kk].split(" ");
                 var x0 = parseFloat(pt[0]);
                 var y0 = parseFloat(pt[1]);
                 var point = new OpenLayers.Geometry.Point(x0, y0);
                 pointList.push(point);
-
-                if (k==(places.length-1)) {
-                  x_end = x0;
-                  y_end = y0;
-                }
-
-              } 
-
+              }
+              
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
 
               style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
-              style_line.fillColor = color;
-              style_line.strokeColor = color;
+              style_line.fillColor = "blue";
+              style_line.strokeColor = "blue";
               style_line.strokeWidth = 3;
 
               style_line.fontSize  = "12px";
               style_line.fontFamily = "Courier New, monospace";
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
-              style_line.label = '任务'+session_id;
-              style_line.fontColor = "blue"; 
+              //style_line.label = '任务'+session_id;
+              //style_line.fontColor = "blue"; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
               vectorLayer.addFeatures([lineFeature]);
+            } 
 
-              //map pan_to
-              //map.panTo(new OpenLayers.LonLat(x_end, y_end),{animate: false});          
+          }
+        });
 
-            }
-          });
+      };
 
-        };
+      var win = desktop.getWindow('systemstatus');
+      
+      if(!win){
         
         var loopable=false;
         var loop_data=[];
@@ -313,7 +325,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             styleMap: styles
         });
 
-        map.addLayers([xmdk_vectors, vectors, markers]);
+        var vectorLines = new OpenLayers.Layer.Vector("用户路线", {
+            isBaseLayer: false,
+            styleMap: styles
+        });
+
+        map.addLayers([xmdk_vectors, vectors, vectorLines, markers]);
         
         var layserSwitch = new OpenLayers.Control.LayerSwitcher();
         
@@ -367,6 +384,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             handler : function() {
               showUserPosition(map,vectors);
             }
+          },{
+            text:'显示路线',
+            handler : function() {
+              showUserLines(map,vectorLines);
+            }           
           }],
           items: [{
               xtype: 'gx_mappanel',

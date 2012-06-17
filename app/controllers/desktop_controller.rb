@@ -224,6 +224,9 @@ class DesktopController < ApplicationController
       User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
     end
     
+    #Create_Line from points
+    upldate_line(session_id)
+    
     render :text => 'Success'
   end
   
@@ -472,7 +475,8 @@ class DesktopController < ApplicationController
   
   #add at 06/08
   def get_task_position
-    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at from plans where zt='执行' order by report_at desc;")
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt='执行' order by report_at desc;")
+
     render :text => user.to_json
   end
   
@@ -847,4 +851,21 @@ class DesktopController < ApplicationController
      User.find_by_sql("update reports set zt='已提交', commit_at = TIMESTAMP '#{ts1}'  where id in (#{params['id']});")
      render :text => 'Success'
   end
+  
+  
+  #add at 06/17 
+  #Create Line From Points
+  def upldate_line(session_id)
+    user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
+    if user.size > 2 
+      linestr = 'LINESTRING('
+      for k in 0..user.size-1
+        linestr = linestr + user[k]['lon_lat'] + ','
+      end
+      linestr = linestr[0..-2]+')'
+      puts "update plans set the_lines=geomFromText('#{linestr}',900913) where session_id='#{session_id}';"
+      User.find_by_sql("update plans set the_lines=geomFromText('#{linestr}',900913) where session_id='#{session_id}';")
+    end
+  end
+  
 end
