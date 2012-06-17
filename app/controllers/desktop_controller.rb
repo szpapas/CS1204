@@ -11,6 +11,21 @@ class DesktopController < ApplicationController
   def index
   end
   
+  #add at 06/17 
+  #Create Line From Points
+  def upldate_line(session_id)
+    user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
+    if user.size > 2 
+      points=[]
+      for k in 0..user.size-1 
+        points[k]=user[k].lon_lat
+      end
+      geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
+      puts "update plans set the_lines=#{geomFromText} where session_id='#{session_id}';"
+      User.find_by_sql("update plans set the_lines=#{geomFromText} where session_id='#{session_id}';")
+    end
+  end
+  
   def get_user_bm
     bm=params['bm']
     mc=params['mc']
@@ -226,8 +241,8 @@ class DesktopController < ApplicationController
     
     #Create_Line from points
     upldate_line(session_id)
-    
     render :text => 'Success'
+    
   end
   
   def report_current_pos
@@ -263,6 +278,7 @@ class DesktopController < ApplicationController
       #  points[k]=user[k].lon_lat
       #end
       #geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
+      upldate_line(session_id)
       
       User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
       render :text => 'Success'  
@@ -853,19 +869,6 @@ class DesktopController < ApplicationController
   end
   
   
-  #add at 06/17 
-  #Create Line From Points
-  def upldate_line(session_id)
-    user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
-    if user.size > 2 
-      linestr = 'LINESTRING('
-      for k in 0..user.size-1
-        linestr = linestr + user[k]['lon_lat'] + ','
-      end
-      linestr = linestr[0..-2]+')'
-      puts "update plans set the_lines=geomFromText('#{linestr}',900913) where session_id='#{session_id}';"
-      User.find_by_sql("update plans set the_lines=geomFromText('#{linestr}',900913) where session_id='#{session_id}';")
-    end
-  end
+
   
 end
