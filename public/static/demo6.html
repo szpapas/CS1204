@@ -14,16 +14,16 @@
                 elem.webkitRequestFullScreen(); 
 
 								// Webkit (works in Safari5.1 and Chrome 15)
-								//elem.webkitRequestFullScreen();
-								//document.webkitCancelFullScreen(); 
+								elem.webkitRequestFullScreen();
+								document.webkitCancelFullScreen(); 
 
 								// Firefox (works in nightly)
 								//elem.mozRequestFullScreen();
 								//document.mozCancelFullScreen(); 
 
 								// W3C 提议
-								elem.requestFullscreen();
-								document.exitFullscreen();
+								//elem.requestFullscreen();
+								//document.exitFullscreen();
                
                 setTimeout(changePicture, 3000);
             }
