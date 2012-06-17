@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2m, :report_current_pos]
   before_filter :set_current_user
   
   def index
@@ -224,6 +224,13 @@ class DesktopController < ApplicationController
       User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
     end
     
+    render :text => 'Success'
+  end
+  
+  def report_current_pos
+    lon, lat, session_id = params["lon"], params['lat'], params["session_id"]
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+    User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), report_at= TIMESTAMP '#{now}' where session_id='#{session_id}';")
     render :text => 'Success'
   end
   
