@@ -771,7 +771,7 @@ class DesktopController < ApplicationController
     
     image_url = ""
     for pp in 0..pics.size-1
-      dd = pp[k]
+      dd = pp[pp]
       imgPath = "/images/dady/xctp/#{dd.plan_id}/#{dd.xmdk_id}/#{dd.yxmc}"
       image_url = image_url + "<img src=\"#{imgPath}\" width=\"100\" alt=\"\">"
     end  
