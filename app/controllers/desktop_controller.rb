@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :save_report]
   before_filter :set_current_user
   
   def index
@@ -249,6 +249,7 @@ class DesktopController < ApplicationController
     lon, lat, session_id = params["lon"], params['lat'], params["session_id"]
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), report_at= TIMESTAMP '#{now}' where session_id='#{session_id}';")
+    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}'")
     render :text => 'Success'
   end
   
@@ -292,9 +293,9 @@ class DesktopController < ApplicationController
     node = params["node"].chomp
     if node == "root"
       if !params['filter'].nil?
-        data = User.find_by_sql("select distinct dw from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%';")
+        data = User.find_by_sql("select distinct dw from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%' and dw is not null;")
       else
-        data = User.find_by_sql("select distinct dw from users;")
+        data = User.find_by_sql("select distinct dw from users where dw is not null;")
       end
       
       data.each do |dd|
@@ -683,7 +684,7 @@ class DesktopController < ApplicationController
     text = []
     node = params["node"].chomp
     if node == "root"
-      data = User.find_by_sql("select distinct dw from users;")
+      data = User.find_by_sql("select distinct dw from users where dw is not null;")
       data.each do |dd|
         text << {:text => dd["dw"], :id => dd["dw"], :cls  => "folder"}
       end
@@ -692,7 +693,7 @@ class DesktopController < ApplicationController
   
       if pars.length == 1
         if pars[0]=='常熟市局'
-            data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}';")
+            data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}' and dw is not null;")
             data.each do |dd|
             text << {:text => dd["bm"], :id => pars[0]+"|#{dd["bm"]}", :iconCls => "folder"}
           end     
@@ -868,7 +869,12 @@ class DesktopController < ApplicationController
      render :text => 'Success'
   end
   
-  
-
-  
+  def save_report
+    session_id =  params['session_id']
+    xcnr = params['xcnr'] || ""
+    xcjg = params['xcjg'] || ""
+    clyj = params['clyj'] || ""
+    User.find_by_sql("update plans set xcnr='#{xcnr}', xcjg='#{xcjg}', clyj = '#{clyj}' where session_id='#{session_id}';")
+    render :text => 'Success'
+  end
 end
