@@ -766,7 +766,17 @@ class DesktopController < ApplicationController
   def display_selected_plan
     user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
     rand_file="./public/static/zfjc/zfjc_#{rand(36**32).to_s(36)}.html"
-    ss=File.open('./public/static/zfjc/xcmb.tpl.html').read.gsub("{TAG_XCSJ}","#{user.report_at}").gsub("{TAG_XCLX}","#{user.xclx}").gsub("{TAG_XCRY}","#{user.xcry}").gsub("{TAG_XCFS}","#{user.xcfs}").gsub("{TAG_XCNR}","#{user.xcnr}").gsub("{TAG_XCJG}","#{user.xcjg}").gsub("{TAG_CLYYJG}","#{user.clyj}").gsub("{TAG_IMGS}","").gsub("{XC_DATE}","")
+    
+    pics = User.find_by_sql("select * from xcimage where plan_id=#{params['id']};")
+    
+    image_url = ""
+    for pp in 0..pics.size-1
+      dd = pp[k]
+      imgPath = "/images/dady/xctp/#{dd.plan_id}/#{dd.xmdk_id}/#{dd.yxmc}"
+      image_url = image_url + "<img src=\"#{imgPath}\" width=\"100\" alt=\"\">"
+    end  
+   
+    ss=File.open('./public/static/zfjc/xcmb.tpl.html').read.gsub("{TAG_XCSJ}","#{user.report_at}").gsub("{TAG_XCLX}","#{user.xclx}").gsub("{TAG_XCRY}","#{user.xcry}").gsub("{TAG_XCFS}","#{user.xcfs}").gsub("{TAG_XCNR}","#{user.xcnr}").gsub("{TAG_XCJG}","#{user.xcjg}").gsub("{TAG_CLYYJG}","#{user.clyj}").gsub("{TAG_IMGS}",image_url).gsub("{XC_DATE}","")
     
     ff = File.open("#{rand_file}",'w+')
     ff.write(ss)
