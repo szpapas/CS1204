@@ -246,10 +246,10 @@ class DesktopController < ApplicationController
   end
   
   def report_current_pos
-    lon, lat, session_id = params["lon"], params['lat'], params["session_id"]
+    lon, lat, session_id, username = params["lon"], params['lat'], params["session_id"], params['username']
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), report_at= TIMESTAMP '#{now}' where session_id='#{session_id}';")
-    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}'")
+    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
     render :text => 'Success'
   end
   
