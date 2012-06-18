@@ -257,7 +257,7 @@ class DesktopController < ApplicationController
   def report_iphone_pos
     lon, lat, username = params["lon"], params['lat'], params["username"]
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}'")
+    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}';")
     render :text => 'Success'
   end
   
