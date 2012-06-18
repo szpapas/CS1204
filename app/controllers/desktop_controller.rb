@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :save_report]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report]
   before_filter :set_current_user
   
   def index
@@ -253,6 +253,13 @@ class DesktopController < ApplicationController
     render :text => 'Success'
   end
   
+  
+  def report_iphone_pos
+    lon, lat, username = params["lon"], params['lat'], params["username"]
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}'")
+    render :text => 'Success'
+  end
   
   def report_task_state
     state = params["state"]
