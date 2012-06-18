@@ -773,7 +773,7 @@ class DesktopController < ApplicationController
     for pp in 0..pics.size-1
       dd = pics[pp]
       imgPath = "/images/dady/xctp/#{dd['plan_id']}/#{dd['xmdk_id']}/#{dd['yxmc']}"
-      image_url = image_url + "<img src=\"#{imgPath}\" width=\"100\" alt=\"\">"
+      image_url = image_url + "<img src=\"#{imgPath}\" width=\"300\" alt=\"\">"
     end  
    
     ss=File.open('./public/static/zfjc/xcmb.tpl.html').read.gsub("{TAG_XCSJ}","#{user.report_at}").gsub("{TAG_XCLX}","#{user.xclx}").gsub("{TAG_XCRY}","#{user.xcry}").gsub("{TAG_XCFS}","#{user.xcfs}").gsub("{TAG_XCNR}","#{user.xcnr}").gsub("{TAG_XCJG}","#{user.xcjg}").gsub("{TAG_CLYYJG}","#{user.clyj}").gsub("{TAG_IMGS}",image_url).gsub("{XC_DATE}","")
