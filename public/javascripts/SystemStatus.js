@@ -381,6 +381,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           layout:'fit',
           tbar:[{
             text:'刷新人员',
+            iconCls : 'user16',
             handler : function() {
               showUserPosition(map,vectors);
             }
