@@ -293,9 +293,9 @@ class DesktopController < ApplicationController
     node = params["node"].chomp
     if node == "root"
       if !params['filter'].nil?
-        data = User.find_by_sql("select distinct dw from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%' and dw is not null;")
+        data = User.find_by_sql("select distinct dw from users where username like  '%#{params['filter']}%' or  uname like  '%#{params['filter']}%' ;")
       else
-        data = User.find_by_sql("select distinct dw from users where dw is not null;")
+        data = User.find_by_sql("select distinct dw from users;")
       end
       
       data.each do |dd|
@@ -684,7 +684,7 @@ class DesktopController < ApplicationController
     text = []
     node = params["node"].chomp
     if node == "root"
-      data = User.find_by_sql("select distinct dw from users where dw is not null;")
+      data = User.find_by_sql("select distinct dw from users;")
       data.each do |dd|
         text << {:text => dd["dw"], :id => dd["dw"], :cls  => "folder"}
       end
@@ -693,7 +693,7 @@ class DesktopController < ApplicationController
   
       if pars.length == 1
         if pars[0]=='常熟市局'
-            data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}' and dw is not null;")
+            data = User.find_by_sql("select distinct bm from users where dw='#{pars[0]}';")
             data.each do |dd|
             text << {:text => dd["bm"], :id => pars[0]+"|#{dd["bm"]}", :iconCls => "folder"}
           end     
