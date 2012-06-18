@@ -22,7 +22,7 @@ function initToggle(){
 	 * 初始化折叠起
 	 * @type Number
 	 */
-	for(var i=2,len=legends.length;i<len;i++){//init
+	for(var i=2,len=legends.length;i<len-2;i++){//init
 		for(var j=0,ln=legends[i].parentElement.childNodes.length;j<ln;j++){
 			var nodeName = legends[i].parentElement.childNodes[j].nodeName;
 			if(nodeName&&nodeName.toUpperCase() === 'TABLE'){//兼容浏览器,有的浏览器childNodes的个数不同
