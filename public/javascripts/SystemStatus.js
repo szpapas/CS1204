@@ -408,7 +408,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               fields: [
                 {name: 'id',        type: 'integer'},
                 {name: 'username',  type: 'string'},
-                {name: 'device',    type: 'string'},
                 {name: 'lon_lat',   type: 'string'},
                 {name: 'report_at',   type: 'date', dateFormat: 'Y-m-d H:i:s'}
               ]    
@@ -424,7 +423,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           columns: [
             { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
             { header : '人员',  width : 50, sortable : true, dataIndex: 'username'},
-            { header : '电话',  width : 100, sortable : true, dataIndex: 'device'},
+            { header : '手机',  width : 100, sortable : true, dataIndex: 'device'},
             { header : '时间',  width : 100, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
             ],
           columnLines: true,
@@ -455,10 +454,19 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           style:'margin:0px 0px',
           layout:'fit',
           tbar:[{
-            text:'刷新人员',
+            text:'在线人员',
+            iconCls : 'user16',
             handler : function() {
+              phone_store.baseParams.zt='执行';
               phone_store.load();
             }
+          },{
+            text:'全部人员',
+            iconCls : 'user16',
+            handler : function() {
+              phone_store.baseParams.zt='全部';
+              phone_store.load();
+            }            
           }],
           items: [phone_grid]
         });

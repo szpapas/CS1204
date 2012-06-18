@@ -506,7 +506,12 @@ class DesktopController < ApplicationController
   
   #====add at 05/04
   def get_phone_list
-    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
+    zt = params['zt'] || '执行'
+    if zt == '执行'
+      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
+    else
+      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at from users where last_seen is not NULL;")
+    end    
     size = user.count.to_i;
     if size > 0
       txt = "{results:#{size},rows:["
