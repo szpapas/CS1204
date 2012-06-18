@@ -387,6 +387,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           },{
             text:'显示路线',
+            iconCls : 'route16',
             handler : function() {
               showUserLines(map,vectorLines);
             }           
