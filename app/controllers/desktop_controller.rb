@@ -767,7 +767,7 @@ class DesktopController < ApplicationController
     user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
     rand_file="./public/static/zfjc/zfjc_#{rand(36**32).to_s(36)}.html"
     
-    pics = User.find_by_sql("select * from xcimage where plan_id=#{params['id']};")
+    pics = User.find_by_sql("select id, yxmc, rq, tpjd, bz, xmdk_id, plan_id from xcimage where plan_id=#{params['id']}")
     
     image_url = ""
     for pp in 0..pics.size-1
