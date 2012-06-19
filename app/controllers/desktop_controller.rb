@@ -355,7 +355,11 @@ class DesktopController < ApplicationController
   #add at 04/29
   
   def get_xcry(xcqy)
-    user = User.find_by_sql("select username from users where dw='#{xcqy}' limit 10;")
+    if xcqy=='常熟市局'
+      user = User.find_by_sql("select username from users where bm='国土资源监察大队' limit 10;")
+    else
+      user = User.find_by_sql("select username from users where dw='#{xcqy}' limit 10;")
+    end
     txt = ''
     for k in 0..user.count-1
       txt=txt + ','+user[k].username
