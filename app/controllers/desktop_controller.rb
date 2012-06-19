@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html]
   before_filter :set_current_user
   
   def index
@@ -773,10 +773,10 @@ class DesktopController < ApplicationController
     for pp in 0..pics.size-1
       dd = pics[pp]
       imgPath = "/images/dady/xctp/#{dd['plan_id']}/#{dd['xmdk_id']}/#{dd['yxmc']}"
-      image_url = image_url + "<img src=\"#{imgPath}\" width=\"300\" alt=\"\">"
+      image_url = image_url + "<img src=\"#{imgPath}\" width=\"280\" alt=\"\"> &nbsp;&nbsp;"
     end  
    
-    ss=File.open('./public/static/zfjc/xcmb.tpl.html').read.gsub("{TAG_XCSJ}","#{user.report_at}").gsub("{TAG_XCLX}","#{user.xclx}").gsub("{TAG_XCRY}","#{user.xcry}").gsub("{TAG_XCFS}","#{user.xcfs}").gsub("{TAG_XCNR}","#{user.xcnr}").gsub("{TAG_XCJG}","#{user.xcjg}").gsub("{TAG_CLYYJG}","#{user.clyj}").gsub("{TAG_IMGS}",image_url).gsub("{XC_DATE}","")
+    ss=File.open('./public/static/zfjc/xcmb.tpl.html').read.gsub("{TAG_XCSJ}","#{user.report_at}").gsub("{TAG_XCLX}","#{user.xclx}").gsub("{TAG_XCRY}","#{user.xcry}").gsub("{TAG_XCFS}","#{user.xcfs}").gsub("{TAG_XCNR}","#{user.xcnr}").gsub("{TAG_XCJG}","#{user.xcjg}").gsub("{TAG_CLYYJG}","#{user.clyj}").gsub("{TAG_IMGS}",image_url).gsub("{XC_DATE}","#{user.taskendtime}").gsub("{SESSION_ID}", user.session_id)
     
     ff = File.open("#{rand_file}",'w+')
     ff.write(ss)
@@ -899,4 +899,9 @@ class DesktopController < ApplicationController
     User.find_by_sql("update plans set xcnr='#{xcnr}', xcjg='#{xcjg}', clyj = '#{clyj}' where session_id='#{session_id}';")
     render :text => 'Success'
   end
+  
+  def save_report_from_page
+    
+    redner :text => 'Success'
+  end   
 end

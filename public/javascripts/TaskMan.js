@@ -972,22 +972,20 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     }
                   });
                 }                 
-              },{
-                text : '全部任务',
-                iconCls : 'delete',
-                handler : function(){
-                  
-                  pars = {id:"all"};
-                  new Ajax.Request("/desktop/delete_selected_plan", { 
-                    method: "POST",
-                    parameters: pars,
-                    onComplete:  function(request) {
-                      plan_store.load();
-                    }
-                  });
-                  
-                  
-                }
+            //  },{
+            //    text : '全部任务',
+            //    iconCls : 'delete',
+            //    handler : function(){
+            //      
+            //      pars = {id:"all"};
+            //      new Ajax.Request("/desktop/delete_selected_plan", { 
+            //        method: "POST",
+            //        parameters: pars,
+            //        onComplete:  function(request) {
+            //          plan_store.load();
+            //        }
+            //      });
+            //    }
               },{
                 text : '打印任务',
                 iconCls : 'print',
@@ -1001,7 +999,6 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       id_str = id_str + ',' +items[i].data.id 
                     }
                   }
-                  //pars = {id:id_str};
                   pars = {id:items[0].data.id}
                   new Ajax.Request("/desktop/print_selected_plan", { 
                     method: "POST",
