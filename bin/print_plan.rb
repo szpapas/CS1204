@@ -71,7 +71,7 @@ def print_plan(plan_id)
   for i in 0..max_pics-1
     pp = pics[i]
     imgPath = "./dady/xctp/#{pp['plan_id']}/#{pp['xmdk_id']}/#{pp['yxmc']}"
-    draw_xctp = draw_xctp + "-draw 'image SrcOver #{200+pp*300},1200 225,225 \"#{imgPath}\" ' "
+    draw_xctp = draw_xctp + "-draw 'image SrcOver #{200+i*300},1200 225,225 \"#{imgPath}\" ' "
   end
 
   convert_str="convert ./dady/xc_image_01.png -font  ./dady/STZHONGS.ttf  -pointsize 22 -draw \"text 280, 235 '#{dd['taskbegintime']}'\" -draw \"text 280, 265 '#{dd['taskendtime']}'\" -draw \"text 725, 235 '#{xclx[0]}'\"  -draw \"text 725, 265 '#{xclx[1]}'\" -draw \"text 280, 295 '#{xcry[0]}'\" -draw \"text 280, 325 '#{xcry[1]}'\"  -draw \"text 725, 295 '#{xcfs[0]}'\" -draw \"text 725, 325 '#{xcfs[1]}'\" #{draw_xcnr} #{draw_xcjg} #{draw_clyj} #{draw_xctp} ./dady/images/#{dd['xcbh']}-01.png "
