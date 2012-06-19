@@ -68,9 +68,9 @@ def print_plan(plan_id)
     max_pics = pics.count  
   end
   
-  for pp in 0..max_pics-1
-    dd = pics[pp]
-    imgPath = "./dady/xctp/#{dd['plan_id']}/#{dd['xmdk_id']}/#{dd['yxmc']}"
+  for i in 0..max_pics-1
+    pp = pics[i]
+    imgPath = "./dady/xctp/#{pp['plan_id']}/#{pp['xmdk_id']}/#{pp['yxmc']}"
     draw_xctp = draw_xctp + "-draw 'image SrcOver #{200+pp*300},1200 225,225 \"#{imgPath}\" ' "
   end
 
