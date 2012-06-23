@@ -2,14 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>7_8 Custom Video Controls</title> <style>
+<title>JY DEMO</title> <style>
 body {
   font: bold .8em Arial, Helvetica, sans-serif;
 } 
 video {
   display: block; 
 }
+
 #video-wrapper {
+  -moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+  box-shadow: 0 0 20px 
+  rgba(0, 0, 0, .8); 
+  display: none;
+  margin: 20px 20px;
+  overflow: hidden;
+  position: relative;
+  width: 568px;
+} 
+
+#text-wrapper {
   -moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
   box-shadow: 0 0 20px 
@@ -19,7 +32,8 @@ video {
   overflow: hidden;
   position: relative;
   width: 568px;
-} 
+}
+
 #controls {
   background: rgba(0, 0, 0, .3); 
   bottom: 0;
@@ -51,16 +65,6 @@ video {
   position: absolute; 
   width: 568px;
   z-index: 1;
-}
-
-.marquee {
-　　white-space: nowrap;　　/* 文字不折行 */
-　　overflow:-webkit-marquee;　　/* 只有设置为marquee才有滚动效果 */
-　　width: 170px;　　/* 不是必须的 */
-　　-webkit-marquee-direction:left;　　/* 文字滚动方向 可选值为left | right | up | down */
-　　-webkit-marquee-speed:normal;　　/* 文字滚动速度 可选值为slow | normal | fast */
-　　-webkit-marquee-style:scroll;　　/* 文字滚动方式 可选值为scroll | slide | alternate */
-　　-webkit-marquee-repetition:infinite; 　　/* 文字滚动次数 number | infinite ， infinite即无限次循环滚动 */
 }
 
 button {
@@ -123,6 +127,9 @@ button.speed {
   font-size: .8em 
 }
 </style>
+
+<script type="text/javascript" src="./zfjc/prototype.js"></script>
+
 <script> 
 var video = null;
 var seekbar = null;
@@ -190,6 +197,20 @@ function jinshimove(d1,d2,d3,e,Cspeed){
 }
 
 
+function switch_video() {
+	$('video-wrapper').style.display = "block";
+	$('text-wrapper').style.display = "none";
+	video = document.getElementsByTagName('video')[0];
+	video.play();
+}
+
+function switch_text() {
+	$('video-wrapper').style.display = "none";
+	$('text-wrapper').style.display = "block";
+	video = document.getElementsByTagName('video')[0];
+	video.stop();
+}
+
 function init() {
   // get video container
   video = document.getElementsByTagName('video')[0];
@@ -249,12 +270,13 @@ function init() {
   
   //detects when the video has finished 
   video.addEventListener('ended', function(){
+		switch_text();
     playBtn.innerHTML = '再次播放'; 
   }, false);
   
-  video.play();
-  jinshimove("v0","v1","v2",4,30);
-  jinshimove("v00","v11","v22",4,15);
+  //video.play();
+  //jinshimove("v0","v1","v2",4,30);
+  //jinshimove("v00","v11","v22",4,15);
 }
 
 function playPause() { 
@@ -322,6 +344,30 @@ window.addEventListener('load',init,false);
 </script>
 </head>
 <body>
+	<div id="text-wrapper">
+		<figure>
+			<img src="bar/10_bar-refaeli_01.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_02.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_03.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_04.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_05.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_06.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_07.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_08.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_09.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_10.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_11.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_12.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_13.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_14.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_15.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_16.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_17.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_18.jpg" height="100" alt="" />
+      <img src="bar/10_bar-refaeli_19.jpg" height="100" alt="" />
+		</figure>	
+		<button type="button" onClick="switch_video()">Click Me!</button>
+	</div>	
   <div id="video-wrapper">
     <div id="controls">
       <p id="time">0:00</p>
@@ -409,7 +455,7 @@ window.addEventListener('load',init,false);
       </div>
     </div> 
 
-    <video width="568" height="546" autoplay="true" loop="true">
+    <video width="568" height="546">
       <!-- video for Safari and IE9. MP4 must be first for iPad --> 
       <source src="20120508.mp4" type="video/mp4" />
       <!-- video for Chrome, Firefox and Opera --> 

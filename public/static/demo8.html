@@ -173,8 +173,11 @@ function jinshimove(d1,d2,d3,e,Cspeed){
     else{demo.scrollTop--} 
   } 
   function boxLeft(){ 
-    if(demo2.offsetWidth-demo.scrollLeft<=0){demo.scrollLeft-=demo1.offsetWidth} 
-    else{demo.scrollLeft++} 
+    if(demo2.offsetWidth-demo.scrollLeft<=0){
+			demo.scrollLeft-=demo1.offsetWidth
+		} else{
+			demo.scrollLeft++
+		} 
   } 
   if(e==1){ 
     var MoveTop=setInterval(boxTop,speed); 
