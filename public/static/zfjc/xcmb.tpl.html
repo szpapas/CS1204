@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>巡查记录</title>
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" href="xcmb.css">
+		<script type="text/javascript" src="prototype.js"></script>
+		<script type="text/javascript" src="xcmb.js"></script>
+  </head>
+  
+  <body onload="initToggle()">
+    <div style="margin:40px;">
+      <h1><center>常熟市国土资源监察大队土地执法监察巡回检查记录</center></h1>
+      <h2><button type="button" onclick="save_result()">确定</button></h2>
+			<input type="hidden" id="session_id" name="session_id" value="{SESSION_ID}">
+    	<!-- 基本信息 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>基本信息</legend>
+    		<table cellPadding="1" cellSpacing="1" border="0" class="panel-t">
+    			<tr>
+    				<td class="labeltd">巡查时间：</td>
+    				<td><textarea id="xcsj" rows="1">{TAG_XCSJ}</textarea><td>
+    				<td class="labeltd">巡查路线：</td>
+    				<td><textarea id="xclx" rows="1">{TAG_XCLX}</textarea><td>
+    			</tr>
+    			<tr>
+    				<td class="labeltd">巡查人员：</td>
+    				<td><textarea id="xcry" rows="3">{TAG_XCRY}</textarea><td>
+    				<td class="labeltd">巡查方式：</td>
+    				<td><textarea id="xcfs" rows="3">{TAG_XCFS}</textarea><td>
+    			</tr>
+    		</table>
+    	</fieldset>
+    	<!-- 巡查内容 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>巡查内容</legend>
+    		<table>
+    			<tr>
+    				<td colSpan="4"><textarea id="xcnr" rows="8" cols="200" >{TAG_XCNR}</textarea><td>
+    			</tr>
+    		</table>
+    	</fieldset>
+    	<!-- 巡查结果 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>巡查结果</legend>
+    		<table>
+    			<tr>
+    				<td colSpan="4"><textarea id="xcjg" rows="8" cols="200" >{TAG_XCJG}</textarea><td>
+    			</tr>
+    		</table>
+    	</fieldset>
+    	<!-- 处理意见或结果 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>处理意见或结果</legend>
+    		<table>
+    			<tr>
+    				<td colSpan="4"><textarea id="clyj" rows="8" cols="200" >{TAG_CLYYJG}</textarea><td>
+    			</tr>
+    		</table>
+    	</fieldset>
+    	<!-- 巡查图片 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>巡查图片</legend>
+    		<table>
+    			<tr>
+    				<td colSpan="4">
+							<figure id="fig1">
+								{TAG_IMGS}
+							</figure>
+						<td>
+    			</tr>
+    		</table>
+    	</fieldset>
+    	<!-- 巡查人员签名 -->
+    	<fieldset>
+    		<legend><em class="t-tool t-tool-toggle">&nbsp;</em>巡查人员签名</legend>
+    		<table>
+    			<tr>
+						<td colSpan="4"><textarea id="xcqm" rows="3" cols="200" ></textarea><td>	
+    			</tr>
+    		</table>
+    	</fieldset>
+			<div class="footer-date">{XC_DATE}</div>
+
+    </div>
+  </body>
+</html>

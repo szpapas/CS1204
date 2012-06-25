@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>JY Demo</title> 
+<style>
+	body {
+	  font: bold .8em Arial, Helvetica, sans-serif;
+		background:  #799991
+	} 
+
+	video {
+	  display: block; 
+	}
+
+	#controls {
+	  background: rgba(0, 0, 0, .3); 
+	  bottom: 0;
+	  height: 30px;
+	  left: 0;
+	  padding: 35px 10px 0; 
+	  position: absolute; 
+	  width: 548px;
+	  z-index: 1;
+	} 
+
+
+	button {
+	  background: rgba(255, 255, 255, .7); 
+	  border: none; 
+	  -moz-border-radius: 15px; 
+	  -webkit-border-radius: 15px; 
+	  border-radius: 15px;
+	  cursor: pointer;
+	  padding: 5px 
+	}
+
+	#play { 
+	  width: 70px;
+	}
+	#time, #duration {
+	  color: #fff; position: absolute;
+	  top: 0;
+	}
+	#time { 
+	  left: 10px;
+	} 
+
+	#duration {
+	  right: 10px;
+	  text-align: right 
+	}
+
+	input[type="range"] { 
+	  position: absolute;
+	} 
+
+	#seekbar {
+	  top: 8px; 
+	  width: 465px; 
+	  left: 50px;
+	} 
+
+	#volume {
+	  width: 50px; 
+	}
+	#mute {
+	  float: right; width: 60px;
+	} 
+
+	#monitor-bar {
+	  top: 8px;
+	  left: 50px; 
+	  width: 465px; 
+	}
+	
+
+	
+	#welcome {
+		margin: 50px 50px;
+		background: rgba(0, 255, 255, .7); 
+		font-size:80px;
+	}
+
+
+	label[for="volume"] {
+	  color: #fff;
+	  float: right;
+	  margin: 5px 55px 0 15px;
+	} 
+
+	button.speed {
+	  font-size: .8em 
+	}
+
+	#video-wrapper {
+	  -moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+	  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+	  /*box-shadow: 0 0 20px */
+	  rgba(0, 0, 0, .8); 
+	  display: none;
+	  margin: 20px 20px;
+	  overflow: hidden;
+	  position: relative;
+	  width: 568px;
+	}
+
+	#text-wrapper {
+		/*
+		-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+		-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+		box-shadow: 0 0 20px 
+		rgba(0, 0, 0, .8); 
+		border-radius: 20px;
+		*/
+		display: block;
+		margin: -10px 0px;
+		overflow: hidden;
+		position: relative;
+		width: 1200px;
+		height: 540px;
+		border: 1px;
+	}
+
+	#content {
+		/*-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+		-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+		box-shadow: 0 0 20px 
+		rgba(0, 0, 0, .8);
+		border-radius: 20px;
+		*/
+		margin: 0px 0px;
+		width: 820px;
+		height: 500px;
+		float: left;
+		border: 1px;
+	}
+
+	#sidebar {
+		/*-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+		-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+		box-shadow: 0 0 20px 
+		rgba(0, 0, 0, .8);
+		border-radius: 20px;
+		*/
+		margin: 0px 0px;
+		width:  370px;
+		height: 550px;
+		margin-left: 820px;
+	}
+
+	#detail {
+		margin: 0px 0px;
+		background: rgba(0, 0, 255, .7); 
+		width:370px;
+		height:550px;
+		font-size:30px;
+	}
+	
+	#text {
+		margin: 0px 0px;
+		background: #A2B1A3; 
+		width:370px;
+		height:550px;
+		font-size:30px;
+	}
+
+	
+	#footers {
+		-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+		-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+		box-shadow: 0 0 20px 
+		rgba(0, 0, 0, .8);
+		background: -webkit-gradient(radial, 650 50, 0, 650 50, 800, from(red), to(#800000)) ;
+		border-radius: 5px;
+		display: block;
+		margin: 20px 0px;
+		overflow: hidden;
+		position: relative;
+		width: 1200px;
+		height: 70px;
+	}
+	
+	.caption {
+		font-size:50px;
+	  margin:20px auto;
+	  width:500px;
+		padding:8px;
+	  text-align:center;
+	  border-radius: 20px;
+		color : white; 
+	}
+</style>
+<script type="text/javascript" src="zfjc/prototype.js"></script>
+<script>
+	var audio = null;
+	var interval;
+	var image_id = 1;
+	var imageObj;
+	var bText = false; 
+
+	function jinshimove(d1,d2,d3,e,Cspeed){ 
+	  var speed = Cspeed;
+	  var demo=document.getElementById(d1); 
+	  var demo1=document.getElementById(d2); 
+	  var demo2=document.getElementById(d3); 
+	  demo2.innerHTML=demo1.innerHTML; 
+	  function boxTop(){ 
+	      if(demo2.offsetTop-demo.scrollTop<=0){demo.scrollTop-=demo1.offsetHeight} 
+	      else{demo.scrollTop++} 
+	  } 
+	  function boxRight(){ 
+	    if(demo.scrollLeft<=0){demo.scrollLeft+=demo2.offsetWidth} 
+	    else{demo.scrollLeft--} 
+	  } 
+	  function boxBottom(){ 
+	    if(demo1.offsetTop-demo.scrollTop>=0){demo.scrollTop+=demo2.offsetHeight} 
+	    else{demo.scrollTop--} 
+	  } 
+	  function boxLeft(){ 
+	    if(demo2.offsetWidth-demo.scrollLeft<=800){
+				demo.scrollLeft=0;
+			} else{
+				demo.scrollLeft+=5;
+				//console.log(demo.scrollLeft);
+			} 
+	  }
+	  if(e==1){ 
+	    var MoveTop=setInterval(boxTop,speed); 
+	    demo.onmouseover=function(){clearInterval(MoveTop);} 
+	    demo.onmouseout=function(){MoveTop=setInterval(boxTop,speed)} 
+	  } 
+	  if(e==2){ 
+	    var MoveRight=setg(boxRight,speed); 
+	    demo.onmouseover=function(){clearInterval(MoveRight)} 
+	    demo.onmouseout=function(){MoveRight=setInterval(boxRight,speed)} 
+	  } 
+	  if(e==3){ 
+	    var MoveBottom=setInterval(boxBottom,speed); 
+	    demo.onmouseover=function(){clearInterval(MoveBottom);} 
+	    demo.onmouseout=function(){MoveBottom=setInterval(boxBottom,speed)} 
+	  } 
+	  if(e==4){ 
+	    var MoveLeft=setInterval(boxLeft,speed) 
+	    demo.onmouseover=function(){clearInterval(MoveLeft)} 
+	    demo.onmouseout=function(){MoveLeft=setInterval(boxLeft,speed)} 
+	  } 
+	  if(e=="top"){ 
+	    MoveTop=setInterval(boxTop,speed) 
+	    demo.onmouseout=function(){clearInterval(MoveTop);} 
+	  } 
+	  if(e=="right"){ 
+	    MoveRight=setInterval(boxRight,speed) 
+	    demo.onmouseout=function(){clearInterval(MoveRight);} 
+	  } 
+	  if(e=="bottom"){ 
+	    MoveBottom=setInterval(boxBottom,speed) 
+	    demo.onmouseout=function(){clearInterval(MoveBottom);} 
+	  } 
+	  if(e=="left"){ 
+	    MoveLeft=setInterval(boxLeft,speed) 
+	    demo.onmouseout=function(){clearInterval(MoveLeft);} 
+	  } 
+	}
+
+	function init() {
+		//init text warpper
+		jinshimove("v0","v1","v2",4,200);
+		// hide video
+		switch_text();
+	}
+
+	function switch_video() {
+		window.location="d2.html"
+	}
+
+	function switch_text() {
+		//audio = document.getElementById("myAudio");	
+		//audio.play();
+		image_id = 1
+		bText = false;
+		$('content').innerHTML='<img id="slide" src="JYDEMO/幻灯片'+image_id+'.gif" width="800" height="550" alt="1">';
+		setImageDesc(image_id) 
+	}
+
+	function playPause() { 
+	  if (ifPlaying()) { 
+	    video.pause();
+	    playBtn.innerHTML = '播放'; 
+	  } else {
+	    video.play();
+	    playBtn.innerHTML = '暂停'; 
+	  }
+	};
+	//toggle the mute status of the video 
+	function mute(){
+	  var muteBtn = document.getElementById('mute'); 
+	  if (!video.muted){
+	    video.muted = true;
+	    muteBtn.innerHTML = '取消静音'; 
+	  } else {
+	    video.muted = false; 
+	    muteBtn.innerHTML = '静音';
+	  } 
+	}
+	//change the volume 
+	function changeVolume() {
+	  video.volume = volume.value;
+	}
+	//seekbar controls 
+	function seek(){
+	  video.currentTime = seekbar.value;
+	}
+	//fast-forward the video 
+	function fastforward() {
+	  video.playbackRate = video.playbackRate + 2; 
+	}
+
+	//rewind the video
+	function rewind() {
+	  video.playbackRate = video.playbackRate - 2; 
+	}
+	//go fullscreen (webkit only) 
+	function fullscreen() {
+	  video.webkitEnterFullscreen();
+	}
+	//check if video is playing or not 
+	function ifPlaying() {
+	  if(video.paused || video.ended) {
+	    return false;
+	  } else { 
+	    return true;
+	  } 
+	};
+
+	//format the time to something nice and readable
+	function formatTime(seconds) {
+	  seconds = Math.round(seconds);
+	  minutes = Math.floor(seconds / 60);
+	  minutes = (minutes >= 10) ? minutes : '0' + minutes; 
+	  seconds = Math.floor(seconds % 60);
+	  seconds = (seconds >= 10) ? seconds : '0' + seconds; 
+	  return minutes + ':' + seconds;
+	}
+
+	function setImageDesc(image_id) {
+		var time_delay = [5000, 5000, 5000, 5000, 5000, 5000, 5000];
+ 		handleText();
+		window.setTimeout(handleText, 1000);
+		window.setTimeout(handleText, 2000);
+		window.setTimeout(handleRefresh, time_delay[image_id]);
+	}
+	
+	function handleText() {
+
+		var imageDesc = "";
+		
+		if (image_id == 1)     {
+			imageDesc = "描述1：" + imageDesc;
+		} else if (image_id == 2) {
+			imageDesc = "描述2：" + imageDesc;
+		} else if (image_id == 3) {
+			imageDesc = "描述3：" + imageDesc;
+		} else if (image_id == 4) {
+			imageDesc = "描述4：" + imageDesc;
+		} else if (image_id == 5) {
+			imageDesc = "描述5：" + imageDesc;
+		} else if (image_id == 6) {
+			imageDesc = "描述6：" + imageDesc;
+		}
+
+		$('detail').innerHTML=	'<div id="text">'+imageDesc+'</div>';
+	}
+	
+	//Refresh 图像
+	function handleRefresh() {
+		console.log("refresh here");
+		if (bText==false) {
+			//$('content').innerHTML='<h0>Slides '+ image_id +' Over. </h0>';
+			//$('content').innerHTML='<div id="welcome">Welcome to Changshu</div>';
+			//$('detail').innerHTML='';
+			//短时间Refresh网页
+			window.setTimeout(handleRefresh, 1000)
+			bText = true;
+		} else {
+			image_id ++ ;
+			if (image_id > 6) {
+				image_id = 1;
+				$('content').innerHTML='<img id="slide" src="JYDEMO/幻灯片'+image_id+'.gif" width="800" height="550" alt="'+image_id+'">';
+			  //$('slide').src='JYDEMO/幻灯片'+image_id+'.gif';
+			  //$('slide').alt=image_id;
+			  setImageDesc(image_id);
+			
+				switch_video();
+			} else {
+				bText = false;
+				$('content').innerHTML='<img id="slide" src="JYDEMO/幻灯片'+image_id+'.gif" width="800" height="550" alt="'+image_id+'">';
+				//$('slide').src='JYDEMO/幻灯片'+image_id+'.gif';
+			  //$('slide').alt=image_id;
+				setImageDesc(image_id);
+			}
+		}
+	}
+	
+	function handleCanvas() {
+		console.log("refresh here");
+		image_id ++;
+		if (image_id > 5) {
+			window.clearInterval(interval);
+			switch_video();
+		} else {
+	    imageObj.src = "JYDEMO/幻灯片"+image_id+".gif";
+			var c=document.getElementById("myCanvas");
+			var ctx=c.getContext("2d");
+			ctx.drawImage(imageObj,0,0,720,540);
+		}
+	}
+	window.addEventListener('load',init,false);
+</script>
+</head>
+<body>
+	<div id="footers">
+		<div id="info-bar"> 
+      <div id="v0" style="overflow:hidden;height:100px;width:1180px;margin: 0px 10px" align="center">
+        <div id="v1">
+          <div>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td class='caption'>常熟市国土资源局智慧档案系统<p></td>
+             </tr>
+            </table>
+          </div>
+        </div>
+        <div id="v2"></div>
+      </div>
+    </div> 
+	</div>
+	<div id="text-wrapper">
+		<div id="content">
+			<img id="slide" src="JYDEMO/幻灯片1.gif" width="800" height="550" alt="1">
+		</div>
+		<div id="sidebar">
+			<div id="detail"></div>	
+		</div>
+	</div>
+	<!--audio id="myAudio" src="tim_ta.mp3" autoplay="true"></audio-->
+</body> 
+</html>
