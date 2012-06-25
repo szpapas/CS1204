@@ -4,38 +4,57 @@
 <head>
   <meta charset="UTF-8" />
   <title>常熟市档案查询系统</title>
-  <script src="js/scripts.js"></script>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/jive.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <script src="js/prototype.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/scripts.js" type="text/javascript" charset="utf-8"></script>
 </head>
-<body>
-<header>
-	<hgroup>
-		<h1>The HTML5 Herald</h1>
-		<p id='tagline'>Produced With That Good Ol’ Timey HTML5 &amp; CSS3</p>
-	</hgroup>	
-</header>	
+<body class="jive-body-formpage jive-body-formpage-login">
+  <div id="jive-wrapper" class="clearfix">
+    <div class='logo'>
+    </div>
+    <div id="jive-body-full">
+      <div id="jive-body-main">
+          <div id="video-container">
+							<div class='caption'>常熟市档案介绍</div>
+              <div id="video-panel">
+							  <video width="500" height="400" controls autoplay='true'>
+						      <!-- video for Safari and IE9. MP4 must be first for iPad --> 
+						      <source src="/videos/20120508.mp4" type="video/mp4">
+						      <!-- video for Chrome, Firefox and Opera --> 
+						      <source src="/videos/20120508.webm" type="video/webm" /> 
+						      <source src="/videos/20120508.ogv" type="video/ogg" />
+						    </video>
+							</div>
+					</div>
+					<div id="sidebar-container">
+						<div class="menu_item" onclick='window.location = "/dacx/search.html"'>
+                <p>档案查询</p>
+            </div>
+						<div class="menu_item">
+                <p>统计分析</p>
+            </div>
+						<div class="menu_item">
+                <p></p>
+            </div>
+						<div class="menu_item">
+                <p></p>
+            </div>
+					</div>	
+			</div>
+		</div>					
+  </div>
 
-<article>
-	<hgroup>
-    <h1>WAI-ARIA</h1>
-    <h2>Web App Accessibility</h2>
-  </hgroup>
-	
-	<p>Lorem ipsum dolor ... </p>
-	
-	<figure id="fig1">
-	    <figcaption>Screen Reader Suppor</figcaption>
-	    <img src="/images/bar/10_bar-refaeli_01.jpg" width="100" alt="JAWS: Landmarks 1/1, Forms 4/5 ... ">
-	    <img src="/images/bar/10_bar-refaeli_02.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/bar/10_bar-refaeli_03.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/bar/10_bar-refaeli_04.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/bar/10_bar-refaeli_05.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/7.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/8.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	    <img src="/images/9.jpg" width="100" alt="JAWS: Landmarks 1/2, Forms 4/5 ... ">
-	</figure>
-	
-</article>	
+  <!-- BEGIN footer -->
+  <div id="jive-footer" class="clearfix">
+    <div class="jive-footer-nav">
+      Copyright © 2011, Brightechs, Inc.            
+        <div class="jiveVersion" style="display: none;">
+          Webgis Software Version: 33            
+        </div>
+      -  <a href="mailto:szpapas@qq.com">技术支持Email</a>
+     </div>
 
-</body>
+  </div>
+  <!-- END footer -->
 </html>

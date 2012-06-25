@@ -139,6 +139,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                 },{
                   xtype: 'label',
                   text: '巡查频度',
+                  hidden: true,
                   x: 10,
                   y: 100                 
                 },{
@@ -149,6 +150,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   name: 'pd',
                   id: 'pd_combo_id',
                   store: pd_store,
+                  hidden: true,
                   emptyText:'请选择',
                   mode: 'local',
                   minChars : 2,

@@ -102,36 +102,38 @@ button.speed {
 	rgba(0, 0, 0, .8); 
 	border-radius: 20px;
 	display: block;
-	margin: 20px 20px;
+	margin: 0px 0px;
 	overflow: hidden;
 	position: relative;
 	width: 1200px;
-	height: 740px;
+	height: 540px;
 	border: 1px;
 }
 
 #content {
-	-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+	/*-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
 	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
 	box-shadow: 0 0 20px 
 	rgba(0, 0, 0, .8);
+	*/
 	border-radius: 20px;
 	margin: 20px 20px;
 	width: 780px;
-	height: 700px;
+	height: 500px;
 	float: left;
 	border: 1px;
 }
 
 #sidebar {
-	-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
+	/*-moz-box-shadow: 0 0 20px rgba(0, 0, 0, .8); 
 	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .8);
 	box-shadow: 0 0 20px 
 	rgba(0, 0, 0, .8);
+	*/
 	border-radius: 20px;
 	margin: 20px 20px;
 	width: 360px;
-	height: 700px;
+	height: 500px;
 	margin-left: 820px;
 	border: 1px;
 }
@@ -143,11 +145,11 @@ button.speed {
 	rgba(0, 0, 0, .8);
 	border-radius: 20px;
 	display: block;
-	margin: 20px 20px;
+	margin: 0px 5px;
 	overflow: hidden;
 	position: relative;
 	width: 1200px;
-	height: 150px;
+	height: 100px;
 	border: 1px;	
 }
 
@@ -181,10 +183,10 @@ button.speed {
 	    else{demo.scrollTop--} 
 	  } 
 	  function boxLeft(){ 
-	    if(demo2.offsetWidth-demo.scrollLeft<=600){
+	    if(demo2.offsetWidth-demo.scrollLeft<=800){
 				demo.scrollLeft=0;
 			} else{
-				demo.scrollLeft++;
+				demo.scrollLeft+=5;
 				//console.log(demo.scrollLeft);
 			} 
 	  }
@@ -229,7 +231,7 @@ button.speed {
 	function init() {
 		// get video container
 	  video = document.getElementsByTagName('video')[0];
-	  audio = document.getElementsByTagName('audio');
+
 	  // reference the range inputs
 	  seekbar = document.getElementById('seekbar');
 	  volume = document.getElementById('volume');
@@ -291,7 +293,7 @@ button.speed {
 	  }, false);
 		
 		//init text warpper
-		jinshimove("v0","v1","v2",4,15);
+		jinshimove("v0","v1","v2",4,200);
 		
 		// hide video
 		switch_text();
@@ -302,11 +304,12 @@ button.speed {
 		$('text-wrapper').style.display = "none";
 		$('footers').style.display = "none";
 		video = document.getElementsByTagName('video')[0];
+		video.src='http://218.4.152.78/static/stirfry.mp4';
+		video.autoplay = 'true'
 		video.play();
-		audio = document.getElementById("myAudio");	
-		audio.pause();
+		//audio = document.getElementById("myAudio");	
+		//audio.pause();
 		window.clearInterval(interval);
-		
 	}
 
 	function switch_text() {
@@ -315,9 +318,10 @@ button.speed {
 		$('footers').style.display = "block";
 		
 		video = document.getElementsByTagName('video')[0];
-		video.pause();
-		audio = document.getElementById("myAudio");	
-		audio.play();
+		video.src='';
+		//video.pause();
+		//audio = document.getElementById("myAudio");	
+		//audio.play();
 		
 		interval = setInterval(handleRefresh, 5000);
 		$('slide').src="C5000/幻灯片1.png";
@@ -388,7 +392,7 @@ button.speed {
 	function handleRefresh() {
 		console.log("refresh here");
 		var num = parseInt($('slide').alt)+1;
-		if (num >= 5) {
+		if (num >= 3) {
 			window.clearInterval(interval);
 			$('slide').src="C5000/幻灯片1.png";
 			$('slide').alt="1";
@@ -398,41 +402,44 @@ button.speed {
 			$('slide').alt=num;
 		}
 	}
-	
 	window.addEventListener('load',init,false);
 </script>
 </head>
 <body>
 	<div id="text-wrapper">
 		<div id="content">
-			<img id="slide" src="C5000/幻灯片1.png" width="720" height="540" alt="1">
+			<img id="slide" src="C5000/幻灯片1.png" width="720" height="500" alt="1">
 		</div>
 		<div id="sidebar">sidebar
 		</div>
 	</div>
 	<div id="footers">
-		<div id="info-bar">
-      <div id="v0" style="overflow:hidden;height:100px;width:1200px;" align="center">
+		<div id="info-bar"> 
+      <div id="v0" style="overflow:hidden;height:100px;width:1180px;margin: 0px 10px" align="center">
         <div id="v1">
           <div>
             <table width="100%" border="0" cellpadding="0" cellspacing="10">
               <tr>
-                <td><img src="bar/10_bar-refaeli_01.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_02.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_03.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_04.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_05.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_06.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_07.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_08.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_09.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_10.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_11.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_12.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_13.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_14.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_15.jpg" height="100" alt="" /></td>
-                <td><img src="bar/10_bar-refaeli_16.jpg" height="100" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_01.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_02.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_03.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_04.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_05.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_06.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_07.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_08.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_09.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_10.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_11.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_12.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_13.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_14.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_15.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_16.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_17.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_18.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_19.jpg" height="80" alt="" /></td>
+                <td><img src="bar/10_bar-refaeli_20.jpg" height="80" alt="" /></td>
              </tr>
             </table>
           </div>
@@ -454,13 +461,14 @@ button.speed {
       <button id="fullscreen">全屏</button>
     </div>
     <video width="568" height="546">
+			<source src="" type="video/mp4" />
       <!-- video for Safari and IE9. MP4 must be first for iPad --> 
-      <source src="20120508.mp4" />
+      <!--source src="20120508.mp4" /-->
       <!-- video for Chrome, Firefox and Opera --> 
-      <source src="20120508.webm" type="video/webm" /> 
-      <source src="20120508.ogv" type="video/ogg" />
+			<!--source src="20120508.webm" type="video/webm" /--> 
+      <!--source src="20120508.ogv" type="video/ogg" /-->
     </video> 
   </div>
-	<audio id="myAudio" type="audio/mp3" src="tim_ta.mp3" autoplay="false"></audio>
+	<!--audio id="myAudio" src="tim_ta.mp3" autoplay="true"></audio-->
 </body> 
 </html>

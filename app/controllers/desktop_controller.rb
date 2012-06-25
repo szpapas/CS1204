@@ -8,7 +8,16 @@ class DesktopController < ApplicationController
   before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product]
   before_filter :set_current_user
   
+  
   def index
+  end
+  
+  
+  def week_dates( week_num )
+      year = Time.now.year
+      week_start = Date.commercial( year, week_num, 1 )
+      week_end = Date.commercial( year, week_num, 7 )
+      week_start.strftime( "%m/%d/%y" ) + ' - ' + week_end.strftime( "%m/%d/%y" )
   end
   
   #add at 06/17 
@@ -382,6 +391,29 @@ class DesktopController < ApplicationController
     render :text => txt
   end
   
+
+  def add_zhxc_twice_per_week(xcqy, nd)  
+    data = User.find_by_sql("select distinct dw, dwjc from users where dw='#{xcqy}';")
+    xcry = get_xcry(xcqy)
+    #w_begin = Date.new(nd,month,1).strftime('%U').to_i
+    w_begin = Time.now.strftime('%U').to_i
+    for week in w_begin+1..w_begin+8
+      week_start = Date.commercial(nd, week, 1)
+      week_end   = Date.commercial(nd, week, 7 )
+      xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-01"
+      session_id =rand(36**32).to_s(36)
+      qrq = week_start.strftime( "%Y-%m-%d" ) 
+      zrq = week_end.strftime( "%Y-%m-%d" )
+      User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+      xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
+      session_id =rand(36**32).to_s(36)
+      qrq = week_start.strftime( "%Y-%m-%d" ) 
+      zrq = week_end.strftime( "%Y-%m-%d" )
+      User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+    end
+  end
+
+
   
   def add_zhxc_single(xcqy, nd, pd)
     data = User.find_by_sql("select distinct dw, dwjc from users where dw='#{xcqy}';")
@@ -439,11 +471,12 @@ class DesktopController < ApplicationController
     if xqzmc=='全部'
       user = User.find_by_sql("select distinct dw from users where dw is not null;")
       for k in 0..user.count-1
-        xcqy = user[k].dw
-        add_zhxc_single(xcqy, nd, pd)
+        xqzmc = user[k].dw
+        #add_zhxc_single(xqzmc, nd, pd)
+        add_zhxc_twice_per_week(xqzmc, nd)
       end  
     else 
-      add_zhxc_single(xqzmc, nd, pd)
+      add_zhxc_twice_per_week(xqzmc, nd)
     end  
   end
   

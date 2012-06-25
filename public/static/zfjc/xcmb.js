@@ -51,8 +51,8 @@ function save_result() {
     parameters: pars,
     onSuccess: function(transport){
       var response = transport.responseText || "no response text";
-      alert("Success! \n\n" + response);
+      alert("成功!\n\n 保存成功.");
     },
-    onFailure: function(){ alert('Something went wrong...') }
+    onFailure: function(){ alert('出错了...') }
   });
 }
