@@ -6,26 +6,29 @@
   <title>常熟市档案查询系统</title>
   <link rel="stylesheet" href="css/jive.css" type="text/css" media="screen" title="no title" charset="utf-8">
   <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen" title="no title" charset="utf-8">
-  <script src="js/prototype.js" type="text/javascript" charset="utf-8"></script>
-  <script src="js/scripts.js" type="text/javascript" charset="utf-8"></script>
+  <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts.js" type="text/javascript" charset="utf-8"></script>
+
 <script>
 	//window.addEventListener('load',init,false);
 	function save_result() {
-		
-
 	  var tm   = $("user_tm").value;
 	  var ajtm = $("user_ajtm").value;
-	  var tdzh = $("user_tdzh").value;
 	  var wh   = $("user_wh").value;
 	  //var pars = {tm:tm, tdzh:tdzh, ajtm:ajtm, wh:wh};
 	  
-	  var pars = {query:tm}
- 	  new Ajax.Request('http://192.168.100.109:3000/desktop/get_archive_where',{
+	  var pars = {tm:tm, ajtm:ajtm, wh:wh}
+ 	  //new Ajax.Request('http://192.168.100.109:3000/desktop/get_archive_where',{
+	  new Ajax.Request('/desktop/get_archive_where',{
 	    method: "POST",
 	    parameters: pars,
 	    onSuccess: function(transport){
 	      var response = transport.responseText || "no response text";
-	      alert("Success! \n\n" + response);
+	      //alert("Success! \n\n" + response);
+				console.log(response);
+	      store = window.localStorage;
+	      store.setItem("request_id", response);
+				window.location = "result.html";
 	    },
 	    onFailure: function(){ alert('Something went wrong...') }
 	  });
@@ -56,10 +59,6 @@
                   <div id="search_tdzl">
 	                  <label>文号:</label>
 	                  <input type="text"  size="30"  maxlength="150" value="" id="user_wh">
-                  </div>
-                  <div id="search_tdzl">
-	                  <label>土地证号:</label>
-	                  <input type="text" size="30"  maxlength="150" value="" id="user_tdzh">
                   </div>
 									<div class="search_button" onclick="save_result()">
 			                <p>查询</p>

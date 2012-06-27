@@ -229,5 +229,30 @@ body, fieldset, th, td, select, input, textarea {
 }
 
 
+#thumb-container {
+    float: left;
+    width: 150px;
+    height: 500px;
+    padding: 0;
+    border: 1px dashed;
+}
 
 
+#images-container {
+  width: 650px;
+  height: 500px;
+  margin-left:150px;
+  padding: 5;
+  border: 1px dashed;  
+}
+
+li.selected img {
+    border: 1px solid #FFFFFF;
+}
+
+li img {
+    border: 1px solid #999999;
+    height: 40px;
+    vertical-align: middle;
+    width: 40px;
+}

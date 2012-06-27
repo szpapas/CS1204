@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product, :get_archive_where, :check_result]
   before_filter :set_current_user
   
   
@@ -938,7 +938,6 @@ class DesktopController < ApplicationController
   end
   
   def save_report_from_page
-    
     redner :text => 'Success'
   end   
   
@@ -946,4 +945,27 @@ class DesktopController < ApplicationController
   def get_product
     render :text => "<p>new product</p>"
   end
+  
+  #add on 6/26
+  def get_archive_where
+    tm, ajtm, wh = params['tm'], params['ajtm'], params['wh']
+    request_id = rand(36**32).to_s(36);
+    User.find_by_sql("insert into jy_zxjy (request_id, zt, tm, ajtm, wh) values ('#{request_id}','查找中', '#{tm}', '#{ajtm}', '#{wh}');")
+    render :text => request_id
+  end
+  
+  def check_result
+    request_id = params['request_id']
+    users = User.find_by_sql("select id, zt from jy_zxjy where request_id='#{request_id}';")
+    txt=""
+    if users[0] == "完成" 
+      users = User.find_by_sql("select dh, image_id from  jy_zxjylist where zxjyid=#{users[0].id}")
+      txt = users.to_json
+    elsif users[0].zt == "未找到"
+      txt = "未找到档案,请重新查询."
+    elsif users[0].zt == "查找中"
+      txt = "查找中"
+    end
+    render :text => txt;
+  end  
 end
