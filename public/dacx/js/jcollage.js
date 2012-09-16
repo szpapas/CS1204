@@ -253,12 +253,12 @@ function Collage(canvasId) {
 
 function Layer(img) {
 	this.img = img;	
-	this.offsetX = 100;
-	this.offsetY = 0;
+	this.offsetX = 50;
+	this.offsetY = 10;
 	//this.width = img.naturalHeight/4;
 	//this.height = img.naturalHeight/4;
-	this.width = 480;
-	this.height = 600;
+	this.width = 600;
+	this.height = 950;
 	
 	this.canvas = document.createElement('canvas');
 	this.canvas.width = this.width;

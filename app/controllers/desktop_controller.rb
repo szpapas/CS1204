@@ -5,13 +5,13 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product, :get_archive_where, :check_result]
-  before_filter :set_current_user
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json,  :get_plan_list, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product, :get_archive_where, :check_result, :report_line_pos, :get_track_points, :get_xmdk_json, :get_task_line, :add_new_xmdk, :get_task_inspect]
   
+  
+  before_filter :set_current_user
   
   def index
   end
-  
   
   def week_dates( week_num )
       year = Time.now.year
@@ -30,7 +30,6 @@ class DesktopController < ApplicationController
         points[k]=user[k].lon_lat
       end
       geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
-      #puts "update plans set the_lines=#{geomtext} where session_id='#{session_id}';"
       User.find_by_sql("update plans set the_lines=#{geomtext} where session_id='#{session_id}';")
     end
   end
@@ -180,6 +179,12 @@ class DesktopController < ApplicationController
     render :text  => txt
   end
   
+  
+  def get_xmdk_json
+    xmdks = User.find_by_sql("select gid as xmdk_id, xh as xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdk order by gid;")
+    render :text => xmdks.to_json
+  end  
+  
   def get_inspect_json
     sql_str = "select inspects.*, plans.xmdk from inspects inner join plans on inspects.plan_id = plans.id where "
     if !params['username'].nil?
@@ -195,7 +200,6 @@ class DesktopController < ApplicationController
   end
   
   
-  
   def get_user
     render :text => User.current.to_json
   end
@@ -209,7 +213,9 @@ class DesktopController < ApplicationController
     render :text => "/images/dady/images/#{user[0].xcbh}-01.png"
   end
   
-  #?lat=31.722044&lon=120.584175
+  #?lat=31.722044&lon=120.584175    
+  # M_MODE_2DINFO = 22
+
   def get_2dinfo
     lon, lat = params['lon'], params['lat']
     user = User.find_by_sql("select gid, dlmc from dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
@@ -225,8 +231,9 @@ class DesktopController < ApplicationController
       txt = txt + " 规划:#{user2[0].dlmc}"
     end
     txt = "#{lon} #{lat}" if txt.length == 0
+    ss = {"mode" => "22", "result" => txt}
 
-    render :text => txt  
+    render :text => ss.to_json  
   end
   
   
@@ -251,23 +258,13 @@ class DesktopController < ApplicationController
     #Create_Line from points
     upldate_line(session_id)
     render :text => 'Success'
-    
   end
-  
-  def report_current_pos
-    lon, lat, session_id, username = params["lon"], params['lat'], params["session_id"], params['username']
-    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-    User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), report_at= TIMESTAMP '#{now}' where session_id='#{session_id}';")
-    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
-    render :text => 'Success'
-  end
-  
   
   def report_iphone_pos
     lon, lat, username = params["lon"], params['lat'], params["username"]
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lon} #{lat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}';")
-    render :text => 'Success'
+    render :text => "Success:#{username}"
   end
   
   def report_task_state
@@ -283,25 +280,21 @@ class DesktopController < ApplicationController
       User.find_by_sql("update plans set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
 
       render :text => "Success:#{session_id}"
+      
     elsif state=="off"
       session_id=params["session_id"]
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       
       #这个地方是Multiple-Line, 先忽略过去
-      #generate geometry
-      #user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")    
-      #points=[]
-      #for k in 0..user.size-1 
-      #  points[k]=user[k].lon_lat
-      #end
-      #geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
       upldate_line(session_id)
       
       User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
-      render :text => 'Success'  
+
+      render :text => "Success:#{session_id}"
     else
-      render :text => 'Failure:unknown state'      
-    end  
+      render :text => "Failure:#{session_id}"     
+    end
+      
   end
   
   def get_ygtree
@@ -391,7 +384,7 @@ class DesktopController < ApplicationController
     render :text => txt
   end
   
-
+  
   def add_zhxc_twice_per_week(xcqy, nd)  
     data = User.find_by_sql("select distinct dw, dwjc from users where dw='#{xcqy}';")
     xcry = get_xcry(xcqy)
@@ -401,15 +394,17 @@ class DesktopController < ApplicationController
       week_start = Date.commercial(nd, week, 1)
       week_end   = Date.commercial(nd, week, 7 )
       xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-01"
+      rwmc = "#{data[0]['dw']} #{nd}年#{week}周 第1次巡查"
       session_id =rand(36**32).to_s(36)
       qrq = week_start.strftime( "%Y-%m-%d" ) 
       zrq = week_end.strftime( "%Y-%m-%d" )
-      User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
       xcbh = "xc-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
+      rwmc = "#{data[0]['dw']} #{nd}年#{week}周 第2次巡查"
       session_id =rand(36**32).to_s(36)
       qrq = week_start.strftime( "%Y-%m-%d" ) 
       zrq = week_end.strftime( "%Y-%m-%d" )
-      User.find_by_sql "insert into plans (xcbh, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
     end
   end
 
@@ -529,14 +524,19 @@ class DesktopController < ApplicationController
   
   # get all current_active user postion, 当前Area内的。
   def get_user_position
-    #txt = '[{"users":{"lon_lat":"13433188 3715760","id":32,"icon":"bee.png","username":"高飞","color":"#800000"}}]'
-    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, report_at from plans where zt='执行' order by report_at desc;")
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL;")
     render :text => user.to_json
   end
   
   #add at 06/08
   def get_task_position
-    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt='执行' order by report_at desc;")
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where id=#{params['task_id']} order by report_at desc;")
+
+    render :text => user.to_json
+  end
+  
+  def get_task_position_over
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt='完成' order by report_at desc;")
 
     render :text => user.to_json
   end
@@ -545,9 +545,9 @@ class DesktopController < ApplicationController
   def get_phone_list
     zt = params['zt'] || '执行'
     if zt == '执行'
-      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, session_id, report_at from plans where zt='执行';")
+      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, device, session_id, report_at, zt from plans where zt='执行';")
     else
-      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at from users where last_seen is not NULL;")
+      user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL;")
     end    
     size = user.count.to_i;
     if size > 0
@@ -705,16 +705,11 @@ class DesktopController < ApplicationController
     user=User.find_by_sql("select * from users where  email='#{params['email']}';")
     size = user.size
     if size == 0
-   
       user = User.new
-   
       user.email=params['email']
-   
       user.password_confirmation=params['encrypted_password']
-   
       user.password = params['encrypted_password']
       user.save
-   
       txt='success'
     else
       txt= '用户名称已经存在，请重新输入用户名称。'
@@ -728,7 +723,7 @@ class DesktopController < ApplicationController
     render :text => 'success'
   end
   
-  #add at 0606
+  #add at 06/06
   def get_yhtree
     text = []
     node = params["node"].chomp
@@ -764,7 +759,6 @@ class DesktopController < ApplicationController
     render :text => text.to_json
   end
   
-  
   #add on 06/09
   def get_bmtree
     text = []
@@ -783,7 +777,6 @@ class DesktopController < ApplicationController
     render :text => text.to_json 
   
   end  
-  
   
   def uploadfiles
     params.each do |k,v|
@@ -825,7 +818,6 @@ class DesktopController < ApplicationController
     params['start'] = params['start'] || "0"
     params['limit'] = params['limit'] || "25"
     params['nd']    = params['nd'] || "全部"
-    #params['tbdw']  = params['tbdw'] || "全部"
     params['zt']    = params['zt'] || "全部"
     params['filter'] = params['filter'] || "全部"
     
@@ -867,7 +859,6 @@ class DesktopController < ApplicationController
     end
     render :text => txt
   end
-  
   
   #add on 06/11
   def get_rptree
@@ -946,26 +937,174 @@ class DesktopController < ApplicationController
     render :text => "<p>new product</p>"
   end
   
-  #add on 6/26
-  def get_archive_where
-    tm, ajtm, wh = params['tm'], params['ajtm'], params['wh']
-    request_id = rand(36**32).to_s(36);
-    User.find_by_sql("insert into jy_zxjy (request_id, zt, tm, ajtm, wh) values ('#{request_id}','查找中', '#{tm}', '#{ajtm}', '#{wh}');")
-    render :text => request_id
+  # add on July 9
+  def get_plan_list
+    username = params['username'] || ""
+    if username == ""
+      txt = ""
+    else
+      ts1 = Time.now.strftime('%Y-%m-%d')  
+      ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
+
+      plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+            
+      txt = plan.to_json
+    end
+    render :text  => txt
   end
   
-  def check_result
-    request_id = params['request_id']
-    users = User.find_by_sql("select id, zt from jy_zxjy where request_id='#{request_id}';")
-    txt=""
-    if users[0] == "完成" 
-      users = User.find_by_sql("select dh, image_id from  jy_zxjylist where zxjyid=#{users[0].id}")
-      txt = users.to_json
-    elsif users[0].zt == "未找到"
-      txt = "未找到档案,请重新查询."
-    elsif users[0].zt == "查找中"
-      txt = "查找中"
+  def report_current_pos
+    lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+    User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
+    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
+    render :text => 'Success'
+  end
+  
+  
+#"task_id"=>"4015", "data"=>"120.757339 31.703003,2012-08-27 21:36:53\n120.756348 31.703003,2012-08-27 21:36:39\n120.755341 31.703003,2012-08-27 21:36:30\n120.755341 31.703003,2012-08-27 21:36:23\n120.753342 31.703003,2012-08-27 21:36:16\n120.752335 31.703003,2012-08-27 21:36:07\n120.751343 31.703003,2012-08-27 21:35:57\n120.751343 31.703003,2012-08-27 21:35:21\n", "username"=>"李振华"
+  
+  #iphone report location and time
+  def report_line_pos
+    task_id, username = params['task_id'], params['username']
+    session_id = User.find_by_sql("select session_id from plans where id = #{task_id};")[0]['session_id']
+    lines = params['data'].split("\n");
+    k = lines.count-1
+    while k >= 0
+      ss = /(.*)\s+(.*),(.*)/.match(lines[k])
+      lon_lat=User.find_by_sql("select astext(transform(geomFromText('Point(#{ss[1]} #{ss[2]})',4326),900913));")[0].astext.gsub('POINT(','').gsub(')','')
+      User.find_by_sql("insert into location_points(session_id, lon_lat, report_time ) values ('#{session_id}','#{lon_lat}','#{ss[3]}');")  
+      k = k-1;
     end
-    render :text => txt;
+    
+    #更新Plan
+    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
+    if user.size > 0
+      User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
+      
+      #update users
+      User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
+      
+    end
+    
+    #Create_Line from points
+    upldate_line(session_id)
+    
+    #Set last update time
+    out = {}
+    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
+    out['create_at'] = user[0].report_time
+    
+    render :text => out.to_json
+  end
+  
+  #路线回放点
+  def get_track_points
+	  user = User.find_by_sql("select astext(the_lines) from plans where id=#{params['task_id']};")
+	  if user.size > 0
+	    txt = user[0].astext[11..-2]
+	  else 
+	    txt = ''
+	  end     
+	  render :text => txt
+	end
+  
+  #iphone 请求路线点
+  def get_task_line
+    user = User.find_by_sql("select astext(transform(the_lines, 4326 ))  from plans where id=#{params['task_id']};")
+	  txt = ''
+	  if !user[0].astext.nil?
+	    txt = user[0].astext
+	  end
+	  ss = {"mode" => "20", "result" => txt}
+	  render :text => ss.to_json
   end  
+  
+  def get_task_inspect
+    user = User.find_by_sql("select plan_id, xmdk_id, xh as xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdk on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
+    
+	  txt = ''
+	  if user.size > 0
+	    txt = user.to_json
+	  end
+	  
+	  ss = {"mode" => "24", "result" => txt}
+	  render :text => ss.to_json
+  end
+  
+  def get_task_photos
+    user = User.find_by_sql(" where plan_id=#{params['task_id']};")
+    
+	  txt = ''
+	  if user.size > 0
+	    txt = user.to_json
+	  end
+	  
+	  ss = {"mode" => "30", "result" => txt}
+	  render :text => ss.to_json
+  end
+  
+  # 部门， 人员， 路线
+  #
+  def get_phone_tree
+    text = []
+    node = params["node"]
+    
+    if node == "root"
+      data = User.find_by_sql("select distinct dw from users where dw is not null;")
+      data.each do |dd|
+        text << {:text => " #{dd['dw']}", :id => "#{dd["dw"]}", :cls => "folder" }
+      end
+    else
+      pars = node.split('|') || []
+      
+      if pars.length == 1
+        data = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL and dw = '#{pars[0]}';")
+        data.each do |dd|
+          if dd['zt'] == 'f'
+            text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "offline", :checked => false}
+          else
+            text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "online", :checked => false}
+          end    
+        end
+      elsif pars.length == 2
+        data = User.find_by_sql("select id, rwmc as xcmc, zt, astext(the_lines) as the_lines, report_at  from plans where xcry like '%#{pars[0]}%' and the_lines is not null order by report_at;")
+        data.each do |dd|
+            text << {:text => "#{dd['xcmc']}", :id => "#{dd["id"]}|#{dd["zt"]}|#{dd['report_at']}", :leaf => true, :cls => "file", :checked => false}
+        end
+      end
+    end
+    render :text => text.to_json
+  end
+  
+  def add_new_xmdk
+    #task_id=%d&xmmc=%@&lon=%f&lat=%f
+    task_id, xmmc, lat, lon = params['task_id'], params['xmmc'], params['lat'], params['lon']
+    nd  = Time.now.year
+    
+    user = User.find_by_sql("select xcqy from plans where id = '#{task_id}';")
+    xzqmc = user[0]['xcqy']
+    
+    the_geom = "transform( buffer(geomFromText('Point(#{lon} #{lat})',4326),0.0000898315280011275),900913)"
+    the_center = "astext( transform(geomFromText('Point(#{lon} #{lat})',4326),900913)  ) "
+    
+    #Add xmdk with xz_tag = 1 
+    puts "insert into xmdk (xh, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1'); "
+    user = User.find_by_sql("insert into xmdk (xh, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1') returning gid;")
+    
+    gid = user[0]['gid']
+    puts "gid is #{gid}"
+    
+    puts "insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');"
+    
+    user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
+    inspect_id = user[0]['id']
+    
+    puts "===inspect_id:#{inspect_id}"
+    
+    ss = {"mode" => "23", "result" => "gid:#{gid},inspect_id:#{inspect_id}"}
+    render :text => ss.to_json
+    
+  end
+  
 end

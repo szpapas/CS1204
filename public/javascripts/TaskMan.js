@@ -25,6 +25,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                 fields: [
                   {name: 'id',    type: 'integer'},
                   {name: 'xcbh',  type: 'string'},
+                  {name: 'rwmc',  type: 'string'},
                   {name: 'tbdw',  type: 'string'},
                   {name: 'xcsj',  type: 'string'},
                   {name: 'xclx',  type: 'string'},
@@ -917,7 +918,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
             columns: [
               sm,
               { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},
-              { header : '巡查编号',  width : 100, sortable : true, dataIndex: 'xcbh'},
+              { header : '巡查编号',  width : 100, sortable : true, dataIndex: 'xcbh', hidden:true},
+              { header : '任务名称',  width : 200, sortable : true, dataIndex: 'rwmc'},
               { header : '计划时间',  width : 75, sortable : true, dataIndex: 'qrq', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
               { header : '巡查方式',  width : 75, sortable : true, dataIndex: 'xcfs'},
               { header : '填报单位',  width : 75, sortable : true, dataIndex: 'tbdw', hidden:true},

@@ -1,23 +1,3 @@
-/*
-
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
 
 MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
@@ -69,7 +49,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 var id =  place["id"];
                 //var icon = place["icon"];
                 var username = place['username'];
-                ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
+                ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
                 var x0 = parseFloat(ss[1]);
                 var y0 = parseFloat(ss[2]);
                 
@@ -104,7 +84,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
       };
 
-      function showUserLines(map, vectorLayer) {
+      function showUserLines(map, vectorLayer, task_id) {
         
         if (vectorLayer.features.length > 0){
           while (vectorLayer.features.length > 0) {
@@ -114,14 +94,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         };  
         
         
-        pars = {};
+        pars = {task_id:task_id};
 
         new Ajax.Request("/desktop/get_task_position", {
           method: "POST",
           parameters: pars,
           onComplete:  function(request) {
-            //[{"users":{"lon_lat":"13740496.96 5129894.39","id":13}},{"users":{"lon_lat":"13740496.96 5129894.39","id":14}},{"users":{"lon_lat":"13740721.49 5129134.79","id":15}}]
-            
+
             var features = [];                        
             var places = eval("("+request.responseText+")");
 
@@ -130,6 +109,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
               var pointText = place["lon_lat"]; //13470500 3683278
               var session_id= place["session_id"];
+              var xcsj = place['report_at'];
               if (pointText == null || pointText == "undefined") continue;
               
               var pointList = []; 
@@ -154,13 +134,25 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontFamily = "Courier New, monospace";
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
-              //style_line.label = '任务'+session_id;
-              //style_line.fontColor = "blue"; 
+              //style_line.label = '巡查时间\n2012/08/27\n21:37:27';//+xcsj;
+              style_line.fontColor = "blue"; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
               vectorLayer.addFeatures([lineFeature]);
-            } 
+              
+              //move to the center of line
+              var cc = pts[pts.length/2].split(" ");
 
+              var x0 = parseFloat(cc[0]);
+              var y0 = parseFloat(cc[1]);
+
+              var lonlat = new OpenLayers.LonLat(x0, y0);
+              map.panTo(lonlat,{animate: false});
+              
+            } 
+            
+
+            
           }
         });
 
@@ -172,11 +164,20 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
         var loopable=false;
         var loop_data=[];
-
+        
+        //路线回放功能
         function startCheck() {
           //initialize replay data
-          var pars = {task_id:  Ext.getCmp('track-view').task_id};
-          new Ajax.Request("/feed/get_track_points", { 
+          
+          var sn = Ext.getCmp('system_status_tree_panel').getSelectionModel().getSelectedNode();
+          var ss = sn.id.split("|"); 
+          if  ( ss.size() < 3 ) {
+            alert("请先选择一个路线！");
+            return;
+          }
+          
+          var pars = {task_id:ss[0]};
+          new Ajax.Request("/desktop/get_track_points", { 
             method: "POST",
               parameters: pars,
               onComplete:  function(request) {
@@ -194,7 +195,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                   };
 
                   var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                  style.externalGraphic = '/images/avatar/monkey.png';
+                  style.externalGraphic = '/images/chrome.png';
                   style.backgroundXOffset = 0;
                   style.backgroundYOffset = -7;
                   style.graphicZIndex = MARKER_Z_INDEX;
@@ -275,7 +276,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var gphy = new OpenLayers.Layer.Google(
             "谷歌地形图",
             {type: google.maps.MapTypeId.TERRAIN}
-        );
+        );					
+
+
 
         map.addLayers([gmap, gphy, gsat]);
 
@@ -289,8 +292,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         
-        map.addLayers([dltb, dltb_m, xmdks_map]);
-
+        //map.addLayers([dltb, dltb_m, xmdks_map]);
+        
+        map.addLayers([dltb, dltb_m]);
+        
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
             styleMap: styles
@@ -375,7 +380,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           id : 'task_track',
           autoScroll: true,
           xtype:"panel",
-          width:800,
+          //width:780,
           height:600,
           style:'margin:0px 0px',
           layout:'fit',
@@ -387,10 +392,17 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           },{
             text:'显示路线',
+            hidden : true,
             iconCls : 'route16',
             handler : function() {
               showUserLines(map,vectorLines);
             }           
+          },{
+            text:'路线回放',
+            iconCls : 'route16',
+            handler : function() {
+              startCheck();
+            }
           }],
           items: [{
               xtype: 'gx_mappanel',
@@ -398,6 +410,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }]
         });
         
+ 
         var phone_store = new Ext.data.Store({
             proxy: new Ext.data.HttpProxy({
                 url: '/desktop/get_phone_list'
@@ -407,6 +420,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               root: 'rows',             
               fields: [
                 {name: 'id',        type: 'integer'},
+                {name: 'zt',        type: 'string'},
                 {name: 'username',  type: 'string'},
                 {name: 'lon_lat',   type: 'string'},
                 {name: 'report_at',   type: 'date', dateFormat: 'Y-m-d H:i:s'}
@@ -417,19 +431,28 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
         phone_store.load();
         
+        function renderZt(val) {
+            if (val == 't') {
+              return '<img src="/images/people_16_online.png">';
+            } else {
+              return '<img src="/images/people_16_offline.png">';
+            }
+        };
+        
         var phone_grid = new Ext.grid.GridPanel({
           id: 'phone_grid_id',
           store: phone_store,
           columns: [
             { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
+            { header : '',  width : 30, sortable : true, dataIndex: 'zt',  renderer:renderZt},
             { header : '人员',  width : 50, sortable : true, dataIndex: 'username'},
-            { header : '手机',  width : 100, sortable : true, dataIndex: 'device'},
-            { header : '时间',  width : 100, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
+            { header : '时间',  width : 150, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y/m/d H:i:s')},
+            { header : '手机',  width : 100, sortable : true, dataIndex: 'device', hidden:'true'}
             ],
           columnLines: true,
           layout:'fit',
           viewConfig: {
-            stripeRows:true,
+            stripeRows:true
           },
           tbar:[]
         });
@@ -437,7 +460,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         phone_grid.on('rowclick', function(grid, row, e){
           var data = grid.store.data.items[row].data;
           pointText = data.lon_lat;
-          ss = pointText.match(/POINT\((\d+.\d+)\s*(\d+.\d+)\)/);
+          ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
+          
           var x0 = parseFloat(ss[1]);
           var y0 = parseFloat(ss[2]);
 
@@ -470,6 +494,54 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }],
           items: [phone_grid]
         });
+ 
+
+        var treePanel =	 new Ext.tree.TreePanel({
+      		useArrows:true,
+      		animate:true,
+      		enableDD:true,
+      		singleExpand:true,
+      		id : 'system_status_tree_panel',
+      		checkModel: 'cascade',	 
+      		onlyLeafCheckable: false,
+      		collapsible: true,
+      		collapseMode:'mini',
+      		rootVisible : false,
+      		loader: new Ext.tree.TreeLoader({
+      			dataUrl: '/desktop/get_phone_tree'
+      			//baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+      		}),
+      		root: {
+      			nodeType: 'async',
+      			text: '常熟国土',
+      			draggable:false,
+      			id:'root'
+      		}
+      	});
+        
+        
+        //treePanel.expandAll();
+        
+        treePanel.on('click', function(n, e){
+      		//e.preventDefault();
+      		//menu1.showAt(e.getXY());
+      		//var data = grid.store.data.items[row].data;
+      		var datas = n.id.split('|')
+      		
+      		if (datas.size() == 2) {
+      		  pointText = datas[1];
+            ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
+
+            var x0 = parseFloat(ss[1]);
+            var y0 = parseFloat(ss[2]);
+
+            var lonlat = new OpenLayers.LonLat(x0, y0);
+            map.panTo(lonlat,{animate: false});
+      		} else if (datas.size() == 3) {
+      		  
+            showUserLines(map,vectorLines,datas[0]);
+      		}
+      	})
         
         
         win = desktop.createWindow({
@@ -495,7 +567,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 collapsible:true,
                 titleCollapse:true,
                 layout:"fit",
-                items:[phone_panel]
+                items:[treePanel]
               }]
         });
       };
@@ -507,7 +579,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
       
       win.show();
+      
       showUserPosition(map,vectors);
+      
       return win;
   }
 });
