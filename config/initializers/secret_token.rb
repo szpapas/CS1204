@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-IChad::Application.config.secret_token = 'f96ba7897690e58ab01555f8e50889b6c9b1439f93e9d47d69182a0fe6b44a8e1928ca4a1b7d262f860a52d53a6a37563391bf5469aa60ff428d352f3347b1d3'
+IChad::Application.config.secret_token = '29da16fd7d0581e9eb3b9a06e0513f6fdc6413e6b3aa58b16a66108a81c71fb70e1f56bff099d3efe89c5594c34e571f1bb19a1ba7351975a6622056f1440892'

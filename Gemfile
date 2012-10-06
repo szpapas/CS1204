@@ -3,30 +3,22 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.3'
 
-# Bundle edge Rails instead:
-# gem 'rails',     :git => 'git://github.com/rails/rails.git'
-
 gem 'pg'
 gem 'execjs'
-#gem 'therubyracer'
 
-gem 'therubyracer', '~> 0.11.0beta5'
-
-group :libv8 do
-  gem 'libv8', "~> 3.11.8"
-end
-
+gem 'therubyracer'
 
 gem 'mongrel'
+
 gem 'json', '1.6.4'
 
 # Gems used only for assets and not required
 # in production environments by default.
-#group :assets do
-#  gem 'sass-rails',   '~> 3.1.5'
-#  gem 'coffee-rails', '~> 3.1.1'
-#  gem 'uglifier', '>= 1.0.3'
-#end
+group :assets do
+  gem 'sass-rails',   '~> 3.1.5'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'uglifier', '>= 1.0.3'
+end
 
 group :development, :test do
   gem 'rspec-rails',      ">= 2.8.0"
@@ -47,4 +39,3 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'ruby-debug'
-
