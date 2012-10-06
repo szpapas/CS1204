@@ -301,7 +301,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             styleMap: styles
         });
         
-        var markers = new OpenLayers.Layer.Vector("巡查点标记", {
+        var markers = new OpenLayers.Layer.Vector("巡查车", {
                 styleMap: new OpenLayers.StyleMap({
                     // Set the external graphic and background graphic images.
                     externalGraphic:   "/images/marker-gold.png",
@@ -335,7 +335,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             styleMap: styles
         });
 
-        map.addLayers([xmdk_vectors, vectors, vectorLines, markers]);
+        map.addLayers([xmdk_vectors,  vectorLines, vectors, markers]);
         
         var layserSwitch = new OpenLayers.Control.LayerSwitcher();
         

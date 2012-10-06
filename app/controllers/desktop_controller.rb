@@ -5,7 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json,  :get_plan_list, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product, :get_archive_where, :check_result, :report_line_pos, :get_track_points, :get_xmdk_json, :get_task_line, :add_new_xmdk, :get_task_inspect]
+  before_filter :authenticate_user!, :except => [:upload_images, :get_plan_json,  :get_plan_list, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :new_xmdk, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :save_report, :save_report_from_html, :get_product, :get_archive_where, :check_result, :report_line_pos, :get_track_points, :get_xmdk_json, :get_task_line, :add_new_xmdk, :get_task_inspect, :show2Dinfo, :uploadPhoto]
   
   
   before_filter :set_current_user
@@ -182,7 +182,10 @@ class DesktopController < ApplicationController
   
   def get_xmdk_json
     xmdks = User.find_by_sql("select gid as xmdk_id, xh as xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdk order by gid;")
-    render :text => xmdks.to_json
+    
+    txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(')
+    
+    render :text => txt
   end  
   
   def get_inspect_json
@@ -267,35 +270,7 @@ class DesktopController < ApplicationController
     render :text => "Success:#{username}"
   end
   
-  def report_task_state
-    state = params["state"]
-    
-    if state=="on"
-      #task_id, device_no, username
-      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-      session_id = params['session_id']
-      
-      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
-      
-      User.find_by_sql("update plans set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
 
-      render :text => "Success:#{session_id}"
-      
-    elsif state=="off"
-      session_id=params["session_id"]
-      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-      
-      #这个地方是Multiple-Line, 先忽略过去
-      upldate_line(session_id)
-      
-      User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
-
-      render :text => "Success:#{session_id}"
-    else
-      render :text => "Failure:#{session_id}"     
-    end
-      
-  end
   
   def get_ygtree
     text = []
@@ -1011,17 +986,19 @@ class DesktopController < ApplicationController
   
   #iphone 请求路线点
   def get_task_line
-    user = User.find_by_sql("select astext(transform(the_lines, 4326 ))  from plans where id=#{params['task_id']};")
+    user = User.find_by_sql("select astext(transform(the_lines, 4326 ))  from plans where id=#{params['task_id']} and the_lines is not null;")
 	  txt = ''
-	  if !user[0].astext.nil?
-	    txt = user[0].astext
-	  end
+	  if user.size > 0
+	    if !user[0].astext.nil? 
+	      txt = user[0].astext
+	    end
+	  end  
 	  ss = {"mode" => "20", "result" => txt}
 	  render :text => ss.to_json
   end  
   
   def get_task_inspect
-    user = User.find_by_sql("select plan_id, xmdk_id, xh as xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdk on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
+    user = User.find_by_sql("select id, plan_id, xmdk_id, xh as xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdk on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
     
 	  txt = ''
 	  if user.size > 0
@@ -1107,4 +1084,44 @@ class DesktopController < ApplicationController
     
   end
   
+  def report_task_state
+    state = params["state"]
+    txt = ''
+    if state=="on"
+      #task_id, device_no, username
+      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      session_id = params['session_id']
+      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
+      User.find_by_sql("update plans set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
+      txt = "Success:#{session_id}"
+      
+    elsif state=="off"
+      session_id=params["session_id"]
+      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      #这个地方是Multiple-Line, 先忽略过去
+      upldate_line(session_id)
+      User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
+      txt = "Success:#{session_id}"
+    else
+      txt = "Failure:#{session_id}"     
+    end
+    
+    ss = {"mode" => params['mode'], "result" => txt}
+    render :text => ss.to_json      
+  end
+  
+  def getTaskPhotos
+    user = User.find_by_sql("select id, plan_id, xmdk_id, yxmc, rq, tpjd, bz, astext(the_geom) as lonlat from xcimage where plan_id = #{params['task_id']};")
+    txt = user.to_json
+    render :text => {"mode" => params['mode'], "result" => txt}.to_json
+  end  
+  
+  def show2Dinfo
+    render :text => "2D info here!"
+  end
+  
+  def uploadPhoto
+    txt = "Success"
+    render :text => {"mode" => params['mode'], "result" => txt}.to_json
+  end  
 end
