@@ -1120,7 +1120,19 @@ class DesktopController < ApplicationController
     render :text => "2D info here!"
   end
   
+  #"yxmc"=>"IMAGE_0013.PNG", "yx_file"=>#<ActionDispatch::Http::UploadedFile:0x45fcc20 @content_type="image/png", @tempfile=#<File:/tmp/RackMultipart20121006-31823-4jljf7-0>, @headers="Content-Disposition: form-data; name=\"yx_file\"; filename=\"IMAGE_0013.PNG\"\r\nContent-Type: image/png\r\n", @original_filename="IMAGE_0013.PNG">, "xmdk_id"=>"824", "plan_id"=>""
+  
   def uploadPhoto
+    yxmc = "#{task_id}_#{xmdk_id}_#{params['yxmc']}"
+    geomString = "geomFromText('Point(lonlat),4326)"
+    
+    puts ("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, the_geom) values (#{params['plan_id']}, #{params['xmdk_id']}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}, #{geomString}');")
+    
+    v = params['yx_file']
+    ff = File.new("./dady/xctx/#{params['plan_id']}_#{params['xmdk_id']}_#{v.filename}","w+")
+    ff.write(v.tempfile.read)
+    ff.close
+    
     txt = "Success"
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end  
