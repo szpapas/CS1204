@@ -1125,7 +1125,7 @@ class DesktopController < ApplicationController
   def uploadPhoto
     plan_id = params['plan_id']
     xmdk_id = params['xmdk_id']
-    yxmc = "#{task_id}_#{xmdk_id}_#{params['yxmc']}"
+    yxmc = "#{plan_id}_#{xmdk_id}_#{params['yxmc']}"
     geomString = "geomFromText('Point(lonlat),4326)"
     
     User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}, #{geomString}');")
