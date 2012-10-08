@@ -1126,14 +1126,18 @@ class DesktopController < ApplicationController
     plan_id = params['plan_id']
     xmdk_id = params['xmdk_id']
     yxmc = "#{plan_id}_#{xmdk_id}_#{params['yxmc']}"
-    geomString = "geomFromText('Point(lonlat),4326)"
+    geomString = "geomFromText('Point(#{params['lonlat']})',4326)"
     
-    User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}, #{geomString}');")
+    User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}', #{geomString});")
     
     v = params['yx_file']
-    ff = File.new("./dady/xctx/#{plan_id}_#{xmdk_id}_#{v.filename}","w+")
+    
+    pathname = "./dady/xctx/#{plan_id}_#{xmdk_id}_#{v.original_filename}"
+    ff = File.new(pathname,"w+")
     ff.write(v.tempfile.read)
     ff.close
+    
+    system ("convert #{pathname} #{pathname.gsub('PNG','JPG')}")
     
     txt = "Success"
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
