@@ -40,7 +40,9 @@ class MapController < ApplicationController
     else
       ts1 = Time.now.strftime('%Y-%m-%d')  
       ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
-      plan = User.find_by_sql("select id, xcbh, session_id,xcqy,xcfs,xcry,qrq,zrq,zt from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+
+      plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+            
       txt = plan.to_json
     end
     render :text  => txt
