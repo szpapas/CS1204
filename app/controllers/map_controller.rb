@@ -45,7 +45,7 @@ class MapController < ApplicationController
             
       txt = plan.to_json
     end
-    render :text  => txt
+    render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end
   
   def report_current_pos
@@ -104,9 +104,7 @@ class MapController < ApplicationController
     else
       txt = "Failure:#{session_id}"     
     end
-    
-    ss = {"mode" => params['mode'], "result" => txt}
-    render :text => ss.to_json      
+    render :text => {"mode" => params['mode'], "result" => txt}.to_json   
   end
   
   def save_report
@@ -120,13 +118,12 @@ class MapController < ApplicationController
 
   def get_xmdk_json
     xmdks = User.find_by_sql("select gid as xmdk_id, xh as xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdk order by gid;")
-    
     txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(')
-    
-    render :text => txt
+    render :text => {"mode" => params['mode'], "result" => txt}.to_json  
   end  
   
   def get_inspect_json
+    
     sql_str = "select inspects.*, plans.xmdk from inspects inner join plans on inspects.plan_id = plans.id where "
     if !params['username'].nil?
       sql_str = sql_str+" xcry like '%#{params['username']}%' "
