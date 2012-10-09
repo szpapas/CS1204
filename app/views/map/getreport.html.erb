@@ -1,0 +1,90 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>任务报告</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+<body> 
+
+<script>
+  $(function() {
+     $("#callAjax").click(function() {
+        var xcnr = $.trim($("#xcnr_text").val());
+        var xcjg = $.trim($("#xcjg_text").val());
+        var clyj = $.trim($("#clyj_text").val());
+        if(xcnr.length > 0)
+        {
+           $.ajax({
+             type: "POST",
+             url: "/map/callajax",
+             data: ({xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+             cache: false,
+             dataType: "text",
+             success: function(data){
+               $("#result_log").html(data);
+             }
+           });
+        }
+     });
+  });
+</script>
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+
+  <div data-role="content"> 
+    
+    <div data-role="collapsible" data-inset="false">
+      <h3><strong>巡查时间：</strong><%= @user['taskbegintime'] %></h3>
+    </div>
+    <div data-role="collapsible" data-inset="false">
+       <h3><strong>巡查路线：</strong> <%= @user['xclx'] %>  </h3>
+    </div>
+    <div data-role="collapsible" data-inset="false">
+       <h3><strong>巡查人员：</strong> <%= @user['xcry'] %>  </h3>
+    </div>
+    <div data-role="collapsible" data-inset="false">
+       <h3><strong>巡查方式：</strong> <%= @user['xcfs'] %>  </h3>
+    </div>
+    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+      <h3><strong>巡查内容：</strong>   </h3>
+      <textarea name="textarea" id="xcnr_text"><%= @user['xcnr'] %> </textarea>
+			
+    </div>
+    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+      <h3><strong>巡查结果：</strong>  </h3>
+      <textarea name="textarea" id="xcjg_text"> <%= @user['xcjg'] %> </textarea>
+    </div>
+    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+      <h3><strong>处理意见：</strong> <%= @user['clyjjg'] %>  </h3>
+      <textarea name="textarea" id="clyj_text"> <%= @user['xcjg'] %> </textarea>
+    </div>
+    <div data-role="collapsible" data-inset="false">
+       <h3><strong>巡查图片：</strong> </h3>
+    </div>
+    <!--a href="index.html" data-role="button" data-inline="fasle" data-theme="b">保存修改</a-->
+		<input id="callAjax" type="button" value="保存修改" data-theme="b"/>
+    <div id="result_log"></div>  
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+<div data-role="page" id="xcnr">
+
+  <div data-role="content"> 
+    
+    <label for="textarea-a">Textarea:</label>
+    <textarea name="textarea" id="textarea-a">
+    I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
+    </textarea>
+      
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+</html>

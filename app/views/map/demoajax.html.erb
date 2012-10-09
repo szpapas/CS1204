@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>JQuery Mobile AJAX</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+    <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
+</head>
+ 
+<body>
+ 
+    <script>
+        $(function() {
+ 
+            $("#callAjax").click(function() {
+                var theName = $.trim($("#theName").val());
+ 
+                if(theName.length > 0)
+                {
+                    $.ajax({
+                      type: "POST",
+                      url: "/map/callajax",
+                      data: ({name: theName}),
+                      cache: false,
+                      dataType: "text",
+                      success: onSuccess
+                    });
+                }
+            });
+ 
+            $("#resultLog").ajaxError(function(event, request, settings, exception) {
+              $("#resultLog").html("Error Calling: " + settings.url + "<br />HTTP Code: " + request.status);
+            });
+ 
+            function onSuccess(data)
+            {
+                $("#resultLog").html("Result: " + data);
+            }
+ 
+        });
+    </script>
+ 
+    <div data-role="page" id="indexPage">
+        <div data-role="header">
+            <h1>JQuery Mobile</h1>
+        </div>
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <label for="theName">Please enter your name:</label>
+                <input type="text" id="theName" name="theName" value="" />
+            </div>
+            <input id="callAjax" type="button" value="Call Ajax" />
+            <div id="resultLog"></div>
+        </div>
+ 
+        <div data-role="footer">
+            <h1>AJAX Demo</h1>
+        </div>
+    </div>
+ 
+</body>
+</html>

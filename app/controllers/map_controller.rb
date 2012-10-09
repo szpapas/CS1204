@@ -1,7 +1,8 @@
 class MapController < ApplicationController
   def get2ddata
   end
-
+  
+  #with template
   def get2dinfo
     lon,lat=params['lon'],params['lat']
     lon = '120.0' if lon.nil?
@@ -14,6 +15,23 @@ class MapController < ApplicationController
     end  
   end
   
+  
+  def getuserinfo
+    @users = User.find_by_sql("select id, email, username from users limit 1;")
+  end
+  
+  def getreport
+    @user = User.find_by_sql("select * from plans where id=#{params['task_id']};")[0]
+  end  
+  
+  def demoajax
+  end
+  
+  def callajax
+    render :text => "保存成功"
+  end  
+    
+  #Ajax requests
   def get_plan_json
     username = params['username'] || ""
     if username == ""
@@ -238,5 +256,20 @@ class MapController < ApplicationController
     render :text => ss.to_json
     
   end
+ 
+  #help functions
+  # Help functions 
+  def upldate_line(session_id)
+    user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
+    if user.size > 2 
+      points=[]
+      for k in 0..user.size-1 
+        points[k]=user[k].lon_lat
+      end
+      geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
+      User.find_by_sql("update plans set the_lines=#{geomtext} where session_id='#{session_id}';")
+    end
+  end
+  
  
 end

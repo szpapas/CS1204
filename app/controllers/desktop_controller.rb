@@ -5,9 +5,7 @@ require 'date'
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:get_plan_json,  :get_plan_list, :get_inspect_json, :get_2dinfo, :batch_report_pos, :report_task_state, :get_task_position, :upload_pic2, :report_current_pos, :report_iphone_pos, :get_product, :get_archive_where, :check_result, :report_line_pos, :get_track_points, :get_xmdk_json, :get_task_line, :add_new_xmdk, :get_task_inspect]
-  
-  
+  before_filter :authenticate_user!, :except => []
   before_filter :set_current_user
   
   def index
@@ -21,18 +19,6 @@ class DesktopController < ApplicationController
   end
   
   #add at 06/17 
-  #Create Line From Points
-  def upldate_line(session_id)
-    user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
-    if user.size > 2 
-      points=[]
-      for k in 0..user.size-1 
-        points[k]=user[k].lon_lat
-      end
-      geomtext = "geomFromText('LINESTRING(#{points.join(',')})',900913)"
-      User.find_by_sql("update plans set the_lines=#{geomtext} where session_id='#{session_id}';")
-    end
-  end
   
   def get_user_bm
     bm=params['bm']
@@ -98,7 +84,6 @@ class DesktopController < ApplicationController
     render :text => txt  
   end
   
-  #Parameters: {"xclx"=>"", "zrq"=>"2012-04-11", "clyj"=>"", "xcnr"=>"", "qrq"=>"2012-04-11", "id"=>"2", "xcdk"=>"", "xcry"=>"陈建刚,陈进,沈洁,沈建根,仇\345\217\266", "xcqy"=>"古里镇(2)", "xcjg"=>""}
   def add_plan
     id = params['id']
     qrq, zrq = params['qrq'], params['zrq']
@@ -178,30 +163,6 @@ class DesktopController < ApplicationController
     end
     render :text => "/images/dady/images/#{user[0].xcbh}-01.png"
   end
-  
-  def batch_report_pos
-    data = params["data"]
-    session_id = params["session_id"]
-    lines = data.split("\n");
-    k = lines.count-1
-    while k >= 0
-      ss = lines[k].split(',');
-      lon_lat=User.find_by_sql("select astext(transform(geomFromText('Point(#{ss[1]} #{ss[2]})',4326),900913));")[0].astext.gsub('POINT(','').gsub(')','')
-      User.find_by_sql("insert into location_points(session_id, lon_lat, report_time ) values ('#{session_id}','#{lon_lat}','#{ss[3]}');")  
-      k = k-1;
-    end
-    
-    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by id desc limit 1;")
-    
-    if user.size > 0
-      User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
-    end
-    
-    #Create_Line from points
-    upldate_line(session_id)
-    render :text => 'Success'
-  end
-  
   
   def get_ygtree
     text = []
@@ -535,46 +496,6 @@ class DesktopController < ApplicationController
     render :text => 'Success'
   end
   
-  #==================
-  def split_string(text, length=16)
-    char_array = text.unpack("U*")
-    if char_array.size > length
-      t1 = char_array[0..length-1].pack("U*")
-      t2 = char_array[length..-1].pack("U*")
-      return "#{t1}\n#{split_string(t2, length)}"
-    else
-      return text
-    end
-  end
-   
-  def upload_file
-    params.each do |k,v|
-      logger.debug("K: #{k} ,V: #{v}")
-      if k.include?("ext")
-        logger.debug("#{v.original_filename}")
-        logger.debug("#{v.tempfile.path}")
-        logger.debug("#{v.content_type}")
-        ff = File.new("./dady/#{v.original_filename}","w+")
-        ff.write(v.tempfile.read)
-        ff.close
-        break
-      end
-    end
-    render :text => "{success:true}"
-  end
-
-  #更新用户信息
-  def update_user
-   user=User.find_by_sql("select * from users where id <> #{params['id']} and email='#{params['email']}';")
-   size = user.size
-   if size == 0
-     User.find_by_sql("update users set email='#{params['email']}', encrypted_password='#{params['encrypted_password']}' where id = #{params['id']};")
-     txt='success'
-   else
-     txt= '用户名称已经存在，请重新输入用户名称。'
-   end
-   render :text => txt
-  end
   
   #新增用户信息
   def insert_user
@@ -599,6 +520,20 @@ class DesktopController < ApplicationController
     user=User.find_by_sql("delete from users where  id=#{params['id']};")
     render :text => 'success'
   end
+
+  #更新用户信息
+  def update_user
+   user=User.find_by_sql("select * from users where id <> #{params['id']} and email='#{params['email']}';")
+   size = user.size
+   if size == 0
+     User.find_by_sql("update users set email='#{params['email']}', encrypted_password='#{params['encrypted_password']}' where id = #{params['id']};")
+     txt='success'
+   else
+     txt= '用户名称已经存在，请重新输入用户名称。'
+   end
+   render :text => txt
+  end
+
   
   #add at 06/06
   def get_yhtree
@@ -654,20 +589,6 @@ class DesktopController < ApplicationController
     render :text => text.to_json 
   
   end  
-  
-  def uploadfiles
-    params.each do |k,v|
-      logger.debug("#{k} , #{v}")
-    end
-    
-    fs = params['fileselect']
-    for k in 0..fs.size - 1 
-      ff = fs[k]
-      puts "#{ff.content_type}\t#{ff.original_filename}"
-    end 
-    
-    render :text => 'Success'
-  end
   
   #add on 06/12
   def display_selected_plan
@@ -808,7 +729,6 @@ class DesktopController < ApplicationController
 	end
  
   # 部门， 人员， 路线
-  #
   def get_phone_tree
     text = []
     node = params["node"]

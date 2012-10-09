@@ -1,0 +1,26 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>用户数据</title> 
+</head> 
+<body> 
+
+<%=
+  collection_table(@users, :id => 'users-table', :class => 'summary') do |t|
+    t.header :id
+    t.header :email
+    t.header :username, 'Date<br \>Published'
+
+    t.rows.alternate = :odd
+    t.rows.each do |row, user, index|
+      row.id            user.id
+      row.email         user.email
+      row.username      user.username
+    end
+
+    #t.footer :num_comments, @posts.inject(0) {|sum, post| sum += post.comments.size}
+    #t.footer :num_trackbacks, @posts.inject(0) {|sum, post| sum += post.trackbacks.size}
+  end
+%>
+</body>
+</html>
