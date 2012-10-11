@@ -31,6 +31,10 @@ class MapController < ApplicationController
     User.find_by_sql("update plans set xcnr='#{params['xcnr']}', xcjg='#{params['xcjg']}', clyj='#{params['clyj']}' where id=#{params['task_id']}")
     render :text => "保存成功"
   end  
+  
+  def get_report_pdf
+    
+  end  
     
   #Ajax requests
   def get_plan_json
