@@ -39,7 +39,7 @@
             cache: false,
             dataType: "text",
             success: function(data){
-              $("#result_log").html(data);
+              $.mobile.loadPage(data, "slideup");
             }
           });
      });
@@ -84,7 +84,7 @@
     </div>    
     <!--a href="index.html" data-role="button" data-inline="fasle" data-theme="b">保存修改</a-->
 		<input id="saveAjax" type="button" value="保存修改" data-theme="b"/>
-		<input id="viewPdf" type="button" value="PDF查看" data-theme="b"/>
+		<!--input id="viewPdf" type="button" value="PDF查看" data-theme="b"/-->
     <div id="result_log"></div>  
 
     <div id="result_log"></div>  

@@ -12,6 +12,5 @@ group :development, :test do
 end
 gem 'devise'
 gem 'jquery-rails'
-#gem 'table_helper'
 gem 'builder'
 gem 'prawn', '1.0.0.rc1'

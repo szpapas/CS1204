@@ -33,7 +33,7 @@ class MapController < ApplicationController
   end  
   
   def getpdfreport
-    
+    render :text => "/images/xcjl/xcjl_4208.pdf"
   end  
     
   #Ajax requests
