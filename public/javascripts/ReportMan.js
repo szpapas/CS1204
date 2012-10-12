@@ -230,6 +230,7 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
          var reportPanel = new Ext.grid.GridPanel({
              store: rp_store,
              id : 'rp_grid_id',
+             height : 500,
              columns: [
                sm,
                { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},
@@ -377,7 +378,95 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
              rp_store.load();
            }
          }, rpTree);
+        
+        
+        
+         //动态查询怕哪了
          
+          var  dt_store = new Ext.data.Store({
+              proxy: new Ext.data.HttpProxy({
+                  url: '/desktop/get_dt_report'
+              }),
+              reader: new Ext.data.JsonReader({
+                totalProperty: 'results', 
+                root: 'rows',             
+                fields: [
+                  {name: 'xcqy',   type: 'string'},
+                  {name: 'xclc',   type: 'integer'},
+                  {name: 'xcys',   type: 'integer'},
+                  {name: 'xmdkc',  type: 'integer'},
+                  {name: 'photoc', type: 'integer'}
+                ]    
+              }),
+              baseParams :  {tbdw:'',qrq:'', zrq:''},
+              sortInfo:{field: 'xcqy', direction: "ASC"}
+          });
+
+          // manually load local data
+          dt_store.baseParams.tbdw = "";
+          dt_store.baseParams.qrq  = "";
+          dt_store.baseParams.zrq  = "";
+          dt_store.load();
+          
+         var dtReportPanel = new Ext.grid.GridPanel({
+           store: dt_store,
+           id : 'dt_report_id',
+           height: 500,
+           columns: [
+             sm,
+             { header : '巡查区域',    width : 75, sortable : true, dataIndex: 'xcqy'},
+             { header : '巡查里程',    width : 75, sortable : true, dataIndex: 'xclc'},
+             { header : '巡查用时',    width : 75, sortable : true, dataIndex: 'xcys'},
+             { header : '巡查点数',   width : 75, sortable : true, dataIndex: 'xmdkc'},
+             { header : '照片数',   width : 75, sortable : true, dataIndex: 'photoc'}
+           ],
+           sm:sm,  
+           columnLines: true,
+           layout:'fit',
+           viewConfig: {
+             stripeRows:true,
+           },
+           tbar: ['<span style=" font-size:12px;font-weight:600;color:#3366FF;">单位选择</span>:&nbsp;&nbsp;',
+           { xtype: 'combo', width: 100, id: 'tbdw-id', name : 'tbdw', store:xzqmc_store, emptyText:'请选择',mode: 'local', valueField:'text', displayField:'text',triggerAction:'all'}
+           ,'<span style=" font-size:12px;font-weight:600;color:#3366FF;">开始时间</span>:&nbsp;&nbsp;',
+             {
+               name:  'qrq',
+               id : 'qrq-id',
+               xtype: "datefield",
+               format:"Y-m-d" 
+             },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">结束时间</span>:&nbsp;&nbsp;',{
+               name: 'zrq',
+               id : 'zrq-id',
+               xtype:"datefield",
+               format:"Y-m-d" 
+             },{
+               text : '查询',
+               iconCls :'search',
+               handler : function() {
+                 var qrq = Ext.getCmp('qrq-id');
+                 var zrq = Ext.getCmp('zrq-id');
+                 var tbdw = Ext.getCmp('tbdw-id');
+                 
+                 dt_store.baseParams.tbdw = tbdw.getRawValue();
+                 dt_store.baseParams.qrq  = qrq.getValue();
+                 dt_store.baseParams.zrq  = zrq.getValue();
+                 dt_store.load();
+                 
+               }
+             }],
+           bbar:['->',
+             new Ext.PagingToolbar({
+               store: rp_store,
+               pageSize: 20,
+               width : 350,
+               border : false,
+               displayInfo: true,
+               displayMsg: '{0} - {1} of {2}',
+               emptyMsg: "没有找到！",
+               prependButtons: true
+             })
+           ]
+         });  
           
          win = desktop.createWindow({
             id: 'reportman',
@@ -392,10 +481,25 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
             hideMode: 'offsets',
             layout:"border",
             items:[{
-                region:"center",
-                title:"统计报表",
-                layout: 'fit',
-                items:[reportPanel]
+              region:"center",
+              title:"统计报表",
+              layout: 'fit',
+              items:[{
+                  xtype:"tabpanel",
+                  activeTab:0,
+                  bodyStyle: 'padding: 5px;',
+                  items:[{
+                      xtype:"panel",
+                      title:"周报月报",
+                      layout: 'fit',
+              				items:[reportPanel]
+                    },{
+                      xtype:"panel",
+                      title:"动态查询",
+                      layout: 'fit',
+              				items:[dtReportPanel]                     
+                    }]
+                }]
               },{
                 region:"west",
                 title:"分类",

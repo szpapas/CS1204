@@ -768,6 +768,36 @@ class DesktopController < ApplicationController
     render :text => text.to_json
   end
   
-  
+  def get_dt_report
+    tbdw = params['tbdw'] 
+    qrq = params['qrq']
+    zrq = params['zrq']
+    
+    where_a = [];
+    where_a << "xcqy=#{tbdw}" if tbdw != '' 
+    where_a << "taskbegintime > TIMESTAMP '#{qrq}'" if qrq != ''
+    where_a << "taskendtime  < TIMESTAMP '#{zrq}'" if zrq != ''
+    
+    where_str = where_a.join(" and ")
+    if where_a.size > 0
+      query_str = "select sum(xclc) as xclc,  sum(xcys) as xcys, sum(xmdk_count) as xmdkc, sum(photo_count) photoc, xcqy from plans where #{where_str} group by xcqy;"
+    else
+      query_str = "select sum(xclc) as xclc,  sum(xcys) as xcys, sum(xmdk_count) as xmdkc, sum(photo_count) photoc, xcqy from plans group by xcqy;"
+    end
+      
+    user = User.find_by_sql(query_str.gsub('T00:00:00',''))
+    size = user.size.to_i;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+    
+  end
   
 end

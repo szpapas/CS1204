@@ -142,7 +142,10 @@ class MapController < ApplicationController
   end
   
   def get_2dinfo
-    lon, lat = params['lon'], params['lat']
+    #define OFFSET_LAT (-0.0020264277677)
+    #define OFFSET_LONG 0.004228694067
+    
+    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
     user = User.find_by_sql("select gid, dlmc from dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
     
     user2= User.find_by_sql("select gid, dlmc from jbntghtb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2385), the_geom);")
