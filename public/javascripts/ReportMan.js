@@ -453,19 +453,7 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
                  dt_store.load();
                  
                }
-             }],
-           bbar:['->',
-             new Ext.PagingToolbar({
-               store: rp_store,
-               pageSize: 20,
-               width : 350,
-               border : false,
-               displayInfo: true,
-               displayMsg: '{0} - {1} of {2}',
-               emptyMsg: "没有找到！",
-               prependButtons: true
-             })
-           ]
+             }]
          });  
           
          win = desktop.createWindow({
