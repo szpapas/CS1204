@@ -11,7 +11,7 @@
 
 <script>
   $(function() {
-     $("#callAjax").click(function() {
+     $("#saveAjax").click(function() {
 	      var task_id = $.trim($("#task_id").val());
         var xcnr = $.trim($("#xcnr_text").val());
         var xcjg = $.trim($("#xcjg_text").val());
@@ -30,6 +30,20 @@
            });
         }
      });
+     $("#viewPdf").click(function() {
+	      var task_id = $.trim($("#task_id").val());
+          $.ajax({
+            type: "POST",
+            url: "/map/getpdfreport",
+            data: ({task_id:task_id}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              $("#result_log").html(data);
+            }
+          });
+     });
+
   });
 </script>
 
@@ -69,8 +83,12 @@
       <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
     </div>    
     <!--a href="index.html" data-role="button" data-inline="fasle" data-theme="b">保存修改</a-->
-		<input id="callAjax" type="button" value="保存修改" data-theme="b"/>
+		<input id="saveAjax" type="button" value="保存修改" data-theme="b"/>
+		<input id="viewPdf" type="button" value="PDF查看" data-theme="b"/>
     <div id="result_log"></div>  
+
+    <div id="result_log"></div>  
+
   </div><!-- /content -->
 
 </div><!-- /page -->

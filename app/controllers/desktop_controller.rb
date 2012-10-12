@@ -612,6 +612,14 @@ class DesktopController < ApplicationController
     render :text=>rand_file.gsub("./public/",'/')
   end
   
+  
+  def view_pdf
+     user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
+     puts "./bin/pdf_table.rb #{params['id']}"
+     system "./bin/pdf_table.rb #{params['id']}"
+     render :text=> "/images/xcjl/xcjl_#{params['id']}.pdf"
+  end
+  
   def get_report
     params['start'] = params['start'] || "0"
     params['limit'] = params['limit'] || "25"

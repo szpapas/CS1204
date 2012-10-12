@@ -32,7 +32,7 @@ class MapController < ApplicationController
     render :text => "保存成功"
   end  
   
-  def get_report_pdf
+  def getpdfreport
     
   end  
     

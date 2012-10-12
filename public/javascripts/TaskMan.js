@@ -1068,7 +1068,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                 handler : function(){
                   items = Ext.getCmp('plan_grid_id').getSelectionModel().selections.items;
                   pars = {id:items[0].data.id};
-                  new Ajax.Request("/desktop/display_selected_plan", { 
+                  new Ajax.Request("/desktop/view_pdf", { 
                     method: "POST",
                     parameters: pars,
                     onComplete:  function(request) {
