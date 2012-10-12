@@ -774,7 +774,7 @@ class DesktopController < ApplicationController
     zrq = params['zrq']
     
     where_a = [];
-    where_a << "xcqy=#{tbdw}" if tbdw != '' 
+    where_a << "xcqy='#{tbdw}'" if tbdw != '' && tbdw !='全部'
     where_a << "taskbegintime > TIMESTAMP '#{qrq}'" if qrq != ''
     where_a << "taskendtime  < TIMESTAMP '#{zrq}'" if zrq != ''
     
