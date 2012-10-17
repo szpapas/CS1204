@@ -35,6 +35,15 @@ class MapController < ApplicationController
   def getpdfreport
     render :text => "/images/xcjl/xcjl_4208.pdf"
   end  
+  
+  def getabout
+  end
+  
+  def getsupport
+  end
+  
+  def gethelp
+  end      
     
   #Ajax requests
   def get_plan_json
@@ -278,5 +287,8 @@ class MapController < ApplicationController
     end
   end
   
+  def get_nearby_xmdk
+    render :text => "1 地块1\n2 地块2"
+  end
  
 end

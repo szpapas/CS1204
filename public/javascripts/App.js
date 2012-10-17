@@ -25,6 +25,7 @@ MyDesktop = new Ext.app.App({
     return [
       new MyDesktop.TaskMan(),
       new MyDesktop.SystemStatus(),
+      new MyDesktop.SatCheck(),
       new MyDesktop.ReportMan(),
       new MyDesktop.SystemMan(),
       new MyDesktop.AccordionWindow()
@@ -46,6 +47,7 @@ MyDesktop = new Ext.app.App({
               data: [
                   { name: '任务管理', iconCls: 'taskman-shortcut',     module: 'taskman' },
                   { name: '状态监视', iconCls: 'cpu-shortcut',   module: 'systemstatus' },
+                  { name: '状态监视', iconCls: 'satcheck-shortcut',   module: 'satcheck' },
                   { name: '统计报表', iconCls: 'reportman-shortcut',   module: 'reportman' },
                   { name: '系统管理', iconCls: 'systemman-shortcut',   module: 'systemman' }
               ]

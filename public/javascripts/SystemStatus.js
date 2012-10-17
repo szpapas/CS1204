@@ -151,11 +151,90 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
             } 
             
+          }
+        });
 
+      };
+      
+      //Display multiple lines
+      function showUserMultiLines(map, vectorLayer, task_ids) {
+        
+        if (vectorLayer.features.length > 0){
+          while (vectorLayer.features.length > 0) {
+            var vectorFeature = vectorLayer.features[0];
+            vectorLayer.removeFeatures(vectorFeature);
+          };
+        };  
+        
+        pars = {task_id:task_ids};
+
+        new Ajax.Request("/desktop/get_multi_taskline", {
+          method: "POST",
+          parameters: pars,
+          onComplete:  function(request) {
+
+            var features = [];                        
+            var places = eval("("+request.responseText+")");
+
+            for (var k=0; k < places.length; k++) {
+              var place = places[k];
+              
+              var pointText = place["lon_lat"]; //13470500 3683278
+              var session_id= place["session_id"];
+              var xcsj = place['report_at'];
+              if (pointText == null || pointText == "undefined") continue;
+              
+              var pointList = []; 
+              
+              var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
+              for (var kk=0; kk < pts.length; kk++) {
+                var pt = pts[kk].split(" ");
+                var x0 = parseFloat(pt[0]);
+                var y0 = parseFloat(pt[1]);
+                var point = new OpenLayers.Geometry.Point(x0, y0);
+                pointList.push(point);
+              }
+              
+              var linearRing = new OpenLayers.Geometry.LineString(pointList);
+
+              style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
+              style_line.fillColor = "blue";
+              style_line.strokeColor = "blue";
+              style_line.strokeWidth = 3;
+
+              style_line.fontSize  = "12px";
+              style_line.fontFamily = "Courier New, monospace";
+              style_line.fontWeight = "bold";
+              style_line.labelAlign = "rb";           
+              //style_line.label = '巡查时间\n2012/08/27\n21:37:27';//+xcsj;
+              style_line.fontColor = "blue"; 
+
+              var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              vectorLayer.addFeatures([lineFeature]);
+              
+              //move to the center of line
+              var cc = pts[pts.length/2].split(" ");
+
+              var x0 = parseFloat(cc[0]);
+              var y0 = parseFloat(cc[1]);
+
+              var lonlat = new OpenLayers.LonLat(x0, y0);
+              map.panTo(lonlat,{animate: false});
+              
+            } 
             
           }
         });
 
+        
+      };
+
+      function showUsersBufferedLines(map, vectorLayer, task_id) {
+        
+      };
+      
+      function showUserMultiBufferedLines(map, vectorLayer, task_ids) {
+        
       };
 
       var win = desktop.getWindow('systemstatus');

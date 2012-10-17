@@ -993,6 +993,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               },{
                 text : '打印任务',
                 iconCls : 'print',
+                hidden : true,
                 handler : function(){
                   items = Ext.getCmp('plan_grid_id').getSelectionModel().selections.items;
                   id_str = '';
@@ -1030,7 +1031,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                           tbar :[{
                               text: '打印图像',
                               handler : function() {
-                                LODOP=getLodop(document.getElementById('LODOP'),document.getElementById('LODOP_EM'));   
+/*                                LODOP=getLodop(document.getElementById('LODOP'),document.getElementById('LODOP_EM'));   
                                 LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_打印图片2");
                                 //LODOP.ADD_PRINT_BARCODE(0,0,200,100,"Code39","*123ABC4567890*");
                                 image_path = Ext.getCmp('preview_img').getEl().dom.src;
@@ -1038,6 +1039,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                                 LODOP.SET_PRINT_STYLEA(0,"Stretch",2);//(可变形)扩展缩放模式
                                 LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Full-Page");
                                 LODOP.PREVIEW();
+*/                                
                               }
                             }],
                           items:[{

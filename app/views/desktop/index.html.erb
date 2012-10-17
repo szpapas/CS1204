@@ -4,7 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>激扬软件</title>
     <link rel="stylesheet" type="text/css" href="/javascripts/mfbase/ext/resources/themes/ext-all.css" />
-    <!--link rel="stylesheet" type="text/css" href="/stylesheets/desktop.css" /-->
     <%= stylesheet_link_tag 'desktop' %>
     
     <!-- Ajax -->
@@ -31,10 +30,14 @@
     <script type="text/javascript" src="/javascripts/desktop/Module.js"></script>
 
     <!-- print component -->
-    <script type="text/javascript" src="/javascripts/LodopFuncs.js"></script>
+    <!--script type="text/javascript" src="/javascripts/LodopFuncs.js"></script-->
     
     <!--script type="text/javascript" src="/javascripts/watches.js"></script-->
     <!--%= javascript_include_tag "watches" %--> 
+
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script-->
+    <!--script type="text/javascript" src="/javascripts/galleria-1.2.8.min.js"></script-->
+
 
     <%= javascript_include_tag "common" %> 
     <%= javascript_include_tag "App" %> 
@@ -42,6 +45,7 @@
     <%= javascript_include_tag "ReportMan" %> 
     <%= javascript_include_tag "SystemMan" %> 
     <%= javascript_include_tag "SystemStatus" %> 
+    <%= javascript_include_tag "SatCheck" %> 
     <%= javascript_include_tag "AccordionWindow" %>
 
     <%= csrf_meta_tags %>
@@ -50,9 +54,9 @@
 
 <body scroll="no">
 <div id="x-desktop">
-    <object id="LODOP" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
+    <!--object id="LODOP" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
       <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="install_lodop.exe"></embed>
-    </object>
+    </object!-->
     <div id="list">
       <dl id="x-shortcuts">
           <dt id="taskman-shortcut">
@@ -62,6 +66,10 @@
           <dt id="systemstatus-shortcut">
               <a href="#"><img src="/images/s.gif" />
               <div>系统监视</div></a>
+          </dt>
+          <dt id="satcheck-shortcut">
+              <a href="#"><img src="/images/s.gif" />
+              <div>卫片检查</div></a>
           </dt>
           <dt id="reportman-shortcut">
               <a href="#"><img src="/images/s.gif" />

@@ -800,4 +800,38 @@ class DesktopController < ApplicationController
     
   end
   
+  
+  
+  
+  def get_xmdk_list
+    user = User.find_by_sql("select gid, xh, pzwh, sfjs, xzqmc, the_center from xmdk where xz_tag is null;")
+    size = user.count.to_i;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  
+  def update_all_xmdk
+    user = User.find_by_sql("select gid, xh from xmdk where xz_tag is null;" )
+    for k in 0..user.size-1
+      xh = user[k]['xh'].center(10)
+      convert_str = "convert ./dady/popup_back.png -fill white -pointsize 24 -draw \"text 15, 40 '#{xh}' \" ./public/images/xmdk/popup_#{user[k]['gid']}.png "
+      puts convert_str
+      system convert_str
+    end
+    render :text=>'Success'
+  end
+  
+  def view_photos
+     user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
+     render :text=> "http://www.smoothdivscroll.com/demo.html"
+  end
 end

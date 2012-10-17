@@ -179,12 +179,12 @@ Ext.Desktop = function(app) {
 
     this.contextMenu = new Ext.menu.Menu({
         items: [{
-            text: 'Tile',
+            text: '层叠',
             handler: this.tile,
             scope: this
         },
         {
-            text: 'Cascade',
+            text: '平铺',
             handler: this.cascade,
             scope: this
         }]

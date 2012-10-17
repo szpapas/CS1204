@@ -11,13 +11,6 @@ var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
 //var base_url = "http://127.0.0.1:8080/geoserver/wms";
 //var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
 
-new Ajax.Request("/desktop/get_userid", { 
-	method: "POST",
-	onComplete:	 function(request) {
-		user_id=request.responseText;
-	}
-});
-
 var msg = function(title, msg){
 		Ext.Msg.show({
 				title: title,
