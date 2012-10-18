@@ -288,7 +288,13 @@ class MapController < ApplicationController
   end
   
   def get_nearby_xmdk
-    render :text => "1 地块1\n2 地块2"
+    user = User.find_by_sql("select gid, xh, ST_distance(geomfromtext('POINT(#{params['lonlat']})',900913), the_geom) as dist from xmdk order by dist limit 10;")
+    txt = ''
+    for k in 0..user.count-1
+      dd = user[k]
+      txt = txt + "#{dd['gid']} #{dd['xh']} (#{dd['dist'].to_i}米)\n"
+    end  
+    render :text => txt
   end
  
 end
