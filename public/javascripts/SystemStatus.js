@@ -623,14 +623,14 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var task_ids = "" ;
               node.cascade(function(n) {
                   dd = n.id.split('|');
-                  n.getUI().toggleCheck(checked);
+                  //n.getUI().toggleCheck(checked);
                   if (checked) task_ids = task_ids + dd[0] + ',';
               });
             }
 
             if (datas.size() == 3) {   //leaf
               var task_ids = "" ;
-              n.getUI().toggleCheck(checked);
+              //n.getUI().toggleCheck(checked);
               node.parentNode.cascade(function(n) {
                   dd = n.id.split('|');
                   if (checked) task_ids = task_ids + dd[0] + ',';
