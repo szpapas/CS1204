@@ -602,12 +602,17 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       		var datas = n.id.split('|')
       		
       		if (datas.size() == 2) {
+      		  var task_ids = ''
+      		  node.eachChild(function(n) {
+              if (n.checked) task_ids = task_ids + n.split('1')[0] + ',';
+            });
+      		  
+      		  showUserMultiLines(map,vectorLines,task_ids);
+      		  
       		  pointText = datas[1];
             ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
-
             var x0 = parseFloat(ss[1]);
             var y0 = parseFloat(ss[2]);
-
             var lonlat = new OpenLayers.LonLat(x0, y0);
             map.panTo(lonlat,{animate: false});
             
