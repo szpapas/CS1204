@@ -166,7 +166,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           };
         };
         
-        if (task_ids.length() == 0) return;
+        if (task_ids.size() == 0) return;
         
         pars = {task_id:task_ids};
 
@@ -617,26 +617,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       	});
       	
       	treePanel.on('checkchange', function(node, checked) {
-
             var datas = node.id.split('|');
             if (datas.size() == 2) {   //中间级别
-              var task_ids = "" ;
               node.cascade(function(n) {
                   dd = n.id.split('|');
-                  //n.getUI().toggleCheck(checked);
-                  if (checked) task_ids = task_ids + dd[0] + ',';
+                  n.getUI().toggleCheck(checked);
               });
             }
-
-            if (datas.size() == 3) {   //leaf
-              var task_ids = "" ;
-              //n.getUI().toggleCheck(checked);
-              node.parentNode.cascade(function(n) {
-                  dd = n.id.split('|');
-                  if (checked) task_ids = task_ids + dd[0] + ',';
-              });
-            }
-            showUserMultiLines(map, vectorLines, task_ids);          
         });
         
         
