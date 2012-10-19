@@ -603,11 +603,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       		
       		if (datas.size() == 2) {
       		  var task_ids = ''
-      		  node.eachChild(function(n) {
-              if (n.checked) task_ids = task_ids + n.split('1')[0] + ',';
-            });
-      		  
-      		  showUserMultiLines(map,vectorLines,task_ids);
       		  
       		  pointText = datas[1];
             ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
@@ -615,6 +610,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             var y0 = parseFloat(ss[2]);
             var lonlat = new OpenLayers.LonLat(x0, y0);
             map.panTo(lonlat,{animate: false});
+
+      		  node.eachChild(function(n) {
+              if (n.checked) task_ids = task_ids + n.split('1')[0] + ',';
+            });
+      		  
+      		  showUserMultiLines(map,vectorLines,task_ids);
             
       		} else if (datas.size() == 3) {
             showUserLines(map,vectorLines,datas[0]);
