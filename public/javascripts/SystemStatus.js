@@ -621,7 +621,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             var datas = node.id.split('|');
             if (datas.size() == 2) {   //中间级别
               var task_ids = "" ;
-              node.cascadeBy(function(n) {
+              node.cascade(function(n) {
                   dd = n.id.split('|');
                   n.getUI().toggleCheck(checked);
                   if (checked) task_ids = task_ids + dd[0] + ',';
@@ -631,7 +631,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             if (datas.size() == 3) {   //leaf
               var task_ids = "" ;
               n.getUI().toggleCheck(checked);
-              node.parentNode.cascadeBy(function(n) {
+              node.parentNode.cascade(function(n) {
                   dd = n.id.split('|');
                   if (checked) task_ids = task_ids + dd[0] + ',';
               });
