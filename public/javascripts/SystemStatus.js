@@ -164,7 +164,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             var vectorFeature = vectorLayer.features[0];
             vectorLayer.removeFeatures(vectorFeature);
           };
-        };  
+        };
+        
+        if (task_ids.length() == 0) return;
         
         pars = {task_id:task_ids};
 
@@ -206,7 +208,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontFamily = "Courier New, monospace";
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
-              //style_line.label = '巡查时间\n2012/08/27\n21:37:27';//+xcsj;
+              style_line.label = '时间\n'+xcsj;
               style_line.fontColor = "blue"; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
@@ -225,7 +227,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             
           }
         });
-
         
       };
 
@@ -470,13 +471,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               showUserPosition(map,vectors);
             }
           },{
-            text:'显示路线',
-            hidden : true,
-            iconCls : 'route16',
-            handler : function() {
-              showUserLines(map,vectorLines);
-            }           
-          },{
             text:'路线回放',
             iconCls : 'route16',
             handler : function() {
@@ -616,11 +610,34 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
             var lonlat = new OpenLayers.LonLat(x0, y0);
             map.panTo(lonlat,{animate: false});
+            
       		} else if (datas.size() == 3) {
-      		  
             showUserLines(map,vectorLines,datas[0]);
       		}
-      	})
+      	});
+      	
+      	treePanel.on('checkchange', function(node, checked) {
+
+            var datas = node.id.split('|');
+            if (datas.size() == 2) {   //中间级别
+              var task_ids = "" ;
+              node.eachChild(function(n) {
+                  dd = n.id.split('|');
+                  n.getUI().toggleCheck(checked);
+                  if (checked) task_ids = task_ids + dd[0] + ',';
+              });
+            }
+
+            if (datas.size() == 3) {   //leaf
+              var task_ids = "" ;
+              n.getUI().toggleCheck(checked);
+              node.parent.eachChild(function(n) {
+                  dd = n.id.split('|');
+                  if (checked) task_ids = task_ids + dd[0] + ',';
+              });
+            }
+            showUserMultiLines(map, vectorLines, task_ids);          
+        });
         
         
         win = desktop.createWindow({
