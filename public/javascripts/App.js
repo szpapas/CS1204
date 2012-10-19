@@ -69,7 +69,7 @@ MyDesktop = new Ext.app.App({
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/update/iphone_new.zip";
+                   window.location = "/update/jWatch.1019.ipa";
                 }             
             },{
                 text:'使用帮助',
