@@ -839,6 +839,7 @@ class DesktopController < ApplicationController
   
   def view_photos
      user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
-     render :text=> "http://www.smoothdivscroll.com/demo.html"
+     #render :text=> "http://www.smoothdivscroll.com/demo.html"
+     render :text=> "/smooth/index.html"
   end
 end
