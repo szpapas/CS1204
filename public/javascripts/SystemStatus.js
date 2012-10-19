@@ -619,8 +619,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       	treePanel.on('checkchange', function(node, checked) {
             var datas = node.id.split('|');
             if (datas.size() == 2) {   //中间级别
-              node.cascade(function(n) {
-                  dd = n.id.split('|');
+              
+              //node.childNodes.eachChild(function(n){
+              //  n.set('checked', checked);
+              //});
+              
+              node.eachChild(function(n) {
                   n.getUI().toggleCheck(checked);
               });
             }
