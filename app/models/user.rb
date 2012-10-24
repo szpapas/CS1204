@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   def self.find_for_database_authentication(conditions)
     puts conditions.to_json
     login = conditions.delete(:login)
-    where(conditions).where(["username = :login OR email = :login",{:login => login}]).first
+    where(conditions).where(["username = :login OR iphone = :login",{:login => login}]).first
   end
     
 end

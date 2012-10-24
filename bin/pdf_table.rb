@@ -15,6 +15,18 @@ require 'pg'
 $conn = PGconn.open(:dbname=>'CS1204', :user=>'postgres', :password=>'brightechs', :host=>'localhost', :port=>'5432')
 $conn.exec("set standard_conforming_strings = off")
 
+
+def get_photo(plan_id)
+  user = $conn.exec("select yxmc, xmdk_id from xcimage where plan_id = #{plan_id};")
+  ss = ''
+  for k in 0..user.count-1
+    ss = ss + user[k]['yxmc'] + ','
+  end
+  ss = ss[0..-2] if ss.size > 0
+  puts ss
+  ss  
+end
+
 def gen_pdf(plan_id)
   
   dateStr = Time.now.strftime("%Y年%m月%d日")
@@ -63,8 +75,14 @@ def gen_pdf(plan_id)
       table([["#{clyj}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true})
     end
   
-    table([["<font size='14'>巡查图片</font>"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :background_color => "CCCCCC"})  
-    table([[{:image => "prawn.png"},{:image => "prawn.png", :position => :center}]], :position => :center, :width => 520)
+    table([["<font size='14'>巡查图片</font>"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :background_color => "CCCCCC"})
+    
+    
+    ss = get_photo(plan_id).split(',')
+    
+    for k in 0..ss.count/2-1
+      table([[{:image => "./dady/xctx/#{ss[k*2]}", :position => :center, :fit => [200,200] },{:image => "./dady/xctx/#{ss[k*2+1]}", :position => :center, :fit => [200,200]}]], :position => :center, :width => 520)
+    end  
  
     move_down 30
     table([["巡查人签名：______________________"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,300],:inline_format => true, :border_width => 0})

@@ -251,6 +251,31 @@ class DesktopController < ApplicationController
     render :text => txt
   end
   
+
+  def add_zhxc_twice_per_phone(iphone, nd)  
+    data = User.find_by_sql("select distinct dw, dwjc, username, uname from users where iphone='#{iphone}';")
+    xcry = data[0]['username']
+    xcqy = data[0]['dw']
+    w_begin = Time.now.strftime('%U').to_i
+    for week in w_begin+1..w_begin+8
+      week_start = Date.commercial(nd, week, 1)
+      week_end   = Date.commercial(nd, week, 7 )
+      xcbh = "xc-#{data[0].uname}-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-01"
+      rwmc = "#{data[0].username} #{nd}年#{week}周 第1次巡查"
+      session_id =rand(36**32).to_s(36)
+      qrq = week_start.strftime( "%Y-%m-%d" ) 
+      zrq = week_end.strftime( "%Y-%m-%d" )
+      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+      xcbh = "xc-#{data[0].uname}-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
+      rwmc = "#{data[0].username} #{nd}年#{week}周 第2次巡查"
+      session_id =rand(36**32).to_s(36)
+      qrq = week_start.strftime( "%Y-%m-%d" ) 
+      zrq = week_end.strftime( "%Y-%m-%d" )
+      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+    end
+  end
+
+
   
   def add_zhxc_twice_per_week(xcqy, nd)  
     data = User.find_by_sql("select distinct dw, dwjc from users where dw='#{xcqy}';")
@@ -340,6 +365,22 @@ class DesktopController < ApplicationController
     end  
   end
   
+  def add_zhxc_phone(xqzmc, nd, pd)
+    if xqzmc=='全部'
+      user = User.find_by_sql("select distinct iphone from users where iphone !='';")
+      for k in 0..user.count-1
+        iphone = user[k].iphone
+        add_zhxc_twice_per_phone(iphone, nd)
+      end  
+    else 
+      user = User.find_by_sql("select distinct iphone from users where iphone iphone !='' and dw = '#{xqzmc}';")
+      for k in 0..user.count-1
+        iphone = user[k].iphone
+        add_zhxc_twice_per_phone(iphone, nd)
+      end
+    end  
+  end
+  
   def add_ddxc(nd)
     user = User.find_by_sql("select gid, xh, xzqmc from xmdk where nd='#{nd}' order by xh;")
     for k in 0..user.count-1
@@ -361,7 +402,7 @@ class DesktopController < ApplicationController
   def add_plan_wiz
     xcfs,xcqy,nd,pd = params['xcfs'],params['xcqy'],params['nd'].to_i,params['pd']
     if xcfs=='综合巡查'
-      add_zhxc(xcqy, nd, pd)
+      add_zhxc_phone(xcqy, nd, pd)
     else
       add_ddxc(nd)
     end
