@@ -53,8 +53,17 @@ class MapController < ApplicationController
     else
       ts1 = Time.now.strftime('%Y-%m-%d')  
       ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
-
-      plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+      if  username.include?('189')
+        txt = ''
+        iphone = username.gsub('+86','').gsub(' 86','')
+        user = User.find_by_sql("select username from users where iphone='#{iphone}';")
+        if user.size > 0 
+          username = user[0].username
+          plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+        end
+      else
+        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+      end
             
       txt = plan.to_json
     end
