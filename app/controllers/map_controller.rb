@@ -105,15 +105,25 @@ class MapController < ApplicationController
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end  
   
+  
+  #report_task_state?username=+8618962381978&state=on&session_id=(null)&device=+8618936891840&mode=30" for81506 31.224941,2012-10-31 08:00:41\n", "task_id"=>"15438", "username"=>"18962381978"}
   def report_task_state
     state = params["state"]
+    username = params["username"].gsub("+86","")
+    if username.include?('189')
+      user = User.find_by_sql("select username, iphone from users where iphone = #{username}")
+      if user.size > 0
+        username = user[0].username
+      end
+    end
+    device = params["device"].gsub("+86","")
     txt = ''
     if state=="on"
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id = params['session_id']
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
-      User.find_by_sql("update plans set username='#{params['username']}', device='#{params['device']}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
+      User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
       txt = "Success:#{session_id}"
       
     elsif state=="off"
@@ -181,9 +191,11 @@ class MapController < ApplicationController
 
     render :text => ss.to_json  
   end
-
+  
+  #Parameters: {"username"=>"18962381978", "task_id"=>"19388", "data"=>"121.480263 31.224056,2012-10-31 08:22:08\n"}
   def report_line_pos
-    task_id, username = params['task_id'], params['username']
+    task_id, username = params['task_id'], params['username'].gsub('+86','')
+    
     session_id = User.find_by_sql("select session_id from plans where id = #{task_id};")[0]['session_id']
     lines = params['data'].split("\n");
     k = lines.count-1
@@ -200,7 +212,11 @@ class MapController < ApplicationController
       User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
       
       #update users
-      User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
+      if username.include?("189")
+        User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where iphone = '#{username}';")
+      else
+        User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
+      end
       
     end
     
