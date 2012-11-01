@@ -4,12 +4,18 @@
   <title>任务报告</title> 
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <link rel="stylesheet" href="/photoswipe/photoswipe.css"  />
+
+	<script src="/photoswipe/lib/klass.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
   <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+  <script src="/photoswipe/code.photoswipe.jquery-3.0.5.min.js"></script>
 </head> 
 <body> 
 
 <script>
+	
   $(function() {
      $("#saveAjax").click(function() {
 	      var task_id = $.trim($("#task_id").val());
@@ -78,6 +84,11 @@
     </div>
     <div data-role="collapsible" data-inset="false">
        <h3><strong>巡查图片：</strong> </h3>
+			<ul class="gallery">
+				<% for image in @images %>
+					<li><img src="/images/xctx/<%= image.yxmc.gsub('PNG','JPG')  %>" alt="<%= image.yxmc.gsub('PNG','JPG')  %>" /></a></li>
+					<% end %>
+			</ul>		
     </div>
     <div data-role="collapsible" data-inset="false" hidden="true">
       <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
@@ -85,8 +96,6 @@
     <!--a href="index.html" data-role="button" data-inline="fasle" data-theme="b">保存修改</a-->
 		<input id="saveAjax" type="button" value="保存修改" data-theme="b"/>
 		<!--input id="viewPdf" type="button" value="PDF查看" data-theme="b"/-->
-    <div id="result_log"></div>  
-
     <div id="result_log"></div>  
 
   </div><!-- /content -->
