@@ -111,29 +111,37 @@ class MapController < ApplicationController
     state = params["state"]
     username = params["username"].gsub("+86","")
     if username.include?('189')
-      user = User.find_by_sql("select username, iphone from users where iphone = '#{username}'")
+      user = User.find_by_sql("select username, iphone from users where iphone = '#{username}';")
       if user.size > 0
         username = user[0].username
       end
     end
     device = params["device"].gsub("+86","")
     txt = ''
-    if state=="on"
+    if state == "on" || state == "reset" 
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id = params['session_id']
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
       User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
+      
+      User.find_by_sql("update plans set the_lines = null where session_id='#{session_id}';")
+      User.find_by_sql("delete from location_points where session_id='#{session_id}';")
+      
+      
       txt = "Success:#{session_id}"
       
     elsif state=="off"
       session_id=params["session_id"]
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-      #这个地方是Multiple-Line, 先忽略过去
-      upldate_line(session_id)
       User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
+
+      #这个地方是Multiple-Line, 先忽略过去
+      update_line(session_id)
+      
+      #可以更新其他内容
       txt = "Success:#{session_id}"
-    else
+    else  
       txt = "Failure:#{session_id}"     
     end
     render :text => {"mode" => params['mode'], "result" => txt}.to_json   
@@ -221,7 +229,7 @@ class MapController < ApplicationController
     end
     
     #Create_Line from points
-    upldate_line(session_id)
+    update_line(session_id)
     
     #Set last update time
     out = {}
@@ -299,8 +307,7 @@ class MapController < ApplicationController
   end
  
   #help functions
-  # Help functions 
-  def upldate_line(session_id)
+  def update_line(session_id)
     user = User.find_by_sql("select lon_lat from location_points where session_id='#{session_id}' order by id;")
     if user.size > 2 
       points=[]
