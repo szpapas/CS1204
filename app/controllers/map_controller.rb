@@ -111,7 +111,7 @@ class MapController < ApplicationController
     state = params["state"]
     username = params["username"].gsub("+86","")
     if username.include?('189')
-      user = User.find_by_sql("select username, iphone from users where iphone = #{username}")
+      user = User.find_by_sql("select username, iphone from users where iphone = '#{username}'")
       if user.size > 0
         username = user[0].username
       end
