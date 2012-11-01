@@ -90,7 +90,7 @@ class MapController < ApplicationController
     yxmc = "#{plan_id}_#{xmdk_id}_#{params['yxmc']}"
     geomString = "geomFromText('Point(#{params['lonlat']})',4326)"
     
-    User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}', #{geomString});")
+    User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, tpjd, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}', '#{params['tpjd']}', #{geomString});")
     
     v = params['yx_file']
     
@@ -118,7 +118,7 @@ class MapController < ApplicationController
     end
     device = params["device"].gsub("+86","")
     txt = ''
-    if state == "on" || state == "reset" 
+    if state == "on" 
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id = params['session_id']
@@ -141,6 +141,19 @@ class MapController < ApplicationController
       
       #可以更新其他内容
       txt = "Success:#{session_id}"
+      
+    elsif state == "reset" 
+      #task_id, device_no, username
+      time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      session_id = params['session_id']
+      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
+      User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='计划' where session_id ='#{session_id}';")
+
+      User.find_by_sql("update plans set the_lines = null where session_id='#{session_id}';")
+      User.find_by_sql("delete from location_points where session_id='#{session_id}';")
+
+      txt = "Success:#{session_id}"  
+      
     else  
       txt = "Failure:#{session_id}"     
     end
