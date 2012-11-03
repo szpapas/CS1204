@@ -71,11 +71,17 @@ class MapController < ApplicationController
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end
   
+  #report_current_pos?username=18962381978&lonlat=120.769302%2031.672432&task_id=19389"
   def report_current_pos
     lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
-    User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
+    if username.include?'189'
+      User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
+    else  
+      User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
+    end
+    
     render :text => 'Success'
   end
   
