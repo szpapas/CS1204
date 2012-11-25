@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Demo - jQuery Smooth Div Scroll - Thomas Kahn</title>
+	<link rel="stylesheet" href="/smooth/easy.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<script src="/smooth/jquery.js" charset="utf-8"></script>
+	<script src="/smooth/easySlider1.7.js" charset="utf-8"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#slider").easySlider({
+				//auto: true,
+				continuous: true,
+				nextId: "slider1next",
+				prevId: "slider1prev"
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div id="container">
+		<div id="header"> 
+			<h1>JC2777 图像浏览</h1> 
+		</div>
+		<div id="content">
+			<div id="slider">
+				<ul>
+					<li><a href="#"><img src="/images/dady/xctx/4216_1_IMAGE_0001.JPG"  /></a>4216_1_IMAGE_0001.JPG</li>
+					<li><a href="#"><img src="/images/dady/xctx/4320_0_IMAGE_0004.JPG"  /></a>4216_1_IMAGE_0001.JPG</li>
+					<li><a href="#"><img src="/images/dady/xctx/4320_0_IMAGE_0005.JPG"  /></a>4216_1_IMAGE_0001.JPG</li>
+					<li><a href="#"><img src="/images/dady/xctx/4320_56_IMAGE_0001.JPG" /></a>4216_1_IMAGE_0001.JPG</li>
+					<li><a href="#"><img src="/images/dady/xctx/4320_56_IMAGE_0002.JPG" /></a>4216_1_IMAGE_0001.JPG</li>
+				</ul>
+			</div>
+		</div>	
+	</div>
+</body>
