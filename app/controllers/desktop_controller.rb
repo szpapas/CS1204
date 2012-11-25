@@ -222,7 +222,6 @@ class DesktopController < ApplicationController
   end
   
   #add at 04/29
-  
   def get_xcry(xcqy)
     if xcqy=='常熟市局'
       user = User.find_by_sql("select username from users where bm='国土资源监察大队' limit 10;")
@@ -250,7 +249,6 @@ class DesktopController < ApplicationController
     puts txt
     render :text => txt
   end
-  
 
   def add_zhxc_twice_per_phone(iphone, nd)  
     data = User.find_by_sql("select distinct dw, dwjc, username, uname from users where iphone='#{iphone}';")
@@ -890,8 +888,7 @@ class DesktopController < ApplicationController
   
   
   def getImages
-    render :text => 
-    '{"images":[{"name":"4216_1_IMAGE_0001.JPG","size":2115,"lastmod":1335292723000,"url":"4216_1_IMAGE_0001.JPG"},
+    render :text => '{"images":[{"name":"4216_1_IMAGE_0001.JPG","size":2115,"lastmod":1335292723000,"url":"4216_1_IMAGE_0001.JPG"},
     {"name":"4320_0_IMAGE_0004.JPG","size":2410,"lastmod":1335292723000,"url":"4320_0_IMAGE_0004.JPG"},
     {"name":"4320_0_IMAGE_0005.JPG","size":2120,"lastmod":1335292723000,"url":"4320_0_IMAGE_0005.JPG"},
     {"name":"4320_56_IMAGE_0001.JPG","size":2588,"lastmod":1335292723000,"url":"4320_56_IMAGE_0001.JPG"},

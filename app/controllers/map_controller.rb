@@ -66,7 +66,7 @@ class MapController < ApplicationController
         plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
       end
             
-      txt = plan.to_json
+      txt = plan.to_json.gsub(' 00:00:00', '')
     end
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end

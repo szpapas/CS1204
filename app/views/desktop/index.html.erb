@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>激扬软件</title>
-    <link rel="stylesheet" type="text/css" href="/javascripts/mfbase/extf/resources/themes/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="/javascripts/mfbase/ext/resources/themes/ext-all.css" />
     <%= stylesheet_link_tag 'desktop' %>
     
     <!-- Ajax -->
@@ -41,6 +41,8 @@
     <%= javascript_include_tag "SystemStatus" %> 
     <%= javascript_include_tag "SatCheck" %> 
     <%= javascript_include_tag "AccordionWindow" %>
+    <%= javascript_include_tag "MyTask" %>
+
 
     <%= csrf_meta_tags %>
 
@@ -50,30 +52,34 @@
 <div id="x-desktop">
     <div id="list">
       <dl id="x-shortcuts">
-          <dt id="taskman-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>任务管理</div></a>
-          </dt>
-          <dt id="systemstatus-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>系统监视</div></a>
-          </dt>
-          <dt id="satcheck-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>卫片检查</div></a>
-          </dt>
-          <dt id="reportman-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>统计报表</div></a>
-          </dt>
-          <dt id="systemman-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>系统管理</div></a>
-          </dt>
-          <dt id="acc-win-shortcut">
-              <a href="#"><img src="/images/s.gif" />
-              <div>通讯录</div></a>
-          </dt>
+        <dt id="taskman-shortcut">
+            <a href="#"><img src="/images/s.gif" />
+            <div>任务管理</div></a>
+        </dt>
+        <dt id="mytask-shortcut">
+            <a href="#"><img src="/images/s.gif" />
+            <div>我的任务</div></a>
+        </dt>
+				<dt id="systemstatus-shortcut">
+				    <a href="#"><img src="/images/s.gif" />
+				    <div>系统监视</div></a>
+				</dt>
+				<dt id="satcheck-shortcut">
+				    <a href="#"><img src="/images/s.gif" />
+				    <div>卫片检查</div></a>
+				</dt>
+				<dt id="reportman-shortcut">
+				    <a href="#"><img src="/images/s.gif" />
+				    <div>统计报表</div></a>
+				</dt>
+				<dt id="systemman-shortcut">
+				    <a href="#"><img src="/images/s.gif" />
+				    <div>系统管理</div></a>
+				</dt>
+				<dt id="acc-win-shortcut">
+				    <a href="#"><img src="/images/s.gif" />
+				    <div>通讯录</div></a>
+				</dt>
       </dl>
     </div>
     <!--div id="list-2">

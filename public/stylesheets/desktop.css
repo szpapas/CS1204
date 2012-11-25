@@ -829,6 +829,21 @@ td.ux-taskButtons-edge {
 	background-image: url(/images/satcheck16.png ) !important;
 }
 
+
+/*
+  MyTask
+*/
+
+#mytask-shortcut img {
+    background-image: url(/images/mytask46.png);
+    width: 46px;
+    height: 46px;
+}
+
+.mytask {
+	background-image: url(/images/mytask16.png ) !important;
+}
+
 /*
   Image view
 */
@@ -909,3 +924,17 @@ td.ux-taskButtons-edge {
     overflow:hidden;
 }
 
+
+
+.camera {
+	background-image: url(/images/camera16.png ) !important;
+}
+
+.pin {
+	background-image: url(/images/pin16.png ) !important;
+}
+
+
+.saticon {
+	background-image: url(/images/saticon16.png ) !important;
+}
