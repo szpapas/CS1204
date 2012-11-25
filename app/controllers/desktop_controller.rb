@@ -881,6 +881,20 @@ class DesktopController < ApplicationController
   def view_photos
      user = User.find_by_sql("select * from plans where id=#{params['id']};")[0]
      #render :text=> "http://www.smoothdivscroll.com/demo.html"
-     render :text=> "/smooth/index.html"
+     render :text=> "/smooth/easy.html"
+  end
+  
+  def viewphotos
+    #@users = User.find_by_sql("select * from photos where id=#{params['id']}")
+  end
+  
+  
+  def getImages
+    render :text => 
+    '{"images":[{"name":"4216_1_IMAGE_0001.JPG","size":2115,"lastmod":1335292723000,"url":"4216_1_IMAGE_0001.JPG"},
+    {"name":"4320_0_IMAGE_0004.JPG","size":2410,"lastmod":1335292723000,"url":"4320_0_IMAGE_0004.JPG"},
+    {"name":"4320_0_IMAGE_0005.JPG","size":2120,"lastmod":1335292723000,"url":"4320_0_IMAGE_0005.JPG"},
+    {"name":"4320_56_IMAGE_0001.JPG","size":2588,"lastmod":1335292723000,"url":"4320_56_IMAGE_0001.JPG"},
+    {"name":"4320_56_IMAGE_0002.JPG","size":2825,"lastmod":1335292723000,"url":"4320_56_IMAGE_0002.JPG"}]}'
   end
 end

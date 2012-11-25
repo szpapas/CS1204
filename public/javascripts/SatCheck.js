@@ -12,7 +12,9 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
   },
   
   createWindow : function(){
-    
+       
+      var supportsDOMRanges = document.implementation.hasFeature("Range", "2.0"); 
+       
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
         return;
@@ -126,14 +128,17 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
                 alert ("请先选择一个检查项目.");
               } else {
                 pars = {id:items[0].data.gid};
+                /*
                 new Ajax.Request("/desktop/view_photos", { 
                   method: "POST",
                   parameters: pars,
                   onComplete:  function(request) {
                     var new_url = request.responseText;
                     window.open(new_url,'','height=300,width=800,top=150, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
-                  }  
-                });                
+                  }
+                });
+                */
+                window.open("/desktop/viewphotos",'','height=600,width=800,top=150, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');                
               }
             }
           }],
@@ -240,13 +245,49 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
           layout:'fit',
           tbar:[{
             text:'查找',
-            iconCls : 'user16',
+            iconCls : 'search',
             handler : function() {
               phone_store.baseParams.zt='执行';
               phone_store.load();
             }
           }],
           items: [xmdk_grid]
+        });
+        
+        
+        var imageStore = new Ext.data.JsonStore({
+            url: '/desktop/getImages',
+            root: 'images',
+            fields: ['name', 'url', 
+                    {name:'size', type: 'float'}, 
+                    {name:'lastmod', type:'date', dateFormat:'timestamp'}
+                    ]
+        });
+        imageStore.load();
+        
+        var imageTemplate = new Ext.XTemplate('<tpl for=".">',
+            '<div class="thumb-wrap" id="{name}">',
+            '<div class="thumb"><img src="/images/dady/xctx/{url}" title="{name}"></div>',
+            '<span class="x-editable">{name}</span></div>',
+        '</tpl>',
+        '<div class="x-clear"></div>');
+
+        // DataView for the Gallery
+        var imageDataView = new Ext.DataView({
+            tpl: imageTemplate,
+            singleSelect: true,
+            height: 300,
+            overClass: 'x-item-over',
+            itemSelector: 'div.thumb-wrap',
+            loadingText: 'Loading Images...',
+            emptyText: '<div style="padding:10px;">No images</div>',
+            autoScroll : true,
+            store: imageStore,
+            listeners: {
+                dblclick: function(dv, index, node, e ){
+                  //alert("item " + node.name + "click!"); node.id is the url name 
+                }
+            }
         });
         
         win = desktop.createWindow({
@@ -272,7 +313,26 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
                 collapsible:true,
                 titleCollapse:true,
                 layout:"fit",
-                items:[xmdk_panel]
+                //items:[xmdk_panel]
+                items:{
+                layout:"border",
+                items:[{
+                    region:"center",
+                    width:450,
+                    layout:"fit",
+                    items:[xmdk_panel]
+                  },{
+                    region:"south",
+                    title:"检查图片",
+                    collapsible:true,
+                    titleCollapse:true,
+                    split:true,
+                    layout:"fit",
+                    height:300,
+                    
+                    items:[imageDataView]
+                  }]
+                }
               }]
         });
       };
