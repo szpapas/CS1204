@@ -938,3 +938,33 @@ td.ux-taskButtons-edge {
 .saticon {
 	background-image: url(/images/saticon16.png ) !important;
 }
+
+.examplelink {
+    display:block;
+    padding-left:5px;
+    padding-top:5px;
+    padding-bottom:5px;
+    text-decoration:none;
+}
+
+.examplelink:img {
+  padding-top:2px;
+}
+
+.examplelink:hover {
+    text-decoration:none;
+    background: gray;
+}
+
+.link-panel .x-panel-body {
+    padding:4px;
+}
+
+#SysFolderList
+{ 
+  display:block;padding-left:25px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+}
+
+.chart {
+	background-image: url(/images/chart_bar.png ) !important;
+}
