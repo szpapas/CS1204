@@ -365,8 +365,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
           { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
-        var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
-          { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+        //var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
+        //  { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+
+        var dltb = new OpenLayers.Layer.WMS("二调数据", "http://papas2012.dyndns.org:8080/geoserver/wms", 
+          { layers: 'wxgt:ms_dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+
 
         var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);

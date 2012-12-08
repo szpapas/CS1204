@@ -231,9 +231,9 @@ function myTask(id) {
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab1',
-            //iconCls: 'tabs',
+            iconCls: 'date_task',
             closable : true,
-            title:"完成任务",
+            title:"任务管理",
             layout: 'fit',
             items:[]
         });
@@ -248,7 +248,7 @@ function myTask(id) {
       }
     } 
     break;
-    case 2 : //计划任务
+    case 2 : //统计汇总
     {
       var tabPanel = Ext.getCmp("mytask-tab");
       
@@ -256,9 +256,9 @@ function myTask(id) {
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab2',
-            //iconCls: 'tabs',
+            iconCls: 'chart_bar',
             closable : true,
-            title:"计划任务",
+            title:"统计汇总",
             layout: 'fit',
             items:[]
         });

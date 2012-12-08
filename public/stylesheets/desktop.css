@@ -968,3 +968,11 @@ td.ux-taskButtons-edge {
 .chart {
 	background-image: url(/images/chart_bar.png ) !important;
 }
+
+.date_task {
+  background-image: url(/images/date_task16.png ) !important;
+}
+
+.chart_bar {
+  background-image: url(/images/chart_bar16.png ) !important;
+}
