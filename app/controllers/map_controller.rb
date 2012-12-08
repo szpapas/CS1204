@@ -220,6 +220,25 @@ class MapController < ApplicationController
     render :text => ss.to_json  
   end
   
+  
+  def get_2dinfo_wx
+    #define OFFSET_LAT (-0.0020264277677)
+    #define OFFSET_LONG 0.004228694067
+    
+    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    user = User.find_by_sql("select gid, dlmc from ms_dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    
+    txt = ''
+    if user.size > 0
+      txt = "地类:#{user[0].dlmc}"
+    end
+    
+    txt = "#{"%05.5f" % lon.to_f} #{"%05.5f" % lat.to_f}" if txt.length == 0
+    ss = {"mode" => "22", "result" => txt}
+
+    render :text => ss.to_json  
+  end
+  
   #Parameters: {"username"=>"18962381978", "task_id"=>"19388", "data"=>"121.480263 31.224056,2012-10-31 08:22:08\n"}
   def report_line_pos
     task_id, username = params['task_id'], params['username'].gsub('+86','')

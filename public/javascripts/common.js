@@ -11,6 +11,20 @@ var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
 //var base_url = "http://127.0.0.1:8080/geoserver/wms";
 //var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
 
+// 常熟
+var CENTER_LON = 13433632.3955943;
+var CENTER_LAT = 3715923.24566449;
+
+
+// 吴江
+var CENTER_LON = 13433632.3955943;
+var CENTER_LAT = 3715923.24566449;
+
+// 无锡
+var CENTER_LON = 13370424.384;
+var CENTER_LAT = 3693277.655;
+
+
 var msg = function(title, msg){
 		Ext.Msg.show({
 				title: title,

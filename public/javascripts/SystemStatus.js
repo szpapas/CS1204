@@ -358,9 +358,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             {type: google.maps.MapTypeId.TERRAIN}
         );					
 
+        var sat = new OpenLayers.Layer.WMS("航拍地图", "http://papas2012.dyndns.org:8080/geoserver/wms", 
+            { layers: 'wxgt:wx_image2', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
 
-        map.addLayers([gmap, gphy, gsat]);
+        map.addLayers([gmap, gphy, gsat, sat]);
 
         var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
           { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
@@ -372,8 +374,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           { layers: 'wxgt:ms_dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
 
-        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
-            { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", "http://papas2012.dyndns.org:8080/geoserver/wms", 
+            { layers: 'wxgt:ms_dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+
+
 
         
         //map.addLayers([dltb, dltb_m, xmdks_map]);
@@ -648,6 +652,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             height:550,
             x : 100,
             y : 30,
+            maximized:true,
             iconCls: 'systemstatus',
             animCollapse:false,
             border: false,
@@ -672,8 +677,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       map.addControl(layserSwitch);
       map.addControl(new OpenLayers.Control.MousePosition());
-      var zoomLevel = 14;
-      map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
+      var zoomLevel = 12;
+      map.setCenter(new OpenLayers.LonLat(CENTER_LON,CENTER_LAT), zoomLevel);
       
       win.show();
       
