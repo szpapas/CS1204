@@ -328,8 +328,7 @@ class MapController < ApplicationController
   end
   
   def add_new_xmdk
-    #task_id=%d&xmmc=%@&lon=%f&lat=%f
-    task_id, xmmc, lat, lon = params['task_id'], params['xmmc'], params['lat'], params['lon']
+    task_id, xmmc, lat, lon, xmms = params['task_id'], params['xmmc'], params['lat'], params['lon'], params['xmms']
     nd  = Time.now.year
     
     user = User.find_by_sql("select xcqy from plans where id = '#{task_id}';")
@@ -339,22 +338,14 @@ class MapController < ApplicationController
     the_center = "astext( transform(geomFromText('Point(#{lon} #{lat})',4326),900913)  ) "
     
     #Add xmdk with xz_tag = 1 
-    puts "insert into xmdk (xh, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1'); "
-    user = User.find_by_sql("insert into xmdk (xh, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1') returning gid;")
+    user = User.find_by_sql("insert into xmdk (xh, sfjs, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}','#{xmms}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1') returning gid;")
     
     gid = user[0]['gid']
-    puts "gid is #{gid}"
-    
-    puts "insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');"
     
     user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
     inspect_id = user[0]['id']
-    
-    puts "===inspect_id:#{inspect_id}"
-    
     ss = {"mode" => "23", "result" => "gid:#{gid},inspect_id:#{inspect_id}"}
     render :text => ss.to_json
-    
   end
  
   #help functions
