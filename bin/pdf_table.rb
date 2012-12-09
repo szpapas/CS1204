@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 #coding: utf-8 
-BASE_DIR="/Library/Ruby/Gems/1.8/gems"
-#BASE_DIR="/usr/local/lib/ruby/gems/1.8/gems"
+#BASE_DIR="/Library/Ruby/Gems/1.8/gems"
+BASE_DIR="/usr/local/lib/ruby/gems/1.8/gems"
 $: << "#{BASE_DIR}/prawn-1.0.0.rc1" << "#{BASE_DIR}/ttfunk-1.0.3/lib" << "#{BASE_DIR}/pdf-reader-1.2.0/lib" << "#{BASE_DIR}/Ascii85-1.0.2/lib"  << "#{BASE_DIR}/hashery-2.0.1/lib" << "#{BASE_DIR}/ruby-rc4-0.1.5/lib" << "#{BASE_DIR}/pg-0.12.2/lib"
 
 require 'rubygems'
@@ -48,7 +48,8 @@ def gen_pdf(plan_id)
     self.font_size = 12
     move_down 20
   
-    font "#{Prawn::DATADIR}/fonts/simhei.ttf"
+    #font "#{Prawn::DATADIR}/fonts/simhei.ttf"
+    font "#{Prawn:::BASEDIR}/data/fonts/simhei.ttf"
     text "常熟市国土资源监察大队土地执法监察巡回检查记录", :align => :center, :size => 18
     move_down 5
     table([["打印日期：#{dateStr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,365],:inline_format => true, :border_width => 0})
@@ -56,21 +57,21 @@ def gen_pdf(plan_id)
     table([["<font size='14'>巡查内容</font>"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :background_color => "CCCCCC"})
   
     if xcnr.length < 600 
-      table([["#{xcnr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 80 })
+      table([["#{xcnr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 60 })
     else  
       table([["#{xcnr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true})
     end
     
     table([["<font size='14'>巡查结果</font>"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :background_color => "CCCCCC"})
     if xcjg.length < 600 
-      table([["#{xcjg}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 80 })
+      table([["#{xcjg}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 60 })
     else  
       table([["#{xcjg}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true})
     end
 
     table([["<font size='14'>处理意见或结果</font>"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :background_color => "CCCCCC"})
     if clyj.length < 600 
-      table([["#{clyj}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 80 })
+      table([["#{clyj}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true, :height => 60 })
     else  
       table([["#{clyj}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,10],:inline_format => true})
     end
