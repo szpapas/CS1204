@@ -19,10 +19,23 @@ class MapController < ApplicationController
     lon,lat=params['lon'],params['lat']
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
-    user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_len, shape_area from ms_dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
     if user.size > 0 
       @user =  user[0]
       render :template => "/map/get2dinfo_wx.html.erb"
+    else
+      render :template => "/map/2derror.html.erb"
+    end  
+  end
+  
+  def getxmdk_wx
+    lon,lat,xmmc=params['lon'],params['lat'],params['xmmc']
+    lon = '120.0' if lon.nil?
+    lat = '30.0'  if lat.nil?
+    user = User.find_by_sql("select gid, xh, pzwh, sfjs, xzqmc, nd, xz_tag, the_center from xmdk where xh = '#{xmmc}';")
+    if user.size > 0 
+      @user =  user[0]
+      render :template => "/map/getxmdk_wx.html.erb"
     else
       render :template => "/map/2derror.html.erb"
     end  
@@ -238,7 +251,7 @@ class MapController < ApplicationController
     #define OFFSET_LONG 0.004228694067
     
     lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
-    user = User.find_by_sql("select gid, dlmc from ms_dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    user = User.find_by_sql("select gid, dlmc from dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
     
     txt = ''
     if user.size > 0

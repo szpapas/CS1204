@@ -49,7 +49,7 @@ def gen_pdf(plan_id)
     move_down 20
   
     #font "#{Prawn::DATADIR}/fonts/simhei.ttf"
-    font "#{Prawn:::BASEDIR}/data/fonts/simhei.ttf"
+    font "#{Prawn::BASEDIR}/data/fonts/simhei.ttf"
     text "常熟市国土资源监察大队土地执法监察巡回检查记录", :align => :center, :size => 18
     move_down 5
     table([["打印日期：#{dateStr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,365],:inline_format => true, :border_width => 0})

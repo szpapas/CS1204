@@ -370,13 +370,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         //var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
         //  { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
-        var dltb = new OpenLayers.Layer.WMS("二调数据", "http://papas2012.dyndns.org:8080/geoserver/wms", 
-          { layers: 'wxgt:ms_dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+        var dltb = new OpenLayers.Layer.WMS("二调数据", "http://192.168.1.120:8080/geoserver/wms", 
+          { layers: 'wxgt:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
 
-        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", "http://papas2012.dyndns.org:8080/geoserver/wms", 
-            { layers: 'wxgt:ms_dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
-
+        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", "http://192.168.1.120:8080/geoserver/wms", 
+            { layers: 'wxgt:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
 
         
