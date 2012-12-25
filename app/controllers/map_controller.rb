@@ -106,8 +106,7 @@ class MapController < ApplicationController
     else  
       User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
     end
-    
-    render :text => 'Success'
+    render :text => {"mode" => params['mode'], "result" => 'Success'}.to_json
   end
   
   def getTaskPhotos
@@ -148,7 +147,7 @@ class MapController < ApplicationController
         username = user[0].username
       end
     end
-    device = params["device"].gsub("+86","")
+    device = user[0].iphone
     txt = ''
     if state == "on" 
       #task_id, device_no, username
