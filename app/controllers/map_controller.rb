@@ -299,7 +299,7 @@ class MapController < ApplicationController
     user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
     out['create_at'] = user[0].report_time
     
-    render :text => out.to_json
+    render :text => {"mode" => params['mode'], "result" => out.to_json}.to_json
   end
   
   #iphone 请求路线点
