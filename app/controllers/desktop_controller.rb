@@ -254,8 +254,9 @@ class DesktopController < ApplicationController
     data = User.find_by_sql("select distinct dw, dwjc, username, uname from users where iphone='#{iphone}';")
     xcry = data[0]['username']
     xcqy = data[0]['dw']
-    w_begin = Time.now.strftime('%U').to_i
-    for week in w_begin+1..w_begin+8
+    w_begin = (Time.now.strftime('%U').to_i) % 52
+    #for week in w_begin+1..w_begin+8
+    for week in 1..52
       week_start = Date.commercial(nd, week, 1)
       week_end   = Date.commercial(nd, week, 7 )
       xcbh = "xc-#{data[0].uname}-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-01"
@@ -351,11 +352,11 @@ class DesktopController < ApplicationController
   end
   
   def add_zhxc(xqzmc, nd, pd)
+    xqzmc== xqzmc || '全部' 
     if xqzmc=='全部'
       user = User.find_by_sql("select distinct dw from users where dw is not null;")
       for k in 0..user.count-1
         xqzmc = user[k].dw
-        #add_zhxc_single(xqzmc, nd, pd)
         add_zhxc_twice_per_week(xqzmc, nd)
       end  
     else 
@@ -371,7 +372,7 @@ class DesktopController < ApplicationController
         add_zhxc_twice_per_phone(iphone, nd)
       end  
     else 
-      user = User.find_by_sql("select distinct iphone from users where iphone iphone !='' and dw = '#{xqzmc}';")
+      user = User.find_by_sql("select distinct iphone from users where iphone !='' and dw = '#{xqzmc}';")
       for k in 0..user.count-1
         iphone = user[k].iphone
         add_zhxc_twice_per_phone(iphone, nd)
