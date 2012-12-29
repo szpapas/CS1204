@@ -267,39 +267,45 @@ class MapController < ApplicationController
   def report_line_pos
     task_id, username = params['task_id'], params['username'].gsub('+86','')
     
-    session_id = User.find_by_sql("select session_id from plans where id = #{task_id};")[0]['session_id']
-    lines = params['data'].split("\n");
-    k = lines.count-1
-    while k >= 0
-      ss = /(.*)\s+(.*),(.*)/.match(lines[k])
-      lon_lat=User.find_by_sql("select astext(transform(geomFromText('Point(#{ss[1]} #{ss[2]})',4326),900913));")[0].astext.gsub('POINT(','').gsub(')','')
-      User.find_by_sql("insert into location_points(session_id, lon_lat, report_time ) values ('#{session_id}','#{lon_lat}','#{ss[3]}');")  
-      k = k-1;
-    end
+    sessions = User.find_by_sql("select session_id from plans where id = #{task_id};")
     
-    #更新Plan
-    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
-    if user.size > 0
-      User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
-      
-      #update users
-      if username.include?("189")
-        User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where iphone = '#{username}';")
-      else
-        User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
+    if sessions.size > 0 
+      session_id = sessions[0]['session_id']
+      lines = params['data'].split("\n");
+      k = lines.count-1
+      while k >= 0
+        ss = /(.*)\s+(.*),(.*)/.match(lines[k])
+        lon_lat=User.find_by_sql("select astext(transform(geomFromText('Point(#{ss[1]} #{ss[2]})',4326),900913));")[0].astext.gsub('POINT(','').gsub(')','')
+        User.find_by_sql("insert into location_points(session_id, lon_lat, report_time ) values ('#{session_id}','#{lon_lat}','#{ss[3]}');")  
+        k = k-1;
       end
+    
+      #更新Plan
+      user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
+      if user.size > 0
+        User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
       
-    end
+        #update users
+        if username.include?("189")
+          User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where iphone = '#{username}';")
+        else
+          User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
+        end
+      
+      end
     
-    #Create_Line from points
-    update_line(session_id)
+      #Create_Line from points
+      update_line(session_id)
     
-    #Set last update time
-    out = {}
-    user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
-    out['create_at'] = user[0].report_time
+      #Set last update time
+      out = {}
+      user=User.find_by_sql("select lon_lat, report_time from location_points where session_id='#{session_id}' order by report_time desc limit 1;")
+      out['create_at'] = user[0].report_time
     
-    render :text => {"mode" => params['mode'], "result" => out.to_json}.to_json
+      render :text => {"mode" => params['mode'], "result" => out.to_json}.to_json
+    else
+      render :text => {"mode" => params['mode'], "result" => "no_session"}.to_json
+    end    
   end
   
   #iphone 请求路线点
