@@ -175,7 +175,7 @@ class MapController < ApplicationController
       
       user = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")
       #可以更新其他内容
-      txt = user[0].to_json
+      txt = user[0].to_json.gsub("null","\"0.0\"")
       
     elsif state == "reset" 
       #task_id, device_no, username
