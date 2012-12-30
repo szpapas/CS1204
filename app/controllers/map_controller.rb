@@ -186,7 +186,7 @@ class MapController < ApplicationController
 
       User.find_by_sql("update plans set the_lines = null, xclc = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
       User.find_by_sql("delete from location_points where session_id='#{session_id}';")
-      User.find_by_sql("delete from xcimages where plan_id = #{plan[0].id}")
+      User.find_by_sql("delete from xcimage where plan_id = #{plan[0].id}")
 
       txt = "Success:#{session_id}"  
       
