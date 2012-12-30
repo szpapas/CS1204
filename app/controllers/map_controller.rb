@@ -170,6 +170,7 @@ class MapController < ApplicationController
       #这个地方是Multiple-Line, 先忽略过去
       update_line(session_id)
       
+      update_time_and_length(session_id)
       #可以更新其他内容
       txt = "Success:#{session_id}"
       
@@ -378,6 +379,19 @@ class MapController < ApplicationController
       User.find_by_sql("update plans set the_lines=#{geomtext} where session_id='#{session_id}';")
     end
   end
+  
+  def update_time_and_length(session_id)
+    plans = User.find_by_sql("select id from plans where session_id = '#{session_id}';" )
+    
+    if plans.size > 0
+      plan_id = plans[0].id
+      User.find_by_sql("update plans set xclc=length(the_lines), xcys = (taskendtime-taskbegintime) where session_id = '#{session_id}';")
+      User.find_by_sql("update plans set photo_count = (select count(*) from xcimage where plan_id = #{plan_id}) where id = #{plan_id};")
+    end
+    
+  end
+  
+  
   
   def get_nearby_xmdk
     user = User.find_by_sql("select gid, xh, ST_distance(transform(geomfromtext('POINT(#{params['lonlat']})',4326),900913), the_geom) as dist from xmdk order by dist limit 10;")
