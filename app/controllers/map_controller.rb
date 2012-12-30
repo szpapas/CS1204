@@ -184,7 +184,7 @@ class MapController < ApplicationController
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
       User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='计划' where session_id ='#{session_id}';")
 
-      User.find_by_sql("update plans set the_lines = null, xcls = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
+      User.find_by_sql("update plans set the_lines = null, xclc = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
       User.find_by_sql("delete from location_points where session_id='#{session_id}';")
       User.find_by_sql("delete from xcimages where plan_id = #{plan[0].id}")
 
