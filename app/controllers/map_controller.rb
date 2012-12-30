@@ -171,8 +171,11 @@ class MapController < ApplicationController
       update_line(session_id)
       
       update_time_and_length(session_id)
+      
+      
+      user = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")
       #可以更新其他内容
-      txt = "Success:#{session_id}"
+      txt = user[0].to_json
       
     elsif state == "reset" 
       #task_id, device_no, username
@@ -181,8 +184,9 @@ class MapController < ApplicationController
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
       User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='计划' where session_id ='#{session_id}';")
 
-      User.find_by_sql("update plans set the_lines = null where session_id='#{session_id}';")
+      User.find_by_sql("update plans set the_lines = null, xcls = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
       User.find_by_sql("delete from location_points where session_id='#{session_id}';")
+      User.find_by_sql("delete from xcimages where plan_id = #{plan[0].id}")
 
       txt = "Success:#{session_id}"  
       
