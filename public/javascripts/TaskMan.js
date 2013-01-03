@@ -105,7 +105,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   minChars : 2,
                   multiSelect: true,
                   valueField:'text',
-                  //value:"尚湖镇",
+                  value:"全部",
                   displayField:'text',
                   triggerAction:'all',
                   listeners:{
@@ -128,7 +128,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   minChars : 2,
                   multiSelect: true,
                   valueField:'value',
-                  value:"2012",
+                  value:"2013",
                   displayField:'text',
                   triggerAction:'all',
                   listeners:{
