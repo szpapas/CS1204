@@ -71,7 +71,7 @@ MyDesktop = new Ext.app.App({
                 iconCls:'settings',
                 scope:this,
                 handler:function(){
-                   window.location = "/update/jWatch.1106.ipa";
+                   window.location = "/update/update.html";
                 }             
             },{
                 text:'使用帮助',

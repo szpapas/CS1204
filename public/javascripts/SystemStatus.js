@@ -358,30 +358,24 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             {type: google.maps.MapTypeId.TERRAIN}
         );					
 
-        var sat = new OpenLayers.Layer.WMS("航拍地图", "http://papas2012.dyndns.org:8080/geoserver/wms", 
-            { layers: 'wxgt:wx_image2', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+        //var sat = new OpenLayers.Layer.WMS("航拍地图", base_url,  
+        //    { layers: 'wxgt:wx_image2', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
-
-        map.addLayers([gmap, gphy, gsat, sat]);
+        map.addLayers([gmap, gphy, gsat]);
 
         var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
           { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
-        //var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
-        //  { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+        var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
+          { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
-        var dltb = new OpenLayers.Layer.WMS("二调数据", "http://192.168.1.120:8080/geoserver/wms", 
-          { layers: 'wxgt:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
-
-
-        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", "http://192.168.1.120:8080/geoserver/wms", 
-            { layers: 'wxgt:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
-
+        var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
+            { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         
-        //map.addLayers([dltb, dltb_m, xmdks_map]);
+        map.addLayers([dltb, dltb_m, xmdks_map]);
         
-        map.addLayers([dltb, dltb_m]);
+        //map.addLayers([dltb, dltb_m]);
         
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
