@@ -129,7 +129,7 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
               }
             }]
           });
-          user_win.show();l
+          user_win.show();
         };
         
         if (gsm == undefined) {
