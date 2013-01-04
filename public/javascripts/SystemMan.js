@@ -212,8 +212,13 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
       userGrid.addListener('rowclick',function(t,r,e){
 				var select = t.getSelectionModel().getSelections()[0].data;
         var form = Ext.getCmp('user_panel_id').form;
-				form.findField('id').setValue(select['id']);
-				form.findField('username' ).setValue(select['username']);
+        
+        if (form != undefined) {
+          form.loadRecord(t.getSelectionModel().getSelections()[0]);
+  				//form.findField('id').setValue(select['id']);
+  				//form.findField('username' ).setValue(select['username']);          
+        }
+
 			});
       
       var userTree = new Ext.tree.TreePanel({

@@ -5,11 +5,11 @@
 #   gem 'sqlite3'
 development:
   adapter: postgresql
-  database: WX1220
+  database: CS1204
   encoding: utf8
   username: postgres
   password: brightechs
-  host: localhost
+  host: 192.168.1.130
   port: 5432
 
 # Warning: The database defined as "test" will be erased and
