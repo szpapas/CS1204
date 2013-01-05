@@ -230,75 +230,75 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     hidden: true                    
                   },
                   {
-                      xtype: 'datefield',
-                      id : 'qrq-field-id',
-                      x: 70,
-                      y: 20,
-                      width: 200,
-                      name: 'qrq',
-                      format: 'Y-m-d'
-                  },
-                  {
-                      xtype: 'datefield',
-                      id : 'zrq-field-id',
-                      x: 70,
-                      y: 50,
-                      width: 200,
-                      name: 'zrq',
-                      format: 'Y-m-d' 
-                  },
-                  {
                       xtype: 'label',
                       text: '开始时间',
                       x: 10,
                       y: 20
                   },
                   {
-                      xtype: 'label',
-                      text: '结束时间',
-                      x: 10,
-                      y: 50
+                      xtype: 'datefield',
+                      id : 'qrq-field-id',
+                      x: 70,
+                      y: 20,
+                      width: 120,
+                      name: 'qrq',
+                      format: 'Y-m-d'
                   },
                   {
                       xtype: 'label',
-                      text: '巡查路线',
-                      x: 400,
+                      text: '结束时间',
+                      x: 200,
                       y: 20
                   },
                   {
-                      xtype: 'textarea',
-                      x: 460,
+                      xtype: 'datefield',
+                      id : 'zrq-field-id',
+                      x: 260,
                       y: 20,
-                      width: 320,
-                      height: 50,
-                      name: 'xclx'
+                      width: 120,
+                      name: 'zrq',
+                      format: 'Y-m-d' 
                   },
                   {
                       xtype: 'label',
                       text: '巡查人员',
                       x: 10,
-                      y: 80
+                      y: 50
                   },
                   {
                       xtype: 'textarea',
                       id : 'xcry_field_id',
                       x: 70,
-                      y: 80,
+                      y: 50,
                       width: 320,
-                      height: 50,
+                      height: 20,
                       name: 'xcry'
                   },
                   {
                       xtype: 'label',
-                      text: '巡查地块',
-                      x: 400,
+                      text: '巡查路线',
+                      x: 10,
                       y: 80
                   },
                   {
                       xtype: 'textarea',
-                      id : 'xmdk_field_id',
-                      x: 460,
+                      x: 70,
                       y: 80,
+                      width: 320,
+                      height: 20,
+                      name: 'xclx'
+                  },
+                  {
+                      xtype: 'label',
+                      text: '巡查地块',
+                      x: 10,
+                      y: 110
+                  },
+                  {
+                      xtype: 'textarea',
+                      id : 'xmdk_field_id',
+                      x: 70,
+                      y: 110,
                       width: 320,
                       height: 50,
                       name: 'xmdk'
@@ -313,41 +313,77 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       xtype: 'textarea',
                       x: 70,
                       y: 140,
-                      width: 710,
-                      height: 60,
+                      width: 320,
+                      height: 80,
                       name: 'xcnr'
                   },
                   {
                       xtype: 'label',
                       text: '巡查结果',
                       x: 10,
-                      y: 210
+                      y: 230
                   },
                   {
                       xtype: 'textarea',
                       x: 70,
-                      y: 210,
-                      width: 710,
-                      height: 60,
+                      y: 230,
+                      width: 320,
+                      height: 80,
                       name: 'xcjg'
                   },
                   {
                       xtype: 'label',
                       text: '处理意见',
                       x: 10,
-                      y: 280
+                      y: 320
                   },
                   {
                       xtype: 'textarea',
                       x: 70,
-                      y: 280,
-                      width: 710,
-                      height: 60,
+                      y: 320,
+                      width: 320,
+                      height: 70,
                       name: 'clyj'
+                  },
+                  {
+                      xtype: 'label',
+                      text: '巡查图像',
+                      x: 400,
+                      y: 20
+                  },
+                  {
+                      xtype : 'box',
+                      id : 'drop-img',
+                      border : true,
+                      x: 400,
+                      y: 40,
+                      width: 160,
+                      height: 320,
+                      name: 'xctx',
+                      autoEl: {tag: 'div', id: 'drop-img', html: 'Add Transition Category'}
+                  },
+                  {
+                      xtype: 'label',
+                      text: '可用影像',
+                      x: 540,
+                      y: 20
+                  },
+                  {
+                      xtype : 'box',
+                      id : 'drag-img',
+                      border : true,
+                      x: 540,
+                      y: 40,
+                      width: 160,
+                      height: 320,
+                      name: 'kytx',
+                      autoEl: {tag: 'div', id: 'drag-img', html: 'Add Transition Category'}
                   }
+
               ]
 
             });
+
 
             var plan_win = new Ext.Window({
               id : 'add_plan_win',
@@ -685,6 +721,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   }
                 },'-',{
                   text : '人员设定',
+                  hidden : true,
                   handler : function() {
                     
                     var  user_store = new Ext.data.Store({
@@ -823,6 +860,16 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   pars.xcqy=Ext.getCmp('xcqy_combo_id').getValue();
                   pars.xcfs=Ext.getCmp('xcfs_combo_id').getValue();
                   
+                  //xctx
+                  xcElements = Ext.get('cars').select('img');
+                  
+                  xctx = '';
+                  Ext.each(xcElements.elements, function(el) {
+                    xctx = xctx + el.src + '|';
+                  });
+                  
+                  alert (xctx);
+                  
                   new Ajax.Request("/desktop/add_plan", { 
                     method: "POST",
                     parameters: pars,
@@ -857,6 +904,126 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
 
             plan_win.show();
             plan_win.setZIndex(9020);
+            
+            
+            pars = {id:gsm.selections.items[0].data.id};
+            new Ajax.Request("/desktop/get_xcimage", { 
+              method: "POST",
+              parameters: pars,
+              onComplete:  function(request) {
+                
+                var datas = eval("("+request.responseText+")");
+                Ext.get('drop-img').update(datas['xctx']);
+                
+                //Ext.get('drop-img').update('<div id="cars" class="availableLot"><div><img src="/img/buckett_3d.gif" class="imgThumb" qtip="Camaro"/></div></div>');
+                
+                
+                Ext.get('drag-img').update('<div id="rented" class="availableLot rented"><div><img src="/img/hazzard_3d.gif" class="imgThumb" qtip="Miata"/></div><div><img src="/img/ingersoll_3d.gif" class="imgThumb" qtip="Mustang"/></div><div><img src="img/resig_3d.gif" class="imgThumb" qtip="Corvette"/></div></div>');
+                
+                
+                var overrides = {
+                    // Only called when element is dragged over the a dropzone with the same ddgroup
+                    onDragEnter : function(evtObj, targetElId) {
+                        // Colorize the drag target if the drag node's parent is not the same as the drop target
+                        if (targetElId != this.el.dom.parentNode.id) {
+                            this.el.addClass('dropOK');
+                        }
+                        else {
+                            // Remove the invitation
+                            this.onDragOut();
+                        }
+                    },
+                    // Only called when element is dragged out of a dropzone with the same ddgroup
+                    onDragOut : function(evtObj, targetElId) {
+                        this.el.removeClass('dropOK');
+                    },
+                    //Called when mousedown for a specific amount of time
+                    b4StartDrag : function() {
+                        if (!this.el) {
+                            this.el = Ext.get(this.getEl());
+                        }
+                        //this.el.highlight();
+                        //Cache the original XY Coordinates of the element, we'll use this later.
+                        this.originalXY = this.el.getXY();
+                    },
+                    // Called when element is dropped not anything other than a
+                    // dropzone with the same ddgroup
+                    onInvalidDrop : function() {
+                        this.invalidDrop = true;
+
+                    },
+                    endDrag : function() {
+                        if (this.invalidDrop === true) {
+                            this.el.removeClass('dropOK');
+
+                            var animCfgObj = {
+                                easing   : 'elasticOut',
+                                duration : 1,
+                                scope    : this,
+                                callback : function() {
+                                    this.el.dom.style.position = '';
+                                }
+                            };
+                            this.el.moveTo(this.originalXY[0], this.originalXY[1], animCfgObj);
+                            delete this.invalidDrop;
+                        }
+
+                    },
+                    // Called upon successful drop of an element on a DDTarget with the same
+                    onDragDrop : function(evtObj, targetElId) {
+                        // Wrap the drop target element with Ext.Element
+                        var dropEl = Ext.get(targetElId);
+
+                        // Perform the node move only if the drag element's parent is not the same as the drop target
+                        if (this.el.dom.parentNode.id != targetElId) {
+
+                            // Move the element
+                            dropEl.appendChild(this.el);
+
+                            // Remove the drag invitation
+                            this.onDragOut(evtObj, targetElId);
+
+                            // Clear the styles
+                            this.el.dom.style.position ='';
+                            this.el.dom.style.top = '';
+                            this.el.dom.style.left = '';
+                        }
+                        else {
+                            // This was an invalid drop, lets call onInvalidDrop to initiate a repair
+                            this.onInvalidDrop();
+                        }
+                    }
+                };
+
+                // Configure the cars to be draggable
+                var carElements = Ext.get('cars').select('div');
+                Ext.each(carElements.elements, function(el) {
+                    var dd = new Ext.dd.DD(el, 'carsDDGroup', {
+                        isTarget  : false
+                    });
+                    Ext.apply(dd, overrides);
+                });
+
+                var rentedElements = Ext.get('rented').select('div');
+                Ext.each(rentedElements.elements, function(el) {
+                    var dd = new Ext.dd.DD(el, 'rentedDDGroup', {
+                        isTarget  : false
+                    });
+                    Ext.apply(dd, overrides);
+                });
+
+                var carsDDTarget    = new Ext.dd.DDTarget('cars','carsDDGroup');
+                var rentedDDTarget = new Ext.dd.DDTarget('rented', 'rentedDDGroup');
+
+                rentedDDTarget.addToGroup('carsDDGroup');
+                carsDDTarget.addToGroup('rentedDDGroup');
+                
+                
+              }
+            });            
+            
+
+            
           }
           
           var sm = new Ext.grid.CheckboxSelectionModel();
@@ -1065,7 +1232,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   });
                 }
               },{    
-                text : '详细内容',
+                text : '查看预览',
                 iconCls : 'detail',
                 handler : function(){
                   items = Ext.getCmp('plan_grid_id').getSelectionModel().selections.items;
@@ -1193,8 +1360,11 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
             e.stopEvent();
             node.select();
             if (node.isLeaf()) {
-              Ext.getCmp('xcqy_filter_id').setValue(node.id);
-              plan_store.baseParams.xcqy = node.id;
+              var ss = node.id.split("|");
+              Ext.getCmp('xcqy_filter_id').setValue(ss[1]);
+              plan_store.baseParams.year = ss[0];
+              plan_store.baseParams.xcqy = ss[1];
+              plan_store.baseParams.xcry = ss[2]
               plan_store.load();
             } else {
               //var ss = node.id.split("|");

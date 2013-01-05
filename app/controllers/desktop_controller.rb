@@ -120,11 +120,15 @@ class DesktopController < ApplicationController
     params['xcfs']  = params['xcfs'] || "全部"
     params['zt']    = params['zt'] || "全部"
     params['filter'] = params['filter'] || "全部"
+    params['xcry'] =  params['xcry'] || "全部" 
+    params['year'] =  params['year'] || "全部" 
     
     cond=[]
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
     cond << "xcqy='#{params['xcqy']}'" if params['xcqy'] != '全部'
     cond << "xcfs='#{params['xcfs']}'" if params['xcfs'] != '全部'
+    cond << "xcry='#{params['xcry']}'" if params['xcry'] != '全部'
+    cond << "EXTRACT( YEAR from zrq) = '#{params['year']}'" if params['year'] != '全部'
     
     case cond.size
     when 0
@@ -140,7 +144,7 @@ class DesktopController < ApplicationController
     if size > 0
       txt = "{results:#{size},rows:["
       puts "select * from plans #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select * from plans #{conds} limit #{params['limit']} offset #{params['start']};")
+      user = User.find_by_sql("select * from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end
@@ -619,7 +623,8 @@ class DesktopController < ApplicationController
   end
   
   #add on 06/09
-  def get_bmtree
+  
+  def get_bmtree1
     text = []
     node = params["node"].chomp
     if node == "root"
@@ -634,8 +639,37 @@ class DesktopController < ApplicationController
       end
     end
     render :text => text.to_json 
+  end
   
-  end  
+  #年度--部门--人员
+  def get_bmtree
+    text = []
+    node = params["node"].chomp
+    if node == "root"
+      data = User.find_by_sql("select distinct EXTRACT( YEAR from zrq) as year, count(*) from plans group by year;")
+      
+      data.each do |dd|
+        text << {:text => "#{dd["year"]}年", :id => dd["year"], :cls  => "folder", :leaf => false}
+      end
+      
+    else
+      ss = node.split('|')
+      if ss.size == 1
+         data = User.find_by_sql("select distinct xcqy, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' group by xcqy order by xcqy;")
+         data.each do |dd|
+           text << {:text => dd["xcqy"], :id => "#{ss[0]}|#{dd['xcqy']}", :cls  => "folder", :leaf => false}
+         end  
+      elsif ss.size == 2
+        data = User.find_by_sql("select distinct xcry, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and xcqy = '#{ss[1]}' group by xcry order by xcry;")
+        data.each do |dd|
+          text << {:text => dd["xcry"], :id => "#{ss[0]}|#{ss[1]}|#{dd['xcry']}", :cls  => "folder", :leaf => true}
+        end  
+      end
+      
+    end
+        
+    render :text => text.to_json 
+  end    
   
   #add on 06/12
   def display_selected_plan
@@ -895,4 +929,16 @@ class DesktopController < ApplicationController
     {"name":"4320_56_IMAGE_0001.JPG","size":2588,"lastmod":1335292723000,"url":"4320_56_IMAGE_0001.JPG"},
     {"name":"4320_56_IMAGE_0002.JPG","size":2825,"lastmod":1335292723000,"url":"4320_56_IMAGE_0002.JPG"}]}'
   end
+  
+  # parameter task_id
+  def get_xcimage
+    user = User.find_by_sql("select * from xcimage where plan_id = #{params['id']};")
+    txt = '<div id="cars" class="availableLot">'
+    for k in 0..user.size-1
+      dd = user[k]
+      txt = txt + "<div><img src='http://192.168.1.130:3000/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+    end  
+    txt = txt + '</div>'
+    render :text => {"xctx" => txt, "result" => 'success'}.to_json
+  end  
 end
