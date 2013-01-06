@@ -110,6 +110,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var pointText = place["lon_lat"]; //13470500 3683278
               var session_id= place["session_id"];
               var xcsj = place['report_at'];
+
               if (pointText == null || pointText == "undefined") continue;
               
               var pointList = []; 
@@ -135,6 +136,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
               //style_line.label = '巡查时间\n2012/08/27\n21:37:27';//+xcsj;
+              style_line.label = '巡查时间\n'+xcsj;
               style_line.fontColor = "blue"; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
@@ -166,7 +168,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           };
         };
         
-        if (task_ids.size() == 0) return;
+        if (task_ids == "") return;
         
         pars = {task_id:task_ids};
 
@@ -177,13 +179,17 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
             var features = [];                        
             var places = eval("("+request.responseText+")");
+            
+            var colors = ["blue", "green", "red", "purple"];
 
             for (var k=0; k < places.length; k++) {
               var place = places[k];
+              var randomnumber=Math.floor(Math.random()*4);
+              var draw_color = colors[randomnumber];
               
               var pointText = place["lon_lat"]; //13470500 3683278
               var session_id= place["session_id"];
-              var xcsj = place['report_at'];
+              var xcsj = place['report_at'].split(' ').join("\n");
               if (pointText == null || pointText == "undefined") continue;
               
               var pointList = []; 
@@ -200,31 +206,32 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
 
               style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
-              style_line.fillColor = "blue";
-              style_line.strokeColor = "blue";
+              style_line.fillColor = draw_color;
+              style_line.strokeColor = draw_color;
               style_line.strokeWidth = 3;
 
               style_line.fontSize  = "12px";
               style_line.fontFamily = "Courier New, monospace";
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
-              style_line.label = '时间\n'+xcsj;
-              style_line.fontColor = "blue"; 
+              style_line.label = '巡查时间\n'+xcsj;
+              style_line.fontColor = draw_color; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
               vectorLayer.addFeatures([lineFeature]);
               
-              //move to the center of line
-              var cc = pts[pts.length/2].split(" ");
+              if (k == 0) {
+                var half_length = Math.floor(pts.length / 2);
+                var cc = pts[half_length].split(" ");
+                var x0 = parseFloat(cc[0]);
+                var y0 = parseFloat(cc[1]);
+                //move to the center of line
+                var lonlat = new OpenLayers.LonLat(x0, y0);
+                map.panTo(lonlat,{animate: false});
+              }
 
-              var x0 = parseFloat(cc[0]);
-              var y0 = parseFloat(cc[1]);
-
-              var lonlat = new OpenLayers.LonLat(x0, y0);
-              map.panTo(lonlat,{animate: false});
-              
             } 
-            
+
           }
         });
         
@@ -356,7 +363,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var gphy = new OpenLayers.Layer.Google(
             "谷歌地形图",
             {type: google.maps.MapTypeId.TERRAIN}
-        );					
+        );          
 
         //var sat = new OpenLayers.Layer.WMS("航拍地图", base_url,  
         //    { layers: 'wxgt:wx_image2', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
@@ -430,32 +437,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             map.getLayersByName('二调数据')[0].setVisibility(false);
           }
         });
-        
-        
-        /*
-        var mapPanel = new GeoExt.MapPanel({
-            title: "GeoExt MapPanel",
-            stateId: "mappanel",
-            height: 400,
-            width: 600,
-            map: map,
-            center: new OpenLayers.LonLat(5, 45),
-            zoom: 4,
-            // getState and applyState are overloaded so panel size
-            // can be stored and restored
-            getState: function() {
-                var state = GeoExt.MapPanel.prototype.getState.apply(this);
-                state.width = this.getSize().width;
-                state.height = this.getSize().height;
-                return state;
-            },
-            applyState: function(state) {
-                GeoExt.MapPanel.prototype.applyState.apply(this, arguments);
-                this.width = state.width;
-                this.height = state.height;
-            }
-        });
-        */
         
         var map_view = new Ext.Panel({
           id : 'task_track',
@@ -570,60 +551,62 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
  
 
-        var treePanel =	 new Ext.tree.TreePanel({
-      		useArrows:true,
-      		animate:true,
-      		enableDD:true,
-      		singleExpand:true,
-      		id : 'system_status_tree_panel',
-      		checkModel: 'cascade',	 
-      		onlyLeafCheckable: false,
-      		collapsible: true,
-      		collapseMode:'mini',
-      		rootVisible : false,
-      		loader: new Ext.tree.TreeLoader({
-      			dataUrl: '/desktop/get_phone_tree'
-      			//baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
-      		}),
-      		root: {
-      			nodeType: 'async',
-      			text: '常熟国土',
-      			draggable:false,
-      			id:'root'
-      		}
-      	});
+        var treePanel =  new Ext.tree.TreePanel({
+          useArrows:true,
+          animate:true,
+          enableDD:true,
+          singleExpand:true,
+          id : 'system_status_tree_panel',
+          checkModel: 'cascade',   
+          onlyLeafCheckable: false,
+          collapsible: true,
+          collapseMode:'mini',
+          rootVisible : false,
+          loader: new Ext.tree.TreeLoader({
+            dataUrl: '/desktop/get_phone_tree'
+            //baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+          }),
+          root: {
+            nodeType: 'async',
+            text: '常熟国土',
+            draggable:false,
+            id:'root'
+          }
+        });
         
         
         //treePanel.expandAll();
         
-        treePanel.on('click', function(n, e){
-      		//e.preventDefault();
-      		//menu1.showAt(e.getXY());
-      		//var data = grid.store.data.items[row].data;
-      		var datas = n.id.split('|')
-      		
-      		if (datas.size() == 2) {
-      		  var task_ids = ''
-      		  
-      		  pointText = datas[1];
+        treePanel.on('click', function(node, e){
+          //e.preventDefault();
+          //menu1.showAt(e.getXY());
+          //var data = grid.store.data.items[row].data;
+          var datas = node.id.split('|')
+          
+          if (datas.size() == 2) {
+            var task_ids = ''
+            
+            /*
+            pointText = datas[1];
             ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
             var x0 = parseFloat(ss[1]);
             var y0 = parseFloat(ss[2]);
             var lonlat = new OpenLayers.LonLat(x0, y0);
             map.panTo(lonlat,{animate: false});
-
-      		  node.eachChild(function(n) {
-              if (n.checked) task_ids = task_ids + n.split('1')[0] + ',';
-            });
-      		  
-      		  showUserMultiLines(map,vectorLines,task_ids);
+            */
             
-      		} else if (datas.size() == 3) {
+            node.eachChild(function(n) {
+              if (n.attributes.checked) task_ids = task_ids + n.id.split('|')[0] + ',';
+            });
+            
+            showUserMultiLines(map,vectorLines,task_ids);
+            
+          } else if (datas.size() == 3) {
             showUserLines(map,vectorLines,datas[0]);
-      		}
-      	});
-      	
-      	treePanel.on('checkchange', function(node, checked) {
+          }
+        });
+        
+        treePanel.on('checkchange', function(node, checked) {
             var datas = node.id.split('|');
             if (datas.size() == 2) {   //中间级别
               

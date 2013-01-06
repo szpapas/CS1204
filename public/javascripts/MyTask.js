@@ -94,11 +94,13 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                       layout : 'fit',
                       xtype:'panel',
                       width:200,
+                      height:200,
                       border:false,
                       items: [{
                           // configurables
                           border:false,
                           cls:'link-panel',
+                          
                           links:[{
                                text:'任务管理',
                                id:"mytask_01",

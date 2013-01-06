@@ -427,7 +427,8 @@ class DesktopController < ApplicationController
   end
   
   def get_multi_taskline
-    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where id in (#{params['task_id']}) order by report_at desc;")
+    task_ids  = params['task_id'].split(',').join(',')
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where id in (#{task_ids}) order by report_at desc;")
 
     render :text => user.to_json
     
