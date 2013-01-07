@@ -50,9 +50,6 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
 
         map.addLayers([gsat,gmap]);
 
-        var xmdks_map = new OpenLayers.Layer.WMS("检查地快", base_url, 
-          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
-
         var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
           { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
@@ -60,13 +57,11 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
 
-        var xmdk = new OpenLayers.Layer.WMS("检查地块", base_url, 
-          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+        //var xmdk = new OpenLayers.Layer.WMS("检查地块", base_url, 
+        //  { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         
-        //map.addLayers([dltb, dltb_m, xmdks_map]);
-        
-        map.addLayers([dltb, dltb_m, xmdk]);
+        map.addLayers([dltb, dltb_m]);
         
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
@@ -313,7 +308,6 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
                 collapsible:true,
                 titleCollapse:true,
                 layout:"fit",
-                //items:[xmdk_panel]
                 items:{
                 layout:"border",
                 items:[{
@@ -345,8 +339,7 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
       map.setCenter(new OpenLayers.LonLat(13433632.3955943,3715923.24566449), zoomLevel);
       
       win.show();
-      
-      //showUserPosition(map,vectors);
+
       
       return win;
   }

@@ -937,7 +937,7 @@ class DesktopController < ApplicationController
     txt = '<div id="cars" class="availableLot">'
     for k in 0..user.size-1
       dd = user[k]
-      txt = txt + "<div><img src='http://192.168.1.130:3000/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+      txt = txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
     end  
     txt = txt + '</div>'
     render :text => {"xctx" => txt, "result" => 'success'}.to_json

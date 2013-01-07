@@ -370,8 +370,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
         map.addLayers([gmap, gphy, gsat]);
 
-        var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
-          { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+        //var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
+        //  { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
           { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
@@ -380,9 +380,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         
-        map.addLayers([dltb, dltb_m, xmdks_map]);
+        //map.addLayers([dltb, dltb_m, xmdks_map]);
         
-        //map.addLayers([dltb, dltb_m]);
+        map.addLayers([dltb, dltb_m]);
         
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,
