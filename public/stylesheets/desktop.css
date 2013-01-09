@@ -1032,3 +1032,7 @@ td.ux-taskButtons-edge {
 .dropNotOK {
     border: 1px solid #FF0000 !important;
 }
+
+.upload-icon {
+    background: url(ima'/images/image_add.png') no-repeat 0 0 !important;
+}

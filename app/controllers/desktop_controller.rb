@@ -122,6 +122,7 @@ class DesktopController < ApplicationController
     params['filter'] = params['filter'] || "全部"
     params['xcry'] =  params['xcry'] || "全部" 
     params['year'] =  params['year'] || "全部" 
+    params['username'] = params['username'] || "全部"
     
     cond=[]
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
@@ -922,7 +923,6 @@ class DesktopController < ApplicationController
     #@users = User.find_by_sql("select * from photos where id=#{params['id']}")
   end
   
-  
   def getImages
     render :text => '{"images":[{"name":"4216_1_IMAGE_0001.JPG","size":2115,"lastmod":1335292723000,"url":"4216_1_IMAGE_0001.JPG"},
     {"name":"4320_0_IMAGE_0004.JPG","size":2410,"lastmod":1335292723000,"url":"4320_0_IMAGE_0004.JPG"},
@@ -942,4 +942,21 @@ class DesktopController < ApplicationController
     txt = txt + '</div>'
     render :text => {"xctx" => txt, "result" => 'success'}.to_json
   end  
+  
+  def upload_file
+    params.each do |k,v|
+      logger.debug("K: #{k} ,V: #{v}")
+      if k.include?("photo-path")
+        logger.debug("#{v.original_filename}")
+        logger.debug("#{v.tempfile.path}")
+        logger.debug("#{v.content_type}")
+        ff = File.new("./dady/sc/#{v.original_filename}","w+")
+        ff.write(v.tempfile.read)
+        ff.close
+        break
+      end
+    end
+    render :text => "{success:true}"
+  end
+  
 end

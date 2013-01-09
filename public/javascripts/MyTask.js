@@ -49,13 +49,6 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
       
       if(!win){
          
-         /*
-         var formPanel = new Ext.form.FormPanel({bla bla bla });
-         var tabPanel = ....  ;
-         tabPanel.add(formPanel);
-         tabPanel.doLayout();
-         */
-         
          win = desktop.createWindow({
             id: 'mytask',
             title:'我的任务',
@@ -82,12 +75,13 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                 }]
               },{
                 region:"west",
-                title:"-",
+                title:currentUser.username+'的任务',
                 width:200,
                 split:true,
                 collapsible:true,
                 titleCollapse:true,
                 layout: 'accordion',
+                
                 items:[{
                     title: '巡查任务',
                     iconCls : 'taskman',
@@ -221,18 +215,14 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
 
 
 
-
-
-
 //overall function for MyTask Processing
 function myTask(id) {
   switch (id) {
     case 1 : //已完成任务
     {
       var tabPanel = Ext.getCmp("mytask-tab");
-  
       if (Ext.getCmp('mytask-tab1') == undefined) {
-    var  plan_store = new Ext.data.Store({
+        var  plan_store = new Ext.data.Store({
           proxy: new Ext.data.HttpProxy({
               url: '/desktop/get_plan'
           }),
@@ -268,7 +258,7 @@ function myTask(id) {
       //load data
       plan_store.baseParams.zt = "全部";
       plan_store.baseParams.limit = "20";
-      plan_store.baseParams.username = currentUser.username;
+      plan_store.baseParams.xcry = currentUser.username;
       //plan_store.load();
       var sm = new Ext.grid.CheckboxSelectionModel();
       var planGrid = new Ext.grid.GridPanel({
@@ -301,7 +291,7 @@ function myTask(id) {
           tbar:[{
               text : '新建任务',
               iconCls : 'add',
-          hidden : true,
+              hidden : true,
               handler : function(){
                 //add_planwin();
                 add_plan_wizard();
@@ -317,7 +307,7 @@ function myTask(id) {
             },{
               text : '删除任务',
               iconCls : 'delete',
-          hidden : true,
+              hidden : true,
               handler : function(){
                 items = Ext.getCmp('my_plan_grid_id').getSelectionModel().selections.items;
                 id_str = '';
@@ -337,20 +327,6 @@ function myTask(id) {
                   }
                 });
               }                 
-          //  },{
-          //    text : '全部任务',
-          //    iconCls : 'delete',
-          //    handler : function(){
-          //      
-          //      pars = {id:"all"};
-          //      new Ajax.Request("/desktop/delete_selected_plan", { 
-          //        method: "POST",
-          //        parameters: pars,
-          //        onComplete:  function(request) {
-          //          plan_store.load();
-          //        }
-          //      });
-          //    }
             },{
               text : '打印任务',
               iconCls : 'print',
@@ -392,15 +368,6 @@ function myTask(id) {
                         tbar :[{
                             text: '打印图像',
                             handler : function() {
-    /*                                LODOP=getLodop(document.getElementById('LODOP'),document.getElementById('LODOP_EM'));   
-                              LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_打印图片2");
-                              //LODOP.ADD_PRINT_BARCODE(0,0,200,100,"Code39","*123ABC4567890*");
-                              image_path = Ext.getCmp('preview_img').getEl().dom.src;
-                              LODOP.ADD_PRINT_IMAGE(0,0,1000,1410,"<img border='0' src='"+image_path+"' width='100%' height='100%'/>");
-                              LODOP.SET_PRINT_STYLEA(0,"Stretch",2);//(可变形)扩展缩放模式
-                              LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Full-Page");
-                              LODOP.PREVIEW();
-    */                                
                             }
                           }],
                         items:[{
@@ -515,6 +482,7 @@ function myTask(id) {
             })
           ]
         });
+        
         var add_planwin = function (gsm) {
 
           var planPanel = new Ext.form.FormPanel({
@@ -730,8 +698,6 @@ function myTask(id) {
                   };
 
                   var map  = new OpenLayers.Map($('map_task'), options);
-                  //var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_SATELLITE_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
-                  //var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
 
                   var gmap = new OpenLayers.Layer.Google(
                       "谷歌地图", // the default
@@ -1164,7 +1130,7 @@ function myTask(id) {
           plan_win.setZIndex(9020);
         }
   
-    plan_store.load();
+        plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab1',

@@ -300,7 +300,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       x: 70,
                       y: 110,
                       width: 320,
-                      height: 50,
+                      height: 20,
                       name: 'xmdk'
                   },
                   {
@@ -713,12 +713,176 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   
                    
                 }, '-', {
+                  text : '影像上传',
+                  handler : function() {
 
-                  text : '影像设定',
-                  handle : function() {
+                    var myuploadform= new Ext.FormPanel({
+                      id : 'my_upload_form',
+                      fileUpload: true,
+                      width: 250,
+                      height : 150,
+                      autoHeight: true,
+                      bodyStyle: 'padding: 5px 5px 5px 5px;',
+                      labelWidth: 0,
+                      defaults: {
+                        anchor: '95%',
+                        allowBlank: false,
+                        msgTarget: 'side'
+                      },
+                      layout : 'absolute',
+                      items:[{
+                        xtype: 'label',
+                        text: '增加影像或附件文件：(支持jpg,png)，文件名不能包含空格和单引号。',
+                        x: 10,
+                        y: 10,
+                        width: 100
+                      },
+                      {
+                        xtype: 'fileuploadfield',
+                        id: 'filedata',
+                        x: 10,
+                        y: 45,
+                        emptyText: '选择一个文件...',
+                        buttonText: '浏览'
+                      }],
+                      buttons: [
+                      {
+                        text: '上传',
+                        handler: function(){
+                          if (dh==''){
+                            msg('提示', '请先选择要增加影像文件的案卷.');
+                          } 
+                          else
+                          {
+                            myForm = Ext.getCmp('my_upload_form').getForm();
+                            filename=myForm._fields.items[0].lastValue.split('\\');
+                            file=filename[filename.length-1];
+                            file=file.gsub("'","\'")
+                            new Ajax.Request("/desktop/get_image_sfcf", { 
+                              method: "POST",
+                              parameters: eval("({filename:'" + file + "',dh:'" + dh +"',userid:" + currentUser.id + "})"),
+                              onComplete:  function(request) {
+                                if (request.responseText=='notsort'){
+                                  alert("您无此类档案影像文件上传的权限。");
+                                } 
+                                else
+                                {
+                                    if(myForm.isValid()){
+                                        form_action=1;
+                                        myForm.submit({
+                                          url: '/desktop/upload_file',
+                                          waitMsg: '文件上传中...',
+                                          success: function(form, action){
+                                            var isSuc = action.result.success; 
+                                            if (isSuc) {
+                                              new Ajax.Request("/desktop/save_image_db", { 
+                                                method: "POST",
+                                                parameters: eval("({filename:'" + file + "',dh:'" + dh +"'})"),
+                                                onComplete:  function(request) {
+                                                  if (request.responseText=='true'){
+                                                    msg('成功', '文件上传成功.'); 
+                                                    timage_store.load();
+                                                    Ext.getCmp('timage_combo').lastQuery = null;
+                                                  }else{
+                                                    alert("文件上传失败，请重新上传。" + request.responseText);
+                                                  }
+                                                }
+                                              }); //save_image_db
+                                            } else { 
+                                              msg('失败', '文件上传失败.');
+                                            }
+                                          }, 
+                                          failure: function(){
+                                            msg('失败', '文件上传失败.');
+                                          }
+                                        });
+                                    }
+                                }
+                              }
+                            })
+                          } //else
+                        } //handler
+                      }] //buttons
+                    });
+                    
+                    var fp = new Ext.FormPanel({
+                        fileUpload: true,
+                        width: 500,
+                        frame: true,
+                        autoHeight: true,
+                        bodyStyle: 'padding: 10px 10px 0 10px;',
+                        labelWidth: 50,
+                        defaults: {
+                            anchor: '95%',
+                            allowBlank: false,
+                            msgTarget: 'side'
+                        },
+                        items: [{
+                            xtype: 'textfield',
+                            fieldLabel: '文件名'
+                        },{
+                            xtype: 'fileuploadfield',
+                            id: 'form-file',
+                            emptyText: '选择一幅图像',
+                            fieldLabel: '图像',
+                            name: 'photo-path',
+                            buttonText: '',
+                            buttonCfg: {
+                                iconCls: 'upload-icon'
+                            }
+                        }],
+                        buttons: [{
+                            text: '上传',
+                            handler: function(){
+                                if(fp.getForm().isValid()){
+                	                fp.getForm().submit({
+                	                    url: '/desktop/upload_file',
+                                      waitMsg: '文件上传中...',
+                                      success: function(form, action){
+                                        var isSuc = action.result.success; 
+                                        if (isSuc) {
+                                           msg('成功', '文件上传成功.');
+                                        } else { 
+                                          msg('失败', '文件上传失败.');
+                                        }
+                                      }, 
+                                      failure: function(){
+                                        msg('失败', '文件上传失败.');
+                                      }
+                	                });
+                                }
+                            }
+                        },{
+                            text: '重置',
+                            handler: function(){
+                                fp.getForm().reset();
+                            }
+                        }]
+                    });
 
+                    
+                    var yysc_win = new Ext.Window({
+                      id : 'yysc_win',
+                      iconCls : 'add',
+                      title: '影像上传',
+                      floating: true,
+                      shadow: true,
+                      draggable: true,
+                      closable: true,
+                      modal: true,
+                      width: 350,
+                      height: 140,
+                      //x : 700,
+                      //y : 180,
+                      layout: 'fit',
+                      plain: true,
+                      items:[fp]
+                    });
 
+                    yysc_win.show();
+                    
                   }
+                  
                 },'-',{
                   text : '人员设定',
                   hidden : true,
