@@ -985,14 +985,14 @@ td.ux-taskButtons-edge {
      width:                 105px;
      border:                1px solid #999999;
      padding:               10px;
-     height:                300px;
+     height:                320px;
      -moz-border-radius:    17px;
      -webkit-border-radius: 17px;
 }
 
 
 .rented, .repair {
-   width: 195px;
+  width:  100px;
 }
 
 .availableLot div {
@@ -1008,7 +1008,7 @@ td.ux-taskButtons-edge {
 }
 
 #cars div, #trucks div {
-   margin: 5px;
+   margin: 2px;
    width:  85px;
 }
 
@@ -1034,5 +1034,5 @@ td.ux-taskButtons-edge {
 }
 
 .upload-icon {
-    background: url(ima'/images/image_add.png') no-repeat 0 0 !important;
+    background: url('/images/image_add.png') no-repeat 0 0 !important;
 }

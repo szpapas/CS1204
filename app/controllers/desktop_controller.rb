@@ -2,6 +2,9 @@
 require 'socket'
 require 'find'
 require 'date'
+require 'URI'
+require 'FileUtils'
+
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
@@ -934,13 +937,24 @@ class DesktopController < ApplicationController
   # parameter task_id
   def get_xcimage
     user = User.find_by_sql("select * from xcimage where plan_id = #{params['id']};")
-    txt = '<div id="cars" class="availableLot">'
+    c_txt = '<div id="cars" class="availableLot">'
     for k in 0..user.size-1
       dd = user[k]
-      txt = txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+      c_txt = c_txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
     end  
-    txt = txt + '</div>'
-    render :text => {"xctx" => txt, "result" => 'success'}.to_json
+    c_txt = c_txt + '</div>'
+    
+    userpath = "./dady/sc/#{User.current.id}"
+    datas = Dir["#{userpath}/*"]
+    
+    r_txt = '<div id="rented" class="availableLot rented">'
+    for k in 0..datas.size-1
+      dd = datas[k]
+      r_txt = r_txt + "<div><img src='/images/#{dd}' class='imgThumb' qtip='#{dd}'/></div>"
+    end  
+    r_txt = r_txt + '</div>'
+    
+    render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
   end  
   
   def upload_file
@@ -950,7 +964,13 @@ class DesktopController < ApplicationController
         logger.debug("#{v.original_filename}")
         logger.debug("#{v.tempfile.path}")
         logger.debug("#{v.content_type}")
-        ff = File.new("./dady/sc/#{v.original_filename}","w+")
+        
+        userpath = "./dady/sc/#{User.current.id}"
+        if !File.exists?(userpath)
+          system("mkdir -p #{userpath}")
+        end  
+        
+        ff = File.new("#{userpath}/#{v.original_filename}","w+")
         ff.write(v.tempfile.read)
         ff.close
         break
@@ -959,4 +979,87 @@ class DesktopController < ApplicationController
     render :text => "{success:true}"
   end
   
+  #img = http://127.0.0.1:3000/images/dady/xctx/24632_0_IMAGE_0002.JPG|http://127.0.0.1:3000/images/dady/xctx/24632_0_IMAGE_0003.JPG|
+  def delete_selected_photo
+    datas = URI.unescape(params['imgs']).split('|')
+    for k in 0..datas.size-1 
+      url = datas[k]
+      if url.include?'xctx'
+        img_name = url.split('/')[-1].split('.')[0]
+        User.find_by_sql("delete from xcimage where yxmc like '#{img_name}.%';")
+        system("rm \"./dady/xctx/#{img_name}.*\"")
+      elsif url.include?'sc'          
+        userpath = "./dady/sc/#{User.current.id}"
+        img_name = url.split('/')[-1]
+        system("rm \"#{userpath}/#{img_name}\"")
+      end
+    end
+    
+    user = User.find_by_sql("select * from xcimage where plan_id = #{params['id']};")
+    c_txt = '<div id="cars" class="availableLot">'
+    for k in 0..user.size-1
+      dd = user[k]
+      c_txt = c_txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+    end  
+    c_txt = c_txt + '</div>'
+    
+    userpath = "./dady/sc/#{User.current.id}"
+    datas = Dir["#{userpath}/*"]
+    
+    r_txt = '<div id="rented" class="availableLot rented">'
+    for k in 0..datas.size-1
+      dd = datas[k]
+      r_txt = r_txt + "<div><img src='/images/#{dd}' class='imgThumb' qtip='#{dd}'/></div>"
+    end  
+    r_txt = r_txt + '</div>'
+    
+    render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
+    
+  end  
+  
+  
+  def save_selected_photo
+    datas = URI.unescape(params['imgs']).split('|')
+    for k in 0..datas.size-1 
+      url = datas[k]
+      if url.include?'sc'          
+        userpath = "./dady/sc/#{User.current.id}"
+        img_name = url.split('/')[-1]
+        
+        #rename file to #{plan_id}_0_#{time}.jpg
+        plan_id = params['id']
+        xmdk_id = 0
+        timestr = Time.now.strftime('%y%m%d_%H%M%S')
+        rq = Time.now.strftime('%Y-%m-%d %T')
+        yxmc = "#{plan_id}_#{xmdk_id}_#{timestr}.JPG"
+        #geomString = "geomFromText('Point(#{params['lonlat']})',4326)"
+        
+        User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{rq}');")
+        pathname = "./dady/xctx/#{yxmc}"
+        puts "mv #{userpath}/#{img_name} #{pathname}"
+        system("mv #{userpath}/#{img_name} #{pathname}")
+      end
+    end
+    
+    user = User.find_by_sql("select * from xcimage where plan_id = #{params['id']};")
+    c_txt = '<div id="cars" class="availableLot">'
+    for k in 0..user.size-1
+      dd = user[k]
+      c_txt = c_txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+    end  
+    c_txt = c_txt + '</div>'
+    
+    userpath = "./dady/sc/#{User.current.id}"
+    datas = Dir["#{userpath}/*"]
+    
+    r_txt = '<div id="rented" class="availableLot rented">'
+    for k in 0..datas.size-1
+      dd = datas[k]
+      r_txt = r_txt + "<div><img src='/images/#{dd}' class='imgThumb' qtip='#{dd}'/></div>"
+    end  
+    r_txt = r_txt + '</div>'
+    
+    render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
+  end
+    
 end

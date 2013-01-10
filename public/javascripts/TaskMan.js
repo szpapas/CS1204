@@ -212,11 +212,135 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
           
           var add_planwin = function (gsm) {
             
+            var setImages = function(request) {
+
+              var datas = eval("("+request.responseText+")");
+              Ext.get('drop-img').update(datas['xctx']);
+              Ext.get('drag-img').update(datas['kytx']);
+
+              Ext.get('hsz-img').update('<div id="repair" class="availableLot repair"></div>')
+
+              var overrides = {
+                  // Only called when element is dragged over the a dropzone with the same ddgroup
+                  onDragEnter : function(evtObj, targetElId) {
+                      // Colorize the drag target if the drag node's parent is not the same as the drop target
+                      if (targetElId != this.el.dom.parentNode.id) {
+                          this.el.addClass('dropOK');
+                      }
+                      else {
+                          // Remove the invitation
+                          this.onDragOut();
+                      }
+                  },
+                  // Only called when element is dragged out of a dropzone with the same ddgroup
+                  onDragOut : function(evtObj, targetElId) {
+                      this.el.removeClass('dropOK');
+                  },
+                  //Called when mousedown for a specific amount of time
+                  b4StartDrag : function() {
+                      if (!this.el) {
+                          this.el = Ext.get(this.getEl());
+                      }
+                      //this.el.highlight();
+                      //Cache the original XY Coordinates of the element, we'll use this later.
+                      this.originalXY = this.el.getXY();
+                  },
+                  // Called when element is dropped not anything other than a
+                  // dropzone with the same ddgroup
+                  onInvalidDrop : function() {
+                      this.invalidDrop = true;
+
+                  },
+                  endDrag : function() {
+                      if (this.invalidDrop === true) {
+                          this.el.removeClass('dropOK');
+
+                          var animCfgObj = {
+                              easing   : 'elasticOut',
+                              duration : 1,
+                              scope    : this,
+                              callback : function() {
+                                  this.el.dom.style.position = '';
+                              }
+                          };
+                          this.el.moveTo(this.originalXY[0], this.originalXY[1], animCfgObj);
+                          delete this.invalidDrop;
+                      }
+
+                  },
+                  // Called upon successful drop of an element on a DDTarget with the same
+                  onDragDrop : function(evtObj, targetElId) {
+                      // Wrap the drop target element with Ext.Element
+                      var dropEl = Ext.get(targetElId);
+
+                      // Perform the node move only if the drag element's parent is not the same as the drop target
+                      if (this.el.dom.parentNode.id != targetElId) {
+
+                          // Move the element
+                          dropEl.appendChild(this.el);
+
+                          // Remove the drag invitation
+                          this.onDragOut(evtObj, targetElId);
+
+                          // Clear the styles
+                          this.el.dom.style.position ='';
+                          this.el.dom.style.top = '';
+                          this.el.dom.style.left = '';
+                      }
+                      else {
+                          // This was an invalid drop, lets call onInvalidDrop to initiate a repair
+                          this.onInvalidDrop();
+                      }
+                  }
+              };
+
+              // Configure the cars to be draggable
+              var carElements = Ext.get('cars').select('div');
+              Ext.each(carElements.elements, function(el) {
+                  var dd = new Ext.dd.DD(el, 'carsDDGroup', {
+                      isTarget  : false
+                  });
+                  Ext.apply(dd, overrides);
+              });
+
+              var rentedElements = Ext.get('rented').select('div');
+              Ext.each(rentedElements.elements, function(el) {
+                  var dd = new Ext.dd.DD(el, 'rentedDDGroup', {
+                      isTarget  : false
+                  });
+                  Ext.apply(dd, overrides);
+              });
+
+              var repairElements = Ext.get('repair').select('div');
+              Ext.each(repairElements.elements, function(el) {
+                  var dd = new Ext.dd.DD(el, 'repairDDGroup', {
+                      isTarget  : false
+                  });
+                  Ext.apply(dd, overrides);
+              });
+
+              var carsDDTarget    = new Ext.dd.DDTarget('cars','carsDDGroup');
+              var rentedDDTarget  = new Ext.dd.DDTarget('rented', 'rentedDDGroup');
+              var repairDDTarget  = new Ext.dd.DDTarget('repair', 'repairDDGroup');
+
+              rentedDDTarget.addToGroup('carsDDGroup');
+              carsDDTarget.addToGroup('rentedDDGroup');
+
+              rentedDDTarget.addToGroup('repairDDGroup');
+              repairDDTarget.addToGroup('rentedDDGroup');
+
+              repairDDTarget.addToGroup('carsDDGroup');
+              carsDDTarget.addToGroup('repairDDGroup');
+
+            };
+            
+            
+            
             var planPanel = new Ext.form.FormPanel({
               id : 'plan_panel_id',
               autoScroll : true,
-              width:800,
-              height:400,
+              width:850,
+              height:410,
               layout:'absolute',
               items: [
                   {
@@ -352,15 +476,39 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       y: 20
                   },
                   {
+                      xtype: 'button',
+                      text: '保存',
+                      x: 480,
+                      y: 15,
+                      handler : function() {
+                        xcElements = Ext.get('cars').select('img');
+                        pp = '';
+                        Ext.each(xcElements.elements, function(el) {
+                          pp = pp + el.src + '|';
+                        });
+
+                        //alert (pp);
+                        
+                        pars = {imgs:pp, id:gsm.selections.items[0].data.id};
+                        new Ajax.Request("/desktop/save_selected_photo", { 
+                          method: "POST",
+                          parameters: pars,
+                          onComplete:  function(request) {
+                            setImages(request);
+                          }
+                        });
+                      }
+                  },                  
+                  {
                       xtype : 'box',
                       id : 'drop-img',
                       border : true,
                       x: 400,
                       y: 40,
-                      width: 160,
+                      width: 120,
                       height: 320,
                       name: 'xctx',
-                      autoEl: {tag: 'div', id: 'drop-img', html: 'Add Transition Category'}
+                      autoEl: {tag: 'div', id: 'drop-img', html: '已有照片'}
                   },
                   {
                       xtype: 'label',
@@ -374,12 +522,54 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       border : true,
                       x: 540,
                       y: 40,
-                      width: 160,
+                      width: 120,
                       height: 320,
                       name: 'kytx',
-                      autoEl: {tag: 'div', id: 'drag-img', html: 'Add Transition Category'}
-                  }
+                      autoEl: {tag: 'div', id: 'drag-img', html: '可用影像'}
+                  },
+                  {
+                      xtype: 'label',
+                      text: '回收站',
+                      x: 670,
+                      y: 20
+                  },
+                  {
+                      xtype: 'button',
+                      text: '清空',
+                      x: 720,
+                      y: 15,
+                      handler : function() {
+                        
+                        xcElements = Ext.get('repair').select('img');
+                        pp = '';
+                        Ext.each(xcElements.elements, function(el) {
+                          pp = pp + el.src + '|';
+                        });
 
+                        //alert (pp);
+                        
+                        pars = {imgs:pp, id:gsm.selections.items[0].data.id};
+                        new Ajax.Request("/desktop/delete_selected_photo", { 
+                          method: "POST",
+                          parameters: pars,
+                          onComplete:  function(request) {
+                            setImages(request);
+                          }
+                        });
+                        
+                      }
+                  },
+                  {
+                      xtype : 'box',
+                      id : 'hsz-img',
+                      border : true,
+                      x: 670,
+                      y: 40,
+                      width: 120,
+                      height: 320,
+                      name: 'hsz',
+                      autoEl: {tag: 'div', id: 'hsz-img', html: '回收站'}
+                  }
               ]
 
             });
@@ -461,8 +651,6 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     };
 
                     var map  = new OpenLayers.Map($('map_task'), options);
-                    //var gsat = new OpenLayers.Layer.Google("谷歌卫星图", {type: G_SATELLITE_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
-                    //var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: G_NORMAL_MAP, "sphericalMercator": true,   opacity: 1, numZoomLevels: 20});
 
                     var gmap = new OpenLayers.Layer.Google(
                         "谷歌地图", // the default
@@ -477,10 +665,6 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                         {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
                     );
 
-                    demolayer = new OpenLayers.Layer.WMS("cite:dltb","../service/wms",
-                    {layers: 'cite:dltb', format: 'image/jpeg' },
-                    { tileSize: new OpenLayers.Size(256,256)});
-                    
                     map.addLayers([gsat, gmap, ghyb]);
                     
                     var zjzj_map = new OpenLayers.Layer.WMS("行政区划", host_url, 
@@ -650,7 +834,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                             height : 330,
                             width : 230,
                             layout : 'fit', 
-                            items:xmdkGrid
+                            items:[xmdkGrid]
                           
                       }]
                       
@@ -714,97 +898,8 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                    
                 }, '-', {
                   text : '影像上传',
+                  iconCls : 'upload-icon',
                   handler : function() {
-
-                    var myuploadform= new Ext.FormPanel({
-                      id : 'my_upload_form',
-                      fileUpload: true,
-                      width: 250,
-                      height : 150,
-                      autoHeight: true,
-                      bodyStyle: 'padding: 5px 5px 5px 5px;',
-                      labelWidth: 0,
-                      defaults: {
-                        anchor: '95%',
-                        allowBlank: false,
-                        msgTarget: 'side'
-                      },
-                      layout : 'absolute',
-                      items:[{
-                        xtype: 'label',
-                        text: '增加影像或附件文件：(支持jpg,png)，文件名不能包含空格和单引号。',
-                        x: 10,
-                        y: 10,
-                        width: 100
-                      },
-                      {
-                        xtype: 'fileuploadfield',
-                        id: 'filedata',
-                        x: 10,
-                        y: 45,
-                        emptyText: '选择一个文件...',
-                        buttonText: '浏览'
-                      }],
-                      buttons: [
-                      {
-                        text: '上传',
-                        handler: function(){
-                          if (dh==''){
-                            msg('提示', '请先选择要增加影像文件的案卷.');
-                          } 
-                          else
-                          {
-                            myForm = Ext.getCmp('my_upload_form').getForm();
-                            filename=myForm._fields.items[0].lastValue.split('\\');
-                            file=filename[filename.length-1];
-                            file=file.gsub("'","\'")
-                            new Ajax.Request("/desktop/get_image_sfcf", { 
-                              method: "POST",
-                              parameters: eval("({filename:'" + file + "',dh:'" + dh +"',userid:" + currentUser.id + "})"),
-                              onComplete:  function(request) {
-                                if (request.responseText=='notsort'){
-                                  alert("您无此类档案影像文件上传的权限。");
-                                } 
-                                else
-                                {
-                                    if(myForm.isValid()){
-                                        form_action=1;
-                                        myForm.submit({
-                                          url: '/desktop/upload_file',
-                                          waitMsg: '文件上传中...',
-                                          success: function(form, action){
-                                            var isSuc = action.result.success; 
-                                            if (isSuc) {
-                                              new Ajax.Request("/desktop/save_image_db", { 
-                                                method: "POST",
-                                                parameters: eval("({filename:'" + file + "',dh:'" + dh +"'})"),
-                                                onComplete:  function(request) {
-                                                  if (request.responseText=='true'){
-                                                    msg('成功', '文件上传成功.'); 
-                                                    timage_store.load();
-                                                    Ext.getCmp('timage_combo').lastQuery = null;
-                                                  }else{
-                                                    alert("文件上传失败，请重新上传。" + request.responseText);
-                                                  }
-                                                }
-                                              }); //save_image_db
-                                            } else { 
-                                              msg('失败', '文件上传失败.');
-                                            }
-                                          }, 
-                                          failure: function(){
-                                            msg('失败', '文件上传失败.');
-                                          }
-                                        });
-                                    }
-                                }
-                              }
-                            })
-                          } //else
-                        } //handler
-                      }] //buttons
-                    });
-                    
                     var fp = new Ext.FormPanel({
                         fileUpload: true,
                         width: 500,
@@ -814,12 +909,13 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                         labelWidth: 50,
                         defaults: {
                             anchor: '95%',
-                            allowBlank: false,
+                            //allowBlank: false,
                             msgTarget: 'side'
                         },
                         items: [{
                             xtype: 'textfield',
-                            fieldLabel: '文件名'
+                            name: 'photo-desc',
+                            fieldLabel: '描述'
                         },{
                             xtype: 'fileuploadfield',
                             id: 'form-file',
@@ -883,7 +979,23 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     
                   }
                   
-                },'-',{
+                },'-',
+                {
+                  text : '刷新',
+                  handler : function(){
+                    
+                    pars = {id:gsm.selections.items[0].data.id};
+                    new Ajax.Request("/desktop/get_xcimage", { 
+                      method: "POST",
+                      parameters: pars,
+                      onComplete:  function(request) {
+                        setImages(request);
+                      }  
+                    });            
+                    
+                  }
+                },
+                {
                   text : '人员设定',
                   hidden : true,
                   handler : function() {
@@ -1032,7 +1144,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                     xctx = xctx + el.src + '|';
                   });
                   
-                  alert (xctx);
+                  //alert (xctx);
                   
                   new Ajax.Request("/desktop/add_plan", { 
                     method: "POST",
@@ -1075,118 +1187,9 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               method: "POST",
               parameters: pars,
               onComplete:  function(request) {
-                
-                var datas = eval("("+request.responseText+")");
-                Ext.get('drop-img').update(datas['xctx']);
-                
-                //Ext.get('drop-img').update('<div id="cars" class="availableLot"><div><img src="/img/buckett_3d.gif" class="imgThumb" qtip="Camaro"/></div></div>');
-                
-                
-                Ext.get('drag-img').update('<div id="rented" class="availableLot rented"><div><img src="/img/hazzard_3d.gif" class="imgThumb" qtip="Miata"/></div><div><img src="/img/ingersoll_3d.gif" class="imgThumb" qtip="Mustang"/></div><div><img src="img/resig_3d.gif" class="imgThumb" qtip="Corvette"/></div></div>');
-                
-                
-                var overrides = {
-                    // Only called when element is dragged over the a dropzone with the same ddgroup
-                    onDragEnter : function(evtObj, targetElId) {
-                        // Colorize the drag target if the drag node's parent is not the same as the drop target
-                        if (targetElId != this.el.dom.parentNode.id) {
-                            this.el.addClass('dropOK');
-                        }
-                        else {
-                            // Remove the invitation
-                            this.onDragOut();
-                        }
-                    },
-                    // Only called when element is dragged out of a dropzone with the same ddgroup
-                    onDragOut : function(evtObj, targetElId) {
-                        this.el.removeClass('dropOK');
-                    },
-                    //Called when mousedown for a specific amount of time
-                    b4StartDrag : function() {
-                        if (!this.el) {
-                            this.el = Ext.get(this.getEl());
-                        }
-                        //this.el.highlight();
-                        //Cache the original XY Coordinates of the element, we'll use this later.
-                        this.originalXY = this.el.getXY();
-                    },
-                    // Called when element is dropped not anything other than a
-                    // dropzone with the same ddgroup
-                    onInvalidDrop : function() {
-                        this.invalidDrop = true;
-
-                    },
-                    endDrag : function() {
-                        if (this.invalidDrop === true) {
-                            this.el.removeClass('dropOK');
-
-                            var animCfgObj = {
-                                easing   : 'elasticOut',
-                                duration : 1,
-                                scope    : this,
-                                callback : function() {
-                                    this.el.dom.style.position = '';
-                                }
-                            };
-                            this.el.moveTo(this.originalXY[0], this.originalXY[1], animCfgObj);
-                            delete this.invalidDrop;
-                        }
-
-                    },
-                    // Called upon successful drop of an element on a DDTarget with the same
-                    onDragDrop : function(evtObj, targetElId) {
-                        // Wrap the drop target element with Ext.Element
-                        var dropEl = Ext.get(targetElId);
-
-                        // Perform the node move only if the drag element's parent is not the same as the drop target
-                        if (this.el.dom.parentNode.id != targetElId) {
-
-                            // Move the element
-                            dropEl.appendChild(this.el);
-
-                            // Remove the drag invitation
-                            this.onDragOut(evtObj, targetElId);
-
-                            // Clear the styles
-                            this.el.dom.style.position ='';
-                            this.el.dom.style.top = '';
-                            this.el.dom.style.left = '';
-                        }
-                        else {
-                            // This was an invalid drop, lets call onInvalidDrop to initiate a repair
-                            this.onInvalidDrop();
-                        }
-                    }
-                };
-
-                // Configure the cars to be draggable
-                var carElements = Ext.get('cars').select('div');
-                Ext.each(carElements.elements, function(el) {
-                    var dd = new Ext.dd.DD(el, 'carsDDGroup', {
-                        isTarget  : false
-                    });
-                    Ext.apply(dd, overrides);
-                });
-
-                var rentedElements = Ext.get('rented').select('div');
-                Ext.each(rentedElements.elements, function(el) {
-                    var dd = new Ext.dd.DD(el, 'rentedDDGroup', {
-                        isTarget  : false
-                    });
-                    Ext.apply(dd, overrides);
-                });
-
-                var carsDDTarget    = new Ext.dd.DDTarget('cars','carsDDGroup');
-                var rentedDDTarget = new Ext.dd.DDTarget('rented', 'rentedDDGroup');
-
-                rentedDDTarget.addToGroup('carsDDGroup');
-                carsDDTarget.addToGroup('rentedDDGroup');
-                
-                
-              }
+                setImages(request);
+              }  
             });            
-            
-
             
           }
           
