@@ -4,7 +4,7 @@ class MapController < ApplicationController
   
   #with template
   def get2dinfo
-    if params['map_type'].to_i = 1
+    if params['map_type'].to_i == 1
       lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
     else
       lon, lat = params['lon'].to_f , params['lat'].to_f 
@@ -22,7 +22,7 @@ class MapController < ApplicationController
   
   def get2dinfo_wx
     #lon,lat=params['lon'],params['lat']
-    if params['map_type'].to_i = 1
+    if params['map_type'].to_i == 1
       lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
     else
       lon, lat = params['lon'].to_f , params['lat'].to_f 
@@ -40,7 +40,7 @@ class MapController < ApplicationController
   
   def getxmdk_wx
     
-    if params['map_type'].to_i = 1
+    if params['map_type'].to_i == 1
       lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
     else
       lon, lat = params['lon'].to_f , params['lat'].to_f 
@@ -270,7 +270,7 @@ class MapController < ApplicationController
     #define OFFSET_LAT (-0.0020264277677)
     #define OFFSET_LONG 0.004228694067
     
-    if params['map_type'].to_i = 1
+    if params['map_type'].to_i == 1
       lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
     else
       lon, lat = params['lon'].to_f , params['lat'].to_f 
