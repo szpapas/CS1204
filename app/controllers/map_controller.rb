@@ -79,7 +79,7 @@ class MapController < ApplicationController
     else
       ts1 = Time.now.strftime('%Y-%m-%d')  
       ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
-      if  username.include?('189')
+      if  username.include?('18')
         txt = ''
         iphone = username.gsub('+86','').gsub(' 86','')
         user = User.find_by_sql("select username from users where iphone='#{iphone}';")
@@ -99,7 +99,7 @@ class MapController < ApplicationController
     lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
-    if username.include?'189'
+    if username.include?'18'
       User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
     else  
       User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
@@ -139,7 +139,7 @@ class MapController < ApplicationController
   def report_task_state
     state = params["state"]
     username = params["username"].gsub("+86","")
-    if username.include?('189')
+    if username.include?('18')
       user = User.find_by_sql("select username, iphone from users where iphone = '#{username}';")
       if user.size > 0
         username = user[0].username
@@ -289,7 +289,7 @@ class MapController < ApplicationController
         User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
       
         #update users
-        if username.include?("189")
+        if username.include?("18")
           User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where iphone = '#{username}';")
         else
           User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
@@ -349,12 +349,20 @@ class MapController < ApplicationController
   end
   
   def add_new_xmdk
-    task_id, xmmc, lat, lon, xmms = params['task_id'], params['xmmc'], params['lat'], params['lon'], params['xmms']
+    xmmc, lat, lon, xmms = params['xmmc'], params['lat'], params['lon'], params['xmms']
     nd  = Time.now.year
     
-    user = User.find_by_sql("select xcqy from plans where id = '#{task_id}';")
-    xzqmc = user[0]['xcqy']
+    task_id = params['task_id'] || '0'
     
+    if task_id.to_i > 0 
+      user = User.find_by_sql("select xcqy from plans where id = '#{task_id}';")
+      xzqmc = user[0]['xcqy']
+    else
+      xzqmc = ""
+      
+      
+    end
+      
     the_geom = "transform( buffer(geomFromText('Point(#{lon} #{lat})',4326),0.0000898315280011275),900913)"
     the_center = "astext( transform(geomFromText('Point(#{lon} #{lat})',4326),900913)  ) "
     
@@ -364,6 +372,7 @@ class MapController < ApplicationController
     gid = user[0]['gid']
     
     user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
+    
     inspect_id = user[0]['id']
     ss = {"mode" => "23", "result" => "gid:#{gid},inspect_id:#{inspect_id}"}
     render :text => ss.to_json
