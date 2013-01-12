@@ -4,7 +4,8 @@ class MapController < ApplicationController
   
   #with template
   def get2dinfo
-    lon,lat=params['lon'],params['lat']
+    #lon,lat=params['lon'],params['lat']
+    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
@@ -16,7 +17,8 @@ class MapController < ApplicationController
   end
   
   def get2dinfo_wx
-    lon,lat=params['lon'],params['lat']
+    #lon,lat=params['lon'],params['lat']
+    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
@@ -29,7 +31,9 @@ class MapController < ApplicationController
   end
   
   def getxmdk_wx
-    lon,lat,xmmc=params['lon'],params['lat'],params['xmmc']
+    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    xmmc=params['xmmc']
+    
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, xh, pzwh, sfjs, xzqmc, nd, xz_tag, the_center from xmdk where xh = '#{xmmc}';")
