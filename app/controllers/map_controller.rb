@@ -4,8 +4,12 @@ class MapController < ApplicationController
   
   #with template
   def get2dinfo
-    #lon,lat=params['lon'],params['lat']
-    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    if params['map_type'].to_i = 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end
+    
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
@@ -18,7 +22,11 @@ class MapController < ApplicationController
   
   def get2dinfo_wx
     #lon,lat=params['lon'],params['lat']
-    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    if params['map_type'].to_i = 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end     
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
@@ -31,7 +39,13 @@ class MapController < ApplicationController
   end
   
   def getxmdk_wx
-    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    
+    if params['map_type'].to_i = 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end
+    
     xmmc=params['xmmc']
     
     lon = '120.0' if lon.nil?
@@ -256,7 +270,12 @@ class MapController < ApplicationController
     #define OFFSET_LAT (-0.0020264277677)
     #define OFFSET_LONG 0.004228694067
     
-    lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677 
+    if params['map_type'].to_i = 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end
+    
     user = User.find_by_sql("select gid, dlmc from dltb where st_within(transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
     
     txt = ''
