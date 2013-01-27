@@ -50,7 +50,7 @@ class MapController < ApplicationController
     
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
-    user = User.find_by_sql("select gid, xh, pzwh, sfjs, xzqmc, nd, xz_tag, the_center from xmdk where xh = '#{xmmc}';")
+    user = User.find_by_sql("select gid, xh, pzwh, yddw, tdzl, dkmj, jlrq, sfjs, xzqmc, nd, xz_tag, the_center from xmdk where xh = '#{xmmc}';")
     if user.size > 0 
       @user =  user[0]
       render :template => "/map/getxmdk_wx.html.erb"
