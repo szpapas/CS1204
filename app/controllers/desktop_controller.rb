@@ -22,7 +22,6 @@ class DesktopController < ApplicationController
   end
   
   #add at 06/17 
-  
   def get_user_bm
     bm=params['bm']
     mc=params['mc']

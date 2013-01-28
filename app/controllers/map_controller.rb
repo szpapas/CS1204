@@ -88,7 +88,14 @@ class MapController < ApplicationController
   end
   
   def gethelp
-  end      
+  end 
+  
+  #device, task_id
+  def addInspect
+    iphone   = params['device']
+    @task_id = params['task_id']
+    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{iphone}' order by dist limit 5;")
+  end
     
   #Ajax requests
   def get_plan_json
