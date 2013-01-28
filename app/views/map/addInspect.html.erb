@@ -41,7 +41,7 @@
 	<a data-role="button" data-theme="e" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>">返回</a>
     <div data-role="collapsible" data-inset="false" data-collapsed="false">
 		<div data-role="fieldcontain">
-            <fieldset data-role="controlgroup" data-type="vertical">
+            <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
                 <legend>
                     选择一个项目地块:
                 </legend>
@@ -55,11 +55,11 @@
         </div>
     </div>
     <div data-role="fieldcontain">
-        <fieldset data-role="controlgroup" data-type="vertical">
+        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
             <legend>
-                是否违法
+                是否违法:
             </legend>
-            <input id="radio1" name="是否违法" value="radio1" type="radio">
+            <input id="radio1" name="是否违法" value="radio1" type="radio" checked="true">
             <label for="radio1">
                 是
             </label>
@@ -70,11 +70,11 @@
         </fieldset>
     </div>
     <div data-role="fieldcontain">
-        <fieldset data-role="controlgroup" data-type="vertical">
+        <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
             <legend>
                 建设状态:
             </legend>
-            <input id="radio3" name="" value="radio1" type="radio">
+            <input id="radio3" name="" value="radio1" type="radio" checked="true">
             <label for="radio3">
                 在建
             </label>
@@ -103,14 +103,28 @@
         <fieldset data-role="controlgroup">
             <label for="textarea1">耕地面积（亩）：
             </label>
-            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+            <textarea name="" id="textarea1" placeholder="50" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
             <label for="textarea1">违法面积（亩）：
             </label>
-            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+            <textarea name="" id="textarea1" placeholder="50" data-mini="true"></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">处置情况：
+            </label>
+            <textarea name="" id="textarea1" placeholder="" data-mini="true"></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">备注：
+            </label>
+            <textarea name="" id="textarea1" placeholder="" data-mini="true"></textarea>
         </fieldset>
     </div>
     <br />
