@@ -1,0 +1,126 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+<body> 
+
+<script>
+	
+  $(function() {
+     $("#saveAjax1").click(function() {
+	    var task_id = $.trim($("#task_id").val());
+        var xcnr = $.trim($("#xcnr_text").val());
+        var xcjg = $.trim($("#xcjg_text").val());
+        var clyj = $.trim($("#clyj_text").val());
+        if(xcnr.length > 0)
+        {
+           $.ajax({
+             type: "POST",
+             url: "/map/callajax",
+             data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+             cache: false,
+             dataType: "text",
+             success: function(data){
+               $("#result_log").html(data);
+             }
+           });
+        }
+     });
+  });
+</script>
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+  <div data-role="content"> 
+	<a data-role="button" data-theme="e" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>">返回</a>
+    <div data-role="collapsible" data-inset="false" data-collapsed="false">
+		<div data-role="fieldcontain">
+            <fieldset data-role="controlgroup" data-type="vertical">
+                <legend>
+                    选择一个项目地块:
+                </legend>
+				<% for xmdk in @xmdks %>
+					<input id="radio<%= xmdk.gid %>" name="" value="<%= xmdk.gid %>" type="radio">
+	                <label for="radio<%= xmdk.gid %>">
+	                    <%= xmdk.gid %> : <%= xmdk.xh %>
+	                </label>
+				<% end %>
+            </fieldset>
+        </div>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical">
+            <legend>
+                是否违法
+            </legend>
+            <input id="radio1" name="是否违法" value="radio1" type="radio">
+            <label for="radio1">
+                是
+            </label>
+            <input id="radio2" name="是否违法" value="radio2" type="radio">
+            <label for="radio2">
+                否
+            </label>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical">
+            <legend>
+                建设状态:
+            </legend>
+            <input id="radio3" name="" value="radio1" type="radio">
+            <label for="radio3">
+                在建
+            </label>
+            <input id="radio4" name="" value="radio4" type="radio">
+            <label for="radio4">
+                基础工程
+            </label>
+            <input id="radio5" name="" value="radio5" type="radio">
+            <label for="radio5">
+                部分完工部分在建
+            </label>
+            <input id="radio6" name="" value="radio6" type="radio">
+            <label for="radio6">
+                完工
+            </label>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">实际占地面积（亩）：
+            </label>
+            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">耕地面积（亩）：
+            </label>
+            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">违法面积（亩）：
+            </label>
+            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+        </fieldset>
+    </div>
+    <br />
+	<input id="saveAjax1" type="button" data-inline="false" value="保存" data-theme="b"/>
+    <div id="result_log"></div>  
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+</body>
+</html>
