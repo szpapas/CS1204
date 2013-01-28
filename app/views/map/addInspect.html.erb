@@ -15,15 +15,25 @@
   $(function() {
      $("#saveAjax1").click(function() {
 	    var task_id = $.trim($("#task_id").val());
-        var xcnr = $.trim($("#xcnr_text").val());
-        var xcjg = $.trim($("#xcjg_text").val());
-        var clyj = $.trim($("#clyj_text").val());
-        if(xcnr.length > 0)
+	
+	 
+        var xmmc = $.trim($("input[name='xmmc_val']:checked").val());
+        var sfwf = $.trim($("input[name='sfwf_val']:checked").val());
+        var jszt = $.trim($("input[name='jszt_val']:checked").val());
+
+        var sjzdmj = $.trim($("#sjzdmj_text").val());
+        var gdmj =   $.trim($("#gdmj_text").val());
+        var wfmj =   $.trim($("#wfmj_text").val());
+
+        var czqk = $.trim($("#czqk_text").val());
+        var bz   = $.trim($("#bz_text").val());
+
+        if(xmmc.length > 0)
         {
            $.ajax({
              type: "POST",
-             url: "/map/callajax",
-             data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+             url: "/map/add_new_inspect",
+             data: ({task_id:task_id, xmmc:xmmc, sfwf:sfwf, jszt:jszt, sjzdmj:sjzdmj, gdmj:gdmj, wfmj:wfmj, czqk:czqk, bz:bz}),
              cache: false,
              dataType: "text",
              success: function(data){
@@ -41,12 +51,18 @@
 	<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>">返回</a>
     <div data-role="collapsible" data-inset="false" data-collapsed="false">
 		<div data-role="fieldcontain">
-            <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+            <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
                 <legend>
                     选择一个项目地块:
                 </legend>
+				<% k =  0 %>
 				<% for xmdk in @xmdks %>
-					<input id="radio<%= xmdk.gid %>" name="" value="<%= xmdk.gid %>" type="radio">
+					<% k = k+1 %>
+					<% if k==1 %>
+						<input id="radio<%= xmdk.gid %>" name="xmmc_val" value="<%= xmdk.gid %>" type="radio" checked="true">
+					<% else %>
+						<input id="radio<%= xmdk.gid %>" name="xmmc_val" value="<%= xmdk.gid %>" type="radio">
+					<% end %>	
 	                <label for="radio<%= xmdk.gid %>">
 	                    <%= xmdk.gid %> : <%= xmdk.xh %>
 	                </label>
@@ -55,38 +71,38 @@
         </div>
     </div>
     <div data-role="fieldcontain">
-        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+        <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
             <legend>
                 是否违法:
             </legend>
-            <input id="radio1" name="是否违法" value="radio1" type="radio" checked="true">
+            <input id="radio1" name="sfwf_val" value="是" type="radio" checked="true">
             <label for="radio1">
                 是
             </label>
-            <input id="radio2" name="是否违法" value="radio2" type="radio">
+            <input id="radio2" name="sfwf_val" value="否" type="radio">
             <label for="radio2">
                 否
             </label>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
-        <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+        <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
             <legend>
                 建设状态:
             </legend>
-            <input id="radio3" name="" value="radio1" type="radio" checked="true">
+            <input id="radio3" name="jszt_val" value="在建" type="radio" checked="true">
             <label for="radio3">
                 在建
             </label>
-            <input id="radio4" name="" value="radio4" type="radio">
+            <input id="radio4" name="jszt_val" value="基础工程" type="radio">
             <label for="radio4">
                 基础工程
             </label>
-            <input id="radio5" name="" value="radio5" type="radio">
+            <input id="radio5" name="jszt_val" value="部分完工部分在建" type="radio">
             <label for="radio5">
                 部分完工部分在建
             </label>
-            <input id="radio6" name="" value="radio6" type="radio">
+            <input id="radio6" name="jszt_val" value="完工" type="radio">
             <label for="radio6">
                 完工
             </label>
@@ -96,36 +112,39 @@
         <fieldset data-role="controlgroup">
             <label for="textarea1">实际占地面积（亩）：
             </label>
-            <textarea name="" id="textarea1" placeholder="100" data-mini="true"></textarea>
+            <textarea name="sjzdmj_text" id="sjzdmj_text" placeholder="100" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
             <label for="textarea1">耕地面积（亩）：
             </label>
-            <textarea name="" id="textarea1" placeholder="50" data-mini="true"></textarea>
+            <textarea name="gdmj_text" id="gdmj_text" placeholder="50" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
             <label for="textarea1">违法面积（亩）：
             </label>
-            <textarea name="" id="textarea1" placeholder="50" data-mini="true"></textarea>
+            <textarea name="wfmj_text" id="wfmj_text" placeholder="50" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
             <label for="textarea1">处置情况：
             </label>
-            <textarea name="" id="textarea1" placeholder="" data-mini="true"></textarea>
+            <textarea name="czqk_text" id="czqk_text" placeholder="" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup">
             <label for="textarea1">备注：
             </label>
-            <textarea name="" id="textarea1" placeholder="" data-mini="true"></textarea>
+            <textarea name="bz_text" id="bz_text" placeholder="" data-mini="true"></textarea>
         </fieldset>
+    </div>
+	<div data-role="collapsible" data-inset="false" hidden="true">
+      <textarea name="textarea" id="task_id"> <%= @task_id %> </textarea>
     </div>
     <br />
 	<input id="saveAjax1" type="button" data-inline="false" value="保存" data-theme="b"/>

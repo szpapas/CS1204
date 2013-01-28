@@ -66,7 +66,7 @@ class MapController < ApplicationController
   def getreport
     @user   = User.find_by_sql("select * from plans where id=#{params['task_id']};")[0]
     @images = User.find_by_sql("select * from xcimage where plan_id = #{params['task_id']};")
-    @xmdks  = User.find_by_sql("select xmdk.* from xcimage inner join xmdk on xcimage.xmdk_id = xmdk.gid where plan_id = #{params['task_id']};")
+    @xmdks  = User.find_by_sql("select xmdk.* from inspects inner join xmdk on inspects.xmdk_Id = xmdk.gid where plan_id = #{params['task_id']};")
   end  
   
   def demoajax
@@ -95,6 +95,12 @@ class MapController < ApplicationController
     iphone   = params['device']
     @task_id = params['task_id']
     @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{iphone}' order by dist limit 5;")
+  end
+  
+  #{"sfwf"=>"是", "gdmj"=>"", "xmmc"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
+  def add_new_inspect
+    user.find_by_sql("insert into inspects (plan_id, xmdk_id, jszt, sfwf, sjzdmj, gdmj, wfmj, clyj, bz, xcrq) values (#{params['task_id']}, #{params['xmmc']}, '#{params['jszt']}', '#{params['sfwf']}', '#{params['sjzdmj']}', '#{params['gdmj']}', '#{params['wfmj']}', '#{params['clyj']}',  '#{params['bz']}', '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');")
+    render :text => "保存成功"
   end
     
   #Ajax requests
@@ -146,6 +152,16 @@ class MapController < ApplicationController
     geomString = "geomFromText('Point(#{params['lonlat']})',4326)"
     
     User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz, tpjd, the_geom) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{params['rq']}', '#{params['bz']}', '#{params['tpjd']}', #{geomString});")
+    
+    #Add plan_id, xmdk_id to inspects
+    user = User.find_by_sql("select count(*) from inspects where plan_id = #{plan_id} and xmdk_id = #{xmdk_id};")
+    
+    if user[0].count.to_i == 0
+      user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{plan_id}, #{xmdk_id}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
+    else
+      user = User.find_by_sql("select count(*) from xcimage where plan_id = #{plan_id} and xmdk_id = #{xmdk_id};")
+      User.find_by_sql("update inspects set tpsl = #{user[0].count}")
+    end
     
     v = params['yx_file']
     
