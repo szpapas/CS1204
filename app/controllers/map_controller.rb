@@ -64,8 +64,9 @@ class MapController < ApplicationController
   end
   
   def getreport
-    @user = User.find_by_sql("select * from plans where id=#{params['task_id']};")[0]
+    @user   = User.find_by_sql("select * from plans where id=#{params['task_id']};")[0]
     @images = User.find_by_sql("select * from xcimage where plan_id = #{params['task_id']};")
+    @xmdks  = User.find_by_sql("select xmdk.* from xcimage inner join xmdk on xcimage.xmdk_id = xmdk.gid where plan_id = #{params['task_id']};")
   end  
   
   def demoajax

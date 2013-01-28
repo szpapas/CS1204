@@ -17,8 +17,27 @@
 <script>
 	
   $(function() {
-     $("#saveAjax").click(function() {
-	      var task_id = $.trim($("#task_id").val());
+     $("#saveAjax1").click(function() {
+	    var task_id = $.trim($("#task_id").val());
+        var xcnr = $.trim($("#xcnr_text").val());
+        var xcjg = $.trim($("#xcjg_text").val());
+        var clyj = $.trim($("#clyj_text").val());
+        if(xcnr.length > 0)
+        {
+           $.ajax({
+             type: "POST",
+             url: "/map/callajax",
+             data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+             cache: false,
+             dataType: "text",
+             success: function(data){
+               $("#result_log").html(data);
+             }
+           });
+        }
+     });
+     $("#saveAjax2").click(function() {
+	    var task_id = $.trim($("#task_id").val());
         var xcnr = $.trim($("#xcnr_text").val());
         var xcjg = $.trim($("#xcjg_text").val());
         var clyj = $.trim($("#clyj_text").val());
@@ -55,9 +74,10 @@
 
 <!-- Start of first page: #one -->
 <div data-role="page" id="one">
-
+  <div data-theme="a" data-role="header">
+      <h3>任务上报</h3>
+  </div>
   <div data-role="content"> 
-    
     <div data-role="collapsible" data-inset="false">
       <h3><strong>巡查时间：</strong> <%= @user['taskbegintime'] %></h3>
     </div>
@@ -69,6 +89,18 @@
     </div>
     <div data-role="collapsible" data-inset="false">
        <h3><strong>巡查方式：</strong> <%= @user['xcfs'] %>  </h3>
+    </div>
+    <div data-role="collapsible" data-inset="false" data-collapsed="false">
+       <h3><strong>项目地块：</strong> </h3>
+			<ul data-role="listview" data-divider-theme="a" data-inset="true">
+			<% for xmdk in @xmdks %>
+				<li data-theme="b">
+				  <a href="#xcnr" data-transition="slide">
+				    <%= xmdk.gid %> : <%= xmdk.xh %>
+				  </a>
+				</li>
+			<% end %>
+			</ul>		
     </div>
     <div data-role="collapsible" data-inset="false"  data-collapsed="false">
       <h3><strong>巡查内容：</strong>   </h3>
@@ -86,16 +118,19 @@
        <h3><strong>巡查图片：</strong> </h3>
 			<ul class="gallery">
 				<% for image in @images %>
-					<li><img src="/images/xctx/<%= image.yxmc.gsub('PNG','JPG')  %>" alt="<%= image.yxmc.gsub('PNG','JPG')  %>" /></a></li>
-					<% end %>
+					<li><img src="/images/xctx/<%= image.yxmc.gsub('PNG','JPG')  %>" alt="<%= image.yxmc.gsub('PNG','JPG')  %>" /></li>
+				<% end %>
 			</ul>		
     </div>
     <div data-role="collapsible" data-inset="false" hidden="true">
       <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
-    </div>    
-    <!--a href="index.html" data-role="button" data-inline="fasle" data-theme="b">保存修改</a-->
-		<input id="saveAjax" type="button" value="保存修改" data-theme="b"/>
-		<!--input id="viewPdf" type="button" value="PDF查看" data-theme="b"/-->
+    </div>
+    <br />
+	&#12288;&#12288;
+	<input id="saveAjax1" type="button" data-inline="true" value="保存为草稿" data-theme="a"/>
+	&#12288;&#12288;
+	<input id="saveAjax2" type="button" data-inline="true" value="保存并提交" data-theme="e"/>
+
     <div id="result_log"></div>  
 
   </div><!-- /content -->
