@@ -92,15 +92,31 @@ class MapController < ApplicationController
   
   #device, task_id
   def addInspect
-    iphone   = params['device']
     @task_id = params['task_id']
-    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{iphone}' order by dist limit 5;")
+    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{params['device']}' order by dist limit 5;")
   end
   
-  #{"sfwf"=>"是", "gdmj"=>"", "xmmc"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
+  def showInspect
+    @task_id = params['task_id']
+    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
+  end  
+  
+  #{"sfwf"=>"是", "gdmj"=>"", "xmdk_id"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
   def add_new_inspect
-    user.find_by_sql("insert into inspects (plan_id, xmdk_id, jszt, sfwf, sjzdmj, gdmj, wfmj, clyj, bz, xcrq) values (#{params['task_id']}, #{params['xmmc']}, '#{params['jszt']}', '#{params['sfwf']}', '#{params['sjzdmj']}', '#{params['gdmj']}', '#{params['wfmj']}', '#{params['clyj']}',  '#{params['bz']}', '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');")
-    render :text => "保存成功"
+    user = User.find_by_sql("select count(*) from inspects where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
+    
+    if user[0].count.to_i == 0
+      User.find_by_sql("insert into inspects (plan_id, xmdk_id, jszt, sfwf, sjzdmj, gdmj, wfmj, clyj, bz, xcrq) values (#{params['task_id']}, #{params['xmdk_id']}, '#{params['jszt']}', '#{params['sfwf']}', '#{params['sjzdmj']}', '#{params['gdmj']}', '#{params['wfmj']}', '#{params['clyj']}',  '#{params['bz']}', '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');")
+      render :text => "保存成功"
+    else
+      User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
+      render :text => '已经添加'
+    end    
+  end
+  
+  def save_old_inspect
+    User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
+    render :text => "修改成功"
   end
     
   #Ajax requests

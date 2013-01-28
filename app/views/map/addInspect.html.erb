@@ -13,11 +13,10 @@
 <script>
 	
   $(function() {
-     $("#saveAjax1").click(function() {
+     $("#saveXmdk").click(function() {
 	    var task_id = $.trim($("#task_id").val());
-	
-	 
-        var xmmc = $.trim($("input[name='xmmc_val']:checked").val());
+        var xmdk_id = $.trim($("input[name='xmmc_val']:checked").val());
+
         var sfwf = $.trim($("input[name='sfwf_val']:checked").val());
         var jszt = $.trim($("input[name='jszt_val']:checked").val());
 
@@ -25,15 +24,15 @@
         var gdmj =   $.trim($("#gdmj_text").val());
         var wfmj =   $.trim($("#wfmj_text").val());
 
-        var czqk = $.trim($("#czqk_text").val());
+        var clyj = $.trim($("#clyj_text").val());
         var bz   = $.trim($("#bz_text").val());
 
-        if(xmmc.length > 0)
+        if(xmdk_id.length > 0)
         {
            $.ajax({
              type: "POST",
              url: "/map/add_new_inspect",
-             data: ({task_id:task_id, xmmc:xmmc, sfwf:sfwf, jszt:jszt, sjzdmj:sjzdmj, gdmj:gdmj, wfmj:wfmj, czqk:czqk, bz:bz}),
+             data: ({task_id:task_id, xmdk_id:xmdk_id, sfwf:sfwf, jszt:jszt, sjzdmj:sjzdmj, gdmj:gdmj, wfmj:wfmj, clyj:clyj, bz:bz}),
              cache: false,
              dataType: "text",
              success: function(data){
@@ -48,7 +47,8 @@
 <!-- Start of first page: #one -->
 <div data-role="page" id="one">
   <div data-role="content"> 
-	<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>">返回</a>
+	<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>" rel="external">返回</a>
+	
     <div data-role="collapsible" data-inset="false" data-collapsed="false">
 		<div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
@@ -133,7 +133,7 @@
         <fieldset data-role="controlgroup">
             <label for="textarea1">处置情况：
             </label>
-            <textarea name="czqk_text" id="czqk_text" placeholder="" data-mini="true"></textarea>
+            <textarea name="clyj_text" id="clyj_text" placeholder="" data-mini="true"></textarea>
         </fieldset>
     </div>
     <div data-role="fieldcontain">
@@ -147,7 +147,7 @@
       <textarea name="textarea" id="task_id"> <%= @task_id %> </textarea>
     </div>
     <br />
-	<input id="saveAjax1" type="button" data-inline="false" value="保存" data-theme="b"/>
+	<input id="saveXmdk" type="button" data-inline="false" value="保存" data-theme="b"/>
     <div id="result_log"></div>  
 
   </div><!-- /content -->

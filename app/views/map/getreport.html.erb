@@ -17,7 +17,7 @@
 <script>
 	
   $(function() {
-     $("#saveAjax1").click(function() {
+     $("#saveDraft").click(function() {
 	    var task_id = $.trim($("#task_id").val());
         var xcnr = $.trim($("#xcnr_text").val());
         var xcjg = $.trim($("#xcjg_text").val());
@@ -36,7 +36,7 @@
            });
         }
      });
-     $("#saveAjax2").click(function() {
+     $("#saveUpload").click(function() {
 	    var task_id = $.trim($("#task_id").val());
         var xcnr = $.trim($("#xcnr_text").val());
         var xcjg = $.trim($("#xcjg_text").val());
@@ -55,24 +55,9 @@
            });
         }
      });
-     $("#viewPdf").click(function() {
-	      var task_id = $.trim($("#task_id").val());
-          $.ajax({
-            type: "POST",
-            url: "/map/getpdfreport",
-            data: ({task_id:task_id}),
-            cache: false,
-            dataType: "text",
-            success: function(data){
-              $.mobile.loadPage(data, "slideup");
-            }
-          });
-     });
-
   });
 </script>
 
-<!-- Start of first page: #one -->
 <div data-role="page" id="one">
   <div data-role="content"> 
     <div data-role="collapsible" data-inset="false">
@@ -89,18 +74,18 @@
     </div>
     <div data-role="collapsible" data-inset="false" data-collapsed="false">
        <h3><strong>项目地块：</strong></h3>
-		<a data-role="button" data-theme="e" data-transition="slide"  data-icon="arrow-r" data-iconpos="right" href="/map/addInspect?task_id=<%= @user['id']%>&device=<%= @user['device']%>">
+		<a data-role="button" data-theme="e" data-icon="arrow-r" data-iconpos="right" href="/map/addInspect?task_id=<%= @user['id']%>&device=<%= @user['device']%>" rel="external">
 	      添加项目地块
 	    </a>
-			<ul data-role="listview" data-divider-theme="a" data-inset="true">
+		<ul data-role="listview" data-divider-theme="a" data-inset="true">
 			<% for xmdk in @xmdks %>
-				<li data-theme="b">
-				  <a href="#xcnr" data-transition="slide">
-				    <%= xmdk.gid %> : <%= xmdk.xh %>
-				  </a>
-				</li>
+			<li data-theme="b">
+			  <a href="/map/showInspect?task_id=<%= @user['id']%>&xmdk_id=<%= xmdk.gid %>" rel="external" data-transition="slide">
+			    <%= xmdk.gid %> : <%= xmdk.xh %>
+			  </a>
+			</li>
 			<% end %>
-			</ul>		
+		</ul>		
     </div>
     <div data-role="collapsible" data-inset="false"  data-collapsed="false">
       <h3><strong>巡查内容：</strong>   </h3>
@@ -126,24 +111,10 @@
       <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
     </div>
     <br />
-	<input id="saveAjax1" type="button" data-inline="true" value="保存为草稿" data-theme="a"/>
-	<input id="saveAjax2" type="button" data-inline="true" value="保存并提交" data-theme="e"/>
+	<input id="saveDraft" type="button" data-inline="true" value="保存为草稿" data-theme="a"/>
+	<input id="saveUpload" type="button" data-inline="true" value="保存并提交" data-theme="e"/>
     <div id="result_log"></div>  
 
-  </div><!-- /content -->
-
-</div><!-- /page -->
-
-
-<div data-role="page" id="xcnr">
-
-  <div data-role="content"> 
-    
-    <label for="textarea-a">Textarea:</label>
-    <textarea name="textarea" id="textarea-a">
-    I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
-    </textarea>
-      
   </div><!-- /content -->
 
 </div><!-- /page -->
