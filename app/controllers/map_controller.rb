@@ -90,30 +90,9 @@ class MapController < ApplicationController
   def gethelp
   end 
   
-  #device, task_id
-  def addInspect
-    @task_id = params['task_id']
-    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{params['device']}' order by dist limit 5;")
-  end
-  
-  def modifyInspect
-    @task_id = params['task_id']
-    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
-    xmdk_id = @xmdk.id
-    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
-    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
-  end
-  
-  def showInspect
-    @task_id = params['task_id']
-    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
-    xmdk_id = @xmdk.id
-    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
-    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
-  end  
+
   
   def makeSelect
-    
   end
   
   #{"sfwf"=>"是", "gdmj"=>"", "xmdk_id"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
@@ -558,6 +537,31 @@ class MapController < ApplicationController
       txt = "{}"
     end
     render :text => txt
+  end
+  
+  #device, task_id
+  def addInspect
+    @task_id = params['task_id']
+    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{params['device']}' order by dist limit 5;")
+    render :template => '/map/inspect_add.html.erb'
+  end
+  
+  def modifyInspect
+    @task_id = params['task_id']
+    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
+    xmdk_id = @xmdk.id
+    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
+    render :template => '/map/inspect_edit.html.erb'
+  end
+  
+  def showInspect
+    @task_id = params['task_id']
+    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
+    xmdk_id = @xmdk.id
+    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
+    render :template => '/map/inspect_show.html.erb'
   end
     
 end

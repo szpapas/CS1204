@@ -1,0 +1,159 @@
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside2 { float: right; width: 240px; text-align: right; margin: .3em 0; }
+	</style>
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
+  <div data-role="content"> 
+		<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>" rel="external">返回</a>
+
+		<!--ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." !-->
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+					地快详请<span class="ui-li-aside"><a href="/map/modifyInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>">修改</span>
+				</a> 
+			</li>
+			<li>
+				<p style='width:35%;float:left'>项目地块编号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.xmdk_id %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>是否违法:</p>
+				<p style='width:65%;float:right'><%= @xmdk.sfwf %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>建设状态:</p>
+				<p style='width:65%;float:right'><%= @xmdk.jszt %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>实际占地面积（亩）:</p>
+				<p style='width:65%;float:right'><%= @xmdk.sjzdmj %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>耕地面积（亩）:</p>
+				<p style='width:65%;float:right'><%= @xmdk.gdmj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>违法面积（亩）:</p>
+				<p style='width:65%;float:right'><%= @xmdk.wfmj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>处置情况:</p>
+				<p style='width:65%;float:right'><%= @xmdk.clyj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>备注:</p>
+				<p style='width:65%;float:right'><%= @xmdk.bz %></p>
+			</li>
+		</ul>
+	
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>项目地块编号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.xmdk_id %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>地块名称:</p>
+				<p style='width:65%;float:right'><%= @dksx.dkmc %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>用地单位:</p>
+				<p style='width:65%;float:right'><%= @dksx.srdw %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>坐落位置:</p>
+				<p style='width:65%;float:right'><%= @dksx.tdzl %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>是否符合土地利用整体规划:</p>
+				<p style='width:65%;float:right'><%= @dksx.sffhztgh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>原地类:</p>
+				<p style='width:65%;float:right'><%= @dksx.ydl %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>立项时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.lxsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>立项批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.lxpwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>规划定点时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.ghddsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>规划定点文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.ghddwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>转征用时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.zzypzsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>转征用批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.nzypzwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>供地时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.gdsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.htbh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批准用途:</p>
+				<p style='width:65%;float:right'><%= @dksx.tdyt %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>实际用途:</p>
+				<p style='width:65%;float:right'><%= @dksx.sjyt %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批准面积（亩）:</p>
+				<p style='width:65%;float:right'><%= @dksx.tdmj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>其中耕地（亩）:</p>
+				<p style='width:65%;float:right'><%= @dksx.qznyd %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>实际动工时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.sjdgsj %></p>
+			</li>
+		</ul>
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+</body>
+</html>

@@ -15,106 +15,112 @@
 <body> 
 
 <script>
-	
+  
   $(function() {
-     $("#saveDraft").click(function() {
-	    var task_id = $.trim($("#task_id").val());
-        var xcnr = $.trim($("#xcnr_text").val());
-        var xcjg = $.trim($("#xcjg_text").val());
-        var clyj = $.trim($("#clyj_text").val());
-        if(xcnr.length > 0)
-        {
-           $.ajax({
-             type: "POST",
-             url: "/map/callajax",
-             data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
-             cache: false,
-             dataType: "text",
-             success: function(data){
-               $("#result_log").html(data);
-             }
-           });
-        }
-     });
-     $("#saveUpload").click(function() {
-	    var task_id = $.trim($("#task_id").val());
-        var xcnr = $.trim($("#xcnr_text").val());
-        var xcjg = $.trim($("#xcjg_text").val());
-        var clyj = $.trim($("#clyj_text").val());
-        if(xcnr.length > 0)
-        {
-           $.ajax({
-             type: "POST",
-             url: "/map/callajax",
-             data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
-             cache: false,
-             dataType: "text",
-             success: function(data){
-               $("#result_log").html(data);
-             }
-           });
-        }
-     });
+   $("#saveDraft").click(function() {
+    var task_id = $.trim($("#task_id").val());
+    var xcnr = $.trim($("#xcnr_text").val());
+    var xcjg = $.trim($("#xcjg_text").val());
+    var clyj = $.trim($("#clyj_text").val());
+    if(xcnr.length > 0)
+    {
+       $.ajax({
+       type: "POST",
+       url: "/map/callajax",
+       data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+       cache: false,
+       dataType: "text",
+       success: function(data){
+         $("#result_log").html(data);
+       }
+       });
+    }
+   });
+   $("#saveUpload").click(function() {
+    var task_id = $.trim($("#task_id").val());
+    var xcnr = $.trim($("#xcnr_text").val());
+    var xcjg = $.trim($("#xcjg_text").val());
+    var clyj = $.trim($("#clyj_text").val());
+    if(xcnr.length > 0)
+    {
+       $.ajax({
+       type: "POST",
+       url: "/map/callajax",
+       data: ({task_id:task_id, xcnr: xcnr, xcjg: xcjg, clyj: clyj}),
+       cache: false,
+       dataType: "text",
+       success: function(data){
+         $("#result_log").html(data);
+       }
+       });
+    }
+   });
   });
 </script>
 
 <div data-role="page" id="one">
   <div data-role="content"> 
-    <div data-role="collapsible" data-inset="false">
-      <h3><strong>巡查时间：</strong> <%= @user['taskbegintime'] %></h3>
-    </div>
-    <div data-role="collapsible" data-inset="false">
-       <h3><strong>巡查路线：</strong> <%= @user['xclx'] %>  </h3>
-    </div>
-    <div data-role="collapsible" data-inset="false">
-       <h3><strong>巡查人员：</strong> <%= @user['xcry'] %>  </h3>
-    </div>
-    <div data-role="collapsible" data-inset="false">
-       <h3><strong>巡查方式：</strong> <%= @user['xcfs'] %>  </h3>
-    </div>
-    <div data-role="collapsible" data-inset="false" data-collapsed="false">
-       <h3><strong>项目地块：</strong></h3>
-		<a data-role="button" data-theme="e" data-icon="arrow-r" data-iconpos="right" href="/map/addInspect?task_id=<%= @user['id']%>&device=<%= @user['device']%>" rel="external">
-	      添加项目地块
-	    </a>
-		<ul data-role="listview" data-divider-theme="a" data-inset="true">
-			<% for xmdk in @xmdks %>
-			<li data-theme="b">
-			  <a href="/map/showInspect?task_id=<%= @user['id']%>&xmdk_id=<%= xmdk.gid %>" rel="external" data-transition="slide">
-			    <%= xmdk.gid %> : <%= xmdk.xh %>
-			  </a>
-			</li>
-			<% end %>
-		</ul>		
-    </div>
-    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
-      <h3><strong>巡查内容：</strong>   </h3>
-      <textarea name="textarea" id="xcnr_text"><%= @user['xcnr'] %> </textarea>
-    </div>
-    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
-      <h3><strong>巡查结果：</strong>  </h3>
-      <textarea name="textarea" id="xcjg_text"> <%= @user['xcjg'] %> </textarea>
-    </div>
-    <div data-role="collapsible" data-inset="false"  data-collapsed="false">
-      <h3><strong>处理意见：</strong> </h3>
-      <textarea name="textarea" id="clyj_text"> <%= @user['clyj'] %> </textarea>
-    </div>
-    <div data-role="collapsible" data-inset="false">
-       <h3><strong>巡查图片：</strong> </h3>
-			<ul class="gallery">
-				<% for image in @images %>
-					<li><img src="/images/xctx/<%= image.yxmc.gsub('PNG','JPG')  %>" alt="<%= image.yxmc.gsub('PNG','JPG')  %>" /></li>
-				<% end %>
-			</ul>		
-    </div>
-    <div data-role="collapsible" data-inset="false" hidden="true">
-      <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
-    </div>
-    <br />
-	<input id="saveDraft" type="button" data-inline="true" value="保存为草稿" data-theme="a"/>
-	<input id="saveUpload" type="button" data-inline="true" value="保存并提交" data-theme="e"/>
-    <div id="result_log"></div>  
+  <div data-role="collapsible" data-inset="false">
+    <h3><strong>巡查时间：</strong> <%= @user['taskbegintime'] %></h3>
+  </div>
+  <div data-role="collapsible" data-inset="false">
+     <h3><strong>巡查路线：</strong> <%= @user['xclx'] %>  </h3>
+  </div>
+  <div data-role="collapsible" data-inset="false">
+     <h3><strong>巡查人员：</strong> <%= @user['xcry'] %>  </h3>
+  </div>
+  <div data-role="collapsible" data-inset="false">
+     <h3><strong>巡查方式：</strong> <%= @user['xcfs'] %>  </h3>
+  </div>
+  <div data-role="collapsible" data-inset="false" data-collapsed="false">
+     <h3><strong>项目地块：</strong></h3>
+    <a data-role="button" data-theme="e" data-icon="arrow-r" data-iconpos="right" href="/map/addInspect?task_id=<%= @user['id']%>&device=<%= @user['device']%>" rel="external">
+      添加项目地块
+    </a>
+    <ul data-role="listview" data-divider-theme="a" data-inset="true">
+      <% for xmdk in @xmdks %>
+      <li data-theme="b">
+        <a href="/map/showInspect?task_id=<%= @user['id']%>&xmdk_id=<%= xmdk.gid %>" rel="external" data-transition="slide">
+        <%= xmdk.gid %> : <%= xmdk.xh %>
+        </a>
+      </li>
+      <% end %>
+    </ul>   
+  </div>
+  <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+    <h3><strong>巡查内容：</strong>   </h3>
+    <textarea name="textarea" id="xcnr_text"><%= @user['xcnr'] %> </textarea>
+  </div>
+  <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+    <h3><strong>巡查结果：</strong>  </h3>
+    <textarea name="textarea" id="xcjg_text"> <%= @user['xcjg'] %> </textarea>
+  </div>
+  <div data-role="collapsible" data-inset="false"  data-collapsed="false">
+    <h3><strong>处理意见：</strong> </h3>
+    <textarea name="textarea" id="clyj_text"> <%= @user['clyj'] %> </textarea>
+  </div>
+  <div data-role="collapsible" data-inset="false">
+     <h3><strong>巡查图片：</strong> </h3>
+      <ul class="gallery">
+        <% for image in @images %>
+          <li><img src="/images/xctx/<%= image.yxmc.gsub('PNG','JPG')  %>" alt="<%= image.yxmc.gsub('PNG','JPG')  %>" /></li>
+        <% end %>
+      </ul>   
+  </div>
+  <div data-role="collapsible" data-inset="false" hidden="true">
+    <textarea name="textarea" id="task_id"> <%= @user['id'] %> </textarea>
+  </div>
+  <br />
 
+	<div class="ui-grid-a">
+		<div class="ui-block-a">
+			<input id="saveDraft" type="button" value="保存为草稿"  data-theme="a"/>
+		</div>
+		<div class="ui-block-b">
+			<input id="saveUpload" type="button" value="保存并提交"  data-theme="e"/>
+		</div>
+ 	</div>
+  <div id="result_log"></div>  
   </div><!-- /content -->
 
 </div><!-- /page -->
