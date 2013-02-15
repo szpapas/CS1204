@@ -38,7 +38,7 @@ class MapController < ApplicationController
     end  
   end
   
-  def getxmdk_wx
+  def getxmdk_wx_old
     
     if params['map_type'].to_i == 1
       lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
@@ -57,6 +57,7 @@ class MapController < ApplicationController
     else
       render :template => "/map/2derror.html.erb"
     end  
+    
   end
   
   def getuserinfo
@@ -565,5 +566,12 @@ class MapController < ApplicationController
     User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
     render :text => "修改成功"
   end  
-    
+  
+  def getxmdk_wx
+    xmmc = params['xmmc']
+    @xmdk  = User.find_by_sql("select * from wx_xmdk where xmmc = '#{params['xmmc']}';")[0]
+    #gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where xmmc = '#{params['xmmc']}';")[0].gdqkid
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
+    render :template => '/map/xmdk_show.html.erb'
+  end  
 end
