@@ -1,0 +1,108 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>查看用地</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/jquery/jquery-mobile-960.min.css" >
+
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside { float: right; width: 640px; text-align: left; margin: 0 0; }
+	</style>
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
+	<div data-role="header">
+	  <a href="/map/ydb" data-role="button" class="ui-btn-left" data-icon="back" data-theme="b" id='back' rel="external" >返回</a>
+    <h1><%= @ydb.jsxmmc %>详细</h1>
+		<a href="/map/edit_ydb?id=<%= @ydb.id %>" data-role="button" class="ui-btn-right" data-icon="plus" data-theme="b" rel="external"  >修改</a>
+  </div>
+  <div data-role="content"> 
+		<ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." >
+			<li data-role="list-divider" data-divider-theme="a">项目详请</li>
+			<li>建设项目名称	    :<span class="ui-li-aside"><%= @ydb.jsxmmc  %></span></li>
+			<li>城乡		      :<span class="ui-li-aside"><%= @ydb.cx     %></span></li>
+			<li>供地方式	      :<span class="ui-li-aside"><%= @ydb.gdfs    %></span></li>
+			<li>出让(流转)方案批准日期:<span class="ui-li-aside"><%= @ydb.crfapzrq %></span></li>
+			<li>公告日期	      :<span class="ui-li-aside"><%= @ydb.ggrq    %></span></li>
+			<li>成交日期	      :<span class="ui-li-aside"><%= @ydb.cjrq    %></span></li>
+			<li>签定合同日期	    :<span class="ui-li-aside"><%= @ydb.qdhtrq  %></span></li>
+			<li>供地日期	      :<span class="ui-li-aside"><%= @ydb.gdrq    %></span></li>
+			<li>成交确认书编号	    :<span class="ui-li-aside"><%= @ydb.cjqrsbh %></span></li>
+			<li>合同(划拨决定书)编号	:<span class="ui-li-aside"><%= @ydb.htbh    %></span></li>
+			<li>批复文号	      :<span class="ui-li-aside"><%= @ydb.pfwh    %></span></li>
+			<li>出让(流转)方	    :<span class="ui-li-aside"><%= @ydb.crf     %></span></li>
+			<li>受让方	        :<span class="ui-li-aside"><%= @ydb.srf     %></span></li>
+			<li>联系人	        :<span class="ui-li-aside"><%= @ydb.lxr     %></span></li>
+			<li>电话	        :<span class="ui-li-aside"><%= @ydb.dh      %></span></li>
+			<li data-role="list-divider" data-divider-theme="a">位置信息</li>
+			<li>地块编号	      :<span class="ui-li-aside"><%= @ydb.dkbh    %></span></li>
+			<li>宗地面积	      :<span class="ui-li-aside"><%= @ydb.zdmj    %></span></li>
+			<li>地块位置	      :<span class="ui-li-aside"><%= @ydb.dkwz    %></span></li>
+			<li>地块东至	      :<span class="ui-li-aside"><%= @ydb.dkdz    %></span></li>
+			<li>地块西至	      :<span class="ui-li-aside"><%= @ydb.dknz    %></span></li>
+			<li>地块南至	      :<span class="ui-li-aside"><%= @ydb.dkxz    %></span></li>
+			<li>地块北至	      :<span class="ui-li-aside"><%= @ydb.dkbz    %></span></li>
+			<li data-role="list-divider" data-divider-theme="a">价格信息</li>
+			<li>评估价	        :<span class="ui-li-aside"><%= @ydb.pgj     %></span></li>
+			<li>底价单价        :<span class="ui-li-aside"><%= @ydb.dj_dj   %></span></li>
+			<li>底价(亩/万元)    :<span class="ui-li-aside"><%= @ydb.dj_mwj  %></span></li>
+			<li>底价(起始总价)    :<span class="ui-li-aside"><%= @ydb.dj_qszj %></span></li>
+			<li>底价(楼面价 )    :<span class="ui-li-aside"><%= @ydb.dj_lmj  %></span></li>
+			<li>成交价(单价)     :<span class="ui-li-aside"><%= @ydb.cjj_dj  %></span></li>
+			<li>成交价(亩/万元)   :<span class="ui-li-aside"><%= @ydb.cjj_mwj %></span></li>
+			<li>成交价(楼面价)    :<span class="ui-li-aside"><%= @ydb.cjj_lmj %></span></li>
+			<li>成交总价	      :<span class="ui-li-aside"><%= @ydb.cjzj    %></span></li>
+			<li>溢价率	        :<span class="ui-li-aside"><%= @ydb.yjl     %></span></li>
+			<li data-role="list-divider" data-divider-theme="a">交易信息</li>
+			<li>出让(流转)年限	  :<span class="ui-li-aside"><%= @ydb.cr      %></span></li>
+			<li>用途	        :<span class="ui-li-aside"><%= @ydb.yt      %></span></li>
+			<li>产业门类	      :<span class="ui-li-aside"><%= @ydb.cyml    %></span></li>
+			<li>权属来源	      :<span class="ui-li-aside"><%= @ydb.qsly    %></span></li>
+			<li>投资体系	      :<span class="ui-li-aside"><%= @ydb.tztx    %></span></li>
+			<li>保证金	        :<span class="ui-li-aside"><%= @ydb.bzj     %></span></li>
+			<li>约定交款时间	    :<span class="ui-li-aside"><%= @ydb.ydjkrq  %></span></li>
+			<li>实际交款时间	    :<span class="ui-li-aside"><%= @ydb.sjjkrq  %></span></li>
+			<li>滞纳金情况	      :<span class="ui-li-aside"><%= @ydb.znjqk   %></span></li>
+			<li>欠款金额	      :<span class="ui-li-aside"><%= @ydb.qkje    %></span></li>
+			<li>未到期款	      :<span class="ui-li-aside"><%= @ydb.wdqk    %></span></li>
+			<li>催缴情况	      :<span class="ui-li-aside"><%= @ydb.cjqk    %></span></li>
+			<li>约定交地时间	    :<span class="ui-li-aside"><%= @ydb.ydjdsj  %></span></li>
+			<li>实际交地时间	    :<span class="ui-li-aside"><%= @ydb.sjjdsj  %></span></li>
+			<li>约定开工时间	    :<span class="ui-li-aside"><%= @ydb.ydkgsj  %></span></li>
+			<li>实际开工时间	    :<span class="ui-li-aside"><%= @ydb.sjkgsj  %></span></li>
+			<li>约定竣工时间	    :<span class="ui-li-aside"><%= @ydb.ydjgsj  %></span></li>
+			<li>实际竣工时间	    :<span class="ui-li-aside"><%= @ydb.sjjgsj  %></span></li>
+			<li>投资额         :<span class="ui-li-aside"><%= @ydb.tze     %></span></li>
+			<li>注册资本        :<span class="ui-li-aside"><%= @ydb.zczb    %></span></li>
+			<li>容积率         :<span class="ui-li-aside"><%= @ydb.rjl     %></span></li>
+			<li>建设密度        :<span class="ui-li-aside"><%= @ydb.jsmd    %></span></li>
+			<li>绿化率         :<span class="ui-li-aside"><%= @ydb.lhl     %></span></li>
+			<li>其他要求	      :<span class="ui-li-aside"><%= @ydb.qtyq    %></span></li>
+			<li>可建建筑面积	    :<span class="ui-li-aside"><%= @ydb.kjjzmj  %></span></li>
+			<li>中小套型比例      :<span class="ui-li-aside"><%= @ydb.zxtxbl  %></span></li>
+			<li>中小套型面积      :<span class="ui-li-aside"><%= @ydb.zxtxmj  %></span></li>
+			<li>备注          :<span class="ui-li-aside"><%= @ydb.bz      %></span></li>
+		</ul>
+	
+  </div><!-- /content -->
+	<div>
+		<p align="center" style="font-size:12px; font-family:arial; color: silver;">Copyright&nbsp;2013 Brightechs</p>
+	</div>
+</div><!-- /page -->
+</body>
+</html>

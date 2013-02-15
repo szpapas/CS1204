@@ -1,0 +1,141 @@
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside2 { float: right; width: 240px; text-align: right; margin: .3em 0; }
+	</style>
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
+  <div data-role="content"> 
+		<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>" rel="external">返回</a>
+
+		<ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." >
+			<li data-role="list-divider" data-divider-theme="a">
+					地快详请<span class="ui-li-aside"><a href="/map/modifyInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>">修改</span>
+				</a> 
+			</li>
+			
+			<li>
+				项目地块编号: <span class="ui-li-aside"> <%= @xmdk.xmdk_id %> </span>
+			</li> 
+			<li>
+				是否违法: <span class="ui-li-aside"> <%= @xmdk.sfwf %> </span>
+			</li> 
+			<li>
+				建设状态: <span class="ui-li-aside"> <%= @xmdk.jszt %> </span>
+			</li> 
+			<li>
+				实际占地面积（亩）： <span class="ui-li-aside"><%= @xmdk.sjzdmj %></span>
+			</li> 
+			<li>
+				耕地面积（亩）： <span class="ui-li-aside"><%= @xmdk.gdmj %> </span>
+			</li>
+			<li>
+				违法面积（亩）： <span class="ui-li-aside"><%= @xmdk.wfmj %></span>
+			</li>
+			<li>
+				处置情况： <span class="ui-li-aside"><%= @xmdk.clyj %></span>
+			</li>
+			<li>
+				备注： <span class="ui-li-aside"><%= @xmdk.bz %></span>
+			</li>
+		</ul>
+	
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+			<li>
+				项目地块编号: <span class="ui-li-aside"> <%= @xmdk.xmdk_id %> </span>
+			</li> 
+			<li>
+				地块名称: <span class="ui-li-aside2"> <%= @dksx.dkmc %> </span>
+			</li> 
+			<li>
+				用地单位: <span class="ui-li-aside2"> <%= @dksx.srdw %> </span>
+			</li> 
+			<li>
+				坐落位置： <span class="ui-li-aside2"><%= @dksx.tdzl %></span>
+			</li> 
+			<li>
+				是否符合土地利用整体规划： <span class="ui-li-aside"><%= @dksx.sffhztgh %> </span>
+			</li>
+			<li>
+				原地类： <span class="ui-li-aside"><%= @dksx.ydl %></span>
+			</li>
+			<li>
+				立项时间： <span class="ui-li-aside"><%= @dksx.lxsj %></span>
+			</li>
+			<li>
+				立项批文号： <span class="ui-li-aside"><%= @dksx.lxpwh %></span>
+			</li>
+			<li>
+				规划定点时间： <span class="ui-li-aside"><%= @dksx.ghddsj %></span>
+			</li>
+			<li>
+				规划定点文号： <span class="ui-li-aside"><%= @dksx.ghddwh %></span>
+			</li>
+			<li>
+				转征用时间： <span class="ui-li-aside"><%= @dksx.zzypzsj %></span>
+			</li>
+			<li>
+				转征用批文号： <span class="ui-li-aside"><%= @dksx.nzypzwh %></span>
+			</li>
+			<li>
+				供地时间： <span class="ui-li-aside"><%= @dksx.gdsj %></span>
+			</li>
+			<li>
+				批文号： <span class="ui-li-aside2"><%= @dksx.htbh %></span>
+			</li>
+			<li>
+				批准用途： <span class="ui-li-aside"><%= @dksx.tdyt %></span>
+			</li>
+			<li>
+				实际用途： <span class="ui-li-aside"><%= @dksx.sjyt %></span>
+			</li>
+			<li>
+				批准面积（亩）： <span class="ui-li-aside"><%= @dksx.tdmj %></span>
+			</li>
+			<li>
+				其中耕地（亩）： <span class="ui-li-aside"><%= @dksx.qznyd %></span>
+			</li>
+			<li>
+				实际动工时间： <span class="ui-li-aside"><%= @dksx.sjdgsj %></span>
+			</li>
+		</ul>
+		
+		<!--div data-role="fieldcontain">
+			<label for="select-choice-a" class="select">建设状态:</label>
+			<select name="select-choice-a" id="select-choice-a" data-native-menu="false">
+				<option value="0">在建</option>
+				<option value="1">基础工程</option>
+				<option value="2">部分完工部分在建</option>
+				<option value="3">完工</option>
+			</select>
+		</div-->
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+</body>
+</html>

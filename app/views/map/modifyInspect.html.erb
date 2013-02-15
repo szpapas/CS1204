@@ -1,0 +1,190 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+<body> 
+
+<script>
+    
+  $(function() {
+     $("#saveModify").click(function() {
+        var task_id = $.trim($("#task_id").val());
+        var xmdk_id = $.trim($("#xmdk_id").val());
+
+        var sfwf = $.trim($("input[name='sfwf_val']:checked").val());
+        var jszt = $.trim($("input[name='jszt_val']:checked").val());
+
+        var sjzdmj = $.trim($("#sjzdmj_text").val());
+        var gdmj =   $.trim($("#gdmj_text").val());
+        var wfmj =   $.trim($("#wfmj_text").val());
+
+        var clyj = $.trim($("#clyj_text").val());
+        var bz   = $.trim($("#bz_text").val());
+
+        if(xmdk_id.length > 0)
+        {
+           $.ajax({
+             type: "POST",
+             url: "/map/save_old_inspect",
+             data: ({task_id:task_id, xmdk_id:xmdk_id, sfwf:sfwf, jszt:jszt, sjzdmj:sjzdmj, gdmj:gdmj, wfmj:wfmj, clyj:clyj, bz:bz}),
+             cache: false,
+             dataType: "text",
+             success: function(data){
+               $("#result_log").html(data);
+             }
+           });
+        }
+     });
+  });
+</script>
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="three">
+  <div data-role="content"> 
+    <a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/showInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>" rel="external">返回</a>
+    
+    
+
+    <div data-role="collapsible" data-inset="false" data-collapsed="false">
+        <div data-role="fieldcontain">
+            <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
+                <legend>
+                    项目地块编号:&nbsp; <strong> <%= @xmdk.xmdk_id %></strong> 
+                </legend>   
+            </fieldset>
+        </div>
+    </div>
+
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
+            <legend>
+                是否违法:
+            </legend>
+            <% if @xmdk.sfwf =="是" %>
+            <input id="radio1" name="sfwf_val" value="是" type="radio" checked="true">
+            <% else %>
+                <input id="radio1" name="sfwf_val" value="是" type="radio">
+            <% end %>
+            <label for="radio1">
+                是
+            </label>
+            <% if @xmdk.sfwf =="否" %>
+            <input id="radio2" name="sfwf_val" value="否" type="radio" checked="true">
+            <% else %>
+                <input id="radio2" name="sfwf_val" value="否" type="radio">
+            <% end %>
+            <label for="radio2">
+                否
+            </label>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
+            <legend>
+                建设状态:
+            </legend>
+            <% if @xmdk.jszt == "在建" %>
+                <input id="radio3" name="jszt_val" value="在建" type="radio" checked="true">
+            <% else %>
+                <input id="radio3" name="jszt_val" value="在建" type="radio" >
+            <% end %>
+            <label for="radio3">
+                在建
+            </label>
+            <% if @xmdk.jszt == "基础工程" %>
+                <input id="radio4" name="jszt_val" value="基础工程" type="radio" checked="true">
+            <% else %>
+                <input id="radio4" name="jszt_val" value="基础工程" type="radio">
+            <% end %>
+            <label for="radio4">
+                基础工程
+            </label>
+            <% if @xmdk.jszt == "部分完工部分在建" %>
+                <input id="radio5" name="jszt_val" value="部分完工部分在建" type="radio" checked="true">
+            <% else %>
+                <input id="radio5" name="jszt_val" value="部分完工部分在建" type="radio">
+            <% end %>
+            
+            <label for="radio5">
+                部分完工部分在建
+            </label>
+            <% if @xmdk.jszt == "完工" %>
+                <input id="radio6" name="jszt_val" value="完工" type="radio" checked="true">
+            <% else %>
+                <input id="radio6" name="jszt_val" value="完工" type="radio">
+            <% end %>
+            
+            <label for="radio6">
+                完工
+            </label>
+        </fieldset>
+    </div>
+
+    <!--div data-role="fieldcontain">
+        <label for="select-choice-a" class="select">建设状态:</label>
+        <select name="select-choice-a" id="select-choice-a" data-native-menu="false">
+            <option value="0">在建</option>
+            <option value="1">基础工程</option>
+            <option value="2">部分完工部分在建</option>
+            <option value="3">完工</option>
+        </select>
+    </div-->
+    
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">实际占地面积（亩）：
+            </label>
+            <textarea name="sjzdmj_text" id="sjzdmj_text" placeholder="100" data-mini="true"><%= @xmdk.sjzdmj %></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">耕地面积（亩）：
+            </label>
+            <textarea name="gdmj_text" id="gdmj_text" placeholder="50" data-mini="true"><%= @xmdk.gdmj %></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">违法面积（亩）：
+            </label>
+            <textarea name="wfmj_text" id="wfmj_text" placeholder="50" data-mini="true"><%= @xmdk.wfmj %></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">处置情况：
+            </label>
+            <textarea name="clyj_text" id="clyj_text" placeholder="" data-mini="true"><%= @xmdk.clyj %></textarea>
+        </fieldset>
+    </div>
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
+            <label for="textarea1">备注：
+            </label>
+            <textarea name="bz_text" id="bz_text" placeholder="" data-mini="true"><%= @xmdk.bz %></textarea>
+        </fieldset>
+    </div>
+
+
+    <div data-role="collapsible" data-inset="false" hidden="true">
+      <textarea name="textarea" id="task_id"> <%= @task_id %> </textarea>
+      <textarea name="textarea" id="xmdk_id"> <%= @xmdk.xmdk_id %> </textarea>
+    </div>
+    <br />
+    <input id="saveModify" type="button" data-inline="false" value="保存修改" data-theme="b"/>
+    <div id="result_log"></div>  
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title></title> 
+  <meta name="viewport" content="user-scalable=no,width=device-width" />
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+
+  <style type=text/css>
+    div[data-role=navbar] .ui-btn .ui-btn-inner { 
+      padding-top: 50px; 
+    }
+    div[data-role=navbar] .ui-btn .ui-icon { 
+      width: 40px; 
+      height: 40px; 
+      margin-left: -20px; 
+    }
+    #refresh .ui-icon { 
+      background:  url(icons/01-refresh.png) 50% 50% no-repeat; 
+    }
+    #magnify .ui-icon { 
+      background:  url(icons/06-magnify.png) 50% 50% no-repeat; 
+    }
+    #chart .ui-icon { 
+      background:  url(icons/16-line-chart.png) 50% 50% no-repeat;  
+    }
+  </style>
+</head> 
+
+<body> 
+
+<div data-role="page" id="win1" data-add-back-btn="true">
+  <div data-role="header">
+    <h1>Window 1</h1>
+  </div>
+	<div data-role="content">
+    <p> Window content 1</p>
+    <p> This is a button defined by input</p>
+    <input type=button value=OK data-icon=check />
+    <p> This is a button defined by a link</p>
+    <a href=#win2 data-role=button data-icon=plus>Click here</a>
+
+    <h3> Two buttons aligned side by side</h3>
+  </div>
+</div>
+
+<div data-role="page" id="win2" data-add-back-btn="true" data-theme="a">
+  <div data-role=header data-position=fixed>
+    <h1>Window 2</h1>
+    <a href=# class=ui-btn-right>Paste</a>
+    <div data-role=navbar>
+      <ul>
+        <li><a href=# class=ui-btn-active >Menu 1</a></li>
+        <li><a href=#>Menu 2</a></li>
+        <li><a href=#>Menu 3</a></li>
+        <li><a href=#>Menu 4</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div data-role=content>
+    <h3> A table with 2 rows and 3 columns </h3>
+    <div class=ui-grid-b data-role=controlgroup data-type=horizontal >
+      <div class=ui-block-a style="text-align:right">
+        <a href=# data-role=button style="width:100px"> Yes </a></div>
+      <div class=ui-block-b>
+        <a href=# data-role=button style="width:100px"> ??? </a></div>
+      <div class=ui-block-c>
+        <a href=# data-role=button style="width:100px"> No </a></div>
+    </div>
+
+    <span> Choose an apartment type : </span>
+    <select data-native-menu="false">
+      <option value="1"> 1 bedroom </option>
+      <option value="2"> 2 bedrooms </option>
+      <option value="3"> 3 bedrooms </option>
+      <option value="4"> 4 bedrooms </option>
+      <option value="5"> 5 bedrooms </option>
+    </select>
+
+    <span> Choose an apartment: </span>
+    <div data-role=controlgroup>
+      <label for=id1>1 bedroom</label>
+      <input type=checkbox id=id1 name=p1 />
+      <label for=id2>2 bedrooms</label>
+      <input type=checkbox id=id2 name=p2 />
+      <label for=id3>3 bedrooms</label>
+      <input type=checkbox id=id3 name=p3 />
+      <label for=id4>4 bedrooms</label>
+      <input type=checkbox id=id4 name=p4 />
+      <label for=id5>5 bedrooms</label>
+      <input type=checkbox id=id5 name=p5 />
+    </div>
+
+    <span> Choose an apartment: </span>
+    <div data-role=controlgroup>
+      <label for=id6>1 bedroom</label>
+      <input type=checkbox id=id6 name=p1 />
+      <label for=id7>2 bedrooms</label>
+      <input type=checkbox id=id7 name=p2 />
+      <label for=id8>3 bedrooms</label>
+      <input type=checkbox id=id8 name=p3 />
+      <label for=id9>4 bedrooms</label>
+      <input type=checkbox id=id9 name=p4 />
+      <label for=id10>5 bedrooms</label>
+      <input type=checkbox id=id10 name=p5 />
+    </div>
+
+  </div>
+	
+	<div data-role=footer data-theme=d data-position=fixed>
+    <div data-role=navbar>
+      <ul>
+        <li><a href=# id=refresh data-icon=custom>Refresh</a></li>
+        <li><a href=# id=magnify data-icon=custom>Zoom</a></li>
+        <li><a href=# id=chart data-icon=custom>Graphics</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

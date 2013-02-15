@@ -1,0 +1,121 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加用地</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/jquery/jquery-mobile-960.min.css" >
+
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.js"></script>
+
+	<link type="text/css" href="/jquery/jqm-datebox.min.css" rel="stylesheet" /> 
+	<link type="text/css" href="/jquery/jquery.mobile.simpledialog.min.css" rel="stylesheet" />
+
+	<script type="text/javascript" src="/jquery/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.core.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.mode.calbox.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.mode.datebox.min.js"></script>
+	<script type="text/javascript" src="/jquery/jquery.mobile.datebox.i18n.zh-CN.utf8.js"></script>
+	<script type="text/javascript" src="/jquery/jquery.mobile.simpledialog.min.js"></script>
+
+	<style>
+		p { margin-right:20px; }
+	</style>
+</head> 
+
+<body> 
+	<div data-role="page" id="home">
+	  <div data-role="header">
+	    <h1>用地项目列表</h1>
+			<a href="add_ydb.html" data-role="button" class="ui-btn-right" data-icon="add" data-theme="b" id='save' rel="external" >增加</a>
+	  </div>
+	
+		<fieldset class="container_12">
+			<div class="grid_6" data-role="navbar" style="margin-top:8px" data-iconpos="left">
+        <ul>
+          <li><a href="#page1" data-transition="fade" data-theme="" data-icon="home">重置</a></li>
+          <li><a href="#page1" data-transition="fade" data-theme="" data-icon="grid">高级</a></li>
+          <li><a href="#page1" data-transition="fade" data-theme="" data-icon="search">查询</a></li>
+        </ul>
+	    </div>
+			<div class="grid_6">
+					<input type="search" name="yd_search" id="yd_search" value="" />
+			</div>	   
+		</fieldset>
+		<fieldset class="container_12">
+			<ul data-role="listview" data-inset="true" id="ul_ydb" >
+				<!--li data-role="list-divider">Contact Options</li>
+				<li><a href="#"><img src="phone.png" class="ui-li-icon">Call</a></li--> 
+				<li>
+					<a href="#">
+						<img src="img/zz_80.png" />
+						<h3>半岛温泉地块</h3>
+						<p>土地面积: 320248.9平米</p>
+						<p>受让方: 无锡灵山元一投资发展有限公司</p>
+					</a> 
+				</li>
+			</ul>
+		</fieldset>
+
+		<fieldset class="container_12" data-role="footer">
+	    <a href="#" data-role="button" data-icon="arrow-d" data-theme="b" id='more'>更多</a>
+	 		<!--input type="button" value="保存" class="ui-btn-right" data-icon="check" -->
+	  </fieldset>
+		<fieldset class="container_12">
+			<p align="center" style="font-size:12px; font-family:arial; color: silver;">Copyright&nbsp;2013 Brightechs</p>
+		</fieldset>
+
+	</div>
+
+</body>
+<script>
+	$("#home").bind('swipeleft',function(e){
+		console.log("swipe left happed.");
+		$('#pfwh').val('swipe left happed.');
+	});
+	
+	$("#home").bind('swiperight',function(e){
+		console.log("swipe right happed.");
+		$('#pfwh').val('swipe right happed.');
+	});
+	
+	$("#home").bind('swipeup',function(e){
+		console.log("swipe up happed.");
+		$('#pfwh').val('swipe up happed.');
+		
+		for (var i=0;i<10;i++)
+		{ 
+			$("#ul_ydb").append('<li><a href="#"><img src="img/zz_80.png" /><h3>半岛温泉地块</h3><p>土地面积: 320248.9平米</p><p>受让方: 无锡灵山元一投资发展有限公司</p></a></li>');
+		}
+		$("#ul_ydb").listview('refresh');
+	});
+	
+	$("#home").bind('swipedown',function(e){
+		console.log("swipe down happed.");
+		$('#pfwh').val('swipe down happed.');
+	});
+	
+	$("#more").on('click', function(){
+		
+		for (var i=0;i<10;i++)
+		{ 
+			$("#ul_ydb").append('<li><a href="#"><img src="img/zz_80.png" /><h3>半岛温泉地块</h3><p>土地面积: 320248.9平米</p><p>受让方: 无锡灵山元一投资发展有限公司</p></a></li>');
+		}
+		$("#ul_ydb").listview('refresh');
+		
+	});
+	
+	$("#home").bind('scrollstart', function(e){
+	 // console.log("start");
+	 //	$('#pfwh').val('scroll down start.');
+	});
+	
+	$("#home").bind('scrollstop', function(e){
+	 // console.log("end");
+	//$ ('#pfwh').val('scroll down end.');
+	});
+	
+</script>
+</html>

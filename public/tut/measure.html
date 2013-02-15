@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mobile Drawing</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="style.mobile.css" type="text/css">
+        <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
+				<script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+        <script src="/OpenLayers/lib/OpenLayers.js?mobile"></script>
+				
+				<script>
+				function init() {
+				    // create a vector layer for drawing
+				    var vectors = new OpenLayers.Layer.Vector('Vector Layer', {
+				        styleMap: new OpenLayers.StyleMap({
+				            temporary: OpenLayers.Util.applyDefaults({
+				                pointRadius: 16
+				            }, OpenLayers.Feature.Vector.style.temporary)
+				        })
+				    });
+
+				    // OpenLayers' EditingToolbar internally creates a Navigation control, we
+				    // want a TouchNavigation control here so we create our own editing toolbar
+				    var toolbar = new OpenLayers.Control.Panel({
+				        displayClass: 'olControlEditingToolbar'
+				    });
+						
+						var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
+								initialize: function(layer, options) {
+										OpenLayers.Control.prototype.initialize.apply(this, [options]);
+										this.layer = layer;
+										this.handler = new OpenLayers.Handler.Feature(
+												this, layer, {click: this.clickFeature}
+										);
+								},
+								clickFeature: function(feature) {
+										// if feature doesn't have a fid, destroy it
+										if(feature.fid == undefined) {
+												this.layer.destroyFeatures([feature]);
+										} else {
+												feature.state = OpenLayers.State.DELETE;
+												this.layer.events.triggerEvent("afterfeaturemodified", {feature: feature});
+												feature.renderIntent = "select";
+												this.layer.drawFeature(feature);
+										}
+								},
+								setMap: function(map) {
+										this.handler.setMap(map);
+										OpenLayers.Control.prototype.setMap.apply(this, arguments);
+								},
+								CLASS_NAME: "OpenLayers.Control.DeleteFeature"
+						});
+						
+						
+						var navigate = new OpenLayers.Control.Navigation({
+								title: "移动地图"
+						});
+
+						var drawPath = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Path, {
+								title: "规划路线",
+								displayClass: "olControlDrawFeaturePoint",
+								handlerOptions: {multi: false}
+						});
+						
+						var drawPoly = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {
+								title: "规划路线",
+								displayClass: "olControlDrawFeaturePolygon",
+								handlerOptions: {multi: false}
+						});
+
+						var edit = new OpenLayers.Control.ModifyFeature(vectors, {
+								title: "修改路线",
+								displayClass: "olControlModifyFeature"
+						});
+						
+						var del = new DeleteFeature(vectors, {
+								title: "删除路线", 
+								displayClass: "olControlDrawFeaturePoint" 
+						});
+						
+						drawPoly.featureAdded = function(){
+							console.log("Draw Feature added.");
+
+							toolbar.activateControl(navigate);
+							
+							if (vectors.features.length > 0){
+								var pars = 'id='+ 0 + '&lines=' + serialize(vectors.features);
+								//new ajax here 
+								new Ajax.Request("/map/query_lines", 
+								{ method: "POST",
+									parameters: pars,
+									onComplete:	 function(request) {
+										//draw_xmdks(request, vector_xmdk, markers);
+										
+									}
+								});
+							}
+						};
+						
+						
+						vectors.events.register("beforefeaturemodified", vectors, function	(e) {
+								//dragFeature.deactivate();
+								console.log("Draw Feature before modified.");
+						});
+
+						vectors.events.register("afterfeaturemodified", vectors, function	 (e) {
+								//dragFeature.activate();
+								console.log("Draw Feature modified.");
+								toolbar.activateControl(navigate);
+
+								if (vectors.features.length > 0){
+
+									var pars = 'id='+ 0 + '&lines=' + serialize(vectors.features);
+									//new ajax here 
+									new Ajax.Request("/map/query_lines", 
+									{ method: "POST",
+										parameters: pars,
+										onComplete:	 function(request) {
+											//draw_xmdks(request, vector_xmdk, markers);
+										}
+									});
+								}
+
+						});
+						
+						toolbar.addControls([navigate, del, edit, drawPoly]);
+						
+						var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: google.maps.MapTypeId.ROADMAP, "sphericalMercator": true,	 opacity: 1, numZoomLevels: 20});
+						
+				    map = new OpenLayers.Map({
+				        div: 'map',
+				        projection: 'EPSG:900913',
+				        units: 'm',
+				        numZoomLevels: 18,
+				        maxResolution: 156543.0339,
+				        maxExtent: new OpenLayers.Bounds(
+				            -20037508.34, -20037508.34, 20037508.34, 20037508.34
+				        ),
+				        controls: [
+				            new OpenLayers.Control.TouchNavigation(),
+				            new OpenLayers.Control.ZoomPanel(),
+				            toolbar
+				        ],
+				        layers: [gmap, vectors],
+				        center: new OpenLayers.LonLat(13470500, 3683278),
+				        zoom: 10,
+				        theme: null
+				    });
+				
+						//var latlng = new google.maps.LatLng (32.2144, 119.4763);
+						//map.panTo(latlng);
+						
+						// map.setCenter(new OpenLayers.LonLat(13470500, 3683278), 10);
+				    // activate the first control to render the "navigation icon"
+				    // as active
+				    toolbar.controls[0].activate();
+				}
+				
+				</script>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+            #map {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .olControlAttribution {
+                font-size: 10px;
+                bottom: 5px;
+                right: 5px;
+            }
+            div.olControlZoomPanel .olControlZoomInItemInactive,
+            div.olControlZoomPanel .olControlZoomOutItemInactive {
+                background: rgba(0,0,0,0.2);
+                position: absolute;
+            }
+            div.olControlZoomPanel .olControlZoomInItemInactive {
+                border-radius: 5px 5px 0 0;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive {
+                border-radius: 0 0 5px 5px ;
+                top: 37px;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive:after,
+            div.olControlZoomPanel .olControlZoomInItemInactive:after {
+                font-weight: bold;
+                content: '+';
+                font-size: 36px;
+                padding:  7px;
+                z-index: 2000;
+                color: #fff;
+                line-height: 1em;
+            }
+            div.olControlZoomPanel .olControlZoomOutItemInactive:after {
+                content: '–';
+                line-height: 0.9em;
+                padding: 0 8px;
+            }
+            div.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+                display: none;
+            }
+            .olControlEditingToolbar .olControlModifyFeatureItemInactive {
+                background-position: -1px -1px;
+            }
+            .olControlEditingToolbar .olControlModifyFeatureItemActive {
+                background-position: -1px -24px;
+            }
+            #title, #tags, #shortdesc {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Mobile Drawing Example</h1>
+        <div id="tags">
+            mobile, drawing
+        </div>
+        <p id="shortdesc">
+            A full-screen map with drawing tools for mobile devices.
+        </p>
+        <div id="map"></div>
+        <script>
+            init();
+        </script>
+    </body>
+</html>

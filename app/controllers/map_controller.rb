@@ -96,10 +96,25 @@ class MapController < ApplicationController
     @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from xmdk,users where users.iphone = '#{params['device']}' order by dist limit 5;")
   end
   
+  def modifyInspect
+    @task_id = params['task_id']
+    @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
+    xmdk_id = @xmdk.id
+    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
+  end
+  
   def showInspect
     @task_id = params['task_id']
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
+    xmdk_id = @xmdk.id
+    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
   end  
+  
+  def makeSelect
+    
+  end
   
   #{"sfwf"=>"是", "gdmj"=>"", "xmdk_id"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
   def add_new_inspect
@@ -146,11 +161,13 @@ class MapController < ApplicationController
   def report_current_pos
     lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-    User.find_by_sql("update plans set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
+    
+    
+    User.find_by_sql("update plans set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
     if username.include?'18'
-      User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
+      User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
     else  
-      User.find_by_sql("update users set the_points=astext(transform(geomFromText('Point(#{lonlat})',4326),900913)), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
+      User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
     end
     render :text => {"mode" => params['mode'], "result" => 'Success'}.to_json
   end
@@ -476,5 +493,71 @@ class MapController < ApplicationController
     end  
     render :text => txt[0..-2]
   end
- 
+  
+  def query_lines
+    render :text => "Success"
+  end
+  
+  #{"cjqk"=>"g", "qkje"=>"a", "dj_dj"=>"11", "dkdz"=>"d", "pfwh"=>"111", "cjqrsbh"=>"121321", "tztx"=>"内资", "yt"=>"住宅用地", "yjl"=>"111", "cjj_mwj"=>"111", "znjqk"=>"d", "htbh"=>"111", "crfapzrq"=>"2013-02-13", "ydb_id"=>"", "bz"=>"444", "dkwz"=>"7", "lxr"=>"4", "crf"=>"2", "qtyq"=>"fff", "sjjgsj"=>"2013-02-18", "ydjgsj"=>"2013-02-19", "sjjdsj"=>"2013-02-11", "ydjdsj"=>"2013-02-07", "wdqk"=>"s", "bzj"=>"100", "dknz"=>"n", "lhl"=>"1.5", "jsmd"=>"1.5", "qsly"=>"增量", "jsxmmc"=>"6", "zxtxmj"=>"111", "zxtxbl"=>"20", "sjkgsj"=>"2013-02-15", "cjj_lmj"=>"11", "dj_lmj"=>"NaN", "dh"=>"5", "gdrq"=>"2013-02-12", "zdmj"=>"88", "srf"=>"3", "cjrq"=>"2013-02-19", "ggrq"=>"2013-02-13", "kjjzmj"=>"132", "tze"=>"1111", "dkbz"=>"b", "dkbh"=>"8", "qdhtrq"=>"2013-02-12", "gdfs"=>"国有租赁", "ydkgsj"=>"2013-02-11", "sjjkrq"=>"2013-02-27", "ydjkrq"=>"2013-02-21", "cyml"=>"", "rjl"=>"1.5", "zczb"=>"fd", "cr"=>"11", "cjzj"=>"1111", "dj_mwj"=>"0.733", "pgj"=>"11", "dkxz"=>"x", "cx"=>"城区"}
+  def save_ydb
+    if params['ydb_id']=="" 
+      user = User.find_by_sql("insert into ydb (cx, gdfs, crfapzrq, ggrq, cjrq, qdhtrq, gdrq, cjqrsbh, htbh, pfwh, crf, srf, lxr, dh, jsxmmc, dkwz, dkbh, zdmj, dkdz, dkxz, dknz, dkbz, pgj, dj_dj, dj_mwj, dj_lmj, cjj_mwj, cjj_lmj, cjzj, yjl, cr, yt, cyml, qsly, tztx, bzj, ydjkrq, sjjkrq, znjqk, qkje, wdqk, cjqk, ydjdsj, sjjdsj, ydkgsj, sjkgsj, ydjgsj, sjjgsj, tze, zczb, rjl, jsmd, lhl, qtyq, kjjzmj, zxtxbl, zxtxmj, bz) values ('#{params['cx']}','#{params['gdfs']}',TIMESTAMP '#{params['crfapzrq']}', TIMESTAMP '#{params['ggrq']}', TIMESTAMP '#{params['cjrq']}', TIMESTAMP '#{params['qdhtrq']}', TIMESTAMP '#{params['gdrq']}','#{params['cjqrsbh']}','#{params['htbh']}','#{params['pfwh']}','#{params['crf']}','#{params['srf']}','#{params['lxr']}','#{params['dh']}','#{params['jsxmmc']}','#{params['dkwz']}','#{params['dkbh']}','#{params['zdmj']}','#{params['dkdz']}','#{params['dkxz']}','#{params['dknz']}','#{params['dkbz']}','#{params['pgj']}','#{params['dj_dj']}','#{params['dj_mwj']}','#{params['dj_lmj']}','#{params['cjj_mwj']}','#{params['cjj_lmj']}','#{params['cjzj']}','#{params['yjl']}','#{params['cr']}','#{params['yt']}','#{params['cyml']}','#{params['qsly']}','#{params['tztx']}','#{params['bzj']}',TIMESTAMP '#{params['ydjkrq']}',TIMESTAMP '#{params['sjjkrq']}','#{params['znjqk']}','#{params['qkje']}','#{params['wdqk']}','#{params['cjqk']}',TIMESTAMP '#{params['ydjdsj']}', TIMESTAMP '#{params['sjjdsj']}', TIMESTAMP '#{params['ydkgsj']}', TIMESTAMP '#{params['sjkgsj']}', TIMESTAMP '#{params['ydjgsj']}', TIMESTAMP '#{params['sjjgsj']}', '#{params['tze']}','#{params['zczb']}','#{params['rjl']}','#{params['jsmd']}','#{params['lhl']}','#{params['qtyq']}','#{params['kjjzmj']}','#{params['zxtxbl']}','#{params['zxtxmj']}','#{params['bz']}') returning id;")
+      ydb_id = user[0]['id']
+    else 
+      User.find_by_sql("update ydb set cx='#{params['cx']}', gdfs='#{params['gdfs']}',crfapzrq = TIMESTAMP '#{params['crfapzrq']}', ggrq =TIMESTAMP '#{params['ggrq']}', cjrq = TIMESTAMP '#{params['cjrq']}', qdhtrq = TIMESTAMP '#{params['qdhtrq']}', gdrq = TIMESTAMP '#{params['gdrq']}', cjqrsbh = '#{params['cjqrsbh']}', htbh = '#{params['htbh']}', pfwh = '#{params['pfwh']}', crf = '#{params['crf']}', srf = '#{params['srf']}', lxr = '#{params['lxr']}', dh = '#{params['dh']}',jsxmmc = '#{params['jsxmmc']}', dkwz = '#{params['dkwz']}', dkbh = '#{params['dkbh']}', zdmj = '#{params['zdmj']}', dkdz = '#{params['dkdz']}', dkxz = '#{params['dkxz']}', dknz = '#{params['dknz']}', dkbz = '#{params['dkbz']}', pgj='#{params['pgj']}', dj_dj='#{params['dj_dj']}',dj_mwj='#{params['dj_mwj']}',dj_lmj='#{params['dj_lmj']}',cjj_mwj='#{params['cjj_mwj']}',cjj_lmj='#{params['cjj_lmj']}',cjzj='#{params['cjzj']}',yjl='#{params['yjl']}', cr='#{params['cr']}', yt='#{params['yt']}', cyml='#{params['cyml']}', qsly='#{params['qsly']}', tztx='#{params['tztx']}', bzj='#{params['bzj']}', ydjkrq=TIMESTAMP '#{params['ydjkrq']}', sjjkrq = TIMESTAMP '#{params['sjjkrq']}', znjqk='#{params['znjqk']}', qkje='#{params['qkje']}',wdqk='#{params['wdqk']}',cjqk='#{params['cjqk']}',ydjdsj=TIMESTAMP '#{params['ydjdsj']}',sjjdsj = TIMESTAMP '#{params['sjjdsj']}', ydkgsj=TIMESTAMP '#{params['ydkgsj']}', sjkgsj=TIMESTAMP '#{params['sjkgsj']}', ydjgsj=TIMESTAMP '#{params['ydjgsj']}', sjjgsj=TIMESTAMP '#{params['sjjgsj']}', tze='#{params['tze']}',zczb='#{params['zczb']}',rjl='#{params['rjl']}',jsmd='#{params['jsmd']}',lhl='#{params['lhl']}',qtyq='#{params['qtyq']}', kjjzmj= '#{params['kjjzmj']}',zxtxbl='#{params['zxtxbl']}',zxtxmj='#{params['zxtxmj']}',bz='#{params['bz']}'   where id = #{params['ydb_id']};")
+      ydb_id = params['ydb_id'].to_i
+    end    
+    render :text => "#{ydb_id}"
+  end  
+  
+  def ydb
+    @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb limit 10;")
+  end
+  
+  def show_ydb
+    @ydb = User.find_by_sql("select * from ydb where id = #{params['id']};")[0]
+    render :template => "/map/ydb_show.html.erb"
+  end
+  
+  def edit_ydb
+    @ydb = User.find_by_sql("select * from ydb where id = #{params['id']};")[0]
+    render :template => "/map/ydb_edit.html.erb"
+  end  
+  
+  def more_ydb
+    #params['offset'] = 0
+    if params['search'] != ''
+      @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb where jsxmmc like '%#{params['search']}%' offset #{params['offset']} limit 10 ;")
+    else                                                                 
+      @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb offset #{params['offset']} limit 10 ;")
+    end    
+    txt = ''
+    for k in 0..@ydb.size-1
+      ydb = @ydb[k]
+      txt = txt + "<li><a href=\"/map/show_ydb?id=#{ydb.id}\"><img src=\"/tut/img/#{ydb.yt}.png\" /><h3>#{ydb.jsxmmc}</h3><p>土地面积:#{ydb.zdmj}平米</p><p>受让方:#{ydb.srf}</p></a></li>"
+    end
+    render :text => txt
+  end
+  
+  def measure
+  end  
+  
+  def xmdk_feature
+    @xmdks = User.find_by_sql("select gid,xh, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from wx_xmdks limit 100;")
+    
+    if @xmdks.size > 0
+      txt = '{"type": "FeatureCollection","features": ['
+      for k in 0..@xmdks.size - 1 
+        @xmdk = @xmdks[k]
+        lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
+        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"gid\": \"#{@xmdk.gid}\", \"项目名称\":\"#{@xmdk.xh}\", \"用地单位\":\"#{@xmdk.yddw}\",  \"土地坐落\":\"#{@xmdk.tdzl}\", \"批准文号\":\"#{@xmdk.pzwh}\"}}"
+        txt = txt + dd + ','
+      end  
+      txt = txt[0..-2] + ']}'
+    else 
+      txt = "{}"
+    end
+    render :text => txt
+  end
+    
 end

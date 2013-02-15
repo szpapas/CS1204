@@ -1612,7 +1612,7 @@ if ( eventCaptureSupported ) {
 	// add new event shortcuts
 	$.each( ( "touchstart touchmove touchend " +
 		"tap taphold " +
-		"swipe swipeleft swiperight " +
+		"swipe swipeleft swiperight swipeup swipedown " +
 		"scrollstart scrollstop" ).split( " " ), function( i, name ) {
 
 		$.fn[ name ] = function( fn ) {
@@ -1772,16 +1772,26 @@ if ( eventCaptureSupported ) {
 				$this.bind( touchMoveEvent, moveHandler )
 					.one( touchStopEvent, function( event ) {
 						$this.unbind( touchMoveEvent, moveHandler );
+						
+            var callback = '';
 
 						if ( start && stop ) {
-							if ( stop.time - start.time < $.event.special.swipe.durationThreshold &&
-								Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ) > $.event.special.swipe.horizontalDistanceThreshold &&
-								Math.abs( start.coords[ 1 ] - stop.coords[ 1 ] ) < $.event.special.swipe.verticalDistanceThreshold ) {
+						  var x = Math.abs( start.coords[ 0 ] - stop.coords[ 0 ] ); 
+              var y = Math.abs( start.coords[ 1 ] - stop.coords[ 1 ] ); 
+  						
+							if ( stop.time - start.time < $.event.special.swipe.durationThreshold) {
+							  if(x > $.event.special.swipe.horizontalDistanceThreshold &&
+  								 y < $.event.special.swipe.verticalDistanceThreshold ) {
 
-								start.origin.trigger( "swipe" )
-									.trigger( start.coords[0] > stop.coords[ 0 ] ? "swipeleft" : "swiperight" );
-							}
-						}
+  								callback = start.coords[0] > stop.coords[ 0 ] ? "swipeleft" : "swiperight";
+  							} else if (  y > $.event.special.swipe.horizontalDistanceThreshold &&
+    								 x < $.event.special.swipe.verticalDistanceThreshold){
+  							  callback = start.coords[1] > stop.coords[1] ? "swipeup" : "swipedown";
+  							}
+						  }
+						};
+						
+						if(callback) start.origin.trigger( "swipe" ).trigger( callback );
 						start = stop = undefined;
 					});
 			});
@@ -1791,7 +1801,9 @@ if ( eventCaptureSupported ) {
 		scrollstop: "scrollstart",
 		taphold: "tap",
 		swipeleft: "swipe",
-		swiperight: "swipe"
+		swiperight: "swipe",
+		swipeup: "swipe",
+    swipedown: "swipe"
 	}, function( event, sourceEvent ) {
 
 		$.event.special[ event ] = {

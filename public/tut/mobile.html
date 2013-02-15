@@ -1,0 +1,65 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title></title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+
+<body> 
+
+<div id=home data-role="page" id="home">
+  <div data-role="header">
+    <h1>Home</h1>
+  </div>
+
+  <div data-role="content">
+    <p> Events </p>
+  </div>
+</div>
+
+</body>
+</html>
+
+<script>
+
+var $content = $("#home div:jqmData(role=content)");
+
+$("#home").bind ("vmouseover", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vmousedown", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vmousemove", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vmouseup", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vclick", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vmouseout", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+$("#home").bind ("vmousecancel", function (event)
+{
+  $content.append (event.type + ", ");
+});
+
+</script>

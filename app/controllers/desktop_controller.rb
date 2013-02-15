@@ -2,8 +2,8 @@
 require 'socket'
 require 'find'
 require 'date'
-require 'URI'
-require 'FileUtils'
+require 'uri'
+#require 'FileUtils'
 
 
 class DesktopController < ApplicationController

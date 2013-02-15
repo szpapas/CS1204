@@ -1,0 +1,127 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title></title> 
+  <meta name="viewport" content="user-scalable=no,width=480" />
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+  <script src="/jquery/ui/jquery.ui.map.js"></script>
+</head> 
+
+<body> 
+	
+	<div data-role="page" id="home">
+	  <div data-role="header">
+	    <h1>Home</h1>
+	  </div>
+
+	  <div data-role="content">
+	    <span> Latitude : </span> <span id="lat"></span> <br />
+	    <span> Longitude : </span> <span id="lng"></span> <br />
+			<a data-role="button" id="btn">Display map</a>
+	  </div>
+	</div>
+	
+	<div data-role="page" id="win2" data-add-back-btn="false">
+	  <div data-role="header">
+	    <h1>Window 2</h1>
+	  </div>
+		<div data-role="content">
+		</div>
+	</div>
+	
+</body>
+</html>
+
+<script>
+	
+	$("#btn").bind ("click", function (event)
+	{
+		
+		//var lat = $("#lat").val();
+	  //var lng = $("#lng").val();
+	/*
+	  var latlng = new google.maps.LatLng (32.2144, 119.4763);
+	  var latlng2 = new google.maps.LatLng (32.3144, 119.3763);
+	
+	  var options = { 
+	    zoom : 12, 
+	    center : latlng,
+	    mapTypeId : google.maps.MapTypeId.ROADMAP 
+	  };
+	  //var $content = $("#win2 div:jqmData(role=content)");
+
+	  var $content = $("#map_canvas");
+	  $content.height (screen.height - 50);
+	  var map = new google.maps.Map ($content[0], options);
+	  $.mobile.changePage ($("#win2"));
+		*/
+		
+		//===
+		var latlng = new google.maps.LatLng (32.2144, 119.4763);
+		var options = {
+		  zoom: 12,
+		  center: latlng,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+		}
+		
+		var $content = $("#win2 div:jqmData(role=content)");
+		$content.height (screen.height - 50);
+		
+		var map = new google.maps.Map ($content[0], options);
+
+		$.mobile.changePage ($("#win2"));
+		
+	  new google.maps.Marker ( 
+	  { 
+	    map : map, 
+	    animation : google.maps.Animation.DROP,
+	    position : latlng  
+	  });
+	
+		var latlng2 = new google.maps.LatLng (32.3144, 119.3763);
+	  new google.maps.Marker ( 
+	  { 
+	    map : map, 
+	    animation : google.maps.Animation.DROP,
+	    position : latlng2  
+	  });
+	
+
+	
+		/*
+	  new google.maps.Marker ( 
+	  { 
+	    map : map, 
+	    animation : google.maps.Animation.DROP,
+	    position : latlng  
+	  });
+		
+		map.panTo(latlng2);
+
+		var image = '/images/marker-gold.png';
+		new google.maps.Marker ( 
+	  { 
+	    map : map, 
+	    position : latlng,
+			//animation : google.maps.Animation.DROP,
+	    icon: image  
+	  });
+	
+		map.setCenter(latlng);
+		
+		var marker = new google.maps.Marker({
+		    position: latlng,
+		    title:"Hello World!"
+		});
+
+		// To add the marker to the map, call setMap();
+		marker.setMap(map);
+		*/
+
+		
+	});
+	
+</script>

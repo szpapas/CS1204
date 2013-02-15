@@ -1,0 +1,103 @@
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside2 { float: right; width: 240px; text-align: right; margin: .3em 0; }
+	</style>
+	<script>
+	
+		$( "#three" ).live( "pageshow", function( e, data ){ 
+			if ($("#jszt_val")[0].innerHTML == '是'){
+				$( "#radio1" ).attr( "checked", true ).checkboxradio( "refresh" );
+			} else {
+				$( "#radio2" ).attr( "checked", true ).checkboxradio( "refresh" );
+			}
+			console.log( "The page transition is begin!" );
+		});
+		
+		$( "#three" ).live( "pagehide", function( e, data ){ 
+			if ($("#radio1")[0].checked){
+				$( "#jszt_val" )[0].innerHTML = "是";
+			} else {
+				$( "#jszt_val" )[0].innerHTML = "否";
+			}
+			console.log( "The page transition is complete!" );
+		});
+		
+	</script>
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+  <div data-role="content"> 
+		<div data-role="controlgroup" data-type="horizontal"> 
+			<a href="#one" data-role="button" data-theme="e" >Page One</a>
+			<a href="#two" data-role="button">Page Two</a>
+		</div>
+		
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+			<li>
+				<a href='#three'>建设状态<span class="ui-li-aside" id="jszt_val">是</span> </a>
+			</li>
+		</ul>
+  </div><!-- /content -->
+</div><!-- /page -->
+
+<div data-role="page" id="two">
+  <div data-role="content"> 
+		<div data-role="controlgroup" data-type="horizontal"> 
+			<a href="#one" data-role="button" >Page One</a>
+			<a href="#two" data-role="button" data-theme="e" >Page Two</a>
+		</div>
+		
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="e">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+		</ul>		
+		
+  </div><!-- /content -->
+</div><!-- /page -->
+
+<div data-role="page" id="three" data-auto-back-btn="true" data-add-back-btn="true" >
+  <div data-role="content">
+	  <a href="#" data-rel="back" data-role="button" data-icon="arrow-l" data-theme="e">Go Back</a> 
+		<div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical">
+            <legend>
+							是否违法:
+            </legend>
+            <input id="radio1" name="sfwf_val" value="是" type="radio">
+            <label for="radio1">
+                是
+            </label>
+            <input id="radio2" name="sfwf_val" value="否" type="radio">
+            <label for="radio2">
+                否
+            </label>
+        </fieldset>
+    </div>
+  </div><!-- /content -->
+</div><!-- /page -->
+
+</body>
+</html>
