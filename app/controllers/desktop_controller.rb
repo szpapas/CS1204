@@ -3,8 +3,6 @@ require 'socket'
 require 'find'
 require 'date'
 require 'uri'
-#require 'FileUtils'
-
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
