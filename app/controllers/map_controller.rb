@@ -478,6 +478,10 @@ class MapController < ApplicationController
     @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb limit 10;")
   end
   
+  def add_ydb
+    render :template => "/map/ydb_add.html.erb"
+  end  
+  
   def show_ydb
     @ydb = User.find_by_sql("select * from ydb where id = #{params['id']};")[0]
     render :template => "/map/ydb_show.html.erb"
