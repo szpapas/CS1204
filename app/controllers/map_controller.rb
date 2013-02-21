@@ -50,7 +50,7 @@ class MapController < ApplicationController
     
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
-    user = User.find_by_sql("select gid, xh, pzwh, yddw, tdzl, dkmj, jlrq, sfjs, xzqmc, nd, xz_tag, the_center from xmdk where xh = '#{xmmc}';")
+    user = User.find_by_sql("select gid, xmmc, pzwh, yddw, tdzl, dkmj, jlrq, sfjs, xzqmc, nd, xz_tag, the_center from xmdks where xmmc= '#{xmmc}';")
     if user.size > 0 
       @user =  user[0]
       render :template => "/map/getxmdk_wx.html.erb"
@@ -67,7 +67,7 @@ class MapController < ApplicationController
   def getreport
     @user   = User.find_by_sql("select * from plans where id=#{params['task_id']};")[0]
     @images = User.find_by_sql("select * from xcimage where plan_id = #{params['task_id']};")
-    @xmdks  = User.find_by_sql("select xmdk.* from inspects inner join xmdk on inspects.xmdk_Id = xmdk.gid where plan_id = #{params['task_id']};")
+    @xmdks  = User.find_by_sql("select xmdks.* from inspects inner join xmdks on inspects.xmdk_Id = xmdks.gid where plan_id = #{params['task_id']};")
   end  
   
   def demoajax
@@ -243,7 +243,7 @@ class MapController < ApplicationController
   end
 
   def get_xmdk_json
-    xmdks = User.find_by_sql("select gid as xmdk_id, xh as xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdk order by gid;")
+    xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks order by gid;")
     txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(')
     render :text => {"mode" => params['mode'], "result" => txt}.to_json  
   end  
@@ -369,7 +369,7 @@ class MapController < ApplicationController
   end  
   
   def get_task_inspect
-    user = User.find_by_sql("select id, plan_id, xmdk_id, xh as xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdk on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
+    user = User.find_by_sql("select id, plan_id, xmdk_id, xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdks on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
     
 	  txt = ''
 	  if user.size > 0
@@ -411,7 +411,7 @@ class MapController < ApplicationController
     the_center = "astext( transform(geomFromText('Point(#{lon} #{lat})',4326),900913)  ) "
     
     #Add xmdk with xz_tag = 1 
-    user = User.find_by_sql("insert into xmdk (xh, sfjs, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}','#{xmms}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1') returning gid;")
+    user = User.find_by_sql("insert into xmdks (xmmc, sfjs, the_geom, the_center, xzqmc, nd, xz_tag) values ('#{xmmc}','#{xmms}', #{the_geom}, #{the_center}, '#{xzqmc}', '#{nd}', '1') returning gid;")
     
     gid = user[0]['gid']
     
@@ -449,11 +449,11 @@ class MapController < ApplicationController
   
   
   def get_nearby_xmdk
-    user = User.find_by_sql("select gid, xh, ST_distance(transform(geomfromtext('POINT(#{params['lonlat']})',4326),900913), the_geom) as dist from xmdk order by dist limit 10;")
+    user = User.find_by_sql("select gid, xmmc, ST_distance(transform(geomfromtext('POINT(#{params['lonlat']})',4326),900913), the_geom) as dist from xmdks order by dist limit 10;")
     txt = ''
     for k in 0..user.count-1
       dd = user[k]
-      txt = txt + "#{dd['gid']} #{dd['xh']} (#{dd['dist'].to_i}米)\n"
+      txt = txt + "#{dd['gid']} #{dd['xmmc']} (#{dd['dist'].to_i}米)\n"
     end  
     render :text => txt[0..-2]
   end
@@ -511,14 +511,14 @@ class MapController < ApplicationController
   end  
   
   def xmdk_feature
-    @xmdks = User.find_by_sql("select gid,xh, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from wx_xmdks limit 100;")
+    @xmdks = User.find_by_sql("select gid,xmmc, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from xmdks limit 100;")
     
     if @xmdks.size > 0
       txt = '{"type": "FeatureCollection","features": ['
       for k in 0..@xmdks.size - 1 
         @xmdk = @xmdks[k]
         lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
-        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"gid\": \"#{@xmdk.gid}\", \"项目名称\":\"#{@xmdk.xh}\", \"用地单位\":\"#{@xmdk.yddw}\",  \"土地坐落\":\"#{@xmdk.tdzl}\", \"批准文号\":\"#{@xmdk.pzwh}\"}}"
+        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"gid\": \"#{@xmdk.gid}\", \"项目名称\":\"#{@xmdk.xmmc}\", \"用地单位\":\"#{@xmdk.yddw}\",  \"土地坐落\":\"#{@xmdk.tdzl}\", \"批准文号\":\"#{@xmdk.pzwh}\"}}"
         txt = txt + dd + ','
       end  
       txt = txt[0..-2] + ']}'
@@ -531,7 +531,7 @@ class MapController < ApplicationController
   #device, task_id
   def addInspect
     @task_id = params['task_id']
-    @xmdks = User.find_by_sql("select gid, xh, ST_distance(users.the_points, the_geom) as dist from wx_xmdk,users where users.iphone = '#{params['device']}' gdqkid is not null and order by dist limit 10;")
+    @xmdks = User.find_by_sql("select gid, xmmc, ST_distance(transform(users.the_points,2364), the_geom) as dist from xmdks,users where users.iphone = '#{params['device']}' and gdqkid is not null order by dist limit 10;")
     render :template => '/map/inspect_add.html.erb'
   end
   
@@ -539,7 +539,7 @@ class MapController < ApplicationController
     @task_id = params['task_id']
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
     xmdk_id = @xmdk.id
-    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{xmdk_id};")[0].gdqkid
+    gdqkid = User.find_by_sql("select gdqkid from xmdks where gid = #{xmdk_id};")[0].gdqkid
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
     render :template => '/map/inspect_edit.html.erb'
   end
@@ -547,8 +547,7 @@ class MapController < ApplicationController
   def showInspect
     @task_id = params['task_id']
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
-    #xmdk_id = @xmdk.id
-    gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where gid = #{params['xmdk_id']};")[0].gdqkid
+    gdqkid = User.find_by_sql("select gdqkid from xmdks where gid = #{params['xmdk_id']};")[0].gdqkid
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
     render :template => '/map/inspect_show.html.erb'
   end
@@ -573,8 +572,7 @@ class MapController < ApplicationController
   
   def getxmdk_wx
     xmmc = params['xmmc']
-    @xmdk  = User.find_by_sql("select * from wx_xmdk where xmmc = '#{params['xmmc']}';")[0]
-    #gdqkid = User.find_by_sql("select gdqkid from wx_xmdk where xmmc = '#{params['xmmc']}';")[0].gdqkid
+    @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
     render :template => '/map/xmdk_show.html.erb'
   end  
