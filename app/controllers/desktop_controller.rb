@@ -2,7 +2,9 @@
 require 'socket'
 require 'find'
 require 'date'
-require 'uri'
+require 'URI'
+require 'FileUtils'
+
 
 class DesktopController < ApplicationController
   skip_before_filter :verify_authenticity_token
@@ -1058,5 +1060,77 @@ class DesktopController < ApplicationController
     
     render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
   end
+  
+  def get_khb
+    #生成巡查系统考核表
+    txt = "{results:5,rows:["
+    xls="<table><tr><td>执法监察动态巡查系统考核表</td></tr><tr><td>巡查主体</td><td>巡查次数</td><td>完成比例(3分)</td><td>上报次数</td><td>上报比例（3分）</td><td>数据质量(2分)</td><td>附件质量（2分）</td><td>成绩指数</td><td>监察员</td></tr>"
+    xcqy = User.find_by_sql("select distinct xcqy,xcry from plans order by xcqy")
+    if xcqy.size>0
+      for k in 0..xcqy.size-1
+        sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
+        txt=txt+ "{'xczt':'" + xcqy[k]['xcqy'] + "','xccs':'" + sccs[0]['count'] + "','jcy':'" + xcqy[k]['xcry'] +"'},"
+        xls=xls + "<tr><td>#{xcqy[k]['xcqy']}</td><td>#{sccs[0]['count']}</td><td></td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+      end 
+      txt=txt + "]}"     
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    xls=xls + "</table>"
+    pr_path="./public/images"
+    system("rm #{pr_path}/khb.xls")
+    ff = File.open(pr_path + "/khb.xls" ,'w+')
+    ff.write(xls)
+    ff.close
+    render :text => txt
+  end
     
+    
+  def get_wfyd
+    #生成违法用地统计
+    txt = "{results:5,rows:["
+    xls="<table><tr><td>执法监察动态巡查违法用地统计表</td></tr><tr><td>巡查主体</td><td>巡查人员</td><td>巡查时间</td><td>巡查区域</td><td>项目名称</td><td>坐落位置</td><td>立项时间、批文号</td><td>规划定点时间、文号</td><td>转征用时间、批文号</td><td>供地时间、批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td></tr>"
+    xcqy = User.find_by_sql("select * from plans order by xcbh")
+    if xcqy.size>0
+      for k in 0..xcqy.size-1
+        #sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
+        txt=txt+ "{'xczt':'" + xcqy[k]['xcqy'] + "','xcry':'" + xcqy[k]['xcry'] + "','xcsj':'#{xcqy[k]['taskbegintime']}'},"
+        xls=xls + "<tr><td>#{xcqy[k]['xcqy']}</td><td>#{ xcqy[k]['xcry']}</td><td>#{xcqy[k]['taskbegintime']}</td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+      end 
+      txt=txt + "]}"     
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    xls=xls + "</table>"
+    pr_path="./public/images"
+    system("rm #{pr_path}/wfyd.xls")
+    ff = File.open(pr_path + "/wfyd.xls" ,'w+')
+    ff.write(xls)
+    ff.close
+    render :text => txt
+  end
+  
+  #执法监察动态巡查原始记录表
+  def get_ysjl
+    txt = "{results:5,rows:["
+    xls="<table><tr><td>执法监察动态巡查原始记录表</td></tr><tr><td>巡查时间</td><td>巡查人员</td><td>巡查区域</td><td>项目名称</td><td>用地单位</td><td>坐落位置</td><td>是否符合土地利用整体规划</td><td>原地类</td><td>立项时间、批文号</td><td>规划定点时间、文号</td><td>转征用时间、批文号</td><td>供地时间、批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处置情况</td><td>备注</td></tr>"
+    xcqy = User.find_by_sql("select * from plans order by xcbh")
+    if xcqy.size>0
+      for k in 0..xcqy.size-1
+        #sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
+        txt=txt+ "{'xcsj':'" + xcqy[k]['taskbegintime'].to_s + "','xcry':'" + xcqy[k]['xcry'] + "','xcqy':'" + xcqy[k]['xcqy'] +"'},"
+        xls=xls + "<tr><td>#{xcqy[k]['taskbegintime']}</td><td>#{xcqy[k]['xcry']}</td><td>#{xcqy[k]['xcqy']}</td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+      end 
+      txt=txt + "]}"     
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    xls=xls + "</table>"
+    pr_path="./public/images"
+    system("rm #{pr_path}/ysjl.xls")
+    ff = File.open(pr_path + "/ysjl.xls" ,'w+')
+    ff.write(xls)
+    ff.close
+    render :text => txt
+  end
 end

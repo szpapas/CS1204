@@ -1,0 +1,153 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=320, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside2 { float: right; width: 240px; text-align: right; margin: .3em 0; }
+	</style>
+
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
+  <div data-role="content"> 
+		<!--ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." !-->
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>项目地块编号:</p>
+				<p style='width:65%;float:right'<%= @xmdk.gid %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>地块名称:</p>
+				<p style='width:65%;float:right'><%= @dksx.dkmc %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>用地单位:</p>
+				<p style='width:65%;float:right'><%= @dksx.srdw %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>坐落位置:</p>
+				<p style='width:65%;float:right'><%= @dksx.tdzl %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>是否符合土地利用整体规划:</p>
+				<p style='width:65%;float:right'><%= @dksx.sffhztgh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>原地类:</p>
+				<p style='width:65%;float:right'><%= @dksx.ydl %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>立项时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.lxsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>立项批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.lxpwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>规划定点时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.ghddsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>规划定点文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.ghddwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>转征用时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.zzypzsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>转征用批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.nzypzwh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>供地时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.gdsj %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批文号:</p>
+				<p style='width:65%;float:right'><%= @dksx.htbh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批准用途:</p>
+				<p style='width:65%;float:right'><%= @dksx.tdyt %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>实际用途:</p>
+				<p style='width:65%;float:right'><%= @dksx.sjyt %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>批准面积（亩）:</p>
+				<p style='width:65%;float:right'><%= format("%.3f", @dksx.tdmj.to_i/666.67) %>亩</p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>其中耕地（亩）:</p>
+				<p style='width:65%;float:right'><%= format("%.3f", @dksx.qznyd.to_i/666.67) %>亩</p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>实际动工时间:</p>
+				<p style='width:65%;float:right'><%= @dksx.sjdgsj %></p>
+			</li>
+		</ul>
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+</body>
+
+<script>
+	function showTips( tips, left, height, time ){
+    var windowWidth  = document.documentElement.clientWidth;
+    var tipsDiv = '<div class="tipsClass">' + tips + '</div>';
+		$( 'div.tipsClass' ).remove();
+		
+    $( 'body' ).append( tipsDiv );
+    $( 'div.tipsClass' ).css({
+        'top'       : height + 'px',
+        'left'      : left + 'px',
+        'position'  : 'absolute',
+        'padding'   : '3px 5px',
+        'background': '#FBB117',
+        'font-size' : '16px',
+        'margin'    : '0 auto',
+        'text-align': 'center',
+        'width'     : 'auto',
+        'color'     : '#fff',
+        'opacity'   : '1.0'
+    }).show();
+    setTimeout( function(){$( 'div.tipsClass' ).remove();}, ( time * 1000 ) );
+  };
+
+	$("p").hover(function(e){
+		if (this.textContent.length > 10) {
+			left = 20;
+		} else {
+			left = e.clientX;
+		}
+		showTips( this.textContent, left , e.clientY, 3 );
+	});
+	
+	
+</script>
+
+
+</html>

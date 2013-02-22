@@ -575,5 +575,13 @@ class MapController < ApplicationController
     @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
     render :template => '/map/xmdk_show.html.erb'
-  end  
+  end 
+  
+  def getxmdk_iphone
+    xmmc = params['xmmc']
+    @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
+    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
+    render :template => '/map/xmdk_show_iphone.html.erb'
+  end
+   
 end
