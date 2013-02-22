@@ -31,6 +31,8 @@ def gen_pdf(plan_id)
   
   dateStr = Time.now.strftime("%Y年%m月%d日")
   puts dateStr
+  
+  dybt = $conn.exec("select s_value from gysz where s_key='打印标题';")[0]['s_value']
   user = $conn.exec("select * from plans where id = #{plan_id};")
   dd=user[0]
   
@@ -50,7 +52,7 @@ def gen_pdf(plan_id)
   
     #font "#{Prawn::DATADIR}/fonts/simhei.ttf"
     font "#{Prawn::BASEDIR}/data/fonts/simhei.ttf"
-    text "常熟市国土资源监察大队土地执法监察巡回检查记录", :align => :center, :size => 18
+    text "#{dybt}", :align => :center, :size => 18
     move_down 5
     table([["打印日期：#{dateStr}"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,365],:inline_format => true, :border_width => 0})
     table([["<font size='14'>巡查\n时间</font>", "#{dd['taskbegintime']}-\n#{dd['taskendtime']}", "<font size='14'>巡查\n路线</font>", "#{xclx}"],["<font size='14'>巡查\n人员</font>", "#{xcry}", "<font size='14'>巡查\n方式</font>", "#{xcfs}"]], :position => :center, :width => 520, :column_widths => [50, 210, 50, 210], :cell_style => {:padding => [5,0,5,10],:inline_format => true})

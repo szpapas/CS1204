@@ -2,7 +2,7 @@
 <html> 
 <head> 
   <title>增加巡查点</title> 
-  <meta name="viewport" content="width=320, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+  <meta name="viewport" content="width=400, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
   <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
   <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
   <script src="/jquery/jquery-1.8.2.min.js"></script>
@@ -99,11 +99,11 @@
 			</li>
 			<li>
 				<p style='width:35%;float:left'>批准面积（亩）:</p>
-				<p style='width:65%;float:right'><%= @dksx.tdmj %></p>
+				<p style='width:65%;float:right'><%= format("%.3f", @dksx.tdmj.to_i/666.67) %>亩</p>
 			</li>
 			<li>
 				<p style='width:35%;float:left'>其中耕地（亩）:</p>
-				<p style='width:65%;float:right'><%= @dksx.qznyd %></p>
+				<p style='width:65%;float:right'><%= format("%.3f", @dksx.qznyd.to_i/666.67) %>亩</p>
 			</li>
 			<li>
 				<p style='width:35%;float:left'>实际动工时间:</p>
@@ -140,7 +140,7 @@
   };
 
 	$("p").hover(function(e){
-		if (this.textContent.length > 20) {
+		if (this.textContent.length > 10) {
 			left = 20;
 		} else {
 			left = e.clientX;

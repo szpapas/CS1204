@@ -449,7 +449,7 @@ class MapController < ApplicationController
   
   
   def get_nearby_xmdk
-    user = User.find_by_sql("select gid, xmmc, ST_distance(transform(geomfromtext('POINT(#{params['lonlat']})',4326),900913), the_geom) as dist from xmdks order by dist limit 10;")
+    user = User.find_by_sql("select gid, xmmc, ST_distance(transform(geomfromtext('POINT(#{params['lonlat']})',4326),900913), the_google) as dist from xmdks order by dist limit 10;")
     txt = ''
     for k in 0..user.count-1
       dd = user[k]
@@ -511,7 +511,7 @@ class MapController < ApplicationController
   end  
   
   def xmdk_feature
-    @xmdks = User.find_by_sql("select gid,xmmc, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from xmdks limit 100;")
+    @xmdks = User.find_by_sql("select gid,xmmc, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from xmdks;")
     
     if @xmdks.size > 0
       txt = '{"type": "FeatureCollection","features": ['
