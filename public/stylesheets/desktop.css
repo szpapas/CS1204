@@ -1036,3 +1036,7 @@ td.ux-taskButtons-edge {
 .upload-icon {
     background: url('/images/image_add.png') no-repeat 0 0 !important;
 }
+
+.tdsd-icon {
+    background: url('/images/tdsd16.png') no-repeat 0 0 !important;
+}

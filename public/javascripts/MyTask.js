@@ -298,7 +298,7 @@ function myTask(id) {
               }
             },{
               text : '地块详细',
-              iconCls : 'edit',
+              iconCls : 'tdsd-icon',
               handler : function(){
                 var gsm =Ext.getCmp('my_plan_grid_id').getSelectionModel();
                 edit_xmdk(gsm);
@@ -1468,7 +1468,7 @@ function myTask(id) {
             });
             var xmdk_win = new Ext.Window({
               id : 'add_plan_win',
-              iconCls : 'add',
+              iconCls : 'tdsd-icon',
               title: '地块详情',
               floating: true,
               shadow: true,
