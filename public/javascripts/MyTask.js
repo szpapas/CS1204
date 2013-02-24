@@ -1417,8 +1417,8 @@ function myTask(id) {
         	id: 'xg_grid_id',
         	store: xg_store,
         	columns: [           
-          	{ header : 'gid',    width : 75, sortable : true, dataIndex: 'gid'},            
-          	{ header : '项目名称',  width : 200, sortable : true, dataIndex: 'xmmc'}
+          	{ header : '编号',    width : 50, sortable : true, dataIndex: 'gid'},            
+          	{ header : '项目名称',  width : 150, sortable : true, dataIndex: 'xmmc'}
           ], 
         	columnLines: true,
         	layout:'fit',

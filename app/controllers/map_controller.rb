@@ -106,7 +106,7 @@ class MapController < ApplicationController
     else
       ts1 = Time.now.strftime('%Y-%m-%d')  
       ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
-      if  username.include?('18')
+      if  username.include?('1')
         txt = ''
         iphone = username.gsub('+86','').gsub(' 86','')
         user = User.find_by_sql("select username from users where iphone='#{iphone}';")
@@ -128,7 +128,7 @@ class MapController < ApplicationController
     
     
     User.find_by_sql("update plans set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
-    if username.include?'18'
+    if username.include?'1'
       User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
     else  
       User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where username='#{username}'; ")
@@ -178,7 +178,7 @@ class MapController < ApplicationController
   def report_task_state
     state = params["state"]
     username = params["username"].gsub("+86","")
-    if username.include?('18')
+    if username.include?('1')
       user = User.find_by_sql("select username, iphone from users where iphone = '#{username}';")
       if user.size > 0
         username = user[0].username
@@ -333,7 +333,7 @@ class MapController < ApplicationController
         User.find_by_sql("update plans set the_points=geomFromText('Point(#{user[0].lon_lat})',900913), report_at= TIMESTAMP '#{user[0].report_time}' where session_id='#{session_id}';")
       
         #update users
-        if username.include?("18")
+        if username.include?("1")
           User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where iphone = '#{username}';")
         else
           User.find_by_sql("update users set  the_points=geomFromText('Point(#{user[0].lon_lat})',900913), last_seen = TIMESTAMP '#{user[0].report_time}' where username = '#{username}';")
