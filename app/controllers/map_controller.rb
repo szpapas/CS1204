@@ -510,24 +510,7 @@ class MapController < ApplicationController
   def measure
   end  
   
-  def xmdk_feature
-    @xmdks = User.find_by_sql("select gid,xmmc, pzwh, yddw, tdzl, astext(centroid(transform(the_geom,900913))) from xmdks;")
-    
-    if @xmdks.size > 0
-      txt = '{"type": "FeatureCollection","features": ['
-      for k in 0..@xmdks.size - 1 
-        @xmdk = @xmdks[k]
-        lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
-        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"gid\": \"#{@xmdk.gid}\", \"项目名称\":\"#{@xmdk.xmmc}\", \"用地单位\":\"#{@xmdk.yddw}\",  \"土地坐落\":\"#{@xmdk.tdzl}\", \"批准文号\":\"#{@xmdk.pzwh}\"}}"
-        txt = txt + dd + ','
-      end  
-      txt = txt[0..-2] + ']}'
-    else 
-      txt = "{}"
-    end
-    render :text => txt
-  end
-  
+
   #device, task_id
   def addInspect
     @task_id = params['task_id']
@@ -583,5 +566,25 @@ class MapController < ApplicationController
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
     render :template => '/map/xmdk_show_iphone.html.erb'
   end
+   
+  def xmdk_feature
+    @xmdks = User.find_by_sql("select *, astext(centroid(transform(the_geom,900913))) from xmdks;")
+    
+    if @xmdks.size > 0
+      txt = '{"type": "FeatureCollection","features": ['
+      for k in 0..@xmdks.size - 1 
+        @xmdk = @xmdks[k]
+        lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
+        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"地块编号\": \"#{@xmdk.gid}\",\"项目名称\":\"#{@xmdk.xmmc}\", 
+        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\"}}"
+        txt = txt + dd + ','
+      end  
+      txt = txt[0..-2] + ']}'
+    else 
+      txt = "{}"
+    end
+    render :text => txt
+  end
+   
    
 end

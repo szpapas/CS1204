@@ -470,35 +470,74 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
             layout:"border",
             items:[{
               region:"center",
-              title:"统计报表",
+              title:"任务窗口",
               layout: 'fit',
               items:[{
                   xtype:"tabpanel",
                   activeTab:0,
                   bodyStyle: 'padding: 5px;',
-                  items:[{
-                      xtype:"panel",
-                      title:"周报月报",
-                      layout: 'fit',
-              				items:[reportPanel]
-                    },{
-                      xtype:"panel",
-                      title:"动态查询",
-                      layout: 'fit',
-              				items:[dtReportPanel]                     
-                    }]
+                  id : 'mytask-tab',
+                  items:[]
                 }]
               },{
                 region:"west",
-                title:"分类",
+                title:'统计',
                 width:200,
                 split:true,
                 collapsible:true,
                 titleCollapse:true,
-                layout:'fit',
-                items: [rpTree]
+                layout: 'accordion',                
+                items:[{
+                    //title: '执法检察统计',
+                    //iconCls : 'taskman',
+                    //id: 'panel1',
+					title: '执法检察统计',
+                    iconCls : 'taskman',
+                    id: 'panel1',
+                    items :[{
+                      layout : 'fit',
+                      xtype:'panel',
+                      width:200,
+                      height:200,
+                      border:false,
+                      items: [{
+                          // configurables
+                          border:false,
+                          cls:'link-panel',
+                          links:[{
+                               text:'巡查系统考核表',
+                               id:"mytask_50",
+                               icon:'date_task16.png',
+                               action:"myTask(50)"
+                          },{
+                               text:'违法用地统计',
+                               icon:'chart_bar16.png',
+                               id:"mytask_02",
+                               action:"myTask(51)"
+                          }	,{
+	                               text:'动态巡查原始记录统计',
+	                               icon:'calendar16.png',
+	                               id:"mytask_50",
+	                               action:"myTask(52)"
+	                          }
+                      ],
+                          layout:'fit', 
+                          tpl:new Ext.XTemplate('<tpl for="links"><div id="{id}"><a class="examplelink" onclick="{action}" ><span><img src=/images/{icon}></img</span>&nbsp;&nbsp;{text}</a></div></tpl>'),  //
+                          afterRender:function() {
+                              MyDesktop.LinksPanel.superclass.afterRender.apply(this, arguments);
+                              this.tpl.overwrite(this.body, {links:this.links});
+                          } 
+                      }]
+                    }]
+                },{
+                    title: '按分类统计',
+                    iconCls : 'saticon', 
+                    id: 'panel2',
+                    items: [rpTree]
+                }]
             }]
-          });
+
+        });
 
 
       }

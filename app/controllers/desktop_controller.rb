@@ -1133,4 +1133,93 @@ class DesktopController < ApplicationController
     ff.close
     render :text => txt
   end
+  
+  
+  #=== Add on Feb.24
+  # {"gid"=>"247"}
+  def get_plan_xmdks
+    user = User.find_by_sql("select * from xmdks where gid=#{params['gid']};")
+    
+    if user.size > 0
+      xmdk = user[0]
+      txt = "<div style='maring:3px'>
+      <table cellpadding=8>
+        <tr>
+          <th width='100px' height='20' >名称</th>
+          <th>值</th>
+        </tr>
+        <tr>
+          <td height='20'>地块ID:</td>
+          <td>#{xmdk.gid}</td>
+        </tr>
+        <tr>
+          <td height='20'>项目名称:</td>
+          <td>#{xmdk.xmmc}</td>
+        </tr>
+        <tr>
+          <td height='20'>批准文号:</td>
+          <td>#{xmdk.pzwh}</td>
+        </tr>
+        <tr>
+          <td height='20'>是否建设:</td>
+          <td>#{xmdk.sfjs}</td>
+        </tr>
+        <tr>
+          <td height='20'>用地单位:</td>
+          <td>#{xmdk.yddw}</td>
+        </tr>
+        <tr>
+          <td height='20'>土地坐落:</td>
+          <td>#{xmdk.tdzl}</td>
+        </tr>
+        <tr>
+          <td height='20'>地块面积:</td>
+          <td>#{xmdk.dkmj}</td>
+        </tr>
+        <tr>
+          <td height='20'>行政区名称:</td>
+          <td>#{xmdk.xzqmc}</td>
+        </tr>
+        <tr>
+          <td height='20'>图班面积:</td>
+          <td>#{xmdk.shape_area}</td>
+        </tr>
+        <tr>
+          <td height='20'>图班周长:</td>
+          <td>#{xmdk.shape_len}</td>
+        </tr>
+        <tr>
+          <td height='20' >地块号:</td>
+          <td>#{xmdk.dkh}</td>
+        </tr>
+        <tr>
+          <td height='20' >图幅号:</td>
+          <td>#{xmdk.tfh}</td>
+        </tr>
+      </table></div>"
+    else  
+      txt = ""
+    end
+    render :text => txt
+  end
+  
+  def get_xmdk_info
+    render :text => "success"
+  end  
+  
+  #plan_id
+  def get_xg
+    user = User.find_by_sql("select xmdks.gid, xmdks.xmmc from inspects, xmdks where plan_id =  #{params['plan_id']} and xmdks.gid = inspects.xmdk_id;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else 
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt  
+  end  
 end
