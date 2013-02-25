@@ -1222,4 +1222,10 @@ class DesktopController < ApplicationController
     end
     render :text => txt  
   end  
+  
+  def get_my_chart
+    txt = 'this is a test'
+    
+    render :text => txt;
+  end 
 end

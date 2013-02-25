@@ -403,8 +403,6 @@ class MapController < ApplicationController
       xzqmc = user[0]['xcqy']
     else
       xzqmc = ""
-      
-      
     end
       
     the_geom = "transform( buffer(geomFromText('Point(#{lon} #{lat})',4326),0.0000898315280011275),900913)"

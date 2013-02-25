@@ -120,6 +120,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                     title: '卫片任务',
                     iconCls : 'saticon', 
                     id: 'panel2',
+                    hidden : true,
                     items: [{
                         // configurables
                         border:false,
@@ -151,6 +152,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                     title: '照片管理',
                     iconCls : 'camera', 
                     id: 'panel3',
+                    hidden : true,
                     items: [{
                         // configurables
                         border:false,
@@ -179,6 +181,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                     title: '我的巡查点',
                     iconCls: 'pin',
                     id: 'panel4',
+                    hidden : true,
                     items: [{
                         // configurables
                         border:false,
@@ -203,10 +206,38 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                             this.tpl.overwrite(this.body, {links:this.links});
                         } 
                     }]
+                },{
+                    title: '统计报表',
+                    iconCls: 'pin',
+                    id: 'panel5',
+                    items: [{
+                        // configurables
+                        border:false,
+                        cls:'link-panel',
+                        links:[{
+                             text:'巡查系统考核表',
+                             id:"mytask_51",
+                             action:"myTask(51)"
+                        },{
+                             text:'巡查违法用地统计表',
+                             id:"mytask_52",
+                             action:"myTask(52)"
+                        },{
+                             text:'原始记录表',
+                             id:"mytask_53",
+                             action:"myTask(53)"
+                        }],
+                        layout:'fit', 
+                        tpl:new Ext.XTemplate('<tpl for="links"><div id="{link_id}"><a class="examplelink" onclick="{action}" >{text}</a></div></tpl>'),  //
+                        afterRender:function() {
+                            MyDesktop.LinksPanel.superclass.afterRender.apply(this, arguments);
+                            this.tpl.overwrite(this.body, {links:this.links});
+                        } 
+                    }]                  
                 }]
             }]
           
-		});
+        });
       };
       
       win.show();
@@ -1113,8 +1144,8 @@ function myTask(id) {
                           text: '上传',
                           handler: function(){
                               if(fp.getForm().isValid()){
-              	                fp.getForm().submit({
-              	                    url: '/desktop/upload_file',
+                                fp.getForm().submit({
+                                    url: '/desktop/upload_file',
                                     waitMsg: '文件上传中...',
                                     success: function(form, action){
                                       var isSuc = action.result.success; 
@@ -1127,7 +1158,7 @@ function myTask(id) {
                                     failure: function(){
                                       msg('失败', '文件上传失败.');
                                     }
-              	                });
+                                });
                               }
                           }
                       },{
@@ -1414,17 +1445,17 @@ function myTask(id) {
         });
         
         var xgGrid = new Ext.grid.GridPanel({
-        	id: 'xg_grid_id',
-        	store: xg_store,
-        	columns: [           
-          	{ header : '编号',    width : 50, sortable : true, dataIndex: 'gid'},            
-          	{ header : '项目名称',  width : 150, sortable : true, dataIndex: 'xmmc'}
+            id: 'xg_grid_id',
+            store: xg_store,
+            columns: [           
+            { header : '编号',    width : 50, sortable : true, dataIndex: 'gid'},            
+            { header : '项目名称',  width : 150, sortable : true, dataIndex: 'xmmc'}
           ], 
-        	columnLines: true,
-        	layout:'fit',
-        	viewConfig: {
-          	stripeRows:true,
-        	}
+            columnLines: true,
+            layout:'fit',
+            viewConfig: {
+            stripeRows:true,
+            }
         });
         
         xgGrid.on('rowclick', function(grid, row, e){
@@ -1442,12 +1473,12 @@ function myTask(id) {
         
         var edit_xmdk = function (gsm) {
           
-          if (Ext.getCmp('add_plan_win') != undefined) {
-            xmdk_win = Ext.getCmp('add_plan_win');
+          if (Ext.getCmp('xmdk_win_id') != undefined) {
+            xmdk_win = Ext.getCmp('xmdk_win_id');
           } else {
           
             var xmdkPanel = new Ext.form.FormPanel({
-              id : 'plan_panel_id',
+              //id : 'plan_panel_id',
               autoScroll : true,
               width:850,
               height:410,
@@ -1463,11 +1494,12 @@ function myTask(id) {
                 },{
                   id : "pp_center_id", 
                   region:"center",
-                  html:"this is a test"
+                  html:""
               }]
             });
+            
             var xmdk_win = new Ext.Window({
-              id : 'add_plan_win',
+              id : 'xmdk_win_id',
               iconCls : 'tdsd-icon',
               title: '地块详情',
               floating: true,
@@ -1494,6 +1526,7 @@ function myTask(id) {
           if (gsm == undefined ) {
             
           } else {
+            
             var item = gsm.selections.items[0];
             xg_store.baseParams = {plan_id:gsm.selections.items[0].data.id};
             xg_store.load();
@@ -1530,57 +1563,184 @@ function myTask(id) {
     break;
     case 2 : //计划任务
     {
-      var tabPanel = Ext.getCmp("mytask-tab");
-      
-      if (Ext.getCmp('mytask-tab2') == undefined) {
-          var chart;
+        var tabPanel = Ext.getCmp("mytask-tab");
 
-          chart = new Ext.ux.HighChart({
-              id : 'high-chart',
+        if (Ext.getCmp('mytask-tab2') == undefined) {
+          
+          var chart1, chart2;
+          chart1 = new Ext.ux.HighChart({
+            id : 'hc-chart1',
+    
+            height: 300,
+           // width : 400,
+           // animShift: true,
+           // xField: 'time',
+            chartConfig: {
               series:[{
-                  name: '巡查次数',
-                  type: 'spline',
-                  data: [1, 11, 20, 9, 7]      
+                name: '巡查用时',
+                type: 'spline',
+                data: [1, 11, 20, 9, 7]      
+              }],
+              chart: {
+                marginRight: 100,
+                marginBottom: 100,
+                zoomType: 'x'
+              },
+              title: { text: '巡查统计', x: -20 },
+              subtitle: { text: '2012年11月26日', x: -20},
+              xAxis: [{ 
+                title: { text: '时间',  margin: 20}, 
+                //labels: { rotation: 315, y: 35 },
+                categories:['Jan 2008', 'Feb', 'Mar', 'Apr', 'May']
+                //tickInterval: 3
+                //type: 'datetime' 
+              }],
+              yAxis: { 
+                title:    { text: '次数'},
+                plotLines: [{ value: 0, width: 1, color: '#808080'}]
+              },
+              tooltip: {
+                formatter: function() {
+                  return '<b>'+ this.series.name +'</b><br/>'+
+                  this.x +': '+ this.y;
                 }
-              ],      
-              height: 300,
-              width : 400,
-              animShift: true,
-              xField: 'time',
-              chartConfig: {
-                chart: {
-                 marginRight: 100,
-                 marginBottom: 100,
-                 zoomType: 'x'
-               },
-                title: { text: '巡查统计', x: -20 },
-                subtitle: { text: '2012年11月26日', x: -20},
-                xAxis: [{ 
-                  title: { text: '时间',  margin: 20}, 
-                  labels: { rotation: 315, y: 35 },
-                  type: 'datetime' 
-                }],
-                yAxis: { 
-                  title:    { text: '次数'},
-                  plotLines: [{ value: 0, width: 1, color: '#808080'}]
-                },
-               tooltip: {
-                  formatter: function() {
-                      return '<b>'+ this.series.name +'</b><br/>'+
-                      this.x +': '+ this.y;
+              },
+              legend : {enabled:false},
+              credits: {enabled:false}
+              /*
+              legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+              }
+              */
+            }
+          });
+
+          chart2 = new Ext.ux.HighChart({
+            id : 'hc-chart2',
+    
+            height: 300,
+           // width : 400,
+           // animShift: true,
+           // xField: 'time',
+            chartConfig: {
+              series:[{
+                name: '巡查用时',
+                type: 'spline',
+                data: [1, 11, 20, 9, 7]      
+              }],
+              chart: {
+                marginRight: 100,
+                marginBottom: 100,
+                zoomType: 'x'
+              },
+              title: { text: '巡查统计', x: -20 },
+              subtitle: { text: '2012年11月26日', x: -20},
+              xAxis: [{ 
+                title: { text: '时间',  margin: 20}, 
+                //labels: { rotation: 315, y: 35 },
+                categories:['Jan 2008', 'Feb', 'Mar', 'Apr', 'May']
+                //tickInterval: 3
+                //type: 'datetime' 
+              }],
+              yAxis: { 
+                title:    { text: '次数'},
+                plotLines: [{ value: 0, width: 1, color: '#808080'}]
+              },
+              tooltip: {
+                formatter: function() {
+                  return '<b>'+ this.series.name +'</b><br/>'+
+                  this.x +': '+ this.y;
+                }
+              },
+              legend : {enabled:false},
+              credits: {enabled:false}
+            }
+          });
+
+
+          var chartPanel = new Ext.form.FormPanel({
+            id : 'chart_panel_id',
+            autoScroll : true,
+            width:850,
+            //height:410,
+            layout:"border",
+            items:[{
+                region:"west",
+                title:"",
+                id : "cp_west_id",
+                width:200,
+                height:400,
+                layout:'absolute',
+                items:[{
+                  xtype: 'label',
+                  text: '预设',
+                  x: 10,
+                  y: 10
+                },{
+                  xtype:"combo",
+                  fieldLabel:"Text",
+                  name:"ys_combo",
+                  x:10,
+                  y:30,
+                  width:150
+                },{
+                  xtype: 'label',
+                  text: '开始日期',
+                  format:'Y-m-d',
+                  x: 10,
+                  y: 60
+                },{
+                  xtype:"datefield",
+                  name:"b_date",
+                  x:10,
+                  y:80,
+                  width:150
+                },{
+                  xtype: 'label',
+                  text: '结束日期',
+                  format:'Y-m-d',
+                  x: 10,
+                  y: 110
+                },{
+                  xtype:"datefield",
+                  name:"e_date",
+                  x:10,
+                  y:130,
+                  width:150
+                },{
+                  xtype: 'button',
+                  text: '确定',
+                  x: 10,
+                  y: 180,
+                  width:50,
+                  handler:function(){
+                    
                   }
-               },
-               legend: {
-                   layout: 'vertical',
-                   align: 'right',
-                   verticalAlign: 'top',
-                   x: -10,
-                   y: 100,
-                   borderWidth: 0
-               }
-             }
-        });
-        var formPanel = new Ext.form.FormPanel({
+                },{
+                  xtype: 'button',
+                  text: '重置',
+                  x: 80,
+                  y: 180,
+                  width:50,
+                  handler:function(){
+                    
+                  }
+                }]
+              },{
+                id : "cp_center_id", 
+                region:"center",
+                //layout:'fit',
+                autoScroll: true, 
+                items:[chart1, chart2]
+            }]
+          });
+
+          var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab2',
             //iconCls: 'tabs',
@@ -1588,57 +1748,49 @@ function myTask(id) {
             closable : true,
             title:"统计汇总",
             layout: 'fit',
+            items:[chartPanel],
             tbar : [{
-                 text:'切换',
-                 handler : function() {
-                   new Ajax.Request("/desktop/get_last_wd",{ 
-                       method: "POST",
-                       onComplete: function(request) {
-                         var chart2 = Ext.getCmp('high-chart');
-                         var data = eval(request.responseText);
-                         chart2.removeSerie(0, true);
-                         chart2.addSeries([{
-                           type: 'spline',
-                           name: '温度',
-                           data: data
-                         }]);             
-                       }  
+                text:'切换',
+                hidden  : true,
+                handler : function() {
+                  new Ajax.Request("/desktop/get_last_wd",{ 
+                    method: "POST",
+                      onComplete: function(request) {
+                        var chart2 = Ext.getCmp('hc-chart1');
+                        var data = eval(request.responseText);
+                        chart2.removeSerie(0, true);
+                        chart2.addSeries([{
+                          type: 'spline',
+                          name: '温度',
+                          data: data
+                        }]);             
+                      }
                    });
                  }
-               },
-        '<span style=" font-size:12px;font-weight:600;color:#3366FF;">统计方式</span>:&nbsp;&nbsp;', { 
-              xtype: 'combo',
-              width: 75,
-              id: 'xcfs_filter_id',
-              store: xcfs_store,
-              emptyText:'请选择',
-              mode: 'local',
-              minChars : 2,
-              multiSelect: true,
-              valueField:'text',
-              displayField:'text',
-              triggerAction:'all',
-              listeners:{
-                select:function(combo, records, index) {
-                  var key = Ext.getCmp('xcfs_filter_id').getValue();
-                  plan_store.baseParams.xcfs = key;
-                  plan_store.load();
-                }
-              }  
-          }
-      ],
-            items:[chart]
-      //html:"sadfwef"
-        });
+               }]
+          });
 
-        tabPanel.add(formPanel);
-        //tabPanel.doLayout();
+          tabPanel.add(formPanel);
+          //tabPanel.doLayout();
+          tabPanel.setActiveTab(formPanel);
+
+
+        } else {
+          formPanel = Ext.getCmp('mytask-tab2');
+          tabPanel.setActiveTab(formPanel);
+        }
+        // end of chart 
+        var pars = {}
+        new Ajax.Request("/desktop/get_my_chart",{ 
+            method: "POST",
+            parameters : pars,
+            onComplete: function(request) {
+              //alert ('get_xmdk_list called!');
+              //Ext.getCmp('cp_center_id').el.dom.innerHTML = request.responseText;
+            }  
+        });
         
-        tabPanel.setActiveTab(formPanel);
-      } else {
-        formPanel = Ext.getCmp('mytask-tab2');
-        tabPanel.setActiveTab(formPanel);
-      }
+        
     }
     break;  
     case 3 : //最近任务
@@ -1666,7 +1818,7 @@ function myTask(id) {
       }
     }
     break;
-    case 50 : //巡查系统考核表
+    case 51 : //巡查系统考核表
     {
       var tabPanel = Ext.getCmp("mytask-tab");
       if (Ext.getCmp('mytask-tab50') == undefined) {
@@ -1694,10 +1846,8 @@ function myTask(id) {
       });
 
       //load data
-      //plan_store.baseParams.zt = "全部";
-      //plan_store.baseParams.limit = "20";
       plan_store.baseParams.xcry = currentUser.username;
-      //plan_store.load();
+
       var sm = new Ext.grid.CheckboxSelectionModel();
       var planGrid = new Ext.grid.GridPanel({
           id: 'my_plan_grid_id',
@@ -1730,16 +1880,13 @@ function myTask(id) {
           }]
         });
 
-
-        
-  
         plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab50',
             //iconCls: 'tabs',
             closable : true,
-      		closeAction: 'hide',
+            closeAction: 'hide',
             title:"巡查系统考核表",
             layout: 'fit',
       
@@ -1756,7 +1903,7 @@ function myTask(id) {
       }
     } 
     break;
-	case 51 : //执法监察动态巡查违法用地统计表
+    case 52 : //执法监察动态巡查违法用地统计表
     {
       var tabPanel = Ext.getCmp("mytask-tab");
       if (Ext.getCmp('mytask-tab51') == undefined) {
@@ -1787,7 +1934,7 @@ function myTask(id) {
               {name: 'jsqk',  type: 'string'},
               {name: 'sjzd',  type: 'string'},
               {name: 'sjgd',  type: 'string'},
-			  {name: 'wfmj',  type: 'string'},
+              {name: 'wfmj',  type: 'string'},
               {name: 'xcjg',  type: 'string'},
               {name: 'clyj',  type: 'string'}
             ]    
@@ -1839,16 +1986,13 @@ function myTask(id) {
           }]
         });
 
-
-        
-  
         plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab51',
             //iconCls: 'tabs',
             closable : true,
-      		closeAction: 'hide',
+            closeAction: 'hide',
             title:"执法监察动态巡查违法用地统计表",
             layout: 'fit',
       
@@ -1865,7 +2009,7 @@ function myTask(id) {
       }
     } 
     break;
-	case 52 : //执法监察动态巡查原始记录表
+    case 53 : //执法监察动态巡查原始记录表
     {
       var tabPanel = Ext.getCmp("mytask-tab");
       if (Ext.getCmp('mytask-tab52') == undefined) {
@@ -1882,11 +2026,10 @@ function myTask(id) {
               {name: 'xcry',  type: 'string'},
               {name: 'xcqy',  type: 'string'},
               {name: 'xmmc',  type: 'string'},
-			{name: 'yddw',  type: 'string'},
+              {name: 'yddw',  type: 'string'},
               {name: 'xmzl',  type: 'string'},
-			{name: 'sffhgh',  type: 'string'},
+              {name: 'sffhgh',  type: 'string'},
               {name: 'ydl',  type: 'string'},
-
               {name: 'lxpwh',  type: 'string'},
               {name: 'ghwh',  type: 'string'},
               {name: 'zzpwh',  type: 'string'},
@@ -1899,7 +2042,7 @@ function myTask(id) {
               {name: 'jsqk',  type: 'string'},
               {name: 'sjzd',  type: 'string'},
               {name: 'sjgd',  type: 'string'},
-			  {name: 'wfmj',  type: 'string'},
+              {name: 'wfmj',  type: 'string'},
               {name: 'czqk',  type: 'string'},
               {name: 'bz',  type: 'string'}
             ]    
@@ -1914,20 +2057,19 @@ function myTask(id) {
           store: plan_store,
           columns: [           
             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},  
-			{ header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},          
+            { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},          
             //{ header : '巡查主体',  width : 200, sortable : true, dataIndex: 'xczt'},
             { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'},            
             { header : '巡查区域',  width : 75, sortable : true, dataIndex: 'xcqy'},
             { header : '项目名称',  width : 75, sortable : true, dataIndex: 'xmmc'},
-			{ header : '用地单位',  width : 75, sortable : true, dataIndex: 'yddw'},
+            { header : '用地单位',  width : 75, sortable : true, dataIndex: 'yddw'},
             { header : '坐落位置',  width : 75, sortable : true, dataIndex: 'xmzl'},
-			{ header : '是否符合土地利用整体规划',  width : 75, sortable : true, dataIndex: 'sffhgh'},
+            { header : '是否符合土地利用整体规划',  width : 75, sortable : true, dataIndex: 'sffhgh'},
             { header : '原地类',  width : 75, sortable : true, dataIndex: 'ydl'},
-
             { header : '立项时间、批文号',  width : 75, sortable : true, dataIndex: 'lxpwh'},
             { header : '规划定点时间、文号',  width : 75, sortable : true, dataIndex: 'ghwh'},
             { header : '转征用时间、批文号',  width : 75, sortable : true, dataIndex: 'zzpwh'},
-			{ header : '供地时间、批文号',  width : 200, sortable : true, dataIndex: 'gdpwh'},
+            { header : '供地时间、批文号',  width : 200, sortable : true, dataIndex: 'gdpwh'},
             { header : '批准用途',  width : 75, sortable : true, dataIndex: 'pzyt'},
             { header : '实际用途',  width : 75, sortable : true, dataIndex: 'sjyt'},
             { header : '批准面积(亩)',  width : 75, sortable : true, dataIndex: 'pzmj'},
@@ -1964,7 +2106,7 @@ function myTask(id) {
             id:'mytask-tab52',
             //iconCls: 'tabs',
             closable : true,
-      		closeAction: 'hide',
+            closeAction: 'hide',
             title:"执法监察动态巡查原始记录表",
             layout: 'fit',
       
