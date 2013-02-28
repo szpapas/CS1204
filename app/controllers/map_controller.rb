@@ -574,7 +574,7 @@ class MapController < ApplicationController
         @xmdk = @xmdks[k]
         lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
         dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"地块编号\": \"#{@xmdk.gid}\",\"项目名称\":\"#{@xmdk.xmmc}\", 
-        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\"}}"
+        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
         txt = txt + dd + ','
       end  
       txt = txt[0..-2] + ']}'
@@ -583,6 +583,23 @@ class MapController < ApplicationController
     end
     render :text => txt
   end
-   
-   
+  
+  def delete_xz_xmdk
+    User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
+    render :text => "Success"
+  end
+  
+  def save_xz_xmdk 
+    #data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj, jirq:jirq, xzqmc:xzqmc, dkh:dkh, tfh:tfh}),
+    gid = params['gid'].to_i
+    if gid == 0
+      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),translate(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))) ) returning gid;")
+    else
+      User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}'where gid = params['gid']")
+    end
+      
+    render :text => "Success"
+  end 
+  
+
 end

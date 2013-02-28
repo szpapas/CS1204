@@ -60,3 +60,8 @@ body {
 #details-list li{
 	padding:15px 10px;
 }
+
+.myClassItemInactive  
+{  
+  background-image: url('/img/mobile-red.png');  
+}

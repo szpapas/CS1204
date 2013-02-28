@@ -6,21 +6,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
 
-			  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
 
-				<script src="/jquery/jquery-1.8.2.min.js"></script>
-			  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+        <script src="/jquery/jquery-1.8.2.min.js"></script>
+        <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
 
-				<link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
-				<link rel="stylesheet" href="/map/style.mobile.css" type="text/css">
+        <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="/map/style.mobile.css" type="text/css">
         <link rel="stylesheet" href="/map/style.mobile-jq.css" type="text/css">
-      	<script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+        <script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
         <!--script src="/OpenLayers/lib/OpenLayers.js?mobile"></script-->
-				<script src="/OpenLayers/lib/OpenLayers.js"></script>
-				
-        <script src="/map/mobile-base.js"></script>
-        <script src="/map/mobile-jq.js"></script>
-
+        <script src="/OpenLayers/lib/OpenLayers.js"></script>
+        
+        <script src="/map/mobile-base.js?4d224"></script>
+        <script src="/map/mobile-jq.js?22d24"></script>
     </head>
     <body>
         <h1 id="title">项目地块</h1>
@@ -61,14 +60,89 @@
           </div>
         </div>
 
-        <div id="popup" data-role="dialog">
+        <div data-role="dialog" id="popup">
             <div data-position="inline" data-theme="d" data-role="header">
                 <h1>详细情况</h1>
             </div>
+            <div data-theme="c" data-role="content"  >
+							<div class="ui-grid-a " id="">
+			            <div class="ui-block-a">
+										<input id="deleteXmdk2" type="button" data-inline="false" value="删除记录" data-theme="e"/>
+			            </div>
+			            <div class="ui-block-b">
+										<input id="modifyXmdk2" type="button" data-inline="false" value="修改地块" data-theme="b"/>
+			            </div>
+			        </div>
+               <ul id="details-list" data-role="listview" data-inset="true" >
+               </ul>
+            </div>
+        </div>
+
+        <div data-role="dialog" id="new_xmdk_id" >
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>增加巡查点</h1>
+            </div>
             <div data-theme="c" data-role="content">
-                <ul id="details-list" data-role="listview">
+                <div class="ui-grid-a ">
+				            <div class="ui-block-a">
+											<input id="deleteXmdk" type="button" data-inline="false" value="删除记录" data-theme="e"/>
+				            </div>
+				            <div class="ui-block-b">
+											<input id="saveXmdk" type="button" data-inline="false" value="保存修改" data-theme="b"/>
+				            </div>
+				        </div>
+								<ul data-role="listview" data-inset="true" data-divider-theme="b">
+                  <li>
+                    <p>项目地块编号:</p>
+                    <input name="gid"  placeholder="" value="" type="text" disabled="true">
+                  </li> 
+                  <li>
+                    <p>项目名称:</p>
+                    <input name="xmmc"  placeholder="" value="" type="text">
+                  </li> 
+                  <li>
+                    <p>批准文号:</p>
+                    <input name="pzwh"  placeholder="" value="" type="text">
+                  </li> 
+                  <li>
+                    <p>建设状态:</p>
+                    <input name="sfjs"  placeholder="" value="" type="text">
+                  </li> 
+                  <li>
+                    <p>用地单位</p>
+                    <input name="yddw"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>土地坐落:</p>
+                    <input name="tdzl"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>地块面积:</p>
+                    <input name="dkmj"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>创建时间:</p>
+                    <input name="jirq"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>行政区名称:</p>
+                    <input name="xzqmc"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>地块号:</p>
+                    <input name="dkh"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>图幅号:</p>
+                    <input name="tfh"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>新增标记:</p>
+                    <input name="xz_tag"  placeholder="" value="" type="text" disabled="true">
+                  </li>
                 </ul>
             </div>
         </div>
+
     </body>
 </html>

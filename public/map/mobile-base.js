@@ -22,53 +22,53 @@ var init = function (onSelectFeatureFunction) {
     var toolbar = new OpenLayers.Control.Panel({
         displayClass: 'olControlEditingToolbar'
     });
-		
-		var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
-				initialize: function(layer, options) {
-						OpenLayers.Control.prototype.initialize.apply(this, [options]);
-						this.layer = layer;
-						this.handler = new OpenLayers.Handler.Feature(
-								this, layer, {click: this.clickFeature}
-						);
-				},
-				clickFeature: function(feature) {
-						// if feature doesn't have a fid, destroy it
-						if(feature.fid == undefined) {
-								this.layer.destroyFeatures([feature]);
-						} else {
-								feature.state = OpenLayers.State.DELETE;
-								this.layer.events.triggerEvent("afterfeaturemodified", {feature: feature});
-								feature.renderIntent = "select";
-								this.layer.drawFeature(feature);
-						}
-				},
-				setMap: function(map) {
-						this.handler.setMap(map);
-						OpenLayers.Control.prototype.setMap.apply(this, arguments);
-				},
-				CLASS_NAME: "OpenLayers.Control.DeleteFeature"
-		});
-		
-		
-		var navigate = new OpenLayers.Control.Navigation({
-				title: "移动地图"
-		});
+    
+    var DeleteFeature = OpenLayers.Class(OpenLayers.Control, {
+        initialize: function(layer, options) {
+            OpenLayers.Control.prototype.initialize.apply(this, [options]);
+            this.layer = layer;
+            this.handler = new OpenLayers.Handler.Feature(
+                this, layer, {click: this.clickFeature}
+            );
+        },
+        clickFeature: function(feature) {
+            // if feature doesn't have a fid, destroy it
+            if(feature.fid == undefined) {
+                this.layer.destroyFeatures([feature]);
+            } else {
+                feature.state = OpenLayers.State.DELETE;
+                this.layer.events.triggerEvent("afterfeaturemodified", {feature: feature});
+                feature.renderIntent = "select";
+                this.layer.drawFeature(feature);
+            }
+        },
+        setMap: function(map) {
+            this.handler.setMap(map);
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
+        },
+        CLASS_NAME: "OpenLayers.Control.DeleteFeature"
+    });
+    
+    
+    var navigate = new OpenLayers.Control.Navigation({
+        title: "移动地图"
+    });
 
-		var drawPoly = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {
-				title: "多边形",
-				displayClass: "olControlDrawFeaturePolygon",
-				handlerOptions: {multi: false}
-		});
+    var drawPoly = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {
+        title: "多边形",
+        displayClass: "olControlDrawFeaturePolygon",
+        handlerOptions: {multi: false}
+    });
 
-		var edit = new OpenLayers.Control.ModifyFeature(vectors, {
-				title: "修改图形",
-				displayClass: 'olControlDrawFeaturePath'
-		});
-		
-		var del = new DeleteFeature(vectors, {
-				title: "删除图形", 
-				displayClass: "olControlDrawFeaturePoint" 
-		});
+    var edit = new OpenLayers.Control.ModifyFeature(vectors, {
+        title: "修改图形",
+        displayClass: 'olControlDrawFeaturePath'
+    });
+    
+    var del = new DeleteFeature(vectors, {
+        title: "删除图形", 
+        displayClass: "olControlDrawFeaturePoint" 
+    });
 
 
     function numberWithCommas(x) {
@@ -97,54 +97,81 @@ var init = function (onSelectFeatureFunction) {
     };
     
     drawPoly.featureAdded = function(){
-			console.log("Draw Feature added.");
-			toolbar.activateControl(edit);
-			
-			//need hide 兴趣点图层
-			map.getLayersByName('兴趣点')[0].setVisibility(false);
-			
-			if (vectors.features.length > 0){
-		    var area = vectors.features[0].geometry.getArea();
-		    var length = vectors.features[0].geometry.getLength();
-
-  			showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
-		  }
-
-		};
-
-		vectors.events.register("beforefeatureadded", vectors, function(e) {
-  		if (vectors.features.length > 0){
-  	    vectors.removeAllFeatures();
-  	  }
-	  });
-		
-		vectors.events.register("beforefeaturemodified", vectors, function	(e) {
-			//dragFeature.deactivate();
-			console.log("Draw Feature before modified.");
-			if (vectors.features.length > 0){
+      console.log("Draw Feature added.");
+      toolbar.activateControl(edit);
+      
+      //need hide 兴趣点图层
+      map.getLayersByName('兴趣点')[0].setVisibility(false);
+      
+      if (vectors.features.length > 0){
         var area = vectors.features[0].geometry.getArea();
-		    var length = vectors.features[0].geometry.getLength();
-  		  showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
-			}
-		});
+        var length = vectors.features[0].geometry.getLength();
 
-		vectors.events.register("afterfeaturemodified", vectors, function	 (e) {
-			//dragFeature.activate();
-			console.log("Draw Feature modified.");
-			//toolbar.activateControl(navigate);
-			if (vectors.features.length > 0){
-        var area = vectors.features[0].geometry.getArea();
-		    var length = vectors.features[0].geometry.getLength();
+        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+      }
 
-  			showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
-			}
-		});
-		
-		navigate.defaultClick = function(){
-		  map.getLayersByName('兴趣点')[0].setVisibility(true);
-		}
+    };
+
+    vectors.events.register("beforefeatureadded", vectors, function(e) {
+      if (vectors.features.length > 0){
+        vectors.removeAllFeatures();
+      }
+    });
     
-    toolbar.addControls([navigate, del, edit, drawPoly]);
+    vectors.events.register("beforefeaturemodified", vectors, function  (e) {
+      //dragFeature.deactivate();
+      console.log("Draw Feature before modified.");
+      if (vectors.features.length > 0){
+        var area = vectors.features[0].geometry.getArea();
+        var length = vectors.features[0].geometry.getLength();
+        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+      }
+    });
+
+    vectors.events.register("afterfeaturemodified", vectors, function  (e) {
+      //dragFeature.activate();
+      console.log("Draw Feature modified.");
+      //toolbar.activateControl(navigate);
+      if (vectors.features.length > 0){
+        var area = vectors.features[0].geometry.getArea();
+        var length = vectors.features[0].geometry.getLength();
+
+        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+      }
+    });
+    
+    navigate.defaultClick = function(){
+      map.getLayersByName('兴趣点')[0].setVisibility(true);
+    };
+    
+    
+    var myButton = new OpenLayers.Control.Button({  
+        title: "增加巡查点", displayClass: "myClass",trigger: function() {  
+            var vectors = map.getLayersByName('测量图层')[0];
+            if (vectors.features.length > 0) {
+              $.mobile.changePage("#new_xmdk_id", "pop"); 
+              $("input[name='gid']").val('');
+              $("input[name='xmmc']").val('');
+              $("input[name='pzwh']").val('');
+              $("input[name='sfjs']").val('');
+              $("input[name='yddw']").val('');
+              $("input[name='tdzl']").val('');
+              $("input[name='dkmj']").val('');
+              $("input[name='xzqmc']").val('');
+              $("input[name='xmmc']").val('');
+              $("input[name='xmmc']").val('');
+              $("input[name='dkh']").val('');
+              $("input[name='tfh']").val('');
+              $("input[name='xz_tag']").val('是');
+            } else {
+              alert ("请先绘制图形状");
+            }
+            
+
+        }  
+    });
+    
+    toolbar.addControls([navigate, del, edit, drawPoly, myButton]);
 
     var sprintersLayer = new OpenLayers.Layer.Vector("兴趣点", {
         styleMap: new OpenLayers.StyleMap({
@@ -172,8 +199,8 @@ var init = function (onSelectFeatureFunction) {
         }
     });
     
-    var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: google.maps.MapTypeId.ROADMAP, "sphericalMercator": true,	 opacity: 1, numZoomLevels: 20});
-    var gsat = new OpenLayers.Layer.Google("谷歌卫星", {type: google.maps.MapTypeId.SATELLITE, "sphericalMercator": true,	 opacity: 1, numZoomLevels: 20});
+    var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: google.maps.MapTypeId.ROADMAP, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
+    var gsat = new OpenLayers.Layer.Google("谷歌卫星", {type: google.maps.MapTypeId.SATELLITE, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
     
     
     // create map
@@ -238,22 +265,22 @@ var init = function (onSelectFeatureFunction) {
     });
 
     function getFeatures() {
-  		pars = {};
-  		$.ajax({
-  		  type: "POST",
-  		  url: "/map/xmdk_feature",
-  		  data: pars,
-  		  cache: false,
-  		  dataType: "text",
-  		  success: function(data){
-  				if (data.length > 0) {
-  				  var features = eval("("+data+")");
+      pars = {};
+      $.ajax({
+        type: "POST",
+        url: "/map/xmdk_feature",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+            var features = eval("("+data+")");
             var reader = new OpenLayers.Format.GeoJSON();
             var sprinters = reader.read(features);
             sprintersLayer.addFeatures(sprinters);
-  				}
-  	  	}
-  		});
+          }
+        }
+      });
     }
 
 };

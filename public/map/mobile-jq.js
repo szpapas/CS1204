@@ -38,6 +38,7 @@ $(document).ready(function() {
     $("#minus").click(function(){
         map.zoomOut();
     });
+    
     $("#locate").click(function(){
         var control = map.getControlsBy("id", "locate-control")[0];
         if (control.active) {
@@ -57,11 +58,12 @@ $(document).ready(function() {
     $('#popup').live('pageshow',function(event, ui){
         var li = "";
         for(var attr in selectedFeature.attributes){
-            li += "<li><div style='width:25%;float:left'>" + attr + "</div><div style='width:75%;float:right'>" 
+            li += "<li><div style='width:25%;float:left'>" + attr + ":</div><div style='width:75%;float:right'>" 
                + selectedFeature.attributes[attr] + "</div></li>";
         }
         $("ul#details-list").empty().append(li).listview("refresh");
     });
+    
 
     $('#searchpage').live('pageshow',function(event, ui){
         $('#query').bind('change', function(e){
@@ -101,6 +103,109 @@ $(document).ready(function() {
         });
         // only listen to the first event triggered
         $('#searchpage').die('pageshow', arguments.callee);
+    });
+    
+    
+    $("#saveXmdk").click(function() {
+      
+      var vectors = map.getLayersByName('测量图层')[0];
+      if (vectors.features.length > 0) {
+        var area = vectors.features[0].geometry.getArea();
+        var length = vectors.features[0].geometry.getLength();
+        var geom = vectors.features[0].geometry.toString();
+      } else {
+        var area = '';
+        var length = '';
+        var geom = '';
+      }
+      
+      var gid   = $.trim($("input[name='gid']").val());
+      var xmmc  = $.trim($("input[name='xmmc']").val());
+      var pzwh  = $.trim($("input[name='pzwh']").val());
+      var sfjs  = $.trim($("input[name='sfjs']").val());
+      var yddw  = $.trim($("input[name='yddw']").val());
+      var tdzl  = $.trim($("input[name='tdzl']").val());
+      var dkmj  = $.trim($("input[name='dkmj']").val());
+      //var jlrq  = $.trim($("input[name='jlrq']").val());
+      var xzqmc = $.trim($("input[name='xzqmc']").val());
+      var dkh   = $.trim($("input[name='dkh']").val());
+      var tfh   = $.trim($("input[name='tfh']").val());
+
+      if(xmmc.length > 0){
+          $.ajax({
+            type: "POST",
+            url: "/map/save_xz_xmdk",
+            data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj,xzqmc:xzqmc, dkh:dkh, tfh:tfh, shape_area:area, shape_len:length, geom:geom}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              //$("#result_log").html(data);
+              alert ('新增成功');
+            }
+          });
+       };
+       
+    });
+    
+    $("#modifyXmdk2").click(function() {
+        $.mobile.changePage("#new_xmdk_id", "pop"); 
+        //selectedFeature
+        $("input[name='gid']").val(selectedFeature.attributes['地块编号']);
+        $("input[name='xmmc']").val(selectedFeature.attributes['项目名称']);
+        $("input[name='pzwh']").val(selectedFeature.attributes['批准文号']);
+        $("input[name='sfjs']").val(selectedFeature.attributes['是否建设']);
+        $("input[name='yddw']").val(selectedFeature.attributes['用地单位']);
+        $("input[name='tdzl']").val(selectedFeature.attributes['土地坐落']);
+        $("input[name='dkmj']").val(selectedFeature.attributes['地块面积']);
+        $("input[name='xzqmc']").val(selectedFeature.attributes['行政区名称']);
+        $("input[name='xmmc']").val(selectedFeature.attributes['图班面积']);
+        $("input[name='xmmc']").val(selectedFeature.attributes['图班周长']);
+        $("input[name='dkh']").val(selectedFeature.attributes['地块号']);
+        $("input[name='tfh']").val(selectedFeature.attributes['图幅号']);
+        $("input[name='xz_tag']").val(selectedFeature.attributes['是否新增']);
+    });  
+
+    
+    $('#deleteXmdk').click(function() {
+       var gid =selectedFeature.attributes['地块编号'];
+       var xz_tag = selectedFeature.attributes['是否新增'];
+       if(xz_tag.length > 0){
+          $.ajax({
+            type: "POST",
+            url: "/map/delete_xz_xmdk",
+            data: ({gid:gid}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              //$("#result_log").html(data);
+              alert ('删除成功');
+            }
+          });
+       } else {
+          alert ('不能删除');
+       } 
+    }); 
+    
+    $('#deleteXmdk2').click(function() {
+       var gid =selectedFeature.attributes['地块编号'];
+       var xz_tag = selectedFeature.attributes['是否新增'];
+       if(xz_tag.length > 0)
+       {
+          $.ajax({
+            type: "POST",
+            url: "/map/delete_xz_xmdk",
+            data: ({gid:gid}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              //$("#result_log").html(data);
+              alert ('删除成功');
+            }
+          });
+       } else {
+         alert ('不能删除');
+       }
+       
     });
 
 });
