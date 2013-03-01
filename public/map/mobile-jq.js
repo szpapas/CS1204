@@ -50,10 +50,15 @@ $(document).ready(function() {
     
     $("#xmdk").click(function(){
         var control = map.getControlsBy("id", "locate-control")[0];
-        var layer = map.getLayersByName('兴趣点')[0]
+        var layer = map.getLayersByName('项目地块')[0]
        layer.setVisibility(!layer.visibility);
     });
     
+    $("#myxmdk").click(function(){
+        var control = map.getControlsBy("id", "locate-control")[0];
+        var layer = map.getLayersByName('我的地块')[0]
+        layer.setVisibility(!layer.visibility);
+    });
     
     $('#popup').live('pageshow',function(event, ui){
         var li = "";
@@ -120,6 +125,7 @@ $(document).ready(function() {
       }
       
       var gid   = $.trim($("input[name='gid']").val());
+      var username = $.trim($("input[name='username']").val());
       var xmmc  = $.trim($("input[name='xmmc']").val());
       var pzwh  = $.trim($("input[name='pzwh']").val());
       var sfjs  = $.trim($("input[name='sfjs']").val());
@@ -135,7 +141,7 @@ $(document).ready(function() {
           $.ajax({
             type: "POST",
             url: "/map/save_xz_xmdk",
-            data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj,xzqmc:xzqmc, dkh:dkh, tfh:tfh, shape_area:area, shape_len:length, geom:geom}),
+            data: ({gid:gid, username:username, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj,xzqmc:xzqmc, dkh:dkh, tfh:tfh, shape_area:area, shape_len:length, geom:geom}),
             cache: false,
             dataType: "text",
             success: function(data){

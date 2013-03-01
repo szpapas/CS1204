@@ -581,7 +581,7 @@ class MapController < ApplicationController
   end
    
   def xmdk_feature
-    @xmdks = User.find_by_sql("select *, astext(centroid(transform(the_geom,900913))) from xmdks;")
+    @xmdks = User.find_by_sql("select *, astext(centroid(transform(the_geom,900913))) from xmdks where username is null;")
     
     if @xmdks.size > 0
       txt = '{"type": "FeatureCollection","features": ['
@@ -599,6 +599,26 @@ class MapController < ApplicationController
     render :text => txt
   end
   
+
+  def myxmdk_feature
+    @xmdks = User.find_by_sql("select *, astext(centroid(transform(the_geom,900913))) from xmdks where username='#{params['username']}';")
+    if @xmdks.size > 0
+      txt = '{"type": "FeatureCollection","features": ['
+      for k in 0..@xmdks.size - 1 
+        @xmdk = @xmdks[k]
+        lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
+        dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"地块编号\": \"#{@xmdk.gid}\",\"项目名称\":\"#{@xmdk.xmmc}\", 
+        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
+        txt = txt + dd + ','
+      end  
+      txt = txt[0..-2] + ']}'
+    else 
+      txt = "{}"
+    end
+    render :text => txt
+  end
+  
+
   def delete_xz_xmdk
     User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
     render :text => "Success"
@@ -608,7 +628,7 @@ class MapController < ApplicationController
     #data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj, jirq:jirq, xzqmc:xzqmc, dkh:dkh, tfh:tfh}),
     gid = params['gid'].to_i
     if gid == 0
-      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '#{params['xz_tag']}' ) returning gid;")
+      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning gid;")
     else
       User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}'where gid = params['gid']")
     end

@@ -100,8 +100,8 @@ var init = function (onSelectFeatureFunction) {
       console.log("Draw Feature added.");
       toolbar.activateControl(edit);
       
-      //need hide 兴趣点图层
-      map.getLayersByName('兴趣点')[0].setVisibility(false);
+      //need hide 项目地图层
+      map.getLayersByName('项目地块')[0].setVisibility(false);
       
       if (vectors.features.length > 0){
         var area = vectors.features[0].geometry.getArea();
@@ -141,7 +141,7 @@ var init = function (onSelectFeatureFunction) {
     });
     
     navigate.defaultClick = function(){
-      map.getLayersByName('兴趣点')[0].setVisibility(true);
+      map.getLayersByName('项目')[0].setVisibility(true);
     };
     
     
@@ -151,6 +151,7 @@ var init = function (onSelectFeatureFunction) {
             if (vectors.features.length > 0) {
               $.mobile.changePage("#new_xmdk_id", "pop"); 
               $("input[name='gid']").val('');
+              $("input[name='username']").val('');
               $("input[name='xmmc']").val('');
               $("input[name='pzwh']").val('');
               $("input[name='sfjs']").val('');
@@ -173,7 +174,17 @@ var init = function (onSelectFeatureFunction) {
     
     toolbar.addControls([navigate, del, edit, drawPoly, myButton]);
 
-    var sprintersLayer = new OpenLayers.Layer.Vector("兴趣点", {
+    var sprintersLayer = new OpenLayers.Layer.Vector("项目地块", {
+        styleMap: new OpenLayers.StyleMap({
+            externalGraphic: "/img/mobile-green.png",
+            graphicOpacity: 1.0,
+            graphicWidth: 16,
+            graphicHeight: 26,
+            graphicYOffset: -26
+        })
+    });
+
+    var myxmdkLayer = new OpenLayers.Layer.Vector("我的地块", {
         styleMap: new OpenLayers.StyleMap({
             externalGraphic: "/img/mobile-red.png",
             graphicOpacity: 1.0,
@@ -182,13 +193,20 @@ var init = function (onSelectFeatureFunction) {
             graphicYOffset: -26
         })
     });
+    
+    
 
     var sprinters = getFeatures();
-    // sprintersLayer.addFeatures(sprinters);
+    var myxmdk = getMyXmdkFeature();
 
     var selectControl = new OpenLayers.Control.SelectFeature(sprintersLayer, {
         autoActivate:true,
         onSelect: onSelectFeatureFunction});
+
+    var mySelectControl = new OpenLayers.Control.SelectFeature(myxmdkLayer, {
+        autoActivate:true,
+        onSelect: onSelectFeatureFunction});
+
 
     var geolocate = new OpenLayers.Control.Geolocate({
         id: 'locate-control',
@@ -216,14 +234,16 @@ var init = function (onSelectFeatureFunction) {
             }),
             toolbar,
             geolocate,
-            selectControl
+            selectControl,
+            mySelectControl
         ],
         
         layers: [
             gmap, gsat,
             vector,
             vectors,
-            sprintersLayer
+            sprintersLayer,
+            myxmdkLayer
         ],
         center: new OpenLayers.LonLat(13410089, 3713641),
         zoom: 11
@@ -278,6 +298,26 @@ var init = function (onSelectFeatureFunction) {
             var reader = new OpenLayers.Format.GeoJSON();
             var sprinters = reader.read(features);
             sprintersLayer.addFeatures(sprinters);
+          }
+        }
+      });
+    };
+    
+    function getMyXmdkFeature() {
+      var username = $.trim($("input[name='user_id']").val());
+      pars = {username:username};
+      $.ajax({
+        type: "POST",
+        url: "/map/myxmdk_feature",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+            var features = eval("("+data+")");
+            var reader = new OpenLayers.Format.GeoJSON();
+            var sprinters = reader.read(features);
+            myxmdkLayer.addFeatures(sprinters);
           }
         }
       });

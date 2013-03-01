@@ -18,19 +18,21 @@
         <!--script src="/OpenLayers/lib/OpenLayers.js?mobile"></script-->
         <script src="/OpenLayers/lib/OpenLayers.js"></script>
         
-        <script src="/map/mobile-base.js?4d224"></script>
-        <script src="/map/mobile-jq.js?22d24"></script>
+        <script src="/map/mobile-base.js?4d1224"></script>
+        <script src="/map/mobile-jq.js?22d241"></script>
     </head>
     <body>
         <h1 id="title">项目地块</h1>
         <div data-role="page" id="mappage">
           <div data-role="content">
             <div id="map"></div>
-          </div>
+         		<div><input name="user_id"  placeholder="" value="<%= @username %>" type="text" hidden='true'></div>
+ 					</div>
           <div data-role="footer">
             <a href="#" id="locate" data-icon="locate" data-role="button">定位</a>
             <a href="#layerspage" data-icon="layers" data-role="button">图层</a>
-            <a href="#" id="xmdk" data-icon="search" data-role="button">兴趣点</a>
+            <a href="#" id="xmdk" data-icon="search" data-role="button">项目地块</a>
+            <a href="#" id="myxmdk" data-icon="search" data-role="button">我的地块</a>
           </div>
           <div id="navigation" data-role="controlgroup" data-type="vertical">
             <a href="#" data-role="button" data-icon="plus" id="plus"
@@ -94,9 +96,12 @@
 								<ul data-role="listview" data-inset="true" data-divider-theme="b">
                   <li>
                     <p>项目地块编号:</p> 
-										<input name="username"  placeholder="" value="<%= @username %>" type="text" hidden="true">
                     <input name="gid"  placeholder="" value="" type="text" disabled="true">
                   </li> 
+                  <li>
+                    <p>用户标识:</p> 
+										<input name="username"  placeholder="" value="<%= @username %>" type="text">
+                  </li>
                   <li>
                     <p>项目名称:</p>
                     <input name="xmmc"  placeholder="" value="" type="text">
