@@ -244,7 +244,6 @@ class MapController < ApplicationController
   
   #username 
   def get_xmdk_json
-    
     if params['mode'].to_i == 25 
       xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks where xz_tag is null order by gid;")
     else   
@@ -520,7 +519,8 @@ class MapController < ApplicationController
   #device, task_id
   def addInspect
     @task_id = params['task_id']
-    @xmdks = User.find_by_sql("select gid, xmmc, ST_distance(transform(users.the_points,2364), the_geom) as dist from xmdks,users where users.iphone = '#{params['device']}' and gdqkid is not null order by dist limit 10;")
+    @sys_xmdks = User.find_by_sql("select gid, xmmc, ST_distance(transform(users.the_points,2364), the_geom) as dist from xmdks,users where users.iphone = '#{params['device']}' and xz_tag is null  order by dist limit 10;")
+    @my_xmdks = User.find_by_sql("select gid, xmmc, ST_distance(transform(users.the_points,2364), the_geom) as dist from xmdks,users where users.iphone = '#{params['device']}' and xmdks.username = '#{params['device']}' order by dist limit 10;")
     render :template => '/map/inspect_add.html.erb'
   end
   
@@ -528,9 +528,13 @@ class MapController < ApplicationController
     @task_id = params['task_id']
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
     xmdk_id = @xmdk.id
-    gdqkid = User.find_by_sql("select gdqkid from xmdks where gid = #{xmdk_id};")[0].gdqkid
-    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
     render :template => '/map/inspect_edit.html.erb'
+    
+    #gdqkids = User.find_by_sql("select gdqkid from xmdks where gid = #{xmdk_id};")
+    #if gdqkids.size > 0 
+    #  gdqkid = gdqkids[0].gdqkid
+    #  @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
+    #end  
   end
   
   def showInspect
@@ -558,6 +562,10 @@ class MapController < ApplicationController
     User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
     render :text => "修改成功"
   end  
+  
+  def delete_old_inspect
+    render :text => "删除成功"
+  end
   
   def getxmdk_wx
     xmmc = params['xmmc']

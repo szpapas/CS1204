@@ -4,8 +4,9 @@
 <head> 
   <title>增加巡查点</title> 
   <meta name="viewport" content="width=400, initial-scale=1"> 
-  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
-  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <link rel="stylesheet" href="/jquery/themes/my-theme.min.css" />
+  <link rel="stylesheet" href="/jquery/jquery.mobile.structure-1.2.0.min.css" />
+  <!--link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" -->
   <script src="/jquery/jquery-1.8.2.min.js"></script>
   <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
 	<style>
@@ -23,6 +24,27 @@
 </head> 
 <body> 
 
+	<script>
+
+	  $(function() {
+	     $("#deleteModify").click(function() {
+	        var task_id = <%= @task_id %>;
+	        var xmdk_id = <%= @xmdk.xmdk_id %>;
+          $.ajax({
+            type: "POST",
+            url: "/map/delete_old_inspect",
+            data: ({task_id:task_id, xmdk_id:xmdk_id}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+						  $.mobile.changePage('/map/getreport?task_id=<%= @task_id %>');
+            }
+          });
+	     });
+	  });
+	</script>
+
+
 <!-- Start of first page: #one -->
 <div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
   <div data-role="content"> 
@@ -31,7 +53,7 @@
 		<!--ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." !-->
 		<ul data-role="listview" data-inset="true" >
 			<li data-role="list-divider" data-divider-theme="a">
-					地快详请<span class="ui-li-aside"><a href="/map/modifyInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>">修改</span>
+					地快详请<span class="ui-li-aside"><a href="/map/modifyInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>" rel="external">修改</span>
 				</a> 
 			</li>
 			<li>
@@ -149,7 +171,7 @@
 				<p style='width:65%;float:right'><%= @dksx.sjdgsj %></p>
 			</li>
 		</ul>
-
+		<input id="deleteModify" type="button" data-theme="f"  data-inline="false" value="删除"/>
   </div><!-- /content -->
 
 </div><!-- /page -->

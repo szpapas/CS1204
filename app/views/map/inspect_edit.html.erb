@@ -37,6 +37,7 @@
              dataType: "text",
              success: function(data){
                $("#result_log").html(data);
+							 $.mobile.changePage('/map/showInspect?task_id=<%= @task_id %>&xmdk_id=<%= @xmdk.xmdk_id %>');
              }
            });
         }

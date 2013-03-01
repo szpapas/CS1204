@@ -16,7 +16,17 @@
   $(function() {
      $("#saveXmdk").click(function() {
 	    var task_id = $.trim($("#task_id").val());
-        var xmdk_id = $.trim($("input[name='xmmc_val']:checked").val());
+				var xmdk_1	 = $.trim($("select[name='cx1']").val());
+				var xmdk_2	 = $.trim($("select[name='cx2']").val());
+				
+				if (xmdk_1 != 'none') {
+					xmdk_id = xmdk_1;
+				} else if (xmdk_2 != 'none') {
+					xmdk_id = xmdk_2;
+				} else {
+					alert("请选择一个项目地块");
+					return;
+				}
 
         var sfwf = $.trim($("input[name='sfwf_val']:checked").val());
         var jszt = $.trim($("input[name='jszt_val']:checked").val());
@@ -38,6 +48,7 @@
              dataType: "text",
              success: function(data){
                $("#result_log").html(data);
+							 $.mobile.changePage('/map/getreport?task_id=<%= @task_id %>');
              }
            });
         }
@@ -51,26 +62,28 @@
 	<a data-role="button" data-theme="e" data-direction="reverse"  data-icon="arrow-l" data-transition="slide" href="/map/getreport?task_id=<%= @task_id %>" rel="external">返回</a>
 	
     <div data-role="collapsible" data-inset="false" data-collapsed="false">
-		<div data-role="fieldcontain">
-            <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
-                <legend>
-                    选择一个项目地块:
-                </legend>
-				<% k =  0 %>
-				<% for xmdk in @xmdks %>
-					<% k = k+1 %>
-					<% if k==1 %>
-						<input id="radio<%= xmdk.gid %>" name="xmmc_val" value="<%= xmdk.gid %>" type="radio" checked="true">
-					<% else %>
-						<input id="radio<%= xmdk.gid %>" name="xmmc_val" value="<%= xmdk.gid %>" type="radio">
-					<% end %>	
-	                <label for="radio<%= xmdk.gid %>">
-	                    <%= xmdk.gid %> : <%= xmdk.xmmc %>
-	                </label>
+		<div>
+			<legend>
+          新增项目地块:
+      </legend>
+			<select data-native-menu=false data-theme="c" data-mini="false" name="cx1" id="cx1">
+				<option value="none">空白</option>
+				<% for xmdk in @my_xmdks %>
+					<option value="<%= xmdk.gid %>">  <%= xmdk.gid %> : <%= xmdk.xmmc %>  </option>
 				<% end %>
-            </fieldset>
-        </div>
-    </div>
+	    </select>
+		</div>
+		<div>
+			<legend>
+          系统项目地块:
+      </legend>
+			<select data-native-menu=false data-theme="c" data-mini="false" name="cx2" id="cx2">
+				<option value="none">空白</option>
+				<% for xmdk in @sys_xmdks %>
+					<option value="<%= xmdk.gid %>">  <%= xmdk.gid %> : <%= xmdk.xmmc %>  </option>
+				<% end %>
+	    </select>
+		</div>
     <div data-role="fieldcontain">
         <fieldset data-role="controlgroup" data-type="vertical" data-mini="false">
             <legend>

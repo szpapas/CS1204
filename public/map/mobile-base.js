@@ -151,7 +151,7 @@ var init = function (onSelectFeatureFunction) {
             if (vectors.features.length > 0) {
               $.mobile.changePage("#new_xmdk_id", "pop"); 
               $("input[name='gid']").val('');
-              $("input[name='username']").val('');
+              //$("input[name='username']").val('');
               $("input[name='xmmc']").val('');
               $("input[name='pzwh']").val('');
               $("input[name='sfjs']").val('');
