@@ -1,0 +1,127 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>增加巡查点</title> 
+  <meta name="viewport" content="width=400, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+  <link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="/photoswipe/jquery-mobile.css"  />
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		.segmented-control { text-align:center;} 
+		.segmented-control .ui-controlgroup { margin: 0.2em; } 
+		.ui-control-active, .ui-control-inactive {
+			border-style: solid; border-color: gray; } 
+		.ui-control-active { background: #BBB; } 
+		.ui-control-inactive { background: #DDD; }
+		.ui-header .ui-title, .ui-footer .ui-title {
+			margin-right: 0 !important; margin-left: 0 !important;
+		}
+		.ui-li-aside2 { float: right; width: 240px; text-align: right; margin: .3em 0; }
+		
+	</style>
+	
+
+</head> 
+<body> 
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="one" data-add-back-btn="true" data-back-btn-text="Previous">
+  <div data-role="content"> 
+		<!--ul data-role="listview" data-inset="true" data-filter="true" data-filter- placeholder="Search..." !-->
+		<ul data-role="listview" data-inset="true" >
+			<li data-role="list-divider" data-divider-theme="a">
+				地块属性显示<span class="ui-li-aside"></span>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>项目地块编号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.gid %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>项目名称:</p>
+				<p style='width:65%;float:right'><%= @xmdk.xmmc %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>批准文号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.pzwh %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>是否建设:</p>
+				<p style='width:65%;float:right'><%= @xmdk.sfjs %></p>
+			</li> 
+			<li>
+				<p style='width:35%;float:left'>用地单位:</p>
+				<p style='width:65%;float:right'><%= @xmdk.yddw %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>坐落位置:</p>
+				<p style='width:65%;float:right'><%= @xmdk.tdzl %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>行政区名称:</p>
+				<p style='width:65%;float:right'><%= @xmdk.xzqmc %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>地块号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.dkh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>图幅号:</p>
+				<p style='width:65%;float:right'><%= @xmdk.tfh %></p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>面积（亩）:</p>
+				<p style='width:65%;float:right'><%= format("%.3f", @xmdk.shape_area.to_i/666.67) %>亩</p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>周长:</p>
+				<p style='width:65%;float:right'><%= format("%.3f", @xmdk.shape_len.to_i/1000.0) %>公里</p>
+			</li>
+			<li>
+				<p style='width:35%;float:left'>创建日期:</p>
+				<p style='width:65%;float:right'><%= @xmdk.create_at %></p>
+			</li>
+		</ul>
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+</body>
+
+<script>
+	function showTips( tips, left, height, time ){
+    var windowWidth  = document.documentElement.clientWidth;
+    var tipsDiv = '<div class="tipsClass">' + tips + '</div>';
+		$( 'div.tipsClass' ).remove();
+		
+    $( 'body' ).append( tipsDiv );
+    $( 'div.tipsClass' ).css({
+        'top'       : height + 'px',
+        'left'      : left + 'px',
+        'position'  : 'absolute',
+        'padding'   : '3px 5px',
+        'background': '#FBB117',
+        'font-size' : '16px',
+        'margin'    : '0 auto',
+        'text-align': 'center',
+        'width'     : 'auto',
+        'color'     : '#fff',
+        'opacity'   : '1.0'
+    }).show();
+    setTimeout( function(){$( 'div.tipsClass' ).remove();}, ( time * 1000 ) );
+  };
+
+	$("p").hover(function(e){
+		if (this.textContent.length > 10) {
+			left = 20;
+		} else {
+			left = e.clientX;
+		}
+		showTips( this.textContent, left , e.clientY, 3 );
+	});
+	
+	
+</script>
+
+
+</html>

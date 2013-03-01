@@ -241,9 +241,16 @@ class MapController < ApplicationController
     User.find_by_sql("update plans set xcnr='#{xcnr}', xcjg='#{xcjg}', clyj = '#{clyj}' where session_id='#{session_id}';")
     render :text => 'Success'
   end
-
+  
+  #username 
   def get_xmdk_json
-    xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks order by gid;")
+    
+    if params['mode'].to_i == 25 
+      xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks where xz_tag is null order by gid;")
+    else   
+      xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks where xz_tag is not null and username = '#{params['username']}' order by gid;")
+    end
+      
     txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(')
     render :text => {"mode" => params['mode'], "result" => txt}.to_json  
   end  
@@ -506,6 +513,7 @@ class MapController < ApplicationController
   end
   
   def measure
+    @username = params['username'] || ''
   end  
   
 
@@ -556,6 +564,13 @@ class MapController < ApplicationController
     @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
     @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
     render :template => '/map/xmdk_show.html.erb'
+  end 
+  
+  def getxmdk_wx2
+    xmmc = params['xmmc']
+    @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
+    #@dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
+    render :template => '/map/xmdk2_show.html.erb'
   end 
   
   def getxmdk_iphone
