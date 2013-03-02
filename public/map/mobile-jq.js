@@ -170,9 +170,17 @@ $(document).ready(function() {
         $("input[name='tfh']").val(selectedFeature.attributes['图幅号']);
         $("input[name='xz_tag']").val(selectedFeature.attributes['是否新增']);
     });  
-
     
-    $('#deleteXmdk').click(function() {
+
+  	$("#deleteXmdk").click(function() {
+			$.mobile.changePage("#sure", "pop");
+		});
+    
+  	$("#deleteXmdk2").click(function() {
+			$.mobile.changePage("#sure", "pop");
+		});	
+    
+    $('#sureXmdk').click(function() {
        var gid =selectedFeature.attributes['地块编号'];
        var xz_tag = selectedFeature.attributes['是否新增'];
        if(xz_tag.length > 0){
@@ -192,28 +200,6 @@ $(document).ready(function() {
        } 
     }); 
     
-    $('#deleteXmdk2').click(function() {
-       var gid =selectedFeature.attributes['地块编号'];
-       var xz_tag = selectedFeature.attributes['是否新增'];
-       if(xz_tag.length > 0)
-       {
-          $.ajax({
-            type: "POST",
-            url: "/map/delete_xz_xmdk",
-            data: ({gid:gid}),
-            cache: false,
-            dataType: "text",
-            success: function(data){
-              var username = $.trim($("input[name='user_id']").val());
-              $(location).attr('href','/map/measure?username='+username);
-            }
-          });
-       } else {
-         alert ('不能删除');
-       }
-       
-    });
-
 });
 
 function initLayerList() {

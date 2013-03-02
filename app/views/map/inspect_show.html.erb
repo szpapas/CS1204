@@ -27,21 +27,27 @@
 	<script>
 
 	  $(function() {
-	     $("#deleteModify").click(function() {
-	        var task_id = <%= @task_id %>;
-	        var xmdk_id = <%= @xmdk.xmdk_id %>;
-          $.ajax({
-            type: "POST",
-            url: "/map/delete_old_inspect",
-            data: ({task_id:task_id, xmdk_id:xmdk_id}),
-            cache: false,
-            dataType: "text",
-            success: function(data){
-						  $.mobile.changePage('/map/getreport?task_id=<%= @task_id %>');
-            }
-          });
-	     });
+
+			$("#deleteModify").click(function() {
+				$.mobile.changePage("#sure", "pop");
+			});	
+
+			$("#sureXmdk").click(function() {
+			     var task_id = <%= @task_id %>;
+			     var xmdk_id = <%= @xmdk.xmdk_id %>;
+			      $.ajax({
+			        type: "POST",
+			        url: "/map/delete_old_inspect",
+			        data: ({task_id:task_id, xmdk_id:xmdk_id}),
+			        cache: false,
+			        dataType: "text",
+			        success: function(data){
+					  		$.mobile.changePage('/map/getreport?task_id=<%= @task_id %>');
+			        }
+			      });
+			  });
 	  });
+	
 	</script>
 
 
@@ -173,8 +179,22 @@
 		</ul>
 		<input id="deleteModify" type="button" data-theme="f"  data-inline="false" value="删除"/>
   </div><!-- /content -->
-
 </div><!-- /page -->
+
+<div data-role="dialog" id="sure" data-title="确定删除">
+  <div data-role="content">
+    <h2 class="sure-1">确定删除这条记录</h2>
+    <h3 class="sure-2">此操作不可逆转</h3>
+    <div class="ui-grid-a ">
+        <div class="ui-block-a">
+					<a href="#" data-role="button" data-theme="b" data-rel="back">返回</a>
+        </div>
+        <div class="ui-block-b">
+					<input id="sureXmdk" type="button" data-inline="false" value="删除记录" data-theme="f"/>
+        </div>
+    </div>
+  </div>
+</div>
 
 </body>
 

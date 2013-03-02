@@ -11,7 +11,11 @@
         <script src="/jquery/jquery-1.8.2.min.js"></script>
         <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
 
-        <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
+			  <link rel="stylesheet" href="/jquery/themes/my-theme.min.css" />
+			  <link rel="stylesheet" href="/jquery/jquery.mobile.structure-1.2.0.min.css" />
+			
+        <!--link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css"-->
+
         <link rel="stylesheet" href="/map/style.mobile.css" type="text/css">
         <link rel="stylesheet" href="/map/style.mobile-jq.css" type="text/css">
         <script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
@@ -26,7 +30,7 @@
         <div data-role="page" id="mappage">
           <div data-role="content">
             <div id="map"></div>
-         		<div><input name="user_id"  placeholder="" value="<%= @username %>" type="text" hidden='true'></div>
+         		<div hidden='true'><input name="user_id"  placeholder="" value="<%= @username %>" type="text" ></div>
  					</div>
           <div data-role="footer">
             <a href="#" id="locate" data-icon="locate" data-role="button">定位</a>
@@ -149,6 +153,21 @@
                 </ul>
             </div>
         </div>
-
+				
+				<div data-role="dialog" id="sure" data-title="确定删除">
+				  <div data-role="content">
+				    <h2 class="sure-1">确定删除这条记录</h2>
+				    <h3 class="sure-2">此操作不可逆转</h3>
+				    <div class="ui-grid-a ">
+				        <div class="ui-block-a">
+									<a href="#" data-role="button" data-theme="b" data-rel="back">返回</a>
+				        </div>
+				        <div class="ui-block-b">
+									<input id="sureXmdk" type="button" data-inline="false" value="删除记录" data-theme="f"/>
+				        </div>
+				    </div>
+				  </div>
+				</div>
+				
     </body>
 </html>

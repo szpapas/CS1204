@@ -629,6 +629,7 @@ class MapController < ApplicationController
   
 
   def delete_xz_xmdk
+    User.find_by_sql("delete from dksxxs where gdqkid = (select gdqkid from xmdks where gid = #{params['gid']});")
     User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
     render :text => "Success"
   end
@@ -637,7 +638,10 @@ class MapController < ApplicationController
     #data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj, jirq:jirq, xzqmc:xzqmc, dkh:dkh, tfh:tfh}),
     gid = params['gid'].to_i
     if gid == 0
-      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning gid;")
+      ss = rand(36**32).to_s(36)
+      gdqkid = ss[0..7]+'-'+ss[8..11]+'-'+ss[12..15]+'-'+ss[16..19]+'-'+ss[20..31]
+      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at, gdqkid) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{gdqkid}') returning gid;")
+      User.find_by_sql("insert into dksxxs(gdqkid, dkmc, srdw, tdzl, sffhztgh) values('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['tdzl']}', '是');")
     else
       User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}'where gid = params['gid']")
     end
