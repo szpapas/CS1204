@@ -145,8 +145,8 @@ $(document).ready(function() {
             cache: false,
             dataType: "text",
             success: function(data){
-              //$("#result_log").html(data);
-              alert ('新增成功');
+              var username = $.trim($("input[name='user_id']").val());
+              $(location).attr('href','/map/measure?username='+username);
             }
           });
        };
@@ -183,8 +183,8 @@ $(document).ready(function() {
             cache: false,
             dataType: "text",
             success: function(data){
-              //$("#result_log").html(data);
-              alert ('删除成功');
+              var username = $.trim($("input[name='user_id']").val());
+              $(location).attr('href','/map/measure?username='+username);
             }
           });
        } else {
@@ -204,8 +204,8 @@ $(document).ready(function() {
             cache: false,
             dataType: "text",
             success: function(data){
-              //$("#result_log").html(data);
-              alert ('删除成功');
+              var username = $.trim($("input[name='user_id']").val());
+              $(location).attr('href','/map/measure?username='+username);
             }
           });
        } else {

@@ -564,6 +564,7 @@ class MapController < ApplicationController
   end  
   
   def delete_old_inspect
+    User.find_by_sql("delete from indspects where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
     render :text => "删除成功"
   end
   
