@@ -197,8 +197,14 @@ $(document).ready(function() {
             cache: false,
             dataType: "text",
             success: function(data){
-              var username = $.trim($("input[name='user_id']").val());
-              $(location).attr('href','/map/measure?username='+username);
+              if (data == 'Success') {
+                var username = $.trim($("input[name='user_id']").val());
+                $(location).attr('href','/map/measure?username='+username);
+              } else {
+                alert("改项目地块被引用，不能删除！")
+                var username = $.trim($("input[name='user_id']").val());
+                $(location).attr('href','/map/measure?username='+username);
+              }
             }
           });
        } else {

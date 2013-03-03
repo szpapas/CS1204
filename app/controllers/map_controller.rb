@@ -637,9 +637,16 @@ class MapController < ApplicationController
   
 
   def delete_xz_xmdk
-    User.find_by_sql("delete from dksxxs where gdqkid = (select gdqkid from xmdks where gid = #{params['gid']});")
-    User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
-    render :text => "Success"
+    
+    user = User.find_by_sql("select count(*) from inspects where xmdk_id =  #{params['gid']};")
+    if user[0].count.to_i == 0
+      User.find_by_sql("delete from dksxxs where gdqkid = (select gdqkid from xmdks where gid = #{params['gid']});")
+      User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
+      render :text => "Success"
+    else 
+      render :text => "Failure"
+    end
+      
   end
   
   def save_xz_xmdk 
