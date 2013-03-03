@@ -597,8 +597,12 @@ class MapController < ApplicationController
       for k in 0..@xmdks.size - 1 
         @xmdk = @xmdks[k]
         lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
+        
+        area   = format("%.03f",@xmdk.shape_area.to_f/666.67)+"亩"
+        length = format("%.03f",@xmdk.shape_len.to_f/1000.67)+"公里"
+        
         dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"地块编号\": \"#{@xmdk.gid}\",\"项目名称\":\"#{@xmdk.xmmc}\", 
-        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
+        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{area}\",\"图班周长\":\"#{length}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
         txt = txt + dd + ','
       end  
       txt = txt[0..-2] + ']}'
