@@ -28,10 +28,11 @@
 		   <h3><strong>责任单位：</strong> <%= @user['zldwmc'] %>  </h3>
 		</div>
 		<div data-role="collapsible" data-inset="false">
-		   <h3><strong>&#12288;&#12288;周长：</strong> <%= @user['shape_leng'] %>  </h3>
+		</p>
+		   <h3><strong>&#12288;&#12288;周长：</strong> <%= format("%.3f", @user['shape_leng'].to_i/666.67) %>公里</h3>
 		</div>
 		<div data-role="collapsible" data-inset="false">
-		   <h3><strong>&#12288;&#12288;面积：</strong> <%= @user['shape_area'] %>  </h3>
+		   <h3><strong>&#12288;&#12288;面积：</strong>	<%= format("%.3f", @user['shape_area'].to_i/666.67) %>亩</h3>
 		</div>
 			
 	</div><!-- /content -->
