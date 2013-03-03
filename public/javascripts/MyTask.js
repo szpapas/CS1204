@@ -1607,19 +1607,8 @@ function myTask(id) {
               },
               legend : {enabled:false},
               credits: {enabled:false}
-              /*
-              legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -10,
-                y: 100,
-                borderWidth: 0
-              }
-              */
             }
           });
-
           chart2 = new Ext.ux.HighChart({
             id : 'hc-chart2',
     
@@ -1661,85 +1650,7 @@ function myTask(id) {
               credits: {enabled:false}
             }
           });
-
-
-          var chartPanel = new Ext.form.FormPanel({
-            id : 'chart_panel_id',
-            autoScroll : true,
-            width:850,
-            //height:410,
-            layout:"border",
-            items:[{
-                region:"west",
-                title:"",
-                id : "cp_west_id",
-                width:200,
-                height:400,
-                layout:'absolute',
-                items:[{
-                  xtype: 'label',
-                  text: '预设',
-                  x: 10,
-                  y: 10
-                },{
-                  xtype:"combo",
-                  fieldLabel:"Text",
-                  name:"ys_combo",
-                  x:10,
-                  y:30,
-                  width:150
-                },{
-                  xtype: 'label',
-                  text: '开始日期',
-                  format:'Y-m-d',
-                  x: 10,
-                  y: 60
-                },{
-                  xtype:"datefield",
-                  name:"b_date",
-                  x:10,
-                  y:80,
-                  width:150
-                },{
-                  xtype: 'label',
-                  text: '结束日期',
-                  format:'Y-m-d',
-                  x: 10,
-                  y: 110
-                },{
-                  xtype:"datefield",
-                  name:"e_date",
-                  x:10,
-                  y:130,
-                  width:150
-                },{
-                  xtype: 'button',
-                  text: '确定',
-                  x: 10,
-                  y: 180,
-                  width:50,
-                  handler:function(){
-                    
-                  }
-                },{
-                  xtype: 'button',
-                  text: '重置',
-                  x: 80,
-                  y: 180,
-                  width:50,
-                  handler:function(){
-                    
-                  }
-                }]
-              },{
-                id : "cp_center_id", 
-                region:"center",
-                //layout:'fit',
-                autoScroll: true, 
-                items:[chart1, chart2]
-            }]
-          });
-
+          
           var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab2',
@@ -1748,26 +1659,80 @@ function myTask(id) {
             closable : true,
             title:"统计汇总",
             layout: 'fit',
-            items:[chartPanel],
-            tbar : [{
-                text:'切换',
-                hidden  : true,
-                handler : function() {
-                  new Ajax.Request("/desktop/get_last_wd",{ 
-                    method: "POST",
-                      onComplete: function(request) {
-                        var chart2 = Ext.getCmp('hc-chart1');
-                        var data = eval(request.responseText);
-                        chart2.removeSerie(0, true);
-                        chart2.addSeries([{
-                          type: 'spline',
-                          name: '温度',
-                          data: data
-                        }]);             
-                      }
-                   });
-                 }
-               }]
+            items:[{
+              layout:"border",
+              id : 'chart_panel_id',
+              width:850,
+              items:[
+                {
+                  region:"center",
+                  autoScroll: true,
+                  id : "cp_center_id", 
+                  items:[chart1]
+                }, // end of center
+                {  
+                  region:"west",
+                  title:"",
+                  width:200,
+                  height:400,
+                  layout : 'absolute', 
+                  items:[{
+                    xtype: 'label',
+                    text: '预设',
+                    x: 10,
+                    y: 10
+                  },{
+                    xtype:"combo",
+                    fieldLabel:"Text",
+                    name:"ys_combo",
+                    x:10,
+                    y:30,
+                    width:150
+                  },{
+                    xtype: 'label',
+                    text: '开始日期',
+                    format:'Y-m-d',
+                    x: 10,
+                    y: 60
+                  },{
+                    xtype:"datefield",
+                    name:"b_date",
+                    x:10,
+                    y:80,
+                    width:150
+                  },{
+                    xtype: 'label',
+                    text: '结束日期',
+                    format:'Y-m-d',
+                    x: 10,
+                    y: 110
+                  },{
+                    xtype:"datefield",
+                    name:"e_date",
+                    x:10,
+                    y:130,
+                    width:150
+                  },{
+                    xtype: 'button',
+                    text: '确定',
+                    x: 10,
+                    y: 180,
+                    width:50,
+                    handler:function(){
+
+                    }
+                  },{
+                    xtype: 'button',
+                    text: '重置',
+                    x: 80,
+                    y: 180,
+                    width:50,
+                    handler:function(){
+
+                    }
+                  }]  // end of west items
+                }] // end of innter border
+            }] // end of formPanel
           });
 
           tabPanel.add(formPanel);

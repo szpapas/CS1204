@@ -164,8 +164,8 @@ $(document).ready(function() {
         $("input[name='tdzl']").val(selectedFeature.attributes['土地坐落']);
         $("input[name='dkmj']").val(selectedFeature.attributes['地块面积']);
         $("input[name='xzqmc']").val(selectedFeature.attributes['行政区名称']);
-        $("input[name='xmmc']").val(selectedFeature.attributes['图班面积']);
-        $("input[name='xmmc']").val(selectedFeature.attributes['图班周长']);
+        $("input[name='shape_area']").val(selectedFeature.attributes['图班面积']);
+        $("input[name='shape_len']").val(selectedFeature.attributes['图班周长']);
         $("input[name='dkh']").val(selectedFeature.attributes['地块号']);
         $("input[name='tfh']").val(selectedFeature.attributes['图幅号']);
         $("input[name='xz_tag']").val(selectedFeature.attributes['是否新增']);

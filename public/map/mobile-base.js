@@ -104,10 +104,9 @@ var init = function (onSelectFeatureFunction) {
       map.getLayersByName('项目地块')[0].setVisibility(false);
       
       if (vectors.features.length > 0){
-        var area = vectors.features[0].geometry.getArea();
-        var length = vectors.features[0].geometry.getLength();
-
-        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+        var area = vectors.features[0].geometry.getArea()/666.67;
+        var length = vectors.features[0].geometry.getLength()/1000.0;
+        showTips( "面积："+numberWithCommas(area.toFixed(2)) + "亩 周长："+numberWithCommas(length.toFixed(2)) + '公里', 100, 5 );
       }
 
     };
@@ -122,9 +121,9 @@ var init = function (onSelectFeatureFunction) {
       //dragFeature.deactivate();
       console.log("Draw Feature before modified.");
       if (vectors.features.length > 0){
-        var area = vectors.features[0].geometry.getArea();
-        var length = vectors.features[0].geometry.getLength();
-        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+        var area = vectors.features[0].geometry.getArea()/666.67;
+        var length = vectors.features[0].geometry.getLength()/1000.0;
+        showTips( "面积："+numberWithCommas(area.toFixed(2)) + "亩 周长："+numberWithCommas(length.toFixed(2)) + '公里', 100, 5 );
       }
     });
 

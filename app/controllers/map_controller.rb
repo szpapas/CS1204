@@ -564,7 +564,7 @@ class MapController < ApplicationController
   end  
   
   def delete_old_inspect
-    User.find_by_sql("delete from indspects where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
+    User.find_by_sql("delete from inspects where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
     render :text => "删除成功"
   end
   
@@ -615,9 +615,13 @@ class MapController < ApplicationController
       txt = '{"type": "FeatureCollection","features": ['
       for k in 0..@xmdks.size - 1 
         @xmdk = @xmdks[k]
+        
+        area   = format("%.03f",@xmdk.shape_area.to_f/666.67)+"亩"
+        length = format("%.03f",@xmdk.shape_len.to_f/1000.67)+"公里"
+        
         lonlat = /(\d+.\d+) (\d+.\d+)/.match(@xmdk.astext)
         dd =  "{ \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [#{lonlat[1]}, #{lonlat[2]}]},\"properties\": {\"地块编号\": \"#{@xmdk.gid}\",\"项目名称\":\"#{@xmdk.xmmc}\", 
-        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{@xmdk.shape_area}\",\"图班周长\":\"#{@xmdk.shape_len}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
+        \"批准文号\":\"#{@xmdk.pzwh}\",\"是否建设\":\"#{@xmdk.sfjs}\",\"用地单位\":\"#{@xmdk.yddw}\",\"土地坐落\":\"#{@xmdk.tdzl}\",\"地块面积\":\"#{@xmdk.dkmj}\",\"行政区名称\":\"#{@xmdk.xzqmc}\",\"图班面积\":\"#{area}\",\"图班周长\":\"#{length}\",\"地块号\":\"#{@xmdk.dkh}\",\"图幅号\":\"#{@xmdk.tfh}\",\"是否新增\":\"#{@xmdk.xz_tag}\"}}"
         txt = txt + dd + ','
       end  
       txt = txt[0..-2] + ']}'
@@ -635,7 +639,6 @@ class MapController < ApplicationController
   end
   
   def save_xz_xmdk 
-    #data: ({gid:gid, xmmc:xmmc, pzwh:pzwh, sfjs:sfjs, yddw:yddw, tdzl:tdzl, dkmj:dkmj, jirq:jirq, xzqmc:xzqmc, dkh:dkh, tfh:tfh}),
     gid = params['gid'].to_i
     if gid == 0
       ss = rand(36**32).to_s(36)
@@ -643,7 +646,7 @@ class MapController < ApplicationController
       user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at, gdqkid) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{gdqkid}') returning gid;")
       User.find_by_sql("insert into dksxxs(gdqkid, dkmc, srdw, tdzl, sffhztgh) values('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['tdzl']}', '是');")
     else
-      User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}'where gid = params['gid']")
+      User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}' where gid = #{params['gid']}")
     end
       
     render :text => "Success"
