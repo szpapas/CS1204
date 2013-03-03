@@ -132,10 +132,9 @@ var init = function (onSelectFeatureFunction) {
       console.log("Draw Feature modified.");
       //toolbar.activateControl(navigate);
       if (vectors.features.length > 0){
-        var area = vectors.features[0].geometry.getArea();
-        var length = vectors.features[0].geometry.getLength();
-
-        showTips( "面积："+numberWithCommas(area.toFixed(0)) + " 周长："+numberWithCommas(length.toFixed(0)), 100, 5 );
+        var area = vectors.features[0].geometry.getArea()/666.67;
+        var length = vectors.features[0].geometry.getLength()/1000.0;
+        showTips( "面积："+numberWithCommas(area.toFixed(2)) + "亩 周长："+numberWithCommas(length.toFixed(2)) + '公里', 100, 5 );
       }
     });
     
