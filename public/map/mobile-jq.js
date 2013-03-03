@@ -23,7 +23,13 @@ $(document).ready(function() {
             // initialize map
             init(function(feature) { 
                 selectedFeature = feature; 
-                $.mobile.changePage("#popup", "pop"); 
+                $.mobile.changePage("#popup", "pop");
+                var xz_tag = selectedFeature.attributes['是否新增'];
+                if(xz_tag.length > 0){
+                  $("#popup-grid").show();
+                } else {
+                  $("#popup-grid").hide();
+                }
             });
             initLayerList();
         }
