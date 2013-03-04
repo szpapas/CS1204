@@ -1,24 +1,3 @@
-/*
-
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.	Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-
 MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
 
 	id:'reportman',
@@ -37,6 +16,91 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
       var win = desktop.getWindow('reportman');
       if(!win){
         
+        win = desktop.createWindow({
+          id: 'reportman',
+          title:'统计报表',
+          width:800,
+          height:550,
+          maximized:true,
+          x : 100,
+          y : 30,
+          iconCls: 'reportman',
+          animCollapse:false,
+          border: false,
+          hideMode: 'offsets',
+          layout:"border",
+          items:[{
+              region:"center",
+              title:"任务窗口",
+              layout: 'fit',
+              items:[{
+                xtype:"tabpanel",
+                activeTab:0,
+                bodyStyle: 'padding: 5px;',
+                id : 'mytask-tab',
+                items:[]
+              }]
+            },{
+              region:"west",
+              title:'统计',
+              width:200,
+              split:true,
+              collapsible:true,
+              titleCollapse:true,
+              layout: 'accordion',                
+              items:[{
+                  title: '执法检察统计',
+                    iconCls : 'taskman',
+                    id: 'rp-panel1',
+                    items :[{
+                      layout : 'fit',
+                      xtype:'panel',
+                      width:200,
+                      height:200,
+                      border:false,
+                      items: [{
+                        border:false,
+                        cls:'link-panel',
+                        links:[{
+                          text:'巡查系统考核表',
+                          id:"mytask_51",
+                          icon:'date_task16.png',
+                          action:"myTask(51)"
+                        },{
+                          text:'违法用地统计',
+                          icon:'chart_bar16.png',
+                          id:"mytask_52",
+                          action:"myTask(52)"
+                        },{
+                          text:'动态巡查原始记录统计',
+                          icon:'calendar16.png',
+                          id:"mytask_53",
+                          action:"myTask(53)"
+                      }],
+                      layout:'fit', 
+                      tpl:new Ext.XTemplate('<tpl for="links"><div id="{id}"><a class="examplelink" onclick="{action}" ><span><img src=/images/{icon}></img</span>&nbsp;&nbsp;{text}</a></div></tpl>'),  //
+                      afterRender:function() {
+                          MyDesktop.LinksPanel.superclass.afterRender.apply(this, arguments);
+                          this.tpl.overwrite(this.body, {links:this.links});
+                      } 
+                    }]
+                  }]
+                },{
+                  title: '按分类统计',
+                  iconCls : 'saticon', 
+                  id: 'rp-panel2',
+                  items: []
+              }]
+          }]
+        });
+        
+      };
+      
+      win.show();
+      return win;
+
+
+/*        
         var addReport = function (gsm) {
 
           var week_data = [
@@ -194,192 +258,190 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
           };
         };
           
-         var  rp_store = new Ext.data.Store({
-             proxy: new Ext.data.HttpProxy({
-                 url: '/desktop/get_report'
-             }),
+        var  rp_store = new Ext.data.Store({
+          proxy: new Ext.data.HttpProxy({
+            url: '/desktop/get_report'
+          }),
 
-             reader: new Ext.data.JsonReader({
-               totalProperty: 'results', 
-               root: 'rows',             
-               fields: [
-                 {name: 'id',   type: 'integer'},
-                 {name: 'lb',   type: 'string'},
-                 {name: 'nd',   type: 'string'},
-                 {name: 'yf',   type: 'string'},
-                 {name: 'xh',   type: 'string'},
-                 {name: 'tbr',  type: 'string'},
-                 {name: 'tbdw', type: 'string'},
-                 {name: 'bgnr', type: 'string'},
-                 {name: 'commit_at',  type: 'date', dateFormat: 'Y-m-d H:i:s'},
-                 {name: 'zt',  type: 'string'}
-               ]    
-             }),
-             baseParams :  {search:''},
-             sortInfo:{field: 'id', direction: "ASC"}
-         });
+          reader: new Ext.data.JsonReader({
+            totalProperty: 'results', 
+            root: 'rows',             
+            fields: [
+              {name: 'id',   type: 'integer'},
+              {name: 'lb',   type: 'string'},
+              {name: 'nd',   type: 'string'},
+              {name: 'yf',   type: 'string'},
+              {name: 'xh',   type: 'string'},
+              {name: 'tbr',  type: 'string'},
+              {name: 'tbdw', type: 'string'},
+              {name: 'bgnr', type: 'string'},
+              {name: 'commit_at',  type: 'date', dateFormat: 'Y-m-d H:i:s'},
+              {name: 'zt',  type: 'string'}
+            ]    
+          }),
+          baseParams :  {search:''},
+          sortInfo:{field: 'id', direction: "ASC"}
+        });
 
-         // manually load local data
-         rp_store.baseParams.zt = "全部";
-         rp_store.baseParams.limit = "20";
-         rp_store.load();
+        // manually load local data
+        rp_store.baseParams.zt = "全部";
+        rp_store.baseParams.limit = "20";
+        rp_store.load();
 
-         // create the Grid
-         var sm = new Ext.grid.CheckboxSelectionModel();
-         
-         var reportPanel = new Ext.grid.GridPanel({
-             store: rp_store,
-             id : 'rp_grid_id',
-             height : 500,
-             columns: [
-               sm,
-               { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},
-               { header : '类别',    width : 75, sortable : true, dataIndex: 'lb'},
-               { header : '年度',    width : 75, sortable : true, dataIndex: 'nd'},
-               { header : '月份',    width : 75, sortable : true, dataIndex: 'yf'},
-               { header : '顺序号',   width : 75, sortable : true, dataIndex: 'xh'},
-               { header : '填报人',   width : 75, sortable : true, dataIndex: 'tbr'},
-               { header : '填报单位',  width : 75, sortable : true, dataIndex: 'tbdw'},
-               { header : '提交日期',  width : 75, sortable : true, dataIndex: 'commit_at', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
-               { header : '状态',    width : 75, sortable : true, dataIndex: 'zt'}
-             ],
-             sm:sm,  
-             columnLines: true,
-             layout:'fit',
-             viewConfig: {
-               stripeRows:true,
-             },
-             tbar: [{
-                 text : '新增',
-                 iconCls :'add',
-                 handler : function() {
-                   addReport();
-                 }
-               },{
-                 text : '删除',
-                 iconCls :'delete',
-                 handler : function() {
-                   items = Ext.getCmp('rp_grid_id').getSelectionModel().selections.items;
-                   id_str = '';
-                   for (var i=0; i < items.length; i ++) {
-                     if (i==0) {
-                       id_str = id_str+items[i].data.id 
-                     } else {
-                       id_str = id_str + ',' +items[i].data.id 
-                     }
+        // create the Grid
+        var sm = new Ext.grid.CheckboxSelectionModel();
+
+        var reportPanel = new Ext.grid.GridPanel({
+           store: rp_store,
+           id : 'rp_grid_id',
+           height : 500,
+           columns: [
+             sm,
+             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},
+             { header : '类别',    width : 75, sortable : true, dataIndex: 'lb'},
+             { header : '年度',    width : 75, sortable : true, dataIndex: 'nd'},
+             { header : '月份',    width : 75, sortable : true, dataIndex: 'yf'},
+             { header : '顺序号',   width : 75, sortable : true, dataIndex: 'xh'},
+             { header : '填报人',   width : 75, sortable : true, dataIndex: 'tbr'},
+             { header : '填报单位',  width : 75, sortable : true, dataIndex: 'tbdw'},
+             { header : '提交日期',  width : 75, sortable : true, dataIndex: 'commit_at', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
+             { header : '状态',    width : 75, sortable : true, dataIndex: 'zt'}
+           ],
+           sm:sm,  
+           columnLines: true,
+           layout:'fit',
+           viewConfig: {
+             stripeRows:true,
+           },
+           tbar: [{
+               text : '新增',
+               iconCls :'add',
+               handler : function() {
+                 addReport();
+               }
+             },{
+               text : '删除',
+               iconCls :'delete',
+               handler : function() {
+                 items = Ext.getCmp('rp_grid_id').getSelectionModel().selections.items;
+                 id_str = '';
+                 for (var i=0; i < items.length; i ++) {
+                   if (i==0) {
+                     id_str = id_str+items[i].data.id 
+                   } else {
+                     id_str = id_str + ',' +items[i].data.id 
                    }
-                   pars = {id:id_str};
-                   new Ajax.Request("/desktop/delete_selected_report", { 
-                     method: "POST",
-                     parameters: pars,
-                     onComplete:  function(request) {
-                       rp_store.load();
-                     }
-                   });
                  }
-               },{
-                 text : '修改',
-                 iconCls :'edit',
-                 handler : function() {
-                   var gsm =Ext.getCmp('rp_grid_id').getSelectionModel();
-                   addReport(gsm);
-                 }               
+                 pars = {id:id_str};
+                 new Ajax.Request("/desktop/delete_selected_report", { 
+                   method: "POST",
+                   parameters: pars,
+                   onComplete:  function(request) {
+                     rp_store.load();
+                   }
+                 });
+               }
+             },{
+               text : '修改',
+               iconCls :'edit',
+               handler : function() {
+                 var gsm =Ext.getCmp('rp_grid_id').getSelectionModel();
+                 addReport(gsm);
+               }               
+     
+             },{
+               text : '提交',
+               iconCls :'save',
+               handler : function() {
+                 items = Ext.getCmp('rp_grid_id').getSelectionModel().selections.items;
+                 id_str = '';
+                 for (var i=0; i < items.length; i ++) {
+                   if (i==0) {
+                     id_str = id_str+items[i].data.id 
+                   } else {
+                     id_str = id_str + ',' +items[i].data.id 
+                   }
+                 }
+                 pars = {id:id_str};
+                 new Ajax.Request("/desktop/commit_selected_report", { 
+                   method: "POST",
+                   parameters: pars,
+                   onComplete:  function(request) {
+                     rp_store.load();
+                   }
+                 });
+               }               
+           }],
+           bbar:['->',
+             new Ext.PagingToolbar({
+               store: rp_store,
+               pageSize: 20,
+               width : 350,
+               border : false,
+               displayInfo: true,
+               displayMsg: '{0} - {1} of {2}',
+               emptyMsg: "没有找到！",
+               prependButtons: true
+             })
+           ]
+        });
+
+        var rpTree = new Ext.tree.TreePanel({
+           id:'rp-tree',
+           rootVisible:false,
+           lines:false,
+           autoScroll:true,
+           title:'按部门',
+           tools:[{
+               id:'refresh',
+               on:{
+                   click: function(){
+                       var tree = Ext.getCmp('rp-tree');
+                       if (tree.title == '按时间') {
+                         tree.setTitle('按部门');
+                         rp_store.baseParams.lb = "bm";
+                         rp_store.baseParams.limit = "20";
+                       }else{
+                         tree.setTitle('按时间');
+                         rp_store.baseParams.lb = "time";
+                         rp_store.baseParams.limit = "20";
+                       };
                
-               },{
-                 text : '提交',
-                 iconCls :'save',
-                 handler : function() {
-                   items = Ext.getCmp('rp_grid_id').getSelectionModel().selections.items;
-                   id_str = '';
-                   for (var i=0; i < items.length; i ++) {
-                     if (i==0) {
-                       id_str = id_str+items[i].data.id 
-                     } else {
-                       id_str = id_str + ',' +items[i].data.id 
-                     }
+                       tree.body.mask('Loading', 'x-mask-loading');
+                       tree.root.reload();
+                       //tree.root.collapse(true, false);
+                       setTimeout(function(){ // mimic a server call
+                           tree.body.unmask();
+                           //tree.root.expand(true, true);
+                       }, 1000);
                    }
-                   pars = {id:id_str};
-                   new Ajax.Request("/desktop/commit_selected_report", { 
-                     method: "POST",
-                     parameters: pars,
-                     onComplete:  function(request) {
-                       rp_store.load();
-                     }
-                   });
-                 }               
-             }],
-             bbar:['->',
-               new Ext.PagingToolbar({
-                 store: rp_store,
-                 pageSize: 20,
-                 width : 350,
-                 border : false,
-                 displayInfo: true,
-                 displayMsg: '{0} - {1} of {2}',
-                 emptyMsg: "没有找到！",
-                 prependButtons: true
-               })
-             ]
-         });
-         
-         var rpTree = new Ext.tree.TreePanel({
-             id:'rp-tree',
-             rootVisible:false,
-             lines:false,
-             autoScroll:true,
-             title:'按部门',
-             tools:[{
-                 id:'refresh',
-                 on:{
-                     click: function(){
-                         var tree = Ext.getCmp('rp-tree');
-                         if (tree.title == '按时间') {
-                           tree.setTitle('按部门');
-                           rp_store.baseParams.lb = "bm";
-                           rp_store.baseParams.limit = "20";
-                         }else{
-                           tree.setTitle('按时间');
-                           rp_store.baseParams.lb = "time";
-                           rp_store.baseParams.limit = "20";
-                         };
-                         
-                         tree.body.mask('Loading', 'x-mask-loading');
-                         tree.root.reload();
-                         //tree.root.collapse(true, false);
-                         setTimeout(function(){ // mimic a server call
-                             tree.body.unmask();
-                             //tree.root.expand(true, true);
-                         }, 1000);
-                     }
-                 }
-             }],
-             loader: new Ext.tree.TreeLoader({
-               dataUrl: '/desktop/get_rptree',
-               baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
-             }),
-             root: {
-               nodeType: 'async',
-               text: '联系人',
-               draggable:false,
-               id:'root'
-             }
-         });
-
-         rpTree.on("click", function(node,e) {
-           e.stopEvent();
-           node.select();
-           if (node.isLeaf()) {
-             rp_store.baseParams.filter = node.id;
-             rp_store.load();
-           } else {
-             //var ss = node.id.split("|");
-             //Ext.getCmp('xcqy_filter_id').setValue(node.id);
-             rp_store.baseParams.filter = node.id;
-             rp_store.load();
+               }
+           }],
+           loader: new Ext.tree.TreeLoader({
+             dataUrl: '/desktop/get_rptree',
+             baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+           }),
+           root: {
+             nodeType: 'async',
+             text: '联系人',
+             draggable:false,
+             id:'root'
            }
-         }, rpTree);
-        
-        
+        });
+
+        rpTree.on("click", function(node,e) {
+         e.stopEvent();
+         node.select();
+         if (node.isLeaf()) {
+           rp_store.baseParams.filter = node.id;
+           rp_store.load();
+         } else {
+           //var ss = node.id.split("|");
+           //Ext.getCmp('xcqy_filter_id').setValue(node.id);
+           rp_store.baseParams.filter = node.id;
+           rp_store.load();
+         }
+        }, rpTree);
         
          //动态查询怕哪了
          
@@ -456,93 +518,9 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
              }]
          });  
           
-         win = desktop.createWindow({
-            id: 'reportman',
-            title:'统计报表',
-            width:800,
-            height:550,
-            x : 100,
-            y : 30,
-            iconCls: 'reportman',
-            animCollapse:false,
-            border: false,
-            hideMode: 'offsets',
-            layout:"border",
-            items:[{
-              region:"center",
-              title:"任务窗口",
-              layout: 'fit',
-              items:[{
-                  xtype:"tabpanel",
-                  activeTab:0,
-                  bodyStyle: 'padding: 5px;',
-                  id : 'mytask-tab',
-                  items:[]
-                }]
-              },{
-                region:"west",
-                title:'统计',
-                width:200,
-                split:true,
-                collapsible:true,
-                titleCollapse:true,
-                layout: 'accordion',                
-                items:[{
-                    //title: '执法检察统计',
-                    //iconCls : 'taskman',
-                    //id: 'panel1',
-					title: '执法检察统计',
-                    iconCls : 'taskman',
-                    id: 'panel1',
-                    items :[{
-                      layout : 'fit',
-                      xtype:'panel',
-                      width:200,
-                      height:200,
-                      border:false,
-                      items: [{
-                          // configurables
-                          border:false,
-                          cls:'link-panel',
-                          links:[{
-                               text:'巡查系统考核表',
-                               id:"mytask_50",
-                               icon:'date_task16.png',
-                               action:"myTask(50)"
-                          },{
-                               text:'违法用地统计',
-                               icon:'chart_bar16.png',
-                               id:"mytask_02",
-                               action:"myTask(51)"
-                          }	,{
-	                               text:'动态巡查原始记录统计',
-	                               icon:'calendar16.png',
-	                               id:"mytask_50",
-	                               action:"myTask(52)"
-	                          }
-                      ],
-                          layout:'fit', 
-                          tpl:new Ext.XTemplate('<tpl for="links"><div id="{id}"><a class="examplelink" onclick="{action}" ><span><img src=/images/{icon}></img</span>&nbsp;&nbsp;{text}</a></div></tpl>'),  //
-                          afterRender:function() {
-                              MyDesktop.LinksPanel.superclass.afterRender.apply(this, arguments);
-                              this.tpl.overwrite(this.body, {links:this.links});
-                          } 
-                      }]
-                    }]
-                },{
-                    title: '按分类统计',
-                    iconCls : 'saticon', 
-                    id: 'panel2',
-                    items: [rpTree]
-                }]
-            }]
-
-        });
+*/
 
 
-      }
-      win.show();
-      return win;
   }
 });
 

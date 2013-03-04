@@ -78,6 +78,8 @@ class MapController < ApplicationController
     render :text => "保存成功"
   end  
   
+  
+  
   def getpdfreport
     render :text => "/images/xcjl/xcjl_4208.pdf"
   end  
@@ -126,7 +128,6 @@ class MapController < ApplicationController
     lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     
-    
     User.find_by_sql("update plans set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
     if username.include?'1'
       User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
@@ -173,7 +174,7 @@ class MapController < ApplicationController
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
   end  
   
-  
+  #report_task_state?username=14544221426&state=off&session_id=ianai7b5e2qw7u3orm4zho0i3wqrvh42&mode=34&device=
   #report_task_state?username=+8618962381978&state=on&session_id=(null)&device=+8618936891840&mode=30" for81506 31.224941,2012-10-31 08:00:41\n", "task_id"=>"15438", "username"=>"18962381978"}
   def report_task_state
     state = params["state"]

@@ -2,8 +2,7 @@
 require 'socket'
 require 'find'
 require 'date'
-require 'URI'
-require 'FileUtils'
+require 'uri'
 
 
 class DesktopController < ApplicationController
@@ -1224,8 +1223,147 @@ class DesktopController < ApplicationController
   end  
   
   def get_my_chart
-    txt = 'this is a test'
+    txt = '{ "data": [
+              { "host" : "192.168.200.145", "bytes" : 126633683,
+                "direction" : "download"},
+              { "host" : "192.168.200.145", "bytes" : 104069233,
+                "direction" : "upload"},
+              { "host" : "192.168.200.99", "bytes" : 55840235,
+                "direction" : "download"},
+              { "host" : "192.168.200.99", "bytes" : 104069233,
+                "direction" : "upload"}
+    ]}'
     
     render :text => txt;
   end 
+  
+  def get_chart_1
+    user = User.find_by_sql("select id, rwmc, extract('epoch' from xcys)*1000 as xcsj, xclc  from plans where  device = '#{params['device']}' order by id;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  #按照月份来统计
+  #s_rwmc, s_xcsj, s_xclc
+  def get_chart_month
+    user = User.find_by_sql("select to_char(taskbegintime,'YYYY年MM月') as s_rwmc, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device = '#{params['device']}' group by s_rwmc order by s_rwmc;")
+    
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  #按照季度来统计
+  def get_chart_quarter
+    user = User.find_by_sql("select to_char(taskbegintime,'YYYY年Q季') as s_rwmc, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device = '#{params['device']}' group by s_rwmc order by s_rwmc;")
+    
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  #按照年度来统计
+  def get_chart_year
+    user = User.find_by_sql("select to_char(taskbegintime,'YYYY年') as s_rwmc, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device = '#{params['device']}' group by s_rwmc order by s_rwmc;")
+    
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  #按个人进行分类, 
+  def get_chart_51
+    user = User.find_by_sql("select xcry, device, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device is not null group by device, xcry  order by device;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  def get_chart_51_month
+    user = User.find_by_sql("select xcry, device, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device is not null and to_char(taskbegintime,'YYYY-DD') = '#{Time.now.strftime("%Y-%m")}' group by device, xcry  order by device;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  def get_chart_51_quarter
+    user = User.find_by_sql("select xcry, device, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device is not null and to_char(taskbegintime,'YYYY-Q') = '#{Time.now.strftime("%Y-")+[1, 2, 3, 4][(Time.now.month - 1) / 3].to_s}' group by device, xcry  order by device;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  def get_chart_51_year
+    user = User.find_by_sql("select xcry, device, sum(xclc) as s_xclc, sum(extract('epoch' from xcys))*1000 as s_xcsj from plans where device is not null and to_char(taskbegintime,'YYYY') = '#{Time.now.year}' group by device, xcry  order by s_xcsj desc;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else
+        txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end        
+  
+  
 end
