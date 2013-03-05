@@ -31,7 +31,8 @@
        cache: false,
        dataType: "text",
        success: function(data){
-         $("#result_log").html(data);
+         //$("#result_log").html(data);
+         alert ('保存成功');
        }
        });
     }
@@ -50,7 +51,8 @@
        cache: false,
        dataType: "text",
        success: function(data){
-         $("#result_log").html(data);
+         //$("#result_log").html(data);
+         alert ('保存成功');
        }
        });
     }
@@ -112,14 +114,14 @@
   </div>
   <br />
 
-	<div class="ui-grid-a">
-		<div class="ui-block-a">
-			<input id="saveDraft" type="button" value="保存为草稿"  data-theme="a"/>
-		</div>
-		<div class="ui-block-b">
-			<input id="saveUpload" type="button" value="保存并提交"  data-theme="e"/>
-		</div>
- 	</div>
+  <div class="ui-grid-a">
+    <div class="ui-block-a">
+      <input id="saveDraft" type="button" value="保存为草稿"  data-theme="a"/>
+    </div>
+    <div class="ui-block-b">
+      <input id="saveUpload" type="button" value="保存并提交"  data-theme="e"/>
+    </div>
+  </div>
   <div id="result_log"></div>  
   </div><!-- /content -->
 

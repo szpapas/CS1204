@@ -54,10 +54,18 @@ $(document).ready(function() {
         }
     });
     
+    $("#layer").click(function(){
+        var control = map.getControlsBy("id", "locate-control")[0];
+        var gmap = map.getLayersByName('谷歌地图')[0];
+        var gsat = map.getLayersByName('谷歌卫星')[0];
+        gmap.setVisibility(!gmap.visibility);
+        gsat.setVisibility(!gsat.visibility);
+    });
+    
     $("#xmdk").click(function(){
         var control = map.getControlsBy("id", "locate-control")[0];
         var layer = map.getLayersByName('项目地块')[0]
-       layer.setVisibility(!layer.visibility);
+        layer.setVisibility(!layer.visibility);
     });
     
     $("#myxmdk").click(function(){
@@ -67,10 +75,10 @@ $(document).ready(function() {
     });
     
     $('#popup').live('pageshow',function(event, ui){
-        var li = "";
+        var li = "<li data-role=\"list-divider\" data-divider-theme=\"a\">地块属性显示<span class=\"ui-li-aside\"></span></li>";
         for(var attr in selectedFeature.attributes){
-            li += "<li><div style='width:25%;float:left'>" + attr + ":</div><div style='width:75%;float:right'>" 
-               + selectedFeature.attributes[attr] + "</div></li>";
+            li += "<li><p style='width:25%;float:left'>" + attr + ":</p><p style='width:75%;float:right'>" 
+               + selectedFeature.attributes[attr] + "</p></li>";
         }
         $("ul#details-list").empty().append(li).listview("refresh");
     });
