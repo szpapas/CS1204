@@ -49,7 +49,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 var id =  place["id"];
                 //var icon = place["icon"];
                 var username = place['username'];
-                ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
+                ss = pointText.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
                 var x0 = parseFloat(ss[1]);
                 var y0 = parseFloat(ss[2]);
                 
@@ -515,7 +515,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         phone_grid.on('rowclick', function(grid, row, e){
           var data = grid.store.data.items[row].data;
           pointText = data.lon_lat;
-          ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
+          ss = pointText.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
           
           var x0 = parseFloat(ss[1]);
           var y0 = parseFloat(ss[2]);
@@ -588,7 +588,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             
             /*
             pointText = datas[1];
-            ss = pointText.match(/POINT\(([-]*\d+.\d+)\s*([-]*\d+.\d+)\)/);
+            ss = pointText.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
             var x0 = parseFloat(ss[1]);
             var y0 = parseFloat(ss[2]);
             var lonlat = new OpenLayers.LonLat(x0, y0);
