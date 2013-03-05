@@ -30,15 +30,17 @@
         <div data-role="page" id="mappage">
           <div data-role="content">
             <div id="map"></div>
-         		<div hidden='true'><input name="user_id"  placeholder="" value="<%= @username %>" type="text" ></div>
  					</div>
           <div data-role="footer">
-            <a href="#" id="locate" data-icon="locate" data-role="button">定位</a>
+         		<div hidden='true'>
+							<input name="user_id"  placeholder="" value="<%= @username %>" type="text" >
+						</div>
+            <!--a href="#" id="locate" data-icon="locate" data-role="button">定位</a-->
             <a href="#layerspage" data-icon="layers" data-role="button">图层</a>
             <a href="#" id="xmdk" data-icon="search" data-role="button">项目地块</a>
             <a href="#" id="myxmdk" data-icon="search" data-role="button">我的地块</a>
           </div>
-          <div id="navigation" data-role="controlgroup" data-type="vertical">
+          <div id="navigation" data-role="controlgroup" data-type="vertical" hidden='true'>
             <a href="#" data-role="button" data-icon="plus" id="plus"
                data-iconpos="notext"></a>
             <a href="#" data-role="button" data-icon="minus" id="minus"
