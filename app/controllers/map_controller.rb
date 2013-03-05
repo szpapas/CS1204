@@ -183,51 +183,61 @@ class MapController < ApplicationController
       user = User.find_by_sql("select username, iphone from users where iphone = '#{username}';")
       if user.size > 0
         username = user[0].username
+        device = user[0].iphone
       end
     end
-    device = user[0].iphone
     txt = ''
     if state == "on" 
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id = params['session_id']
+      
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
-      User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
       
-      User.find_by_sql("update plans set the_lines = null where session_id='#{session_id}';")
-      User.find_by_sql("delete from location_points where session_id='#{session_id}';")
-      
-      
-      txt = "Success:#{session_id}"
-      
+      if plan.size > 0
+        User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='执行' where session_id ='#{session_id}';")
+        User.find_by_sql("update plans set the_lines = null where session_id='#{session_id}';")
+        User.find_by_sql("delete from location_points where session_id='#{session_id}';")
+        txt = "Success:#{session_id}"
+      else
+        txt = "Not Found"  
+      end
     elsif state=="off"
-      session_id=params["session_id"]
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-      User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
+      session_id=params["session_id"]
+
+      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
+      
+      if plan.size > 0
+        User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
 
       #这个地方是Multiple-Line, 先忽略过去
-      update_line(session_id)
+        update_line(session_id)
+        update_time_and_length(session_id)
       
-      update_time_and_length(session_id)
-      
-      
-      user = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")
-      #可以更新其他内容
-      txt = user[0].to_json.gsub("null","\"0.0\"")
+        user = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")
+        #可以更新其他内容
+        txt = user[0].to_json.gsub("null","\"0.0\"")
+      else 
+        txt = "{\"photo_count\":\"0\",\"xclc\":\"0\",\"xcys\":0,\"xmdk_count\":\"0\"}"
+      end 
       
     elsif state == "reset" 
       #task_id, device_no, username
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id = params['session_id']
       plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
-      User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='计划' where session_id ='#{session_id}';")
-
-      User.find_by_sql("update plans set the_lines = null, xclc = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
-      User.find_by_sql("delete from location_points where session_id='#{session_id}';")
-      User.find_by_sql("delete from xcimage where plan_id = #{plan[0].id}")
-
-      txt = "Success:#{session_id}"  
       
+      if plan.size > 0
+        User.find_by_sql("update plans set username='#{username}', device='#{device}', taskbegintime=TIMESTAMP '#{time}',  zt='计划' where session_id ='#{session_id}';")
+        User.find_by_sql("update plans set the_lines = null, xclc = 0.0, xcys = null, photo_count = 0, xmdk_count = 0 where session_id='#{session_id}';")
+        User.find_by_sql("delete from location_points where session_id='#{session_id}';")
+        User.find_by_sql("delete from xcimage where plan_id = #{plan[0].id}")
+
+        txt = "Success:#{session_id}"
+      else
+        txt = 'Not Found'
+      end    
     else  
       txt = "Failure:#{session_id}"     
     end
