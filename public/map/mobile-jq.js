@@ -66,12 +66,24 @@ $(document).ready(function() {
         var control = map.getControlsBy("id", "locate-control")[0];
         var layer = map.getLayersByName('项目地块')[0]
         layer.setVisibility(!layer.visibility);
+        if (layer.visibility) {
+          //$('#xmdk').val("项目地块").button('refresh');
+          $('#xmdk').buttonMarkup({theme: "a"}).button('refresh');
+        } else {
+          //$('#xmdk').val("项目地块").button('refresh');
+          $('#xmdk').buttonMarkup({theme: "b"}).button('refresh');
+        }  
     });
     
     $("#myxmdk").click(function(){
         var control = map.getControlsBy("id", "locate-control")[0];
         var layer = map.getLayersByName('我的地块')[0]
         layer.setVisibility(!layer.visibility);
+        if (layer.visibility) {
+          $('#myxmdk').buttonMarkup({theme: "a"}).button('refresh');
+        } else {
+          $('#myxmdk').buttonMarkup({theme: "b"}).button('refresh');
+        }
     });
     
     $('#popup').live('pageshow',function(event, ui){
