@@ -14,7 +14,7 @@ var init = function (onSelectFeatureFunction) {
     var vectors = new OpenLayers.Layer.Vector('测量图层', {
         styleMap: new OpenLayers.StyleMap({
             temporary: OpenLayers.Util.applyDefaults({
-                pointRadius: 16
+                pointRadius: 24
             }, OpenLayers.Feature.Vector.style.temporary)
         })
     });
@@ -102,6 +102,10 @@ var init = function (onSelectFeatureFunction) {
       
       //need hide 项目地图层
       map.getLayersByName('项目地块')[0].setVisibility(false);
+      map.getLayersByName('我的地块')[0].setVisibility(false);
+      
+      $('#xmdk').buttonMarkup({theme: "b"}).button('refresh');
+      $('#myxmdk').buttonMarkup({theme: "b"}).button('refresh');
       
       if (vectors.features.length > 0){
         var area = vectors.features[0].geometry.getArea()/666.67;
@@ -200,11 +204,10 @@ var init = function (onSelectFeatureFunction) {
     var selectControl = new OpenLayers.Control.SelectFeature(sprintersLayer, {
         autoActivate:true,
         onSelect: onSelectFeatureFunction});
-
+        
     var mySelectControl = new OpenLayers.Control.SelectFeature(myxmdkLayer, {
         autoActivate:true,
         onSelect: onSelectFeatureFunction});
-
 
     var geolocate = new OpenLayers.Control.Geolocate({
         id: 'locate-control',
