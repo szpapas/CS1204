@@ -240,14 +240,14 @@ var init = function (onSelectFeatureFunction) {
         ],
         
         layers: [
-            gmap, gsat,
+            gsat,gmap, 
             vector,
             vectors,
             sprintersLayer,
             myxmdkLayer
         ],
         center: new OpenLayers.LonLat(13410089, 3713641),
-        zoom: 11
+        zoom: 15
     });
 
     var style = {

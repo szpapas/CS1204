@@ -8,7 +8,7 @@ var user_id="";
 //var base_url = "http://127.0.0.1:8080/geoserver/wms";
 //var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
 
-/*======================   常熟  ===========================
+/*======================   常熟  ===========================*/
 
 var base_url = "http://218.4.152.78:8080/geoserver/wms";
 var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
@@ -53,7 +53,7 @@ var xzqmc_data = [
 /*------------------------------------------------------*/
 
 
-/*======================   铜山  ===========================*/
+/*======================   铜山  ===========================
 
 var base_url = "http://papas2012.dyndns.org:8081/geoserver/wms";
 var host_url = "http://papas2012.dyndns.org:8081/geoserver/cs1204/wms";
