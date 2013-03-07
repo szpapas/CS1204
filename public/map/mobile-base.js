@@ -246,7 +246,8 @@ var init = function (onSelectFeatureFunction) {
             sprintersLayer,
             myxmdkLayer
         ],
-        center: new OpenLayers.LonLat(13410089, 3713641),
+        center: new OpenLayers.LonLat(13443943.5836129 3720371.36079192),  // 常熟
+        //center: new OpenLayers.LonLat(13410089, 3713641),
         zoom: 15
     });
 
