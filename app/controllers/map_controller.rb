@@ -261,7 +261,7 @@ class MapController < ApplicationController
       xmdks = User.find_by_sql("select gid as xmdk_id, xmmc, sfjs as jszt, pzwh as dkmc,  astext(transform(the_geom, 4326)) as the_geom, astext(centroid(transform(the_geom,4326))) as the_center from xmdks where xz_tag is not null and username = '#{params['username']}' order by gid;")
     end
       
-    txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(')
+    txt = xmdks.to_json.gsub('"POLYGON', '"MULTIPOLYGON(').gusb(')),((', '),(')
     render :text => {"mode" => params['mode'], "result" => txt}.to_json  
   end  
   
