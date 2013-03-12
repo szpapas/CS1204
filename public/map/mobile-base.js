@@ -151,7 +151,7 @@ var init = function (onSelectFeatureFunction) {
         title: "增加巡查点", displayClass: "myClass",trigger: function() {  
             var vectors = map.getLayersByName('测量图层')[0];
             if (vectors.features.length > 0) {
-              $.mobile.changePage("#new_xmdk_id", "pop"); 
+              $.mobile.changePage("#new_xmdk_id", { transition: "slide"}); 
               $("input[name='gid']").val('');
               //$("input[name='username']").val('');
               $("input[name='xmmc']").val('');

@@ -1490,11 +1490,12 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
           });
           
           //部门tree
+
           var bmTree = new Ext.tree.TreePanel({
               id:'bm-tree',
               rootVisible:false,
               lines:false,
-              title:'按部门',
+              title:'按日期部门',
               autoScroll:true,
               tools:[{
                   id:'refresh',
@@ -1534,10 +1535,129 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               plan_store.baseParams.xcry = ss[2]
               plan_store.load();
             } else {
-              //var ss = node.id.split("|");
+              var ss = node.id.split("|");
+              if (ss.size() == 2) {
+                Ext.getCmp('xcqy_filter_id').setValue(ss[1]);
+                plan_store.baseParams.year = ss[0];
+                plan_store.baseParams.xcqy = ss[1];
+                plan_store.baseParams.xcry = '全部';
+                plan_store.load();
+              }
             }
           }, bmTree);
           
+          //按执行状态 (计划，执行，结束)
+          var zxTree = new Ext.tree.TreePanel({
+              id:'zx-tree',
+              rootVisible:false,
+              lines:false,
+              title:'按执行状态',
+              autoScroll:true,
+              loader: new Ext.tree.TreeLoader({
+                dataUrl: '/desktop/get_zxtree',
+                baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+              }),
+              root: {
+                nodeType: 'async',
+                text: '联系人',
+                draggable:false,
+                id:'root'
+              }
+          });
+
+          zxTree.on("click", function(node,e) {
+            e.stopEvent();
+            node.select();
+            if (node.isLeaf()) {
+              var ss = node.id.split("|");
+              Ext.getCmp('rwzt_combo_id').setValue(ss[1]);
+              Ext.getCmp('xcqy_filter_id').setValue(ss[2]);
+              plan_store.baseParams.year = ss[0];
+              plan_store.baseParams.zt = ss[1];
+              plan_store.baseParams.xcqy = ss[2];
+              plan_store.baseParams.xcry = ss[3];
+              plan_store.baseParams.zt2 = '全部';
+              plan_store.load();
+            } else {
+              var ss = node.id.split("|");
+              if (ss.size() == 2) {
+                Ext.getCmp('rwzt_combo_id').setValue(ss[1]);
+                plan_store.baseParams.year = ss[0];
+                plan_store.baseParams.zt = ss[1];
+                plan_store.baseParams.xcqy = '全部';
+                plan_store.baseParams.xcry = '全部';
+                plan_store.baseParams.zt2 =  '全部';
+                
+                plan_store.load();
+              } else if (ss.size() == 3) {
+                Ext.getCmp('rwzt_combo_id').setValue(ss[1]);
+                Ext.getCmp('xcqy_filter_id').setValue(ss[2]);
+                plan_store.baseParams.year = ss[0];
+                plan_store.baseParams.zt = ss[1];
+                plan_store.baseParams.xcqy = ss[2];
+                plan_store.baseParams.xcry = '全部';
+                plan_store.baseParams.zt2 =  '全部';
+                plan_store.load();
+              }
+            }
+          }, zxTree);
+          
+          
+          //按任务状态 （草稿，上报，归档） zt2
+          var rwTree = new Ext.tree.TreePanel({
+              id:'rw-tree',
+              rootVisible:false,
+              lines:false,
+              title:'按任务状态',
+              autoScroll:true,
+              loader: new Ext.tree.TreeLoader({
+                dataUrl: '/desktop/get_rwtree',
+                baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+              }),
+              root: {
+                nodeType: 'async',
+                text: '联系人',
+                draggable:false,
+                id:'root'
+              }
+          });
+
+          rwTree.on("click", function(node,e) {
+            e.stopEvent();
+            node.select();
+            if (node.isLeaf()) {
+              var ss = node.id.split("|");
+              //Ext.getCmp('xcqy_filter_id').setValue(ss[1]);
+              plan_store.baseParams.year = ss[0];
+              plan_store.baseParams.zt2 =  ss[1];
+              plan_store.baseParams.xcqy = ss[2];
+              plan_store.baseParams.xcry = ss[3];
+              plan_store.baseParams.zt = '全部';
+              plan_store.load();
+            } else {
+              var ss = node.id.split("|");
+              if (ss.size() == 2) {
+               // Ext.getCmp('xcqy_filter_id').setValue(ss[1]);
+                plan_store.baseParams.year = ss[0];
+                plan_store.baseParams.zt2 =  ss[1];
+                
+                plan_store.baseParams.xcqy = '全部';
+                plan_store.baseParams.xcry = '全部';
+                plan_store.baseParams.zt = '全部';
+                plan_store.load();
+              } else if (ss.size() == 3) {
+              //  Ext.getCmp('xcqy_filter_id').setValue(ss[1]);
+                plan_store.baseParams.year = ss[0];
+                plan_store.baseParams.zt2 =  ss[1];
+                plan_store.baseParams.xcqy = ss[2];
+
+                plan_store.baseParams.xcry = '全部';
+                plan_store.baseParams.zt = '全部';
+                plan_store.load();
+              }
+            }
+          }, rwTree);
+
           
           win = desktop.createWindow({
               id: 'taskman',
@@ -1558,13 +1678,13 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   items:[planGrid]
                },{
                  region:"west",
-                 title:"部门",
+                 //title:"部门",
                  width:200,
-                 split:true,
-                 collapsible:true,
-                 titleCollapse:true,
-                 layout:'fit',
-                 items: [bmTree]
+                 //split:true,
+                 //collapsible:true,
+                 //titleCollapse:true,
+                 layout:'accordion',
+                 items: [bmTree, zxTree, rwTree]
               }]
          });
         }

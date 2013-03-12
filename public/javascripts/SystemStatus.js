@@ -54,7 +54,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 var y0 = parseFloat(ss[2]);
                 
                 var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-                style.externalGraphic = '/images/chrome.png';
+                if (place['zt'] == 't') {
+                  style.externalGraphic = '/images/police_a.png';  
+                } else {
+                  style.externalGraphic = '/images/police_b.png';    
+                }
                 style.backgroundXOffset = 0;
                 style.backgroundYOffset = 0;
                 style.graphicWidth = 32;

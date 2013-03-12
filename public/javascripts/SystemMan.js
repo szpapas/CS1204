@@ -46,23 +46,23 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
       var addUser = function (gsm) {
         var qxcode_data = [
           ['0','管理员'],
-        	['1','巡查员'],
-        	['2','监察员']
+          ['1','巡查员'],
+          ['2','监察员']
         ];
 
         var qxcode_store = new Ext.data.SimpleStore({
-        	fields: ['value', 'text'],
-        	data : qxcode_data
+          fields: ['value', 'text'],
+          data : qxcode_data
         });
         
         var hide_data = [
-        	['0','否'],
+          ['0','否'],
           ['1','是']
         ];
 
         var hide_store = new Ext.data.SimpleStore({
-        	fields: ['value', 'text'],
-        	data : hide_data
+          fields: ['value', 'text'],
+          data : hide_data
         });
         
         var userPanel = new Ext.form.FormPanel({
@@ -203,23 +203,23 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
       
       //处理双击事件，打开点击窗口
       userGrid.addListener('rowdblclick',function(t,r,e){
-				//var select = t.getSelectionModel().getSelections()[0].data;
-				var gsm =Ext.getCmp('sysman_user_grid_id').getSelectionModel();
+        //var select = t.getSelectionModel().getSelections()[0].data;
+        var gsm =Ext.getCmp('sysman_user_grid_id').getSelectionModel();
         addUser(gsm);
         //user_store.load();
-			});
+      });
       
       userGrid.addListener('rowclick',function(t,r,e){
-				var select = t.getSelectionModel().getSelections()[0].data;
+        var select = t.getSelectionModel().getSelections()[0].data;
         var form = Ext.getCmp('user_panel_id').form;
         
         if (form != undefined) {
           form.loadRecord(t.getSelectionModel().getSelections()[0]);
-  				//form.findField('id').setValue(select['id']);
-  				//form.findField('username' ).setValue(select['username']);          
+          //form.findField('id').setValue(select['id']);
+          //form.findField('username' ).setValue(select['username']);          
         }
 
-			});
+      });
       
       var userTree = new Ext.tree.TreePanel({
           id:'yh-tree',

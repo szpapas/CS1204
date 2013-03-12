@@ -120,6 +120,7 @@ class DesktopController < ApplicationController
     params['xcqy']  = params['xcqy'] || "全部"
     params['xcfs']  = params['xcfs'] || "全部"
     params['zt']    = params['zt'] || "全部"
+    params['zt2']    = params['zt2'] || "全部"
     params['filter'] = params['filter'] || "全部"
     params['xcry'] =  params['xcry'] || "全部" 
     params['year'] =  params['year'] || "全部" 
@@ -127,6 +128,7 @@ class DesktopController < ApplicationController
     
     cond=[]
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
+    cond << "zt2='#{params['zt2']}'" if params['zt2'] != '全部'
     cond << "xcqy='#{params['xcqy']}'" if params['xcqy'] != '全部'
     cond << "xcfs='#{params['xcfs']}'" if params['xcfs'] != '全部'
     cond << "xcry='#{params['xcry']}'" if params['xcry'] != '全部'
@@ -644,35 +646,7 @@ class DesktopController < ApplicationController
     render :text => text.to_json 
   end
   
-  #年度--部门--人员
-  def get_bmtree
-    text = []
-    node = params["node"].chomp
-    if node == "root"
-      data = User.find_by_sql("select distinct EXTRACT( YEAR from zrq) as year, count(*) from plans group by year;")
-      
-      data.each do |dd|
-        text << {:text => "#{dd["year"]}年", :id => dd["year"], :cls  => "folder", :leaf => false}
-      end
-      
-    else
-      ss = node.split('|')
-      if ss.size == 1
-         data = User.find_by_sql("select distinct xcqy, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' group by xcqy order by xcqy;")
-         data.each do |dd|
-           text << {:text => dd["xcqy"], :id => "#{ss[0]}|#{dd['xcqy']}", :cls  => "folder", :leaf => false}
-         end  
-      elsif ss.size == 2
-        data = User.find_by_sql("select distinct xcry, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and xcqy = '#{ss[1]}' group by xcry order by xcry;")
-        data.each do |dd|
-          text << {:text => dd["xcry"], :id => "#{ss[0]}|#{ss[1]}|#{dd['xcry']}", :cls  => "folder", :leaf => true}
-        end  
-      end
-      
-    end
-        
-    render :text => text.to_json 
-  end    
+ 
   
   #add on 06/12
   def display_selected_plan
@@ -1365,5 +1339,99 @@ class DesktopController < ApplicationController
     render :text => txt
   end        
   
+  #年度--部门--人员
+  def get_bmtree
+    text = []
+    node = params["node"].chomp
+    if node == "root"
+      data = User.find_by_sql("select distinct EXTRACT( YEAR from zrq) as year, count(*) from plans group by year;")
+      
+      data.each do |dd|
+        text << {:text => "#{dd["year"]}年", :id => dd["year"], :cls  => "folder", :leaf => false}
+      end
+      
+    else
+      ss = node.split('|')
+      if ss.size == 1
+         data = User.find_by_sql("select distinct xcqy, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' group by xcqy order by xcqy;")
+         data.each do |dd|
+           text << {:text => dd["xcqy"], :id => "#{ss[0]}|#{dd['xcqy']}", :cls  => "folder", :leaf => false}
+         end  
+      elsif ss.size == 2
+        data = User.find_by_sql("select distinct xcry, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and xcqy = '#{ss[1]}' group by xcry order by xcry;")
+        data.each do |dd|
+          text << {:text => dd["xcry"], :id => "#{ss[0]}|#{ss[1]}|#{dd['xcry']}", :cls  => "folder", :leaf => true}
+        end  
+      end
+      
+    end
+        
+    render :text => text.to_json 
+  end
+  
+  
+  #年度--zt--部门--人员
+  def get_zxtree
+    text = []
+    node = params["node"].chomp
+    if node == "root"
+      data = User.find_by_sql("select distinct EXTRACT( YEAR from zrq) as year, count(*) from plans where zt is not null group by year;")
+      data.each do |dd|
+        text << {:text => "#{dd["year"]}年", :id => dd["year"], :cls  => "folder", :leaf => false}
+      end
+    else
+      ss = node.split('|')
+      if ss.size == 1
+        data = User.find_by_sql("select distinct zt, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt is not null group by zt order by zt;")
+        data.each do |dd|
+          text << {:text => dd["zt"], :id => "#{ss[0]}|#{dd['zt']}", :cls  => "folder", :leaf => false}
+        end
+      elsif ss.size == 2
+         data = User.find_by_sql("select distinct xcqy, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt = '#{ss[1]}' group by xcqy order by xcqy;")
+         data.each do |dd|
+           text << {:text => dd["xcqy"], :id => "#{ss[0]}|#{ss[1]}|#{dd['xcqy']}", :cls  => "folder", :leaf => false}
+         end  
+      elsif ss.size == 3
+        data = User.find_by_sql("select distinct xcry, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt = '#{ss[1]}'  and xcqy = '#{ss[2]}' group by xcry order by xcry;")
+        data.each do |dd|
+          text << {:text => dd["xcry"], :id => "#{ss[0]}|#{ss[1]}|#{ss[2]}|#{dd['xcry']}", :cls  => "folder", :leaf => true}
+        end  
+      end
+    end
+        
+    render :text => text.to_json
+  end
+  
+  #年度--zt2-部门--人员
+  def get_rwtree
+    text = []
+    node = params["node"].chomp
+    if node == "root"
+      data = User.find_by_sql("select distinct EXTRACT( YEAR from zrq) as year, count(*) from plans where zt2 is not null group by year;")
+      data.each do |dd|
+        text << {:text => "#{dd["year"]}年", :id => dd["year"], :cls  => "folder", :leaf => false}
+      end
+    else
+      ss = node.split('|')
+      if ss.size == 1
+        data = User.find_by_sql("select distinct zt2, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt2 is not null group by zt2 order by zt2;")
+        data.each do |dd|
+          text << {:text => dd["zt2"], :id => "#{ss[0]}|#{dd['zt2']}", :cls  => "folder", :leaf => false}
+        end
+      elsif ss.size == 2
+         data = User.find_by_sql("select distinct xcqy, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt2 = '#{ss[1]}' group by xcqy order by xcqy;")
+         data.each do |dd|
+           text << {:text => dd["xcqy"], :id => "#{ss[0]}|#{ss[1]}|#{dd['xcqy']}", :cls  => "folder", :leaf => false}
+         end  
+      elsif ss.size == 3
+        data = User.find_by_sql("select distinct xcry, count(*) from plans where EXTRACT( YEAR from zrq) = '#{ss[0]}' and zt2 = '#{ss[1]}'  and xcqy = '#{ss[2]}' group by xcry order by xcry;")
+        data.each do |dd|
+          text << {:text => dd["xcry"], :id => "#{ss[0]}|#{ss[1]}|#{ss[2]}|#{dd['xcry']}", :cls  => "folder", :leaf => true}
+        end  
+      end
+    end
+        
+    render :text => text.to_json
+  end  
   
 end

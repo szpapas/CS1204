@@ -73,12 +73,15 @@ class MapController < ApplicationController
   def demoajax
   end
   
-  def callajax
-    User.find_by_sql("update plans set xcnr='#{params['xcnr']}', xcjg='#{params['xcjg']}', clyj='#{params['clyj']}' where id=#{params['task_id']}")
+  def callajax_draft
+    User.find_by_sql("update plans set xcnr='#{params['xcnr']}', xcjg='#{params['xcjg']}', clyj='#{params['clyj']}', zt2 = '草稿' where id=#{params['task_id']}")
     render :text => "保存成功"
   end  
   
-  
+  def callajax_upload
+    User.find_by_sql("update plans set xcnr='#{params['xcnr']}', xcjg='#{params['xcjg']}', clyj='#{params['clyj']}', zt2 = '上报' where id=#{params['task_id']}")
+    render :text => "保存成功"
+  end
   
   def getpdfreport
     render :text => "/images/xcjl/xcjl_4208.pdf"
