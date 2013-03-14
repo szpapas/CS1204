@@ -61,7 +61,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 }
                 style.backgroundXOffset = 0;
                 style.backgroundYOffset = 0;
-                style.graphicWidth = 32;
+                style.graphicWidth = 64;
                 style.graphicHeight = 32;
                 style.graphicZIndex = MARKER_Z_INDEX;
                 style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
@@ -73,9 +73,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 style.fontSize   = "12px";
                 style.fontFamily = "Courier New, monospace";
                 style.fontWeight = "bold";
-                style.labelAlign = "cm";            
+                style.labelAlign = "rb";            
                 style.label = username;
-                style.fontColor = "black";
+                style.fontColor = "blue:";
 
                 features.push(
                     new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
