@@ -119,7 +119,7 @@ class MapController < ApplicationController
           username = user[0].username
         end
 
-        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}');")
+        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}') and del_tag <> '是';")
       end
       txt = plan.to_json.gsub(' 00:00:00', '')
     end

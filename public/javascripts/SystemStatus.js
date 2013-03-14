@@ -320,8 +320,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
         function loopCheck(sf,lp) {
 
-          //if (loopCheck == false) return;
-
           if (lp) {
             //move to new position
             var pts = loop_data[sf].split(" ");
@@ -351,22 +349,32 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         //maps here 
         var options = {
           projection: new OpenLayers.Projection('EPSG:900913'), units: "m", maxResolution: 152.87405654296876,
-          maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7) 
+          maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7),
+          numZoomLevels: 6,
+          controls: [
+            //new OpenLayers.Control.Navigation(),
+            //new OpenLayers.Control.PanZoomBar(),
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.MousePosition(),
+            new OpenLayers.Control.KeyboardDefaults()
+          ]
         };
         
         var map  = new OpenLayers.Map($('task_track'), options);
         
+        
+        
         var gmap = new OpenLayers.Layer.Google(
             "谷歌地图", // the default
-            {numZoomLevels: 20}
+            {numZoomLevels: 18}
         );
         var gsat = new OpenLayers.Layer.Google(
             "谷歌卫星图",
-            {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+            {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20}
         );
         var gphy = new OpenLayers.Layer.Google(
             "谷歌地形图",
-            {type: google.maps.MapTypeId.TERRAIN}
+            {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 18}
         );          
 
         //var sat = new OpenLayers.Layer.WMS("航拍地图", base_url,  
@@ -654,10 +662,16 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
       };
       
+      //map.addControl(layserSwitch);
+      map.addControl(new OpenLayers.Control.Navigation());
+      map.addControl(new OpenLayers.Control.PanZoomBar());
+      //map.addControl(new OpenLayers.Control.KeyboardDefaults());
+      //map.addControl(new OpenLayers.Control.MousePosition());
       
-      map.addControl(layserSwitch);
+      //map.addControl(layserSwitch);
       map.addControl(new OpenLayers.Control.MousePosition());
-      var zoomLevel = 12;
+      
+      var zoomLevel = 13;
       map.setCenter(new OpenLayers.LonLat(CENTER_LON,CENTER_LAT), zoomLevel);
       
       win.show();

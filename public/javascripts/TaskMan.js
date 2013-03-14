@@ -55,6 +55,30 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
           
           //plan add/edit windows
           var add_plan_wizard = function() {
+            
+            var  xcry_store = new Ext.data.Store({
+                proxy: new Ext.data.HttpProxy({
+                    url: '/desktop/get_xcry_json'
+                }),
+                reader: new Ext.data.JsonReader({
+                  totalProperty: 'results', 
+                  root: 'rows',             
+                  fields: [
+                    {name: 'id',    type: 'integer'},
+                    {name: 'username',  type: 'string'}
+                  ]    
+                }),
+                sortInfo:{field: 'id', direction: "ASC"}
+            });
+
+            // load data
+            // xcry_store.baseParams.zt = "全部";
+            // xcry_store.baseParams.limit = "20";
+            // xcry_store.load();
+            
+            xcry_store.baseParams.xcqy = '尚湖镇';
+            xcry_store.load();
+            
             var wizPanel = new Ext.form.FormPanel({
               id : 'wizard_panel_id',
               autoScroll : true,
@@ -103,10 +127,36 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   emptyText:'请选择',
                   mode: 'local',
                   minChars : 2,
-                  multiSelect: true,
+                  //multiSelect: true,
                   valueField:'text',
                   value:"全部",
                   displayField:'text',
+                  triggerAction:'all',
+                  listeners:{
+                    select:function(combo, records, index) {
+                      xcry_store.baseParams.xcqy = combo.value;
+                      xcry_store.load();
+                    }
+                  }
+                },{
+                  xtype: 'label',
+                  text: '巡查人员',
+                  x: 10,
+                  y: 70                 
+                },{
+                  xtype: 'combo',
+                  x: 100,
+                  y: 70,
+                  width: 150,
+                  name: 'xcry',
+                  id: 'xcry_combo_id',
+                  store: xcry_store,
+                  emptyText:'请选择',
+                  mode: 'local',
+                  minChars : 2,
+                  valueField:'username',
+                  value:"全部",
+                  displayField:'username',
                   triggerAction:'all',
                   listeners:{
                   }
@@ -114,11 +164,11 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   xtype: 'label',
                   text: '巡查年份',
                   x: 10,
-                  y: 70                 
+                  y: 100                 
                 },{
                   xtype: 'combo',
                   x: 100,
-                  y: 70,
+                  y: 100,
                   width: 150,
                   name: 'nd',
                   id: 'nd_combo_id',
@@ -132,21 +182,17 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   displayField:'text',
                   triggerAction:'all',
                   listeners:{
-                    //select:function(combo, records, index) {
-                    //  plan_store.proxy.extraParams.filter=records[0].data.text;
-                    //  plan_store.load();
-                    //}
                   }
                 },{
                   xtype: 'label',
                   text: '巡查频度',
                   hidden: true,
                   x: 10,
-                  y: 100                 
+                  y: 130                 
                 },{
                   xtype: 'combo',
                   x: 100,
-                  y: 100,
+                  y: 130,
                   width: 150,
                   name: 'pd',
                   id: 'pd_combo_id',
@@ -346,7 +392,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   {
                     xtype: 'textfield',
                     name : 'id',
-                    hidden: true
+                    hidden: truef
                   },
                   {
                     xtype: 'textfield',
@@ -548,15 +594,17 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
 
                         //alert (pp);
                         
-                        pars = {imgs:pp, id:gsm.selections.items[0].data.id};
-                        new Ajax.Request("/desktop/delete_selected_photo", { 
-                          method: "POST",
-                          parameters: pars,
-                          onComplete:  function(request) {
-                            setImages(request);
-                          }
-                        });
-                        
+                        if (confirm('缺定删除这些照片?')) {
+                          pars = {imgs:pp, id:gsm.selections.items[0].data.id};
+                          new Ajax.Request("/desktop/delete_selected_photo", { 
+                            method: "POST",
+                            parameters: pars,
+                            onComplete:  function(request) {
+                              setImages(request);
+                            }
+                          });
+                        }
+
                       }
                   },
                   {
@@ -1291,6 +1339,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               },{
                 text : '删除任务',
                 iconCls : 'delete',
+                id : 'delete_plan_id',
                 handler : function(){
                   items = Ext.getCmp('plan_grid_id').getSelectionModel().selections.items;
                   id_str = '';
@@ -1301,14 +1350,16 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                       id_str = id_str + ',' +items[i].data.id 
                     }
                   }
-                  pars = {id:id_str};
-                  new Ajax.Request("/desktop/delete_selected_plan", { 
-                    method: "POST",
-                    parameters: pars,
-                    onComplete:  function(request) {
-                      plan_store.load();
-                    }
-                  });
+                  if (confirm('确认删除这些任务?')) {
+                    pars = {id:id_str};
+                    new Ajax.Request("/desktop/delete_selected_plan", { 
+                      method: "POST",
+                      parameters: pars,
+                      onComplete:  function(request) {
+                        plan_store.load();
+                      }
+                    });
+                  }
                 }                 
             //  },{
             //    text : '全部任务',
@@ -1688,6 +1739,12 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
               }]
          });
         }
+        
+        //隐藏
+        if (currentUser.qxcode != '管理员') {
+          Ext.getCmp('delete_plan_id').hide(); 
+        }
+        
         win.show();
         return win;
     }

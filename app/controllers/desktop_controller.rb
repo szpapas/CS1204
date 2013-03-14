@@ -100,10 +100,10 @@ class DesktopController < ApplicationController
   def delete_selected_plan
     if params['id'] == 'all'
       User.find_by_sql("delete from plans where zt='计划';")
-      #User.find_by_sql('delete from inspects;')
     else  
-      User.find_by_sql("delete from plans where id in (#{params['id']});")
-      User.find_by_sql("delete from inspects where plan_id in (#{params['id']});") 
+      #User.find_by_sql("delete from plans where id in (#{params['id']});")
+      #User.find_by_sql("delete from inspects where plan_id in (#{params['id']});") 
+      User.find_by_sql("update plans set del_tag = '是' where id in (#{params['id']});")
     end
     render :text => 'Success'
   end  
@@ -125,6 +125,7 @@ class DesktopController < ApplicationController
     params['xcry'] =  params['xcry'] || "全部" 
     params['year'] =  params['year'] || "全部" 
     params['username'] = params['username'] || "全部"
+    params['del_tag'] = params['del_tag'] || "全部"
     
     cond=[]
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
@@ -133,6 +134,12 @@ class DesktopController < ApplicationController
     cond << "xcfs='#{params['xcfs']}'" if params['xcfs'] != '全部'
     cond << "xcry='#{params['xcry']}'" if params['xcry'] != '全部'
     cond << "EXTRACT( YEAR from zrq) = '#{params['year']}'" if params['year'] != '全部'
+    
+    if params['del_tag'] != '全部'
+      cond << "del_tag = '是'"
+    else 
+      cond << "del_tag is null"   
+    end
     
     case cond.size
     when 0
@@ -230,6 +237,26 @@ class DesktopController < ApplicationController
   end
   
   #add at 04/29
+  def get_xcry_json
+    xcqy = params['xcqy']
+    if xcqy=='常熟市局'
+      user = User.find_by_sql("select username from users where bm='国土资源监察大队';")
+    else
+      user = User.find_by_sql("select username from users where dw='#{xcqy}' and iphone is not null;")
+    end
+    size = user.count.to_i;
+    if size > 0
+      txt = "{results:#{size+1},rows:[{\"username\":\"\\u5168\\u90e8\"},"
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+    
   def get_xcry(xcqy)
     if xcqy=='常熟市局'
       user = User.find_by_sql("select username from users where bm='国土资源监察大队' limit 10;")
@@ -272,13 +299,23 @@ class DesktopController < ApplicationController
       session_id =rand(36**32).to_s(36)
       qrq = week_start.strftime( "%Y-%m-%d" ) 
       zrq = week_end.strftime( "%Y-%m-%d" )
-      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+      User.find_by_sql ("delete from plans where rwmc = '#{rwmc}' where zt = '计划';")
+      plan_count = User.find_by_sql("select count(*) from plans where rwmc = '#{rwmc}';")[0].to_i
+      if plan_count == 0 
+        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+      end
+      
       xcbh = "xc-#{data[0].uname}-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
       rwmc = "#{data[0].username} #{nd}年#{week}周 第2次巡查"
       session_id =rand(36**32).to_s(36)
       qrq = week_start.strftime( "%Y-%m-%d" ) 
       zrq = week_end.strftime( "%Y-%m-%d" )
-      User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+      User.find_by_sql ("delete from plans where rwmc = '#{rwmc}' where zt = '计划';")
+      plan_count = User.find_by_sql("select count(*) from plans where rwmc = '#{rwmc}';")[0].to_i
+      if plan_count == 0
+        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+      end
+        
     end
   end
 
@@ -372,19 +409,25 @@ class DesktopController < ApplicationController
     end  
   end
   
-  def add_zhxc_phone(xqzmc, nd, pd)
+  def add_zhxc_phone(xqzmc, nd, pd, xcry)
     if xqzmc=='全部'
       user = User.find_by_sql("select distinct iphone from users where iphone !='';")
       for k in 0..user.count-1
         iphone = user[k].iphone
         add_zhxc_twice_per_phone(iphone, nd)
       end  
-    else 
-      user = User.find_by_sql("select distinct iphone from users where iphone !='' and dw = '#{xqzmc}';")
-      for k in 0..user.count-1
-        iphone = user[k].iphone
+    else
+      if xcry=='全部'  
+        user = User.find_by_sql("select distinct iphone from users where iphone !='' and dw = '#{xqzmc}';")
+        for k in 0..user.count-1
+          iphone = user[k].iphone
+          add_zhxc_twice_per_phone(iphone, nd)
+        end
+      else
+        user = User.find_by_sql("select distinct iphone from users where usrname = '#{xcry}'")
+        iphone = user[0].iphone
         add_zhxc_twice_per_phone(iphone, nd)
-      end
+      end    
     end  
   end
   
@@ -407,9 +450,9 @@ class DesktopController < ApplicationController
   end
   
   def add_plan_wiz
-    xcfs,xcqy,nd,pd = params['xcfs'],params['xcqy'],params['nd'].to_i,params['pd']
+    xcfs,xcqy,nd,pd,xcry = params['xcfs'],params['xcqy'],params['nd'].to_i,params['pd'],params['xcry']
     if xcfs=='综合巡查'
-      add_zhxc_phone(xcqy, nd, pd)
+      add_zhxc_phone(xcqy, nd, pd, xcry)
     else
       add_ddxc(nd)
     end

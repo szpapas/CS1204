@@ -16,6 +16,7 @@ MyDesktop = new Ext.app.App({
       onComplete:  function(request) {
         currentUser = eval("("+request.responseText+")");
         Ext.getCmp('start_memu_id').setTitle(currentUser.username);
+        
       }
     });
     
