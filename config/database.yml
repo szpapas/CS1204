@@ -5,7 +5,7 @@
 #   gem 'sqlite3'
 development:
   adapter: postgresql
-  database: CS1204.CS
+  database: CS1204
   encoding: utf8
   username: postgres
   password: brightechs
