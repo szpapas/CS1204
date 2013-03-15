@@ -75,7 +75,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 style.fontWeight = "bold";
                 style.labelAlign = "rb";            
                 style.label = username;
-                style.fontColor = "blue:";
+                style.fontColor = "blue";
 
                 features.push(
                     new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )

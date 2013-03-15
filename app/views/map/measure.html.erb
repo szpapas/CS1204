@@ -6,20 +6,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
 
-        <!--link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" /-->
+        <link rel="stylesheet" href="/jquery/themes/my-theme.min.css" />
+        <link rel="stylesheet" href="/jquery/jquery.mobile.structure-1.2.0.min.css" />
+
+        <link rel="stylesheet" href="/map/style.mobile.css" type="text/css">
+        <link rel="stylesheet" href="/map/style.mobile-jq.css" type="text/css">
+        <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
 
         <script src="/jquery/jquery-1.8.2.min.js"></script>
         <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
 
-			  <link rel="stylesheet" href="/jquery/themes/my-theme.min.css" />
-			  <link rel="stylesheet" href="/jquery/jquery.mobile.structure-1.2.0.min.css" />
-			
-        <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css">
-
-        <link rel="stylesheet" href="/map/style.mobile.css" type="text/css">
-        <link rel="stylesheet" href="/map/style.mobile-jq.css" type="text/css">
         <script src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
-        <!--script src="/OpenLayers/lib/OpenLayers.js?mobile"></script-->
         <script src="/OpenLayers/OpenLayers.js"></script>
         
         <script src="/map/mobile-base.js?43d123234"></script>
@@ -30,18 +27,16 @@
         <div data-role="page" id="mappage">
           <div data-role="content">
             <div id="map"></div>
- 					</div>
+          </div>
           <div data-role="footer">
-         		<div hidden='true'>
-							<input name="user_id"  placeholder="" value="<%= @username %>" type="text" >
-						</div>
+            <div hidden='true'>
+              <input name="user_id"  placeholder="" value="<%= @username %>" type="text" >
+            </div>
             <a href="#" id="locate" data-icon="locate" data-role="button">定位</a>
             <!-- a href="#layerspage" data-icon="layers" data-role="button">切换</a-->
- 						<a href="#" id="layer" data-icon="layers" data-role="button">切换</a>
-            <!--a href="#" id="xmdk"  data-icon="" data-role="button">项目地块</a-->
-						<input type="button" id="xmdk" data-theme="a" value="项目地块" />
-						<input type="button" id="myxmdk" data-theme="a" value="我的地块" />
-            <!--a href="#" id="myxmdk" data-icon="" data-role="button">我的地块</a-->
+            <a href="#" id="layer" data-icon="layers" data-role="button">切换</a>
+            <input type="button" id="xmdk" data-theme="a" value="项目地块" />
+            <input type="button" id="myxmdk" data-theme="a" value="我的地块" />
           </div>
           <div id="navigation" data-role="controlgroup" data-type="vertical" hidden="true">
             <a href="#" data-role="button" data-icon="plus" id="plus"
@@ -76,14 +71,14 @@
                 <h1>详细情况</h1>
             </div>
             <div data-theme="c" data-role="content"  >
-							<div class="ui-grid-a " id="popup-grid">
-			            <div class="ui-block-a">
-										<input id="deleteXmdk2" type="button" data-inline="false" value="删除记录" data-theme="e"/>
-			            </div>
-			            <div class="ui-block-b">
-										<input id="modifyXmdk2" type="button" data-inline="false" value="修改地块" data-theme="b"/>
-			            </div>
-			        </div>
+              <div class="ui-grid-a " id="popup-grid">
+                  <div class="ui-block-a">
+                    <input id="deleteXmdk2" type="button" data-inline="false" value="删除记录" data-theme="e"/>
+                  </div>
+                  <div class="ui-block-b">
+                    <input id="modifyXmdk2" type="button" data-inline="false" value="修改地块" data-theme="b"/>
+                  </div>
+              </div>
                <ul id="details-list" data-role="listview" data-inset="true" >
                </ul>
             </div>
@@ -95,21 +90,21 @@
             </div>
             <div data-theme="c" data-role="content">
                 <div class="ui-grid-a ">
-				            <div class="ui-block-a">
-											<input id="deleteXmdk" type="button" data-inline="false" value="删除记录" data-theme="e"/>
-				            </div>
-				            <div class="ui-block-b">
-											<input id="saveXmdk" type="button" data-inline="false" value="保存修改" data-theme="b"/>
-				            </div>
-				        </div>
-								<ul data-role="listview" data-inset="true" data-divider-theme="b">
+                    <div class="ui-block-a">
+                      <input id="deleteXmdk" type="button" data-inline="false" value="删除记录" data-theme="e"/>
+                    </div>
+                    <div class="ui-block-b">
+                      <input id="saveXmdk" type="button" data-inline="false" value="保存修改" data-theme="b"/>
+                    </div>
+                </div>
+                <ul data-role="listview" data-inset="true" data-divider-theme="b">
                   <li>
                     <p>项目地块编号:</p> 
                     <input name="gid"  placeholder="" value="" type="text" disabled="true">
                   </li> 
                   <li>
                     <p>用户标识:</p> 
-										<input name="username"  placeholder="" value="<%= @username %>" type="text">
+                    <input name="username"  placeholder="" value="<%= @username %>" type="text">
                   </li>
                   <li>
                     <p>项目名称:</p>
@@ -158,21 +153,21 @@
                 </ul>
             </div>
         </div>
-				
-				<div data-role="dialog" id="sure" data-title="确定删除">
-				  <div data-role="content">
-				    <h2 class="sure-1">确定删除这条记录</h2>
-				    <h3 class="sure-2">此操作不可逆转</h3>
-				    <div class="ui-grid-a ">
-				        <div class="ui-block-a">
-									<a href="#" data-role="button" data-theme="b" data-rel="back">返回</a>
-				        </div>
-				        <div class="ui-block-b">
-									<input id="sureXmdk" type="button" data-inline="false" value="删除记录" data-theme="f"/>
-				        </div>
-				    </div>
-				  </div>
-				</div>
-				
+        
+        <div data-role="dialog" id="sure" data-title="确定删除">
+          <div data-role="content">
+            <h2 class="sure-1">确定删除这条记录</h2>
+            <h3 class="sure-2">此操作不可逆转</h3>
+            <div class="ui-grid-a ">
+                <div class="ui-block-a">
+                  <a href="#" data-role="button" data-theme="b" data-rel="back">返回</a>
+                </div>
+                <div class="ui-block-b">
+                  <input id="sureXmdk" type="button" data-inline="false" value="删除记录" data-theme="f"/>
+                </div>
+            </div>
+          </div>
+        </div>
+        
     </body>
 </html>

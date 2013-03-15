@@ -4,7 +4,51 @@ window.location.replace(window.location.href.split("#")[0] + "#mappage");
 var selectedFeature = null;
 
 $(document).ready(function() {
+  
+    // check client type
+    function detectDevice(){
+      var ua = navigator.userAgent; //Grab USER AGENT STRING
+      var checker = { webOS: ua.match(/webOS/),iphone: ua.match(/iPhone/),ipad: ua.match(/iPad/),ipod: ua.match(/iPod/),blackberry: ua.match(/BlackBerry/),android: ua.match(/Android/), symbian: ua.match(/Symbian/)};
+      //FIND PHONE OS TYPE
+      if (checker.android){
+       //android code here
+       //if(document.title == "Mobile Apps and Sites"){filterApps('Android');}
+       deviceType = "Android";
+       }  
+      else if (checker.webOS){
+       //Windows phone code here code here
+       deviceType = "webOS";
+      }      
+      else if (checker.iphone){
+       deviceType = "iPhone";
 
+      }
+      else if (checker.ipad){
+       //iPad code here
+
+       deviceType = "iPad";
+
+       }
+      else if (checker.ipod){
+       //iPod code here
+       deviceType = "iPod";
+      }    
+      else if (checker.blackberry){
+       deviceType = "BlackBerry";
+      }   
+      else if (checker.symbian){
+       deviceType = "Symbian";
+      }   
+      else {
+       //unknown device code here
+       deviceType = "Unknown";
+       }
+      return  deviceType;
+    }
+    
+    var device = detectDevice();
+    console.log(device);
+     
     // fix height of content
     function fixContentHeight() {
         var footer = $("div[data-role='footer']:visible"),
@@ -33,7 +77,8 @@ $(document).ready(function() {
             });
             initLayerList();
         }
-    }
+    };
+    
     $(window).bind("orientationchange resize pageshow", fixContentHeight);
     document.body.onload = fixContentHeight;
 
@@ -134,7 +179,7 @@ $(document).ready(function() {
         });
         // only listen to the first event triggered
         $('#searchpage').die('pageshow', arguments.callee);
-    });
+    })
     
     
     $("#saveXmdk").click(function() {

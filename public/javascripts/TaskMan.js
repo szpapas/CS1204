@@ -392,7 +392,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   {
                     xtype: 'textfield',
                     name : 'id',
-                    hidden: truef
+                    hidden: true
                   },
                   {
                     xtype: 'textfield',
