@@ -185,8 +185,7 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   }
                 },{
                   xtype: 'label',
-                  text: '巡查频度',
-                  hidden: true,
+                  text: '巡查月份',
                   x: 10,
                   y: 130                 
                 },{
@@ -194,23 +193,18 @@ MyDesktop.TaskMan = Ext.extend(Ext.app.Module, {
                   x: 100,
                   y: 130,
                   width: 150,
-                  name: 'pd',
-                  id: 'pd_combo_id',
-                  store: pd_store,
-                  hidden: true,
+                  name: 'yd',
+                  id: 'yd_combo_id',
+                  store: yd_store,
                   emptyText:'请选择',
                   mode: 'local',
                   minChars : 2,
                   multiSelect: true,
-                  valueField:'text',
-                  value:"1周2次",
+                  valueField:'value',
+                  value:"全部",
                   displayField:'text',
                   triggerAction:'all',
                   listeners:{
-                    //select:function(combo, records, index) {
-                    //  plan_store.proxy.extraParams.filter=records[0].data.text;
-                    //  plan_store.load();
-                    //}
                   }
               }]
             });
