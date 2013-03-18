@@ -1,0 +1,312 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>地块详情</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <link rel="stylesheet" href="/jquery/themes/my-theme.min.css" />
+  <link rel="stylesheet" href="/jquery/jquery.mobile.structure-1.2.0.min.css" />
+  <!--link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" /-->
+  <link rel="stylesheet" href="/jquery/jquery-mobile-960.min.css" />
+
+
+  <script src="/jquery/jquery-1.8.2.min.js"></script>
+  <script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+
+	<link type="text/css" href="/jquery/jqm-datebox.min.css" rel="stylesheet" /> 
+	<link type="text/css" href="/jquery/jquery.mobile.simpledialog.min.css" rel="stylesheet" />
+
+	<script type="text/javascript" src="/jquery/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.core.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.mode.calbox.min.js"></script>
+	<script type="text/javascript" src="/jquery/jqm-datebox.mode.datebox.min.js"></script>
+	<script type="text/javascript" src="/jquery/jquery.mobile.datebox.i18n.zh-CN.utf8.js"></script>
+	<script type="text/javascript" src="/jquery/jquery.mobile.simpledialog.min.js"></script>
+
+	<style>
+		p
+	  {
+	  	margin-right:20px;
+	  }
+	</style>
+</head> 
+
+<body> 
+
+<div data-role="page" id="home">
+  <div data-role="header" data-position="fixed">
+	  <a href="/map/measure?username=<%= @username %>" data-role="button" class="ui-btn-left" data-icon="back" data-theme="b" id='back' rel="external" >返回</a>
+    <h1>增加项目地块</h1>
+		<a href="#" style="float:right; position:absolute; right:80px; top:5px" data-icon="cross" data-theme="f" data-role="button"  data-theme="b" id='delete' >删除</a>
+		<a href="#" data-role="button" class="ui-btn-right" data-icon="check" data-theme="b" id='save' >保存</a>
+  </div>
+	<h3>基本信息</h3><hr>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">项目名称:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="xmmc" type="text"  />
+		</div>	   
+		<div class="grid_2">
+			<p align="right"> 用地单位: </p>
+		</div>
+		<div class="grid_4">
+			<input name="yddw" type="text"  />	
+		</div>		             
+	</fieldset>
+
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">坐落位置:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="zlwz" type="text"  />
+		</div>	   
+		<div class="grid_4">
+			<p align="right"> 是否符合土地利用整体规划: </p>
+		</div>
+		<div class="grid_2">
+			<fieldset data-role="controlgroup" data-type="horizontal"  data-mini="false">
+          <input id="sffhztgh_radio1" name="sffhztgh" value="是" type="radio" checked="true">
+          <label for="sffhztgh_radio1">是</label>
+          <input id="sffhztgh_radio2" name="sffhztgh" value="否" type="radio">
+          <label for="sffhztgh_radio2">否</label>
+      </fieldset>
+		</div>		             
+	</fieldset>
+	
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">原地类:</p>
+		</div>	
+		<div class="grid_4">
+				<input name="ydl" type="text"  />
+		</div>	   
+	</fieldset>
+	
+	<h3>地块审批情况</h3><hr>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">立项时间:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="lxsj" type="text" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true}' />
+		</div>	   
+		<div class="grid_2">
+			<p align="right"> 立项批文号: </p>
+		</div>
+		<div class="grid_4">
+			<input name="lxpwh" type="text"  />
+		</div>		             
+	</fieldset>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">规划定点时间:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="ghddsj" type="text" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true}' />
+		</div>	   
+		<div class="grid_2">
+			<p align="right">规划定点号: </p>
+		</div>
+		<div class="grid_4">
+			<input name="ghddh" type="text"  />
+		</div>		             
+	</fieldset>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">转征用时间:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="zzysj" type="text" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true}' />
+		</div>	   
+		<div class="grid_2">
+			<p align="right">转征用批文号: </p>
+		</div>
+		<div class="grid_4">
+			<input name="zzypwh" type="text"  />
+		</div>		             
+	</fieldset>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">供地时间:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="gdsj" type="text" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true}' />
+		</div>	   
+		<div class="grid_2">
+			<p align="right">批文号: </p>
+		</div>
+		<div class="grid_4">
+			<input name="gdpwh" type="text"  />
+		</div>		             
+	</fieldset>
+	
+	<h3>土地用途、面积</h3><hr>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">批准用途:</p>
+		</div>	
+		<div class="grid_4">
+				<input name="pzyt" type="text"  />
+		</div>	   
+		<div class="grid_2">
+			<p align="right">实际用途: </p>
+		</div>
+		<div class="grid_4">
+			<input name="sjyt" type="text"  />
+		</div>		             
+	</fieldset>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">批准面积(亩):</p>
+		</div>	
+		<div class="grid_4">
+				<input name="pzmj" type="text"  />
+		</div>	   
+		<div class="grid_2">
+			<p align="right">其中耕地(亩): </p>
+		</div>
+		<div class="grid_4">
+			<input name="gdmj" type="text"  />
+		</div>		             
+	</fieldset>
+	<fieldset class="container_12">
+		<div class="grid_2">
+			<p align="right">动工时间:</p>
+		</div>	
+		<div class="grid_4">
+			<input name="dgsj" type="text" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true}' />
+		</div>	   
+	</fieldset>
+	
+	<div data-role="collapsible" data-inset="false" hidden="true">
+    <input name="username" type="text" hidden="true" value="<%= @username %>" />
+    <input name="gid" type="text" hidden="true" value="<%= @xmdks.gid %>" />
+  </div>
+	
+	<br />
+
+</div>
+
+<div data-role="dialog" id="sure" data-title="确定删除">
+  <div data-role="content">
+    <h2 class="sure-1">确定删除这条记录</h2>
+    <h3 class="sure-2">此操作不可逆转</h3>
+    <div class="ui-grid-a ">
+        <div class="ui-block-a">
+          <a href="#" data-role="button" data-theme="b" data-rel="back">返回</a>
+        </div>
+        <div class="ui-block-b">
+          <input id="sureXmdk" type="button" data-inline="false" value="删除记录" data-theme="f"/>
+        </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<script>
+// self executing function here
+(function() {
+	$("input[name='xmmc']").val('<%= @a_xmdks.xmmc %>');
+	$("input[name='yddw']").val('<%= @a_xmdks.yddw %>');
+	$("input[name='zlwz']").val('<%= @a_xmdks.zlwz %>');
+	$("select[name='sffhztgh']").val('<%= @a_xmdks.sffhztgh %>');
+	$("input[name='ydl']").val('<%= @a_xmdks.ydl %>');
+	$("input[name='lxsj']").val('<%= @a_xmdks.lxsj %>');
+	$("input[name='lxpwh']").val('<%= @a_xmdks.lxpwh %>');
+	$("input[name='ghddsj']").val('<%= @a_xmdks.ghddsj %>');
+	$("input[name='ghddh']").val('<%= @a_xmdks.ghddh %>');
+	$("input[name='zzysj']").val('<%= @a_xmdks.zzysj %>');
+	$("input[name='zzypwh']").val('<%= @a_xmdks.zzypwh %>');
+	$("input[name='gdsj']").val('<%= @a_xmdks.gdsj %>');
+	$("input[name='gdpwh']").val('<%= @a_xmdks.gdpwh %>');
+	$("input[name='pzyt']").val('<%= @a_xmdks.pzyt %>');
+	$("input[name='sjyt']").val('<%= @a_xmdks.sjyt %>');
+	$("input[name='pzmj']").val('<%= sprintf('%.2f', @a_xmdks.pzmj.to_f/2000*3.0) %>');
+	$("input[name='gdmj']").val('<%= sprintf('%.2f', @a_xmdks.gdmj.to_f/2000*3.0) %>');
+	$("input[name='dgsj']").val('<%= @a_xmdks.dgsj %>');
+	
+	<% if @xmdks.xz_tag == '是' %>
+		  $("#delete").show();
+	<% else %>
+		  $("#delete").hide();
+	<% end %> 
+	
+})();
+
+$('#save').on('click', function(){
+	console.log('save button clicked!');
+	var xmmc       = $.trim($("input[name='xmmc']").val());
+	var yddw       = $.trim($("input[name='yddw']").val());
+	var zlwz       = $.trim($("input[name='zlwz']").val());
+	var sffhztgh   = $.trim($("input[name='sffhztgh']:checked").val());
+	var ydl        = $.trim($("input[name='ydl']").val());
+	var lxsj       = $.trim($("input[name='lxsj']").val());
+	var lxpwh      = $.trim($("input[name='lxpwh']").val());
+	var ghddsj     = $.trim($("input[name='ghddsj']").val());
+	var ghddh      = $.trim($("input[name='ghddh']").val());
+	var zzysj      = $.trim($("input[name='zzysj']").val());
+	var zzypwh     = $.trim($("input[name='zzypwh']").val());
+	var gdsj       = $.trim($("input[name='gdsj']").val());
+	var gdpwh      = $.trim($("input[name='gdpwh']").val());
+	var pzyt       = $.trim($("input[name='pzyt']").val());
+	var sjyt       = $.trim($("input[name='sjyt']").val());
+	var pzmj       = $.trim($("input[name='pzmj']").val())*2000/3.0;
+	var gdmj       = $.trim($("input[name='gdmj']").val())*2000/3.0;
+	var dgsj       = $.trim($("input[name='dgsj']").val());
+	var username   = $.trim($("input[name='username']").val());
+	var gid        = $.trim($("input[name='gid']").val());
+	
+	
+	var pars = {xmmc:xmmc,yddw:yddw,zlwz:zlwz,sffhztgh:sffhztgh,ydl:ydl,lxsj:lxsj,lxpwh:lxpwh,ghddsj:ghddsj,ghddh:ghddh,zzysj:zzysj,zzypwh:zzypwh,gdsj:gdsj,gdpwh:gdpwh,pzyt:pzyt,sjyt:sjyt,pzmj:pzmj,gdmj:gdmj,dgsj:dgsj,username:username,gid:gid};
+
+	
+	$.ajax({
+    type: "POST",
+    url: "/map/save_new_xmdk",
+    data: pars,
+    cache: false,
+    dataType: "text",
+    success: function(data){
+		  var username = $.trim($("input[name='username']").val());
+      $(location).attr('href','/map/measure?username='+username);
+    }
+  });
+	
+});
+
+
+$('#delete').on('click', function(){
+	$.mobile.changePage("#sure", "pop");
+});
+
+$('#sureXmdk').click(function() {
+   var gid = $.trim($("input[name='gid']").val());
+
+   $.ajax({
+     type: "POST",
+     url: "/map/delete_new_xmdk",
+     data: ({gid:gid}),
+     cache: false,
+     dataType: "text",
+     success: function(data){
+       if (data == 'Success') {
+         var username = $.trim($("input[name='username']").val());
+         $(location).attr('href','/map/measure?username='+username);
+       } else {
+         alert("改项目地块被引用，不能删除！")
+         var username = $.trim($("input[name='username']").val());
+         $(location).attr('href','/map/measure?username='+username);
+       }
+     }
+   });
+
+}); 
+
+
+
+</script>
+</html>

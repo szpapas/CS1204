@@ -109,7 +109,7 @@ class MapController < ApplicationController
     if username == ""
       txt = ""
     else
-      ts1 = Time.now.strftime('%Y-%m-%d')  
+      ts1 = (Time.now - 86400*28).strftime('%Y-%m-%d')  
       ts2 = (Time.now + 86400*28).strftime('%Y-%m-%d')  
       if  username.include?('1')
         txt = ''
@@ -119,7 +119,7 @@ class MapController < ApplicationController
           username = user[0].username
         end
 
-        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}') and del_tag <> '是';")
+        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}') and (del_tag <> '是' || del_tag is null);")
       end
       txt = plan.to_json.gsub(' 00:00:00', '')
     end
@@ -677,5 +677,74 @@ class MapController < ApplicationController
     render :text => "Success"
   end 
   
+  def add_xmdks
+    @username = params['username'] || ''
+    @area = params['area'] || ''
+    @geom = params['geom'] || ''
+    @length = params['length'] || ''
+  end
+  
+  def show_xmdks
+    @username = params['username'] || ''
+    @xmdks = User.find_by_sql("select * from xmdks where gid = #{params['gid']};")[0]
+    @a_xmdks = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdks['gdqkid']}'; ")[0]
+    @a_xmdks.lxsj = @a_xmdks.lxsj.gsub(' 00:00:00','') if !@a_xmdks.lxsj.nil? 
+  	@a_xmdks.zzysj = @a_xmdks.zzysj.gsub(' 00:00:00','') if !@a_xmdks.zzysj.nil? 
+  	@a_xmdks.ghddsj = @a_xmdks.ghddsj.gsub(' 00:00:00','') if !@a_xmdks.ghddsj.nil? 
+  	@a_xmdks.gdsj = @a_xmdks.gdsj.gsub(' 00:00:00','') if !@a_xmdks.gdsj.nil? 
+  	@a_xmdks.dgsj = @a_xmdks.zzysj.gsub(' 00:00:00','') if !@a_xmdks.dgsj.nil?
+  end  
+  
+  def modify_xmdks
+    @username = params['username'] || ''
+    @xmdks = User.find_by_sql("select * from xmdks where gid = #{params['gid']};")[0]
+    @a_xmdks = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdks['gdqkid']}'; ")[0]
+  end  
 
+  def save_new_xmdk
+    gid = params['gid'].to_i
+    if gid == 0
+      ss = rand(36**32).to_s(36)
+      gdqkid = ss[0..7]+'-'+ss[8..11]+'-'+ss[12..15]+'-'+ss[16..19]+'-'+ss[20..31]
+      user = User.find_by_sql("insert into xmdks (xmmc, pzwh, yddw, tdzl, dkmj, jlrq, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at, gdqkid) values ('#{params['xmmc']}','#{params['gdpwh']}',  '#{params['yddw']}', '#{params['zlwz']}', #{params['pzmj']}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}',  #{params['area']}, #{params['length']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{gdqkid}') returning gid;")
+      
+      User.find_by_sql("update xmdks set xzqmc = zjzj.xzqmc from zjzj where ST_within(centroid(xmdks.the_geom), zjzj.the_geom) and gdqkid = '#{gdqkid}';")
+      
+      params['lxsj'] =  params['lxsj'] == '' ? "NULL" : "TIMESTAMP '#{params['lxsj']}'"
+      params['ghddsj'] =  params['ghddsj'] == '' ? "NULL" : "TIMESTAMP '#{params['ghddsj']}'"
+      params['zzysj'] =  params['zzysj'] == '' ? "NULL" : "TIMESTAMP '#{params['zzysj']}'"
+      params['gdsj'] =  params['gdsj'] == '' ? "NULL" : "TIMESTAMP '#{params['gdsj']}'"
+      params['dgsj'] =  params['dgsj'] == '' ? "NULL" : "TIMESTAMP '#{params['dgsj']}'"
+      
+      User.find_by_sql("insert into a_xmdks (gdqkid, xmmc, yddw, zlwz, sffhztgh,ydl, lxsj, lxpwh, ghddsj, ghddh, zzysj, zzypwh, gdsj, gdpwh, pzyt, sjyt, pzmj, gdmj, dgsj ) values ('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['zlwz']}', '#{params['sffhztgh']}', '#{params['ydl']}', #{params['lxsj']},'#{params['lxpwh']}', #{params['ghddsj']}, '#{params['ghddh']}', #{params['zzysj']}, '#{params['zzypwh']}',#{params['gdsj']}, '#{params['gdpwh']}', '#{params['pzyt']}', '#{params['sjyt']}', '#{params['pzmj']}', '#{params['gdmj']}', #{params['dgsj']});")
+      
+    else
+      User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['gdpwh']}', yddw ='#{params['yddw']}', tdzl = '#{params['zlwz']}' , dkmj = '#{params['pzmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where gid = #{params['gid']}")
+
+      params['lxsj'] =  params['lxsj'] == '' ? "NULL" : "TIMESTAMP '#{params['lxsj']}'"
+      params['ghddsj'] =  params['ghddsj'] == '' ? "NULL" : "TIMESTAMP '#{params['ghddsj']}'"
+      params['zzysj'] =  params['zzysj'] == '' ? "NULL" : "TIMESTAMP '#{params['zzysj']}'"
+      params['gdsj'] =  params['gdsj'] == '' ? "NULL" : "TIMESTAMP '#{params['gdsj']}'"
+      params['dgsj'] =  params['dgsj'] == '' ? "NULL" : "TIMESTAMP '#{params['dgsj']}'"
+      
+      gdqkids = User.find_by_sql("select gdqkid from xmdks where gid = #{params['gid']} ")
+      
+      User.find_by_sql("update a_xmdks set xmmc = '#{params['xmmc']}', yddw = '#{params['yddw']}', zlwz = '#{params['zlwz']}', sffhztgh = '#{params['sffhztgh']}', ydl='#{params['ydl']}', lxsj=#{params['lxsj']}, lxpwh='#{params['lxpwh']}', ghddsj=#{params['ghddsj']}, ghddh='#{params['ghddh']}', zzysj=#{params['zzysj']}, zzypwh='#{params['zzypwh']}', gdsj=#{params['gdsj']}, gdpwh='#{params['gdpwh']}', pzyt='#{params['pzyt']}', sjyt='#{params['sjyt']}', pzmj='#{params['pzmj']}', gdmj='#{params['gdmj']}', dgsj=#{params['dgsj']} where gdqkid = '#{gdqkids[0]['gdqkid']}';") 
+      
+    end
+    
+    render :text => "Success"
+  end  
+  
+  def delete_new_xmdk
+    
+    user = User.find_by_sql("select count(*) from inspects where xmdk_id =  #{params['gid']};")
+    if user[0].count.to_i == 0
+      User.find_by_sql("delete from a_xmdks where gdqkid = (select gdqkid from xmdks where gid = #{params['gid']});")
+      User.find_by_sql("delete from xmdks where gid = #{params['gid']} and xz_tag = '是';")
+      render :text => "Success"
+    else 
+      render :text => "Failure"
+    end
+  end  
 end

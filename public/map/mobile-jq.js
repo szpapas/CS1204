@@ -5,50 +5,6 @@ var selectedFeature = null;
 
 $(document).ready(function() {
   
-    // check client type
-    function detectDevice(){
-      var ua = navigator.userAgent; //Grab USER AGENT STRING
-      var checker = { webOS: ua.match(/webOS/),iphone: ua.match(/iPhone/),ipad: ua.match(/iPad/),ipod: ua.match(/iPod/),blackberry: ua.match(/BlackBerry/),android: ua.match(/Android/), symbian: ua.match(/Symbian/)};
-      //FIND PHONE OS TYPE
-      if (checker.android){
-       //android code here
-       //if(document.title == "Mobile Apps and Sites"){filterApps('Android');}
-       deviceType = "Android";
-       }  
-      else if (checker.webOS){
-       //Windows phone code here code here
-       deviceType = "webOS";
-      }      
-      else if (checker.iphone){
-       deviceType = "iPhone";
-
-      }
-      else if (checker.ipad){
-       //iPad code here
-
-       deviceType = "iPad";
-
-       }
-      else if (checker.ipod){
-       //iPod code here
-       deviceType = "iPod";
-      }    
-      else if (checker.blackberry){
-       deviceType = "BlackBerry";
-      }   
-      else if (checker.symbian){
-       deviceType = "Symbian";
-      }   
-      else {
-       //unknown device code here
-       deviceType = "Unknown";
-       }
-      return  deviceType;
-    }
-    
-    var device = detectDevice();
-    console.log(device);
-     
     // fix height of content
     function fixContentHeight() {
         var footer = $("div[data-role='footer']:visible"),
@@ -66,17 +22,35 @@ $(document).ready(function() {
         } else {
             // initialize map
             init(function(feature) { 
-                selectedFeature = feature; 
-                $.mobile.changePage("#popup", { transition: "slide"});
-                var xz_tag = selectedFeature.attributes['是否新增'];
-                if(xz_tag.length > 0){
-                  $("#popup-grid").show();
-                } else {
-                  $("#popup-grid").hide();
-                }
+                
+                if (navigator.userAgent.match(/iPad/) == null){  
+                  //显示xmdks Features的特性
+                  selectedFeature = feature; 
+                  $.mobile.changePage("#popup", { transition: "slide"});
+                  var xz_tag = selectedFeature.attributes['是否新增'];
+                  if(xz_tag.length > 0){
+                    $("#popup-grid").show();
+                  } else {
+                    $("#popup-grid").hide();
+                  }
+                }else {
+                  selectedFeature = feature;
+                  username = $.trim($("input[name='user_id']").val());
+                  gid = selectedFeature.attributes['地块编号']
+                  $(location).attr('href','/map/show_xmdks?username='+username+'&gid='+gid);
+                }  
             });
             initLayerList();
         }
+        
+        navigator.geolocation.getCurrentPosition (function (pos)
+        {
+            var lat = pos.coords.latitude;
+            var lon = pos.coords.longitude;
+            var newPoint =  new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            map.panTo(newPoint);
+        });
+        
     };
     
     $(window).bind("orientationchange resize pageshow", fixContentHeight);

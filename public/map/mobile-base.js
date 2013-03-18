@@ -151,26 +151,34 @@ var init = function (onSelectFeatureFunction) {
         title: "增加巡查点", displayClass: "myClass",trigger: function() {  
             var vectors = map.getLayersByName('测量图层')[0];
             if (vectors.features.length > 0) {
-              $.mobile.changePage("#new_xmdk_id", { transition: "slide"}); 
-              $("input[name='gid']").val('');
-              //$("input[name='username']").val('');
-              $("input[name='xmmc']").val('');
-              $("input[name='pzwh']").val('');
-              $("input[name='sfjs']").val('');
-              $("input[name='yddw']").val('');
-              $("input[name='tdzl']").val('');
-              $("input[name='dkmj']").val('');
-              $("input[name='xzqmc']").val('');
-              $("input[name='xmmc']").val('');
-              $("input[name='xmmc']").val('');
-              $("input[name='dkh']").val('');
-              $("input[name='tfh']").val('');
-              $("input[name='xz_tag']").val('是');
+              //alert (navigator.platform);
+              //if (navigator.platform  != 'iPad') {
+              if (navigator.userAgent.match(/iPad/) == null){  
+                $.mobile.changePage("#new_xmdk_id", { transition: "slide"}); 
+                $("input[name='gid']").val('');
+                $("input[name='xmmc']").val('');
+                $("input[name='pzwh']").val('');
+                $("input[name='sfjs']").val('');
+                $("input[name='yddw']").val('');
+                $("input[name='tdzl']").val('');
+                $("input[name='dkmj']").val('');
+                $("input[name='xzqmc']").val('');
+                $("input[name='xmmc']").val('');
+                $("input[name='xmmc']").val('');
+                $("input[name='dkh']").val('');
+                $("input[name='tfh']").val('');
+                $("input[name='xz_tag']").val('是');
+              } else {
+                var username = $.trim($("input[name='user_id']").val());
+                var vectors = map.getLayersByName('测量图层')[0];
+                var area = vectors.features[0].geometry.getArea();
+                var length = vectors.features[0].geometry.getLength();
+                var geom = vectors.features[0].geometry.toString();
+                $(location).attr('href','/map/add_xmdks?username='+username+'&area='+area +'&length='+length+'&geom='+geom);
+              }
             } else {
               alert ("请先绘制图形状");
             }
-            
-
         }  
     });
     
@@ -257,6 +265,7 @@ var init = function (onSelectFeatureFunction) {
         strokeColor: '#f00',
         strokeOpacity: 0.6
     };
+    
     geolocate.events.register("locationupdated", this, function(e) {
         vector.removeAllFeatures();
         vector.addFeatures([

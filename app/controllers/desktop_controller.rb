@@ -138,7 +138,7 @@ class DesktopController < ApplicationController
     if params['del_tag'] != '全部'
       cond << "del_tag = '是'"
     else 
-      cond << "del_tag is null"   
+      cond << "(del_tag is null || del_tag <> '是')"   
     end
     
     case cond.size
