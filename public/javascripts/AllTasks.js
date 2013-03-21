@@ -3044,7 +3044,270 @@ function myTask(id) {
       }
       */
     } 
-    break;    default:
+    break;    
+    case 41 :
+    {
+      var tabPanel = Ext.getCmp("mytask-tab");
+      if (Ext.getCmp('mytask-tab41') == undefined) {
+        
+        var formPanel = new Ext.form.FormPanel({
+            xtype:"panel",
+            id:'mytask-tab41',
+            closable : true,
+            closeAction: 'hide',
+            title:"我的项目地块",
+            layout: 'absolute',
+            width:800,
+            height:600,
+            border: 'true',
+            items:[{
+                xtype:"tabpanel",
+                activeTab:0,
+                width:800,
+                height:600,
+                items :[{
+                  xtype:"panel",
+                  title:"基本信息",
+                  layout:"absolute", 
+                  items:[{
+                      xtype:"label", text:"开始时间:", x:"25",  y:"15"  },
+                    { xtype:"label", text:"结束时间:", x:"425", y:"15"  },
+                    { xtype:"label", text:"巡查路线:", x:"25",  y:"65"  },
+                    { xtype:"label", text:"协查人员:", x:"25",  y:"165" },
+                    { xtype:"label", text:"巡查内容:", x:"25",  y:"265" },
+                    { xtype:"label", text:"巡查结果:", x:"25",  y:"365" },
+                    { xtype:"label", text:"处理意见:", x:"25",  y:"465" },
+
+                    { xtype:"textfield", name:"kssj", x:"100", y:"10",  width:200, height:30},
+                    { xtype:"textfield", name:"jssj", x:"500", y:"10",  width:200, height:30},
+                    { xtype:"textarea", name:"xclx", x:"100",  y:"60",  width:300, height:90},
+                    { xtype:"textarea", name:"xcry", x:"100",  y:"160", width:300, height:90},
+                    { xtype:"textarea", name:"xcnr", x:"100",  y:"260", width:625, height:90},
+                    { xtype:"textarea", name:"xnjg", x:"100",  y:"360", width:625, height:90},
+                    { xtype:"textarea", name:"clyj", x:"100",  y:"460", width:625, height:90},
+                    { xtype:"panel", x:"425", y:"60", height:190, width:300, name:"xclxt"
+                  }]                 
+                },{
+                  xtype:"panel",
+                  title:"照片管理",
+                  layout:"absolute",
+                  items:[{
+                      xtype:"panel",   x:"25",  y:"70", height:445, width:240, name:"xczp" },
+                    { xtype:"panel",   x:"285", y:"70", height:445, width:240, name:"kyzp" },
+                    { xtype:"panel",   x:"545", y:"70", height:445, width:240, name:"hsz" },
+
+                    { xtype:"button",  x:"25",  y:"10",  height:30,  width:75,  text:"添加照片" }, 
+                    { xtype:"button",  x:"115", y:"10",  height:30,  width:75,  text:"图片浏览" }, 
+                    { xtype:"button",  x:"200", y:"10",  height:30,  width:75,  text:"保存" }, 
+                    { xtype:"button",  x:"700", y:"10",  height:30,  width:75,  text:"清空" }, 
+
+                    { xtype:"label", text:"巡查照片:", x:"25",   y:"55" },
+                    { xtype:"label", text:"可用照片:", x:"285",  y:"55" },
+                    { xtype:"label", text:"回收站:",  x:"545",  y:"55"
+                  }]
+                },{
+                  xtype:"panel",
+                  title:"巡查点",
+                  layout:"absolute",
+                  items:[{
+                      xtype:"textfield", name:"xmmc", x:"250", y:"45",   width:200, height:30},
+                    { xtype:"datefield", name:"jcrq", x:"250", y:"85",  width:200, height:30},
+                    { xtype:"textfield", name:"jszt", x:"250", y:"125",  width:200, height:30},
+                    { xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
+                    { xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
+                    { xtype:"textfield", name:"sjyt", x:"250", y:"245",  width:200, height:30},
+                    { xtype:"textfield", name:"gdmj", x:"250", y:"285",  width:200, height:30},
+                    { xtype:"textfield", name:"sfwf", x:"250", y:"325",  width:200, height:30},
+                    { xtype:"textfield", name:"wfmj", x:"250", y:"365",  width:200, height:30},
+                    { xtype:"textarea",  name:"clyj", x:"250", y:"405",  width:525, height:100},
+
+                    { xtype:"label", text:"项目名称", x:"175", y:"50" },
+                    { xtype:"label", text:"检查日期", x:"175", y:"90"},
+                    { xtype:"label", text:"建设状态", x:"175", y:"130"},
+                    { xtype:"label", text:"许可证" , x:"175", y:"170"},
+                    { xtype:"label", text:"永久性" , x:"175", y:"210"},
+                    { xtype:"label", text:"实际用途", x:"175", y:"250"},
+                    { xtype:"label", text:"耕地面积", x:"175", y:"290"},
+                    { xtype:"label", text:"是否违法", x:"175", y:"330"},
+                    { xtype:"label", text:"违法面积", x:"175", y:"370"},
+                    { xtype:"label", text:"处理意见", x:"175", y:"410"},
+
+                    { xtype:"label", text:"巡查点列表", x:"25", y:"20"},
+                    { xtype:"label", text:"巡查照片",  x:"480", y:"20"},
+
+                    { xtype:"panel", x:"25",  y:"45", height:470, width:120, name:"kyzp" },
+                    { xtype:"panel", x:"480", y:"45", height:270, width:290, name:"xctp" },
+
+                    { xtype:"button",  x:"690", y:"10",  height:30,  width:75,  text:"添加照片" }, 
+                    { xtype:"button",  x:"600", y:"10",   height:30,  width:75,  text:"保存"   }, 
+                    { xtype:"button",  x:"480", y:"330",  height:55,  width:25,  text:"<<"   }, 
+                    { xtype:"panel",   x:"510", y:"330",  height:55,  width:235, name:"xctp_s" },
+                    { xtype:"button",  x:"750", y:"330",  height:55,  width:25,  text:">>"
+                  }]
+                }]
+            }]
+        });
+
+        tabPanel.add(formPanel);
+        tabPanel.doLayout();
+        
+        tabPanel.setActiveTab(formPanel);
+      } else {
+        formPanel = Ext.getCmp('mytask-tab41');
+        tabPanel.setActiveTab(formPanel);
+      }
+    }
+    break;
+    case 42 : {
+      var tabPanel = Ext.getCmp("mytask-tab");
+      if (Ext.getCmp('mytask-tab42') == undefined) {
+        
+        var formPanel = new Ext.form.FormPanel({
+            xtype:"panel",
+            id:'mytask-tab42',
+            closable : true,
+            closeAction: 'hide',
+            title:"我的项目地块",
+            layout: 'absolute',
+            width:800,
+            height:600,
+            border: 'true',
+            items:[{
+                xtype:"tabpanel",
+                activeTab:0,
+                width:800,
+                height:600,
+                items :[{
+                    xtype:"panel",
+                    title:"基本信息",
+                    layout:"absolute",
+                    items:[{
+                       name:"xmmc", x:"100", y:"50", xtype:"textfield", width:200, height:30},
+                      {name:"yddw", x:"100", y:"90", xtype:"textfield", width:200, height:30},
+                      {name:"pzwh", x:"100", y:"130", xtype:"textfield", width:200, height:30},
+                      {name:"sfjs", x:"100", y:"170", xtype:"textfield", width:200, height:30},
+                      {name:"tdzl", x:"100", y:"210", xtype:"textfield", width:200, height:30},
+                      {name:"dkmj", x:"100", y:"250", xtype:"textfield", width:200, height:30},
+                      {name:"xzqh", x:"100", y:"290", xtype:"textfield", width:200, height:30},
+                      {name:"tbmj", x:"100", y:"330", xtype:"textfield", width:200, height:30},
+                      {name:"tbzc", x:"100", y:"370", xtype:"textfield", width:200, height:30},
+                      {name:"cjrq", x:"100", y:"410", xtype:"textfield", width:200, height:30},
+
+                      {text:"项目名称", x:"15", y:"55",  xtype:"label"},
+                      {text:"用地单位", x:"15", y:"95",  xtype:"label"},
+                      {text:"配准文号", x:"15", y:"135", xtype:"label"},
+                      {text:"是否建设", x:"15", y:"175", xtype:"label"},
+                      {text:"土地坐落", x:"15", y:"215", xtype:"label"},
+                      {text:"地块面积", x:"15", y:"255", xtype:"label"},
+                      {text:"行政区划", x:"15", y:"295", xtype:"label"},
+                      {text:"图斑面积", x:"15", y:"335", xtype:"label"},
+                      {text:"图斑周长", x:"15", y:"375", xtype:"label"},
+                      {text:"创建日期", x:"15", y:"415", xtype:"label"},
+
+                      { xtype:"panel", name:"xmdk_pic", x:"320", y:"50", width:400, height:400 },
+
+                      { xtype:"button",  x:"500",  y:"10",  height:30,  width:100,  text:"删除" }, 
+                      { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  text:"保存修改"
+                    }]
+                  },{ 
+                    xtype:"panel",
+                    title:"扩展信息",
+                    layout:"absolute",
+                    items:[{
+                        xtype:'label', text:"项目名称",      x:"15" , y:"60"},
+                      { xtype:'label', text:"用地单位",      x:"395", y:"60"},
+                      { xtype:'label', text:"坐落位置",      x:"15", y:"90"},
+                      { xtype:'label', text:"土地利用整体规划",  x:"395", y:"90"},
+                      { xtype:'label', text:"原地类",       x:"15", y:"120"},
+                      { xtype:'label', text:"立项时间",      x:"15", y:"190"},
+                      { xtype:'label', text:"立项批文号",     x:"395", y:"190"},
+                      { xtype:'label', text:"规划定点时间",    x:"15", y:"220"},
+                      { xtype:'label', text:"规划定点批文号",   x:"395", y:"220"},
+                      { xtype:'label', text:"转征用时间",     x:"15", y:"250"},
+                      { xtype:'label', text:"转征用批文号",    x:"395", y:"250"},
+                      { xtype:'label', text:"供地时间",      x:"15", y:"280"},
+                      { xtype:'label', text:"批文号",       x:"395", y:"280"},
+                      { xtype:'label', text:"批准用途",      x:"15", y:"350"},
+                      { xtype:'label', text:"实际用途",      x:"395", y:"350"},
+                      { xtype:'label', text:"批准面积",      x:"15", y:"380"},
+                      { xtype:'label', text:"供地面积",      x:"395", y:"380"},
+                      { xtype:'label', text:"动工时间",      x:"15", y:"410"},
+
+                      { name:"xmmc", x:"100", y:"60", xtype:"textfield", width:200},
+                      { name:"ysdw", x:"480", y:"60", xtype:"textfield", width:200},
+                      { name:"zlwz", x:"100", y:"90", xtype:"textfield", width:200},
+                      { name:"sffhztgh", x:"480", y:"90", xtype:"textfield", width:200},
+                      { name:"ydl", x:"100", y:"120", xtype:"textfield", width:200},
+
+                      { name:"lxsj",   x:"100", y:"190", xtype:"textfield", width:200},
+                      { name:"lxpwh",  x:"480", y:"190", xtype:"textfield", width:200},
+                      { name:"ghddsj", x:"100", y:"220", xtype:"textfield", width:200},
+                      { name:"ghddwh", x:"480", y:"220", xtype:"textfield", width:200},
+                      { name:"zzysj",  x:"100", y:"250", xtype:"textfield", width:200},
+                      { name:"zzypwh", x:"480", y:"250", xtype:"textfield", width:200},
+                      { name:"gdsj",   x:"100", y:"280", xtype:"textfield", width:200},
+                      { name:"pwh",    x:"480", y:"280", xtype:"textfield", width:200},
+
+                      { name:"pzyt", x:"100", y:"350", xtype:"textfield", width:200},
+                      { name:"sjyt", x:"480", y:"350", xtype:"textfield", width:200},
+                      { name:"pzmj", x:"100", y:"380", xtype:"textfield", width:200},
+                      { name:"gdmj", x:"480", y:"380", xtype:"textfield", width:200},
+                      { name:"dgsj", x:"100", y:"410", xtype:"textfield", width:200},
+
+                      { xtype:"panel", x:"10", y:"50", width:720 },
+                      { xtype:"panel", x:"10", y:"180", width:720 },
+                      { xtype:"panel", x:"10", y:"340", width:720 },
+
+                      { xtype:"button",  x:"500",  y:"10",  height:30,  width:100,  text:"删除" }, 
+                      { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  text:"保存修改"
+                    }]
+                  },{
+                    xtype:"panel",
+                    title:"巡查历史",
+                    layout:"absolute",
+                    items:[{
+                        xtype:"panel", x:"10", y:"10", width:700, height:175 },
+                      { xtype:"panel", x:"400", y:"200", width:300, height:240 },
+                      { xtype:"button", x:"400", y:"450", width:30, height:55 },
+                      { xtype:"panel", x:"430", y:"450", width:300, height:55 },
+                      { xtype:"button", x:"670", y:"450", width:30, height:55 },
+
+                      { xtype:"textfield", name:"h_xmmc", x:"100", y:"200", width:250 },
+                      { xtype:"textfield", name:"h_jcrq", x:"100", y:"230", width:250 },
+                      { xtype:"textfield", name:"h_jszt", x:"100", y:"260", width:250 },
+                      { xtype:"textfield", name:"h_xkz" , x:"100", y:"290", width:250 },
+                      { xtype:"textfield", name:"h_yjx" , x:"100", y:"320", width:250 },
+                      { xtype:"textfield", name:"h_sjyt", x:"100", y:"350", width:250 },
+                      { xtype:"textfield", name:"h_gdmj", x:"100", y:"380", width:250 },
+                      { xtype:"textfield", name:"h_sjwf", x:"100", y:"410", width:250 },
+                      { xtype:"textfield", name:"h_wfmj", x:"100", y:"440", width:250 },
+
+                      { xtype:"label", text:"项目名称", x:"15", y:"200"},
+                      { xtype:"label", text:"检查日期", x:"15", y:"230"},
+                      { xtype:"label", text:"建设状态", x:"15", y:"260"},
+                      { xtype:"label", text:"h_xkz" , x:"15", y:"290"},
+                      { xtype:"label", text:"h_yjx" , x:"15", y:"320"},
+                      { xtype:"label", text:"h_sjyt", x:"15", y:"350"},
+                      { xtype:"label", text:"h_gdmj", x:"15", y:"380"},
+                      { xtype:"label", text:"h_sjwf", x:"15", y:"410"},
+                      { xtype:"label", text:"h_wfmj", x:"15", y:"440"
+                    }]
+                }]
+            }]
+        });  
+                      
+        tabPanel.add(formPanel);
+        tabPanel.doLayout();
+        
+        tabPanel.setActiveTab(formPanel);
+      } else {
+        formPanel = Ext.getCmp('mytask-tab42');
+        tabPanel.setActiveTab(formPanel);
+      }
+    }
+    break;
+    
+    default:
     {
       alert("正在建设中。。。"+id);
     }

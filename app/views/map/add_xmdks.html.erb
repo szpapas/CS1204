@@ -188,6 +188,7 @@
     <input name="geom" type="text" hidden="true"   value="<%= @geom %>"/>
     <input name="username" type="text" hidden="true" value="<%= @username %>" />
     <input name="gid" type="text" hidden="true" value="0" />
+    <input name="saving" type="text" hidden="true" value="0" />
   </div>
 	
 	<br />
@@ -204,6 +205,12 @@
 
 $('#save').on('click', function(){
 	console.log('save button clicked!');
+	var saving = $.trim($("input[name='saving']").val());
+	if (saving == '1') {
+		return;
+	}
+	$("input[name='saving']").val('1');
+
 	var xmmc       = $.trim($("input[name='xmmc']").val());
 	var yddw       = $.trim($("input[name='yddw']").val());
 	var zlwz       = $.trim($("input[name='zlwz']").val());

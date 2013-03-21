@@ -96,12 +96,8 @@ class MapController < ApplicationController
   def gethelp
   end 
   
-
-  
   def makeSelect
   end
-  
-
     
   #Ajax requests
   def get_plan_json
@@ -119,7 +115,7 @@ class MapController < ApplicationController
           username = user[0].username
         end
 
-        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}') and (del_tag <> '是' || del_tag is null);")
+        plan = User.find_by_sql("select id, rwmc as xcmc, session_id, xcqy,xcfs,xcry as xcr, qrq as t_begin,zrq as t_end, zt, astext(transform(the_lines, 4326 )) as the_lines, taskbegintime as t_date1, taskendtime as t_date2, report_at as t_report, photo_count, xmdk_count, xclc, xcys from plans where xcry like '%#{username}%' and zrq > date ('#{ts1}') and qrq < date('#{ts2}') and (del_tag <> '是' or del_tag is null);")
       end
       txt = plan.to_json.gsub(' 00:00:00', '')
     end
@@ -555,7 +551,7 @@ class MapController < ApplicationController
     @task_id = params['task_id']
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
     gdqkid = User.find_by_sql("select gdqkid from xmdks where gid = #{params['xmdk_id']};")[0].gdqkid
-    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
+    @dksx = User.find_by_sql("select * from a_xmdks where gdqkid = '#{gdqkid}';")[0]
     render :template => '/map/inspect_show.html.erb'
   end
   
@@ -687,7 +683,7 @@ class MapController < ApplicationController
   def show_xmdks
     @username = params['username'] || ''
     @xmdks = User.find_by_sql("select * from xmdks where gid = #{params['gid']};")[0]
-    @a_xmdks = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdks['gdqkid']}'; ")[0]
+    @a_xmdks = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdks['gdqkid']}';")[0]
     @a_xmdks.lxsj = @a_xmdks.lxsj.gsub(' 00:00:00','') if !@a_xmdks.lxsj.nil? 
   	@a_xmdks.zzysj = @a_xmdks.zzysj.gsub(' 00:00:00','') if !@a_xmdks.zzysj.nil? 
   	@a_xmdks.ghddsj = @a_xmdks.ghddsj.gsub(' 00:00:00','') if !@a_xmdks.ghddsj.nil? 
