@@ -1007,6 +1007,32 @@ td.ux-taskButtons-edge {
    text-align:            center;
 }
 
+
+#drop-img, #drag-img, #hsz-img {
+     width:                 240px;
+     border:                1px solid #999999;
+     padding:               10px;
+     height:                445px;
+     -moz-border-radius:    10px;
+     -webkit-border-radius: 10px;
+}
+
+.rented, .repair {
+  width:  100px;
+}
+
+.availableLot div {
+   -moz-border-radius:    5px;
+   -webkit-border-radius: 5px;
+   width:                 85px;
+   border:                1px solid #666666;
+   padding:               3px;
+   background-color:      #FFFFFF;
+   margin:                5px;
+   cursor:                move;
+   text-align:            center;
+}
+
 #cars div, #trucks div {
    margin: 2px;
    width:  85px;
@@ -1039,4 +1065,11 @@ td.ux-taskButtons-edge {
 
 .tdsd-icon {
     background: url('/images/tdsd16.png') no-repeat 0 0 !important;
+}
+
+#xclxt, #box-xctp, #box-xctp-s, #box-xcd-list {
+     border:                1px solid #999999;
+     padding:               5px;
+     -moz-border-radius:    5px;
+     -webkit-border-radius: 5px;
 }

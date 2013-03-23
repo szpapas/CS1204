@@ -303,6 +303,9 @@ class DesktopController < ApplicationController
     else
       w_begin, w_end = 1, 52
     end
+
+    username = data[0].username
+    device = iphone
     
     for week in w_begin..w_end
       week_start = Date.commercial(nd, week, 1)
@@ -316,7 +319,7 @@ class DesktopController < ApplicationController
       plan_count = User.find_by_sql("select count(*) from plans where rwmc = '#{rwmc}';")
       
       if plan_count[0]['count'].to_i == 0 
-        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')" 
+        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry, device, username) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}', '#{device}', '#{username}')" 
       end
       
       xcbh = "xc-#{data[0].uname}-#{data[0].dwjc}-w#{week.to_s.rjust(2,'0')}-02"
@@ -328,7 +331,7 @@ class DesktopController < ApplicationController
       plan_count = User.find_by_sql("select count(*) from plans where rwmc = '#{rwmc}';")
       
       if plan_count[0]['count'].to_i == 0 
-        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}')"
+        User.find_by_sql "insert into plans (xcbh, rwmc, session_id, zt, qrq, zrq, xcqy, xcfs, xcry, device, username) values ('#{xcbh}', '#{rwmc}','#{session_id}', '计划',  TIMESTAMP '#{qrq}',  TIMESTAMP '#{zrq}', '#{xcqy}', '综合巡查', '#{xcry}', '#{device}', '#{username}')" 
       end
         
     end
@@ -1401,5 +1404,95 @@ class DesktopController < ApplicationController
         
     render :text => text.to_json
   end  
+  
+  
+  #username=
+  def get_xcd
+    params['start']   = params['start'] || "0"
+    params['limit']   = params['limit'] || "25"
+    
+    params['xz_tag']  = params['xz_tag'] || "全部"
+    params['xcqy']    = params['xcqy']   || "全部"
+    params['username']    = params['username'] || "全部"
+    
+    cond=[]
+    
+    if params['xz_tag'] == '是'
+      cond << "xz_tag='是'"
+      cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
+      cond << "username='#{params['username']}'" if params['username'] != '全部'
+    else 
+      cond << "(xz_tag != '是' or xz_tag is null)"
+      cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
+      cond << "gid in (select xmdk_id from inspects where username='#{params['username']}')" if params['username'] != '全部'
+    end
+      
+    case cond.size
+    when 0
+        conds = ''
+    when 1
+        conds = "where #{cond[0]}"
+    else
+        conds = "where #{cond.join(' and ')}"
+    end
+    
+    user = User.find_by_sql("select count(*) from xmdks #{conds} ;")[0]
+    size = user.count.to_i;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      puts "select * from xmdks #{conds} limit #{params['limit']} offset #{params['start']};"
+      user = User.find_by_sql("select * from xmdks #{conds} order by gid limit #{params['limit']} offset #{params['start']} ;")
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
+  #save basic plan data plan_id:plan_id, xclx:xclx, xcry:xcry, xcnr:xcnr, xcjg:xcjg, clyj:clyj
+  def save_plan_basic
+    User.find_by_sql("update plans set xclx = '#{params['xclx']}', xcry = '#{params['xcry']}', xcnr = '#{params['xcnr']}',xcjg = '#{params['xcjg']}', clyj = '#{params['clyj']}' where id = #{params['plan_id']};")
+    render :text => 'Success' 
+  end
+  
+  #pars = {jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
+  def save_inspect_basic
+    User.find_by_sql("update inspects set jszt = '#{params['jszt']}', xkz = '#{params['xkz']}', yjx = '#{params['yjx']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
+    render :text => 'Success'
+  end
+  
+  #对应plan_Id 的 xmdk 
+  #plan_id
+  def get_xcd_xmdk
+    user = User.find_by_sql("select xmdks.gid, xmdks.xmmc from inspects, xmdks where plan_id =  #{params['plan_id']} and xmdks.gid = inspects.xmdk_id;")
+    size = user.size;
+    if size.to_i > 0
+        txt = "{results:#{size},rows:["
+        for k in 0..size-1
+            txt = txt + user[k].to_json + ','
+        end
+        txt = txt[0..-2] + "]}"
+    else 
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt  
+  end
+  
+  #get one row inspect data by gid  
+  def get_inspect_data
+    user = User.find_by_sql("select * from inspects where plan_id = #{params['plan_id']} and xmdk_id = #{params['xmdk_id']};")
+    render :text => user.to_json
+  end
+  
+  def get_xcd_box
+    @xcds = User.find_by_sql("select xmdks.gid, xmdks.xmmc from inspects, xmdks where plan_id =  #{params['id']} and xmdks.gid = inspects.xmdk_id;")
+    render :text => '123,456'
+  end
+  
+  
+  
   
 end

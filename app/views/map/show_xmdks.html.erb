@@ -213,7 +213,7 @@
 	$("input[name='xmmc']").val('<%= @a_xmdks.xmmc %>');
 	$("input[name='yddw']").val('<%= @a_xmdks.yddw %>');
 	$("input[name='zlwz']").val('<%= @a_xmdks.zlwz %>');
-	$("select[name='sffhztgh']").val('<%= @a_xmdks.sffhztgh %>');
+	$("input[name='sffhztgh'][value='<%= @a_xmdks.sffhztgh %>']").attr('checked', true);
 	$("input[name='ydl']").val('<%= @a_xmdks.ydl %>');
 	$("input[name='lxsj']").val('<%= @a_xmdks.lxsj %>');
 	$("input[name='lxpwh']").val('<%= @a_xmdks.lxpwh %>');

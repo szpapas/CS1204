@@ -155,6 +155,8 @@ class MapController < ApplicationController
     
     if user[0].count.to_i == 0
       user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{plan_id}, #{xmdk_id}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
+      
+      User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{plan_id};")
     else
       user = User.find_by_sql("select count(*) from xcimage where plan_id = #{plan_id} and xmdk_id = #{xmdk_id};")
       User.find_by_sql("update inspects set tpsl = #{user[0].count}")
@@ -430,7 +432,8 @@ class MapController < ApplicationController
     gid = user[0]['gid']
     
     user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
-    
+    User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{task_id};") if task_id.to_i != 0
+
     inspect_id = user[0]['id']
     ss = {"mode" => "23", "result" => "gid:#{gid},inspect_id:#{inspect_id}"}
     render :text => ss.to_json
@@ -539,12 +542,6 @@ class MapController < ApplicationController
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
     xmdk_id = @xmdk.id
     render :template => '/map/inspect_edit.html.erb'
-    
-    #gdqkids = User.find_by_sql("select gdqkid from xmdks where gid = #{xmdk_id};")
-    #if gdqkids.size > 0 
-    #  gdqkid = gdqkids[0].gdqkid
-    #  @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{gdqkid}';")[0]
-    #end  
   end
   
   def showInspect
@@ -552,6 +549,13 @@ class MapController < ApplicationController
     @xmdk = User.find_by_sql("select * from inspects where plan_id = #{params['task_id']} and xmdk_id = #{params['xmdk_id']};")[0]
     gdqkid = User.find_by_sql("select gdqkid from xmdks where gid = #{params['xmdk_id']};")[0].gdqkid
     @dksx = User.find_by_sql("select * from a_xmdks where gdqkid = '#{gdqkid}';")[0]
+
+    @dksx.lxsj  =  @dksx.lxsj.nil?   ? '' : @dksx.lxsj.gsub(' 00:00:00','')
+    @dksx.zzysj =  @dksx.zzysj.nil?  ? '' : @dksx.zzysj.gsub(' 00:00:00','') 
+    @dksx.ghddsj = @dksx.ghddsj.nil? ? '' : @dksx.ghddsj.gsub(' 00:00:00','')
+    @dksx.gdsj =   @dksx.gdsj.nil?   ? '' : @dksx.gdsj.gsub(' 00:00:00','') 
+    @dksx.dgsj =   @dksx.dgsj.nil?   ? '' : @dksx.dgsj.gsub(' 00:00:00','')
+    
     render :template => '/map/inspect_show.html.erb'
   end
   
@@ -561,9 +565,13 @@ class MapController < ApplicationController
     
     if user[0].count.to_i == 0
       User.find_by_sql("insert into inspects (plan_id, xmdk_id, jszt, sfwf, sjzdmj, gdmj, wfmj, clyj, bz, xcrq) values (#{params['task_id']}, #{params['xmdk_id']}, '#{params['jszt']}', '#{params['sfwf']}', '#{params['sjzdmj']}', '#{params['gdmj']}', '#{params['wfmj']}', '#{params['clyj']}',  '#{params['bz']}', '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');")
+      
+      User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{task_id};")
       render :text => "保存成功"
     else
       User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
+      
+      User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{task_id};")
       render :text => '已经添加'
     end    
   end
@@ -684,11 +692,12 @@ class MapController < ApplicationController
     @username = params['username'] || ''
     @xmdks = User.find_by_sql("select * from xmdks where gid = #{params['gid']};")[0]
     @a_xmdks = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdks['gdqkid']}';")[0]
-    @a_xmdks.lxsj = @a_xmdks.lxsj.gsub(' 00:00:00','') if !@a_xmdks.lxsj.nil? 
-  	@a_xmdks.zzysj = @a_xmdks.zzysj.gsub(' 00:00:00','') if !@a_xmdks.zzysj.nil? 
-  	@a_xmdks.ghddsj = @a_xmdks.ghddsj.gsub(' 00:00:00','') if !@a_xmdks.ghddsj.nil? 
-  	@a_xmdks.gdsj = @a_xmdks.gdsj.gsub(' 00:00:00','') if !@a_xmdks.gdsj.nil? 
-  	@a_xmdks.dgsj = @a_xmdks.zzysj.gsub(' 00:00:00','') if !@a_xmdks.dgsj.nil?
+    
+    @a_xmdks.lxsj  =  @a_xmdks.lxsj.nil?   ? '' : @a_xmdks.lxsj.gsub(' 00:00:00','')
+    @a_xmdks.zzysj =  @a_xmdks.zzysj.nil?  ? '' : @a_xmdks.zzysj.gsub(' 00:00:00','') 
+    @a_xmdks.ghddsj = @a_xmdks.ghddsj.nil? ? '' : @a_xmdks.ghddsj.gsub(' 00:00:00','')
+    @a_xmdks.gdsj =   @a_xmdks.gdsj.nil?   ? '' : @a_xmdks.gdsj.gsub(' 00:00:00','') 
+    @a_xmdks.dgsj =   @a_xmdks.dgsj.nil?   ? '' : @a_xmdks.dgsj.gsub(' 00:00:00','')
   end  
   
   def modify_xmdks

@@ -166,11 +166,11 @@
 			</li>
 			<li>
 				<p style='width:35%;float:left'>批准面积（亩）:</p>
-				<p style='width:65%;float:right'><%= @dksx.pzmj %></p>
+				<p style='width:65%;float:right'><%= sprintf('%.2f', @dksx.pzmj.to_f/2000*3.0) %></p> 
 			</li>
 			<li>
 				<p style='width:35%;float:left'>其中耕地（亩）:</p>
-				<p style='width:65%;float:right'><%= @dksx.gdmj %></p>
+				<p style='width:65%;float:right'><%= sprintf('%.2f', @dksx.gdmj.to_f/2000*3.0) %></p>  
 			</li>
 			<li>
 				<p style='width:35%;float:left'>实际动工时间:</p>

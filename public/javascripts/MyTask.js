@@ -178,7 +178,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                         } 
                     }]
                 },{
-                    title: '我的巡查点',
+                    title: '巡查点管理',
                     iconCls: 'pin',
                     id: 'mt-panel4',
                     items: [{
@@ -186,7 +186,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                         border:false,
                         cls:'link-panel',
                         links:[{
-                             text:'新增巡查点',
+                             text:'我的巡查点',
                              id:"mytask_4",
                              action:"myTask(41)"
                         },{

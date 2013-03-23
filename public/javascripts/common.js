@@ -8,7 +8,7 @@ var user_id="";
 //var base_url = "http://127.0.0.1:8080/geoserver/wms";
 //var host_url = "http://127.0.0.1:8080/geoserver/cs1204/wms";
 
-/*======================   常熟  ===========================*/
+/*======================   常熟  ===========================
 
 var base_url = "http://218.4.152.78:8080/geoserver/wms";
 var host_url = "http://218.4.152.78:8080/geoserver/cs1204/wms";
@@ -95,13 +95,13 @@ var xzqmc_data = [
 
 /*------------------------------------------------------*/
 
-/*======================   无锡 ===========================
+/*======================   无锡 ===========================*/
 // 
 var CENTER_LON = 13370424.384;
 var CENTER_LAT = 3693277.655;
 
-var base_url = "http://192.168.10.40:8080/geoserver/wms";
-var host_url = "http://192.168.10.40:8080/geoserver/cs1204/wms";
+var base_url = "http://192.168.106.129:8080/geoserver/wms";
+var host_url = "http://192.168.106.129:8080/geoserver/cs1204/wms";
 
 var xcqy_data = [
   ['0','全部'],
