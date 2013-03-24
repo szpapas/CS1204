@@ -3182,7 +3182,8 @@ function myTask(id) {
         ///=============================
         // Load Store 
         xmdks_store.baseParams.xcqy   = "全部";
-        xmdks_store.baseParams.username = currentUser.username;
+        xmdks_store.baseParams.xz_tag = '是'
+        xmdks_store.baseParams.xcry   = currentUser.username;
         xmdks_store.baseParams.limit  = "20";
         xmdks_store.load();
         

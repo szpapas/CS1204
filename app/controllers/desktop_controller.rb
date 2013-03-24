@@ -1413,18 +1413,19 @@ class DesktopController < ApplicationController
     
     params['xz_tag']  = params['xz_tag'] || "全部"
     params['xcqy']    = params['xcqy']   || "全部"
-    params['username']    = params['username'] || "全部"
+    params['xcry']    = params['xcry']   || "全部"
+    #params['username']    = params['username'] || "全部"
     
     cond=[]
     
     if params['xz_tag'] == '是'
       cond << "xz_tag='是'"
       cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
-      cond << "username='#{params['username']}'" if params['username'] != '全部'
+      cond << "username='#{params['xcry']}'"     if params['xcry'] != '全部'
     else 
       cond << "(xz_tag != '是' or xz_tag is null)"
       cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
-      cond << "gid in (select xmdk_id from inspects where username='#{params['username']}')" if params['username'] != '全部'
+      cond << "gid in (select xmdk_id from inspects where username='#{params['xcry']}')" if params['xcry'] != '全部'
     end
       
     case cond.size
