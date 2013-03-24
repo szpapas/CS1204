@@ -1545,4 +1545,19 @@ class DesktopController < ApplicationController
     render :text => text.to_json
   end
   
+  def get_xcjl_xmdk
+    user = User.find_by_sql("select * from inspects where xmdk_id = #{params['xmdk_id']}")
+    size = user.size;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end
+  
 end

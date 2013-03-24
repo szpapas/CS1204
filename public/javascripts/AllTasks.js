@@ -2,6 +2,7 @@
 var view_xmdks = function(sys_grid_id) {
   var xmdks_grid = Ext.getCmp(sys_grid_id);
   var gsm =Ext.getCmp(sys_grid_id).getSelectionModel();
+  var data = gsm.selections.items[0]['data'];
 
   //====helper function
   var saveBasic = function() {
@@ -216,7 +217,7 @@ var view_xmdks = function(sys_grid_id) {
         {name: 'bz',       type: 'string'}
       ]    
     }),
-    sortInfo:{field: 'gid', direction: "ASC"}
+    sortInfo:{field: 'id', direction: "ASC"}
   });
 
   var xcjl_grid = new Ext.grid.GridPanel({
@@ -290,6 +291,9 @@ var view_xmdks = function(sys_grid_id) {
     }
   });
   
+
+  xcjl_store.baseParams.xmdk_id = data.gid;
+  xcjl_store.load();
   
   
   var xmdksPanel = new Ext.form.FormPanel({
@@ -405,7 +409,7 @@ var view_xmdks = function(sys_grid_id) {
               title:"巡查历史",
               layout:"absolute",
               items:[{
-                  xtype:"panel", x:"10", y:"10", width:700, height:175, items:[], id:'panel-xcgl-grid', border:false},
+                  xtype:"panel", x:"10", y:"10", width:700, height:175, items:[xcjl_grid], id:'panel-xcgl-grid', border:false},
                 { xtype:"panel", x:"400",  y:"250", width:300, height:240, id:'panel-xctp', border:false },
                 { xtype:"button", x:"400", y:"500", width:25, height:55, text:"<<",  handler : prevPhoto},
                 { xtype:"panel",  x:"430", y:"500", width:235, height:55, id:'panel-xctp-s', border:false },
@@ -529,6 +533,9 @@ var view_xmdks = function(sys_grid_id) {
       
     }  
   }); 
+  
+  //设置inspect_grid 
+  
 }
 
 function myTask(id) {
