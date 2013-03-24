@@ -3194,8 +3194,8 @@ function myTask(id) {
             title:'按单位部门',
             autoScroll:true,
             loader: new Ext.tree.TreeLoader({
-              //dataUrl: '/desktop/get_xstree?username='+currentUser.username,     //基于currentUser的权限
-              dataUrl: '/desktop/get_xstree?username=金云平', 
+              dataUrl: '/desktop/get_xstree?username='+currentUser.username,     //基于currentUser的权限
+              //dataUrl: '/desktop/get_xstree?username=金云平', 
               baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
             }),
             root: {
@@ -3388,8 +3388,8 @@ function myTask(id) {
             title:'按单位部门',
             autoScroll:true,
             loader: new Ext.tree.TreeLoader({
-              //dataUrl: '/desktop/get_xstree?username='+currentUser.username,     //基于currentUser的权限
-              dataUrl: '/desktop/get_xstree?username=金云平',     //基于currentUser的权限
+              dataUrl: '/desktop/get_xstree?username='+currentUser.username,     //基于currentUser的权限
+              //dataUrl: '/desktop/get_xstree?username=金云平',     //基于currentUser的权限
               baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
             }),
             root: {
