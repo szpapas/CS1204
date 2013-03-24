@@ -1518,4 +1518,28 @@ class DesktopController < ApplicationController
     render :text => 'Success'
   end
   
+  def get_xstree
+    text = []
+    node = params["node"].chomp
+    
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+    
+    if user.qxcode == '监察员'
+      if node == "root"
+        text << {:text => user.dw, :id => user.dw, :cls  => "folder"}
+      else
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{user.dw}';")
+        data.each do |dd|
+          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['username']}",  :iconCls => "text",  :leaf => true }
+        end
+      end
+    else user.qxcode == '巡查员'
+      dd = user
+      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['username']}",   :iconCls => "text",  :leaf => true }
+    end    
+
+    render :text => text.to_json
+  end
+  
 end

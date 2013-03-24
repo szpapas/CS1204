@@ -212,6 +212,7 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
       };
       
       win.show();
+      
       return win;
   }
 });
