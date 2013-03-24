@@ -2897,7 +2897,6 @@ function myTask(id) {
                        
                        { xtype:"button",  x:"10",  y:"10",  height:30,  width:100,  text:"前一条", handler:showPrev },
                        { xtype:"button",  x:"120",  y:"10",  height:30,  width:100,  text:"后一条", handler:showNext },
-                        
                        
                        { xtype:"button",  x:"500",  y:"10",  height:30,  width:100,  text:"删除", hidden:true }, 
                        { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  id:'save-basic-42', text:"保存修改", handler: saveBasic
@@ -2929,7 +2928,6 @@ function myTask(id) {
                        { xtype:'label', text:"基本信息",      x:"15", y:"30", cls: 'x-form-item myBold'},
                        { xtype:'label', text:"地块审批情况",    x:"15", y:"160", cls: 'x-form-item myBold'},
                        { xtype:'label', text:"土地面积，用途",   x:"15", y:"320", cls: 'x-form-item myBold'},
-                       
                
                        { name:"a_id",      x:"100", y:"60", xtype:"textfield", width:200},
                        { name:"a_xmmc",    x:"100", y:"60", xtype:"textfield", width:200},

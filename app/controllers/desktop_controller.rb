@@ -163,7 +163,7 @@ class DesktopController < ApplicationController
     else
       txt = "{results:0,rows:[]}"
     end
-    render :text => txt
+    render :text => txt.gsub(" 00:00:00","")
   end
   
   def get_user
@@ -1478,7 +1478,7 @@ class DesktopController < ApplicationController
     else 
       txt = "{results:0,rows:[]}"
     end
-    render :text => txt  
+    render :text => txt.gsub(" 00:00:00","")  
   end
   
   #get one row inspect data by gid  
@@ -1495,7 +1495,7 @@ class DesktopController < ApplicationController
   #gid for xmdks 
   def get_a_xmdks
     @a_xmdks = User.find_by_sql("select a_xmdks.* from a_xmdks, xmdks where a_xmdks.gdqkid = xmdks.gdqkid and xmdks.gid=#{params['gid']};")
-    render :text => @a_xmdks.to_json
+    render :text => @a_xmdks.to_json.gsub(" 00:00:00", "")
   end
   
   #saveBasic pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqh:xzqh};
