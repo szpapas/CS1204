@@ -1407,7 +1407,7 @@ class DesktopController < ApplicationController
   
   
   #username=
-  def get_xcd
+  def get_xmdks_store
     params['start']   = params['start'] || "0"
     params['limit']   = params['limit'] || "25"
     
@@ -1492,7 +1492,30 @@ class DesktopController < ApplicationController
     render :text => '123,456'
   end
   
+  #gid for xmdks 
+  def get_a_xmdks
+    @a_xmdks = User.find_by_sql("select a_xmdks.* from a_xmdks, xmdks where a_xmdks.gdqkid = xmdks.gdqkid and xmdks.gid=#{params['gid']};")
+    render :text => @a_xmdks.to_json
+  end
   
+  #saveBasic pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqh:xzqh};
+  def save_xmdks_basic
+    User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}', yddw='#{params['yddw']}', pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', tdzl = '#{params['tdzl']}', dkmj = '#{params['tdzl']}', xzqh = '#{params['xzqh']}' where gid = #{params['gid']};")
+    render :text => 'Success'
+  end
   
+  def save_xmdks_extra
+    
+    User.find_by_sql("update a_xmdks set xmmc='#{params['xmmc']}', yddw='#{params['yddw']}', zlwz='#{params['zlwz']}', sffhztgh='#{params['sffhztgh']}', ydl='#{params['ydl']}', lxsj='#{params['lxsj']}', lxpwh='#{params['lxpwh']}', ghddsj='#{params['ghddsj']}', ghddh='#{params['ghddh']}', zzysj='#{params['zzysj']}', zzypwh='#{params['zzypwh']}', gdsj='#{params['gdsj']}', gdpwh='#{params['gdpwh']}', pzyt='#{params['pzyt']}', sjyt='#{params['sjyt']}', pzmj='#{params['pzmj']}', gdmj='#{params['gdmj']}', dgsj='#{params['dgsj']}'   where id = #{params['id']};")
+
+    render :text => 'Success'
+  end
+  
+  def save_xcjl_basic
+    
+    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',xkz='#{params['xkz']}',yjx='#{params['yjx']}',sjyt='#{params['sjyt']}',sjwf='#{params['sjwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
+    
+    render :text => 'Success'
+  end
   
 end
