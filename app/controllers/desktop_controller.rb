@@ -1425,8 +1425,10 @@ class DesktopController < ApplicationController
     else 
       cond << "(xz_tag != '是' or xz_tag is null)"
       cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
-      cond << "gid in (select xmdk_id from inspects where username='#{params['xcry']}')" if params['xcry'] != '全部'
+      cond << "gid in (select xmdk_id from inspects where iphone='#{params['xcry']}')" if params['xcry'] != '全部'
     end
+    
+      
       
     case cond.size
     when 0
@@ -1530,14 +1532,14 @@ class DesktopController < ApplicationController
       if node == "root"
         text << {:text => user.dw, :id => user.dw, :cls  => "folder"}
       else
-        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{user.dw}';")
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{user.dw}';")
         data.each do |dd|
-          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['username']}",  :iconCls => "text",  :leaf => true }
+          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['iphone']}",  :iconCls => "text",  :leaf => true }
         end
       end
     else user.qxcode == '巡查员'
       dd = user
-      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['username']}",   :iconCls => "text",  :leaf => true }
+      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['iphone']}",   :iconCls => "text",  :leaf => true }
     end    
 
     render :text => text.to_json

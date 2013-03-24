@@ -3211,7 +3211,6 @@ function myTask(id) {
           node.select();
           if (node.isLeaf()) {
             var ss = node.id.split("|");
-            xmdks_store.baseParams.username  = currentUser.username;
             xmdks_store.baseParams.xcqy      = ss[0]
             xmdks_store.baseParams.xcry      = ss[1]
             xmdks_store.load();
