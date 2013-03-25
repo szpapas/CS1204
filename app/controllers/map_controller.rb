@@ -723,7 +723,7 @@ class MapController < ApplicationController
       gdqkid = ss[0..7]+'-'+ss[8..11]+'-'+ss[12..15]+'-'+ss[16..19]+'-'+ss[20..31]
       user = User.find_by_sql("insert into xmdks (xmmc, pzwh, yddw, tdzl, dkmj, jlrq, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at, gdqkid) values ('#{params['xmmc']}','#{params['gdpwh']}',  '#{params['yddw']}', '#{params['zlwz']}', #{params['pzmj']}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}',  #{params['area']}, #{params['length']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{gdqkid}') returning gid;")
       
-      User.find_by_sql("update xmdks set xzqmc = zjzj.xzqmc from zjzj where ST_within(centroid(xmdks.the_geom), zjzj.the_geom) and gdqkid = '#{gdqkid}';")
+      #User.find_by_sql("update xmdks set xzqmc = zjzj.xzqmc from zjzj where ST_within(centroid(xmdks.the_geom), zjzj.the_geom) and gdqkid = '#{gdqkid}';")
       
       params['lxsj'] =  params['lxsj'] == '' ? "NULL" : "TIMESTAMP '#{params['lxsj']}'"
       params['ghddsj'] =  params['ghddsj'] == '' ? "NULL" : "TIMESTAMP '#{params['ghddsj']}'"
