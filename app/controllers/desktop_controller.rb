@@ -374,6 +374,8 @@ class DesktopController < ApplicationController
       cvl = User.find_by_sql "SELECT id from plans where session_id = '#{session_id}'"
       plan_id = cvl[0].id.to_i
       User.find_by_sql "insert into inspects (plan_id, xmdk_id) values (#{plan_id}, #{data.gid});"
+      User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{plan_id};"
+      User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{plan_id};"
     end 
   end
   

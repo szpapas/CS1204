@@ -156,7 +156,9 @@ class MapController < ApplicationController
     if user[0].count.to_i == 0
       user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{plan_id}, #{xmdk_id}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
       
-      User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{plan_id};")
+      User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{plan_id};"
+      User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{plan_id};"
+      
     else
       user = User.find_by_sql("select count(*) from xcimage where plan_id = #{plan_id} and xmdk_id = #{xmdk_id};")
       User.find_by_sql("update inspects set tpsl = #{user[0].count}")
@@ -432,8 +434,11 @@ class MapController < ApplicationController
     gid = user[0]['gid']
     
     user = User.find_by_sql("insert into inspects (plan_id, xmdk_id, xcrq) values (#{task_id}, #{gid}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")
-    User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{task_id};") if task_id.to_i != 0
-
+    if task_id.to_i != 0
+      User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{task_id};"
+      User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{task_id};"
+    end
+    
     inspect_id = user[0]['id']
     ss = {"mode" => "23", "result" => "gid:#{gid},inspect_id:#{inspect_id}"}
     render :text => ss.to_json
@@ -561,12 +566,17 @@ class MapController < ApplicationController
   
   #{"sfwf"=>"是", "gdmj"=>"", "xmdk_id"=>"362", "sjzdmj"=>"", "bz"=>"", "task_id"=>"117", "clyj"=>"", "jszt"=>"在建", "wfmj"=>""}
   def add_new_inspect
+    
     user = User.find_by_sql("select count(*) from inspects where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
     
     if user[0].count.to_i == 0
       User.find_by_sql("insert into inspects (plan_id, xmdk_id, jszt, sfwf, sjzdmj, gdmj, wfmj, clyj, bz, xcrq) values (#{params['task_id']}, #{params['xmdk_id']}, '#{params['jszt']}', '#{params['sfwf']}', '#{params['sjzdmj']}', '#{params['gdmj']}', '#{params['wfmj']}', '#{params['clyj']}',  '#{params['bz']}', '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}');")
       
-      User.find_by_sql("update inspects set username = plans.username from plans where plans.id = #{task_id};")
+      
+      task_id = params['task_id']
+      User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{task_id};"
+      User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{task_id};"
+      
       render :text => "保存成功"
     else
       User.find_by_sql("update inspects set jszt='#{params['jszt']}', sfwf='#{params['sfwf']}', sjzdmj= '#{params['sjzdmj']}', gdmj = '#{params['gdmj']}', wfmj='#{params['wfmj']}', clyj='#{params['clyj']}',  bz='#{params['bz']}', xcrq='#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}' where plan_id=#{params['task_id']} and xmdk_id=#{params['xmdk_id']};")
