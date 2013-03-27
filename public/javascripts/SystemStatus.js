@@ -21,7 +21,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
     
       var desktop = this.app.getDesktop();
 
-      function showUserPosition(map, vectorLayer) {
+      function showUserPosition(map, vectorLayer, zt) {
         
         if (vectorLayer.features.length > 0){
           while (vectorLayer.features.length > 0) {
@@ -30,7 +30,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           };
         };  
         
-        pars = {};
+        pars = {zt:zt,username:currentUser.username};
         new Ajax.Request("/desktop/get_user_position", { 
           method: "POST",
           parameters: pars,
@@ -55,9 +55,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 
                 var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
                 if (place['zt'] == 't') {
-                  style.externalGraphic = '/images/police_a.png';  
+                  style.externalGraphic = '/images/police_a.png?1234';  
                 } else {
-                  style.externalGraphic = '/images/police_b.png';    
+                  style.externalGraphic = '/images/police_b.png?3456';    
                 }
                 style.backgroundXOffset = 0;
                 style.backgroundYOffset = 0;
@@ -65,7 +65,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 style.graphicHeight = 32;
                 style.graphicZIndex = MARKER_Z_INDEX;
                 style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
-                style.fillOpacity = 0.8;
+                style.fillOpacity = 1.0;
                 style.fillColor = "#ee4400";
                 //style.graphicName = "star",
                 style.pointRadius = 8;
@@ -73,7 +73,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 style.fontSize   = "12px";
                 style.fontFamily = "Courier New, monospace";
                 style.fontWeight = "bold";
-                style.labelAlign = "rb";            
+                style.labelAlign = "lb";            
                 style.label = username;
                 style.fontColor = "blue";
 
@@ -442,12 +442,23 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         map.events.register("changebaselayer", map, function (e) {
           //alert("visibility changed (" + e.layer.name + ")");
           if (e.layer.name == '谷歌卫星图') {
-            map.getLayersByName('二调数据2')[0].setVisibility(false);
-            map.getLayersByName('二调数据')[0].setVisibility(true);
+           //  map.getLayersByName('二调数据2')[0].setVisibility(false);
+           //  map.getLayersByName('二调数据')[0].setVisibility(true);
           }else{
-            map.getLayersByName('二调数据2')[0].setVisibility(true);
-            map.getLayersByName('二调数据')[0].setVisibility(false);
+           //  map.getLayersByName('二调数据2')[0].setVisibility(true);
+           //  map.getLayersByName('二调数据')[0].setVisibility(false);
           }
+        });
+        
+        var yhzt_data = [
+          ['0','全部'],
+          ['1','在线'  ],
+          ['2','不在线'  ],
+        ];
+
+        var yhzt_store = new Ext.data.SimpleStore({
+        	fields: ['value', 'text'],
+        	data : yhzt_data
         });
         
         var map_view = new Ext.Panel({
@@ -462,7 +473,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             text:'刷新人员',
             iconCls : 'user16',
             handler : function() {
-              showUserPosition(map,vectors);
+              var zt = Ext.getCmp('yhzt_combo_id').getValue();
+              showUserPosition(map,vectors,zt);
             }
           },{
             text:'路线回放',
@@ -470,6 +482,26 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             handler : function() {
               startCheck();
             }
+          },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">用户状态</span>:&nbsp;&nbsp;',
+            {
+              xtype: 'combo',
+              width: 75,
+              name: 'yhzt',
+              id: 'yhzt_combo_id',
+              store: yhzt_store,
+              emptyText:'请选择',
+              mode: 'local',
+              minChars : 2,
+              valueField:'text',
+              displayField:'text',
+              triggerAction:'all',
+              value :'在线',
+              listeners:{
+                select:function(combo, records, index) {
+                  var zt = combo.getValue();
+                  showUserPosition(map,vectors,zt);
+                }
+              }
           }],
           items: [{
               xtype: 'gx_mappanel',
@@ -506,6 +538,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
         };
         
+        /*
         var phone_grid = new Ext.grid.GridPanel({
           id: 'phone_grid_id',
           store: phone_store,
@@ -561,22 +594,21 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }],
           items: [phone_grid]
         });
- 
+        */
 
         var treePanel =  new Ext.tree.TreePanel({
           useArrows:true,
           animate:true,
-          enableDD:true,
+          //enableDD:true,
           singleExpand:true,
           id : 'system_status_tree_panel',
           checkModel: 'cascade',   
           onlyLeafCheckable: false,
-          collapsible: true,
+          //collapsible: true,
           collapseMode:'mini',
           rootVisible : false,
           loader: new Ext.tree.TreeLoader({
-            dataUrl: '/desktop/get_phone_tree'
-            //baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+            dataUrl: '/desktop/get_phone_tree?username='+currentUser.username
           }),
           root: {
             nodeType: 'async',
@@ -598,14 +630,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           if (datas.size() == 2) {
             var task_ids = ''
             
-            /*
             pointText = datas[1];
             ss = pointText.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
             var x0 = parseFloat(ss[1]);
             var y0 = parseFloat(ss[2]);
             var lonlat = new OpenLayers.LonLat(x0, y0);
             map.panTo(lonlat,{animate: false});
-            */
             
             node.eachChild(function(n) {
               if (n.attributes.checked) task_ids = task_ids + n.id.split('|')[0] + ',';
@@ -621,11 +651,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         treePanel.on('checkchange', function(node, checked) {
             var datas = node.id.split('|');
             if (datas.size() == 2) {   //中间级别
-              
-              //node.childNodes.eachChild(function(n){
-              //  n.set('checked', checked);
-              //});
-              
               node.eachChild(function(n) {
                   n.getUI().toggleCheck(checked);
               });
@@ -655,7 +680,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 width:250,
                 split:true,
                 collapsible:true,
-                titleCollapse:true,
+                //titleCollapse:true,
                 layout:"fit",
                 items:[treePanel]
               }]
@@ -676,7 +701,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       win.show();
       
-      showUserPosition(map,vectors);
+      showUserPosition(map,vectors,'在线');
       
       return win;
   }

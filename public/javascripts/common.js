@@ -139,6 +139,17 @@ var msg = function(title, msg){
 
 //Simple Store
 
+var xcgl_data = [
+  ['0','全部'],
+  ['1','已巡查'  ],
+  ['2','未巡查'  ],
+];
+
+var xcgl_store = new Ext.data.SimpleStore({
+	fields: ['value', 'text'],
+	data : xcgl_data
+});
+
 var rwzt_data = [
   ['0','全部'],
 	['1','计划'],

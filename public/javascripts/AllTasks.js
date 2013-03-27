@@ -2,7 +2,7 @@
 var view_xmdks = function(sys_grid_id) {
   var xmdks_grid = Ext.getCmp(sys_grid_id);
   var gsm =Ext.getCmp(sys_grid_id).getSelectionModel();
-  var data = gsm.selections.items[0]['data'];
+  
 
   //====helper function
   var saveBasic = function() {
@@ -31,7 +31,6 @@ var view_xmdks = function(sys_grid_id) {
   };
   
   var deleteXmdks = function() {
-    
   };
   
   var saveExtXmdks = function() {
@@ -219,13 +218,15 @@ var view_xmdks = function(sys_grid_id) {
     }),
     sortInfo:{field: 'id', direction: "ASC"}
   });
-
+  
+  var sm = new Ext.grid.CheckboxSelectionModel();
   var xcjl_grid = new Ext.grid.GridPanel({
     id: 'xcjl_grid_id',
     store: xcjl_store,
     height:460,
-    columns: [           
-      { header : '巡查日期',  width : 75, sortable : true, dataIndex: 'xcrq'},            
+    columns: [
+      sm,           
+      { header : '巡查日期',  width : 150, sortable : true, dataIndex: 'xcrq', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},            
       { header : '建设状态',  width : 75, sortable : true, dataIndex: 'jszt'},
       { header : '实际用途',  width : 75, sortable : true, dataIndex: 'sjyt'},
       { header : '是否违法',  width : 50, sortable : true, dataIndex: 'sjwf'},
@@ -233,7 +234,8 @@ var view_xmdks = function(sys_grid_id) {
       { header : '耕地面积',  width : 100, sortable : true, dataIndex: 'gdmj'},
       { header : '违法面积',  width : 100, sortable : true, dataIndex: 'wfmj'},
       { header : '备注',  width : 200, sortable : true, dataIndex: 'wfmj'}
-    ], 
+    ],
+    sm:sm, 
     columnLines: true,
     layout:'fit',
     viewConfig: {
@@ -265,9 +267,8 @@ var view_xmdks = function(sys_grid_id) {
     if (xcjl_store.data.items.length > 0) {
       
       var xcjl_grid = Ext.getCmp('xcjl_grid_id');
-      var gsm = xcjl_grid.getSelectionModel();
-      
-      gsm.selectFirstRow();
+      //xcjl_grid.getSelectionModel().selectRow(0);
+
       var data = xcjl_grid.store.data.items[0]['data'];
       
       var form = Ext.getCmp('xmdks-panel-id').getForm();
@@ -291,7 +292,7 @@ var view_xmdks = function(sys_grid_id) {
     }
   });
   
-
+  var data = gsm.selections.items[0]['data'];
   xcjl_store.baseParams.xmdk_id = data.gid;
   xcjl_store.load();
   
@@ -420,7 +421,7 @@ var view_xmdks = function(sys_grid_id) {
   
                 { xtype:"textfield", name:"h_inspect_id", x:"0", y:"200",hidden:true},
                 { xtype:"textfield", name:"h_xmmc", x:"100", y:"200", width:250 },
-                { xtype:"datefield", name:"h_xcrq", x:"100", y:"230", width:250, format:'Y-m-d' },
+                { xtype:"datefield", name:"h_xcrq", x:"100", y:"230", width:250, format:'Y-m-d H:i:s' },
                 { xtype:"textfield", name:"h_jszt", x:"100", y:"260", width:250 },
                 { xtype:"textfield", name:"h_xkz" , x:"100", y:"290", width:250 },
                 { xtype:"textfield", name:"h_yjx" , x:"100", y:"320", width:250 },
@@ -538,14 +539,629 @@ var view_xmdks = function(sys_grid_id) {
   
 }
 
+// 修改任务窗口
+var view_plans = function (sys_grid_id) {
+  
+  var xmdks_grid = Ext.getCmp(sys_grid_id);
+  var gsm =Ext.getCmp(sys_grid_id).getSelectionModel();
+  var data = gsm.selections.items[0]['data'];
+  
+  //设置图像
+  var setImages = function(request) {
+
+    var datas = eval("("+request.responseText+")");
+    Ext.get('drop-img').update(datas['xctx']);
+    Ext.get('drag-img').update(datas['kytx']);
+
+    Ext.get('hsz-img').update('<div id="repair" class="availableLot repair"></div>')
+
+    var overrides = {
+        // Only called when element is dragged over the a dropzone with the same ddgroup
+        onDragEnter : function(evtObj, targetElId) {
+            // Colorize the drag target if the drag node's parent is not the same as the drop target
+            if (targetElId != this.el.dom.parentNode.id) {
+                this.el.addClass('dropOK');
+            }
+            else {
+                // Remove the invitation
+                this.onDragOut();
+            }
+        },
+        // Only called when element is dragged out of a dropzone with the same ddgroup
+        onDragOut : function(evtObj, targetElId) {
+            this.el.removeClass('dropOK');
+        },
+        //Called when mousedown for a specific amount of time
+        b4StartDrag : function() {
+            if (!this.el) {
+                this.el = Ext.get(this.getEl());
+            }
+            //this.el.highlight();
+            //Cache the original XY Coordinates of the element, we'll use this later.
+            this.originalXY = this.el.getXY();
+        },
+        // Called when element is dropped not anything other than a
+        // dropzone with the same ddgroup
+        onInvalidDrop : function() {
+            this.invalidDrop = true;
+
+        },
+        endDrag : function() {
+            if (this.invalidDrop === true) {
+                this.el.removeClass('dropOK');
+
+                var animCfgObj = {
+                    easing   : 'elasticOut',
+                    duration : 1,
+                    scope    : this,
+                    callback : function() {
+                        this.el.dom.style.position = '';
+                    }
+                };
+                this.el.moveTo(this.originalXY[0], this.originalXY[1], animCfgObj);
+                delete this.invalidDrop;
+            }
+
+        },
+        // Called upon successful drop of an element on a DDTarget with the same
+        onDragDrop : function(evtObj, targetElId) {
+            // Wrap the drop target element with Ext.Element
+            var dropEl = Ext.get(targetElId);
+
+            // Perform the node move only if the drag element's parent is not the same as the drop target
+            if (this.el.dom.parentNode.id != targetElId) {
+
+                // Move the element
+                dropEl.appendChild(this.el);
+
+                // Remove the drag invitation
+                this.onDragOut(evtObj, targetElId);
+
+                // Clear the styles
+                this.el.dom.style.position ='';
+                this.el.dom.style.top = '';
+                this.el.dom.style.left = '';
+            }
+            else {
+                // This was an invalid drop, lets call onInvalidDrop to initiate a repair
+                this.onInvalidDrop();
+            }
+        }
+    };
+
+    // Configure the cars to be draggable
+    var carElements = Ext.get('cars').select('div');
+    Ext.each(carElements.elements, function(el) {
+        var dd = new Ext.dd.DD(el, 'carsDDGroup', {
+            isTarget  : false
+        });
+        Ext.apply(dd, overrides);
+    });
+
+    var rentedElements = Ext.get('rented').select('div');
+    Ext.each(rentedElements.elements, function(el) {
+        var dd = new Ext.dd.DD(el, 'rentedDDGroup', {
+            isTarget  : false
+        });
+        Ext.apply(dd, overrides);
+    });
+
+    var repairElements = Ext.get('repair').select('div');
+    Ext.each(repairElements.elements, function(el) {
+        var dd = new Ext.dd.DD(el, 'repairDDGroup', {
+            isTarget  : false
+        });
+        Ext.apply(dd, overrides);
+    });
+
+    var carsDDTarget    = new Ext.dd.DDTarget('cars','carsDDGroup');
+    var rentedDDTarget  = new Ext.dd.DDTarget('rented', 'rentedDDGroup');
+    var repairDDTarget  = new Ext.dd.DDTarget('repair', 'repairDDGroup');
+
+    rentedDDTarget.addToGroup('carsDDGroup');
+    carsDDTarget.addToGroup('rentedDDGroup');
+
+    rentedDDTarget.addToGroup('repairDDGroup');
+    repairDDTarget.addToGroup('rentedDDGroup');
+
+    repairDDTarget.addToGroup('carsDDGroup');
+    carsDDTarget.addToGroup('repairDDGroup');
+
+  };
+  
+  // button 处理函数
+  var saveBasic = function() {
+    var form = Ext.getCmp('plan_panel_id').getForm();
+    
+    var plan_id = form.findField('plan_id').getValue();
+    var xclx = form.findField('xclx').getValue();
+    var xcry = form.findField('xcry').getValue();
+    var xcnr = form.findField('xcnr').getValue();
+    var xcjg = form.findField('xcjg').getValue();
+    var clyj = form.findField('clyj').getValue();
+    
+    pars = {plan_id:plan_id, xclx:xclx, xcry:xcry, xcnr:xcnr, xcjg:xcjg, clyj:clyj};
+    new Ajax.Request("/desktop/save_plan_basic", { 
+      method: "POST",
+      parameters: pars,
+      onComplete:  function(request) {
+        if (request.responseText == 'Success') {
+          //plan_win.close();
+          plan_store.load();
+          alert ('保存成功！')
+        } else {
+          //msg('失败', '新增任务失败!');
+        }
+      }
+    });
+    
+  }; 
+  
+  var refreshPhoto = function() {
+    var form = Ext.getCmp('plan_panel_id').getForm();
+    plan_id = form.findField('plan_id').getValue();
+    
+    pars = {id:plan_id};
+    new Ajax.Request("/desktop/get_xcimage", { 
+      method: "POST",
+      parameters: pars,
+      onComplete:  function(request) {
+        setImages(request);
+      }  
+    });            
+  }
+  
+  var addPhoto = function() {
+      var fp = new Ext.FormPanel({
+          fileUpload: true,
+          width: 500,
+          frame: true,
+          autoHeight: true,
+          bodyStyle: 'padding: 10px 10px 0 10px;',
+          labelWidth: 50,
+          defaults: {
+              anchor: '95%',
+              //allowBlank: false,
+              msgTarget: 'side'
+          },
+          items: [{
+              xtype: 'textfield',
+              name: 'photo-desc',
+              fieldLabel: '描述'
+          },{
+              xtype: 'fileuploadfield',
+              id: 'form-file',
+              emptyText: '选择一幅图像',
+              fieldLabel: '图像',
+              name: 'photo-path',
+              buttonText: '',
+              buttonCfg: {
+                  iconCls: 'upload-icon'
+              }
+          }],
+          buttons: [{
+              text: '上传',
+              handler: function(){
+                  if(fp.getForm().isValid()){
+                    fp.getForm().submit({
+                        url: '/desktop/upload_file',
+                        waitMsg: '文件上传中...',
+                        success: function(form, action){
+                          var isSuc = action.result.success; 
+                          if (isSuc) {
+                             msg('成功', '文件上传成功.');
+                          } else { 
+                            msg('失败', '文件上传失败.');
+                          }
+                        }, 
+                        failure: function(){
+                          msg('失败', '文件上传失败.');
+                        }
+                    });
+                  }
+              }
+          },{
+              text: '重置',
+              handler: function(){
+                  fp.getForm().reset();
+              }
+          }]
+      });
+      var yysc_win = new Ext.Window({
+        id : 'yysc_win',
+        iconCls : 'add',
+        title: '影像上传',
+        floating: true,
+        shadow: true,
+        draggable: true,
+        closable: true,
+        modal: true,
+        width: 350,
+        height: 140,
+        layout: 'fit',
+        plain: true,
+        items:[fp]
+      });
+      yysc_win.show();
+  }
+  
+  var savePhoto = function() {
+    
+    xcElements = Ext.get('cars').select('img');
+    pp = '';
+    Ext.each(xcElements.elements, function(el) {
+      pp = pp + el.src + '|';
+    });
+
+    pars = {imgs:pp, id:gsm.selections.items[0].data.id};
+    new Ajax.Request("/desktop/save_selected_photo", { 
+      method: "POST",
+      parameters: pars,
+      onComplete:  function(request) {
+        setImages(request);
+      }
+    });
+  }
+  
+  var emptyHsz = function() {
+    
+    xcElements = Ext.get('repair').select('img');
+    pp = '';
+    Ext.each(xcElements.elements, function(el) {
+      pp = pp + el.src + '|';
+    });
+
+    pars = {imgs:pp, id:gsm.selections.items[0].data.id};
+    new Ajax.Request("/desktop/delete_selected_photo", { 
+      method: "POST",
+      parameters: pars,
+      onComplete:  function(request) {
+        setImages(request);
+      }
+    });
+    
+  }
+  
+  var saveXcdInfo = function() {
+    var form = Ext.getCmp('plan_panel_id').getForm();
+    var plan_id = form.findField('plan_id').getValue();
+    var inspect_id = form.findField('inspect_id').getValue();
+    
+    var jszt = form.findField('jszt').getValue();
+    var xkz = form.findField('xkz' ).getValue();
+    var yjx = form.findField('yjx' ).getValue();
+    var sjyt = form.findField('sjyt').getValue();
+    var gdmj = form.findField('gdmj').getValue();
+    var sfwf = form.findField('sfwf').getValue();
+    var wfmj = form.findField('wfmj').getValue();
+    var clyj = form.findField('clyj_3').getValue();
+    
+    pars = {inspect_id:inspect_id, jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
+    new Ajax.Request("/desktop/save_inspect_basic", { 
+      method: "POST",
+      parameters: pars,
+      onComplete:  function(request) {
+        if (request.responseText == 'Success') {
+          xcd_store.load();
+          msg('成功', '保存成功！');
+        } else {
+        }
+      }
+    });
+    
+  }
+  
+  var addPhoto2 = function() {
+    //alert ('add Photo2  clicked!');
+  }
+  
+  var prevPhoto = function() {
+    alert ('prev Photo clicked!');
+  }
+  
+  var nextPhoto = function() {
+    alert ('next Photo clicked!');
+  }
+  
+  //store for xcd
+  var xcd_store = new Ext.data.Store({
+    proxy: new Ext.data.HttpProxy({
+      url: '/desktop/get_xcd_xmdk'
+    }),
+    reader: new Ext.data.JsonReader({
+      totalProperty: 'results', 
+      root: 'rows',             
+      fields: [
+        {name: 'gid',    type: 'integer'},
+        {name: 'xmmc',  type: 'string'}
+      ]    
+    }),
+    sortInfo:{field: 'gid', direction: "ASC"}
+  });
+  
+  var sm = new Ext.grid.CheckboxSelectionModel();
+  var xcd_grid = new Ext.grid.GridPanel({
+    id: 'xcd_grid_id',
+    store: xcd_store,
+    height:460,
+    columns: [           
+      sm,
+      { header : '编号',    width : 50, sortable : true, dataIndex: 'gid', hidden:'true'},            
+      { header : '项目名称',  width : 100, sortable : true, dataIndex: 'xmmc'}
+    ],
+    sm:sm, 
+    columnLines: true,
+    layout:'fit',
+    viewConfig: {
+      stripeRows:true,
+    }
+  });
+  
+  xcd_grid.on('rowclick', function(grid, row, e){
+    var data = grid.store.data.items[row].data;
+
+    var form = Ext.getCmp('plan_panel_id').getForm();
+    form.findField("xmmc").setValue(data.xmmc);
+    
+    plan_id = form.findField('plan_id').getValue();
+    pars = {xmdk_id:data.gid,plan_id:plan_id};
+    
+    new Ajax.Request("/desktop/get_inspect_data",{
+      method: "POST",
+      parameters : pars,
+      onComplete: function(request) {
+        data = eval('('+request.responseText+')')[0];
+
+        var form = Ext.getCmp('plan_panel_id').getForm();
+        form.findField("xcrq").setValue(new Date(data.xcrq));
+        form.findField("jszt").setValue(data.jszt);
+        form.findField("xkz" ).setValue(data.xkz);
+        form.findField("yjx" ).setValue(data.yjx);
+        form.findField("sjyt").setValue(data.sjyt);
+        form.findField("gdmj").setValue(data.gdmj);
+        form.findField("sfwf").setValue(data.sfwf);
+        form.findField("wfmj").setValue(data.wfmj);
+        form.findField("clyj_3").setValue(data.clyj);
+        form.findField("inspect_id").setValue(data.id);
+        
+      }  
+    });
+  });
+
+  xcd_store.on('load', function(){
+    
+    if (xcd_store.data.items.length > 0) {
+      
+      var xcd_grid = Ext.getCmp('xcd_grid_id');
+      //xcd_grid.getSelectionModel().selectRow(0);
+
+      var data = xcd_grid.store.data.items[0]['data'];
+      var form = Ext.getCmp('plan_panel_id').getForm();
+      form.findField("xmmc").setValue(data.xmmc);
+      
+      // get inspect data
+      plan_id = form.findField('plan_id').getValue();
+      pars = {xmdk_id:data.gid,plan_id:plan_id};
+      new Ajax.Request("/desktop/get_inspect_data",{ 
+        method: "POST",
+        parameters : pars,
+        onComplete: function(request) {
+          data = eval('('+request.responseText+')')[0];
+
+          var form = Ext.getCmp('plan_panel_id').getForm();
+          form.findField("xcrq").setValue(new Date(data.xcrq));
+          form.findField("jszt").setValue(data.jszt);
+          form.findField("xkz" ).setValue(data.xkz);
+          form.findField("yjx" ).setValue(data.yjx);
+          form.findField("sjyt").setValue(data.sjyt);
+          form.findField("gdmj").setValue(data.gdmj);
+          form.findField("sfwf").setValue(data.sfwf);
+          form.findField("wfmj").setValue(data.wfmj);
+          form.findField("clyj_3").setValue(data.clyj);
+          form.findField("inspect_id").setValue(data.id);
+        }  
+      });
+      // get inspect images 
+      
+    } else {
+      console.log("no data loaded")
+    }
+  });
+
+  
+  // end of xcd_grid 
+  var planPanel = new Ext.form.FormPanel({
+      xtype:"panel",
+      id:'plan_panel_id',
+      closable : true,
+      layout: 'absolute',
+      width:800,
+      height:600,
+      border: 'true',
+      items:[{
+          xtype:"tabpanel",
+          deferredRender:false,
+          activeTab:0,
+          width:800,
+          height:600,
+          items :[{
+            xtype:"panel",
+            title:"基本信息",
+            layout:"absolute", 
+            items:[{
+               xtype:"textfield", name:"plan_id", x:"0", y:"0",  width:0, height:0, hidden:true},
+              { xtype:"label", text:"开始时间:", x:"25",  y:"15"  },
+              { xtype:"label", text:"结束时间:", x:"325", y:"15"  },
+              { xtype:"label", text:"巡查路线:", x:"25",  y:"65"  },
+              { xtype:"label", text:"协查人员:", x:"25",  y:"165" },
+              { xtype:"label", text:"巡查内容:", x:"25",  y:"265" },
+              { xtype:"label", text:"巡查结果:", x:"25",  y:"365" },
+              { xtype:"label", text:"处理意见:", x:"25",  y:"465" },
+              
+              { xtype:"button",  x:"620", y:"10",  height:30,  width:75,  text:"保存", handler : saveBasic}, 
+              
+              
+              { xtype:"textfield", name:"kssj", x:"100", y:"10",  width:200, height:30},
+              { xtype:"textfield", name:"jssj", x:"400", y:"10",  width:200, height:30},
+              { xtype:"textarea",  name:"xclx", x:"100",  y:"60",  width:300, height:90},
+              { xtype:"textarea",  name:"xcry", x:"100",  y:"160", width:300, height:90},
+              { xtype:"textarea",  name:"xcnr", x:"100",  y:"260", width:625, height:90},
+              { xtype:"textarea",  name:"xcjg", x:"100",  y:"360", width:625, height:90},
+              { xtype:"textarea",  name:"clyj", x:"100",  y:"460", width:625, height:90},
+              { xtype : 'box',  x: 425 , y: 60,  width: 300, height: 190, id: 'xclxt', 
+                autoEl: {tag: 'div', html:''} 
+            }]                 
+          },{
+            xtype:"panel",
+            title:"照片管理",
+            layout:"absolute",
+            items:[{
+              
+                xtype : 'box', id : 'drop-img',  border : true, x: 25 , y: 70,  width: 240, height: 445, name: 'xctx', autoEl: {tag: 'div', id : 'drop-img',html: ''} },
+              { xtype : 'box', id : 'drag-img',  border : true, x: 285, y: 70,  width: 240, height: 445, name: 'kytx', autoEl: {tag: 'div', id : 'drag-img',html: ''} },
+              { xtype : 'box', id : 'hsz-img' ,  border : true, x: 545, y: 70,  width: 240, height: 445, name: 'hsz' , autoEl: {tag: 'div', id : 'hsz-img' ,html: '' } },
+
+              { xtype:"button",  x:"25",  y:"10",  height:30,  width:75,  text:"添加照片" , handler : addPhoto}, 
+              { xtype:"button",  x:"115", y:"10",  height:30,  width:75,  text:"刷新图片" , handler : refreshPhoto}, 
+              { xtype:"button",  x:"200", y:"10",  height:30,  width:75,  text:"保存"   , handler : savePhoto}, 
+              { xtype:"button",  x:"700", y:"10",  height:30,  width:75,  text:"清空"   , handler : emptyHsz}, 
+              
+
+              { xtype:"label", text:"巡查照片:", x:"25",   y:"55" },
+              { xtype:"label", text:"可用照片:", x:"285",  y:"55" },
+              { xtype:"label", text:"回收站:",  x:"545",  y:"55"
+            
+            }]
+          },{
+            xtype:"panel",
+            title:"巡查点",
+            layout:"absolute",
+            items:[{
+                xtype:"textfield", name:"xmmc", x:"250", y:"45",   width:200, height:30},
+              { xtype:"datefield", name:"xcrq", x:"250", y:"85",  width:200, height:30, format:'Y-m-d'},
+              { xtype:"textfield", name:"jszt", x:"250", y:"125",  width:200, height:30},
+              { xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
+              { xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
+              { xtype:"textfield", name:"sjyt", x:"250", y:"245",  width:200, height:30},
+              { xtype:"textfield", name:"gdmj", x:"250", y:"285",  width:200, height:30},
+              { xtype:"textfield", name:"sfwf", x:"250", y:"325",  width:200, height:30},
+              { xtype:"textfield", name:"wfmj", x:"250", y:"365",  width:200, height:30},
+              { xtype:"textarea",  name:"clyj_3", x:"250", y:"405",  width:525, height:100},
+              { xtype:"textarea",  name:"inspect_id", x:"0", y:"0",  hidden:'true'},
+              
+
+              { xtype:"label", text:"项目名称", x:"175", y:"50" },
+              { xtype:"label", text:"检查日期", x:"175", y:"90"},
+              { xtype:"label", text:"建设状态", x:"175", y:"130"},
+              { xtype:"label", text:"许可证" , x:"175", y:"170"},
+              { xtype:"label", text:"永久性" , x:"175", y:"210"},
+              { xtype:"label", text:"实际用途", x:"175", y:"250"},
+              { xtype:"label", text:"耕地面积", x:"175", y:"290"},
+              { xtype:"label", text:"是否违法", x:"175", y:"330"},
+              { xtype:"label", text:"违法面积", x:"175", y:"370"},
+              { xtype:"label", text:"处理意见", x:"175", y:"410"},
+
+              { xtype:"label", text:"巡查点列表", x:"25", y:"20"},
+              { xtype:"label", text:"巡查照片",  x:"480", y:"20"},
+              
+              { xtype : 'panel',  x: 25 , y: 45,  width: 120, height: 470, id:'box-xcd-list', items:xcd_grid},
+                
+              { xtype : 'box',  x: 480 , y: 45,  width: 290, height: 270, name: 'xctp', id:'box-xctp',
+                autoEl: {tag: 'div', html:''}},
+                
+              { xtype:"button",  x:"690", y:"10",  height:30,  width:75,  text:"添加照片"  ,  handler : addPhoto2}, 
+              { xtype:"button",  x:"175", y:"10",   height:30,  width:75,  text:"保存修改" ,  handler : saveXcdInfo}, 
+              { xtype:"button",  x:"480", y:"330",  height:55,  width:25,  text:"<<"   ,  handler : prevPhoto}, 
+              { xtype : 'box',  x: 510 , y: 330,  width: 235, height: 55, name: 'xctp_s', id:'box-xctp-s',
+                autoEl: {tag: 'div', html:''}},
+              { xtype:"button",  x:"750", y:"330",  height:55,  width:25,  text:">>"   ,  handler : nextPhoto
+            }]
+          }]
+      }]
+  });
+
+  var plan_win = new Ext.Window({
+    id : 'add_plan_win',
+    iconCls : 'add',
+    title: '计划任务',
+    floating: true,
+    shadow: true,
+    draggable: true,
+    resizable :false,
+    closable: true,
+    modal: true,
+    width: 820,
+    height: 625,
+    layout: 'fit',
+    plain: true,
+    items:[planPanel]
+  });
+
+  if (gsm == undefined) {
+    //Ext.getCmp('add_plan_win').setTitle('计划任务');
+  } else {
+    Ext.getCmp('add_plan_win').setTitle('修改任务');
+    var form = Ext.getCmp('plan_panel_id').getForm();
+    data = gsm.selections.items[0]['data'];
+    
+    form.findField('plan_id').setValue(data.id);
+    form.findField('kssj').setValue(data.qrq);
+    form.findField('jssj').setValue(data.zrq);
+    form.findField('xclx').setValue(data.xclx);
+    form.findField('xcry').setValue(data.xcry);
+    form.findField('xcnr').setValue(data.xcnr);
+    form.findField('xcjg').setValue(data.xcjg);
+    form.findField('clyj').setValue(data.clyj);
+    
+  };
+
+  plan_win.show();
+  plan_win.setZIndex(9020);
+  
+  //设置巡查图像
+  pars = {id:data.id};
+  new Ajax.Request("/desktop/get_xcimage", { 
+    method: "POST",
+    parameters: pars,
+    onComplete:  function(request) {
+      setImages(request);
+    }  
+  }); 
+  
+  //设置巡查点
+  xcd_store.baseParams = {plan_id:data.id};
+  xcd_store.load();
+             
+};
+
+
 function myTask(id) {
   switch (id) {
     case 1 : //已完成任务
     {
       var tabPanel = Ext.getCmp("mytask-tab");
+      
       if (Ext.getCmp('mytask-tab1') == undefined) {
         
-        var  plan_store = new Ext.data.Store({
+        //Helper funtions
+        var view_plans_handler = function(){
+          view_plans ('my_plan_grid_id');
+        };
+
+        var view_print_pdf     = function(){
+          items = Ext.getCmp('my_plan_grid_id').getSelectionModel().selections.items;
+          pars = {id:items[0].data.id};
+          new Ajax.Request("/desktop/view_pdf", { 
+            method: "POST",
+            parameters: pars,
+            onComplete:  function(request) {
+              var new_url = request.responseText;
+              window.open(new_url,'','height=500,width=800,top=150, left=100,scrollbars=yes,status=yes');
+            }  
+          });
+        };
+        
+        var plan_store = new Ext.data.Store({
           proxy: new Ext.data.HttpProxy({
               url: '/desktop/get_plan'
           }),
@@ -615,32 +1231,11 @@ function myTask(id) {
           tbar:[{
               text : '修改任务',
               iconCls : 'edit',
-              handler : function(){
-                var gsm =Ext.getCmp('my_plan_grid_id').getSelectionModel();
-                view_planwin(gsm);
-              }
-            },{
-              text : '地块详细',
-              iconCls : 'tdsd-icon',
-              handler : function(){
-                var gsm =Ext.getCmp('my_plan_grid_id').getSelectionModel();
-                edit_xmdk(gsm);
-              }
+              handler : view_plans_handler 
             },{    
               text : '打印预览',
               iconCls : 'detail',
-              handler : function(){
-                items = Ext.getCmp('my_plan_grid_id').getSelectionModel().selections.items;
-                pars = {id:items[0].data.id};
-                new Ajax.Request("/desktop/view_pdf", { 
-                  method: "POST",
-                  parameters: pars,
-                  onComplete:  function(request) {
-                    var new_url = request.responseText;
-                    window.open(new_url,'','height=500,width=800,top=150, left=100,scrollbars=yes,status=yes');
-                  }  
-                });
-              }
+              handler : view_print_pdf
             }, '-',
             '<span style=" font-size:12px;font-weight:600;color:#3366FF;">状态</span>:&nbsp;&nbsp;',
             {
@@ -717,605 +1312,36 @@ function myTask(id) {
           ]
         });
         
-        function selectXcd() {
-          id = "10";
-          alert ("xcd " + id + " clicked! ");
-        }
-        
-        // 修改任务窗口
-        var view_planwin = function (gsm) {
-          
-          //helper function
-          
-          //设置图像
-          var setImages = function(request) {
-
-            var datas = eval("("+request.responseText+")");
-            Ext.get('drop-img').update(datas['xctx']);
-            Ext.get('drag-img').update(datas['kytx']);
-
-            Ext.get('hsz-img').update('<div id="repair" class="availableLot repair"></div>')
-
-            var overrides = {
-                // Only called when element is dragged over the a dropzone with the same ddgroup
-                onDragEnter : function(evtObj, targetElId) {
-                    // Colorize the drag target if the drag node's parent is not the same as the drop target
-                    if (targetElId != this.el.dom.parentNode.id) {
-                        this.el.addClass('dropOK');
-                    }
-                    else {
-                        // Remove the invitation
-                        this.onDragOut();
-                    }
-                },
-                // Only called when element is dragged out of a dropzone with the same ddgroup
-                onDragOut : function(evtObj, targetElId) {
-                    this.el.removeClass('dropOK');
-                },
-                //Called when mousedown for a specific amount of time
-                b4StartDrag : function() {
-                    if (!this.el) {
-                        this.el = Ext.get(this.getEl());
-                    }
-                    //this.el.highlight();
-                    //Cache the original XY Coordinates of the element, we'll use this later.
-                    this.originalXY = this.el.getXY();
-                },
-                // Called when element is dropped not anything other than a
-                // dropzone with the same ddgroup
-                onInvalidDrop : function() {
-                    this.invalidDrop = true;
-
-                },
-                endDrag : function() {
-                    if (this.invalidDrop === true) {
-                        this.el.removeClass('dropOK');
-
-                        var animCfgObj = {
-                            easing   : 'elasticOut',
-                            duration : 1,
-                            scope    : this,
-                            callback : function() {
-                                this.el.dom.style.position = '';
-                            }
-                        };
-                        this.el.moveTo(this.originalXY[0], this.originalXY[1], animCfgObj);
-                        delete this.invalidDrop;
-                    }
-
-                },
-                // Called upon successful drop of an element on a DDTarget with the same
-                onDragDrop : function(evtObj, targetElId) {
-                    // Wrap the drop target element with Ext.Element
-                    var dropEl = Ext.get(targetElId);
-
-                    // Perform the node move only if the drag element's parent is not the same as the drop target
-                    if (this.el.dom.parentNode.id != targetElId) {
-
-                        // Move the element
-                        dropEl.appendChild(this.el);
-
-                        // Remove the drag invitation
-                        this.onDragOut(evtObj, targetElId);
-
-                        // Clear the styles
-                        this.el.dom.style.position ='';
-                        this.el.dom.style.top = '';
-                        this.el.dom.style.left = '';
-                    }
-                    else {
-                        // This was an invalid drop, lets call onInvalidDrop to initiate a repair
-                        this.onInvalidDrop();
-                    }
-                }
-            };
-
-            // Configure the cars to be draggable
-            var carElements = Ext.get('cars').select('div');
-            Ext.each(carElements.elements, function(el) {
-                var dd = new Ext.dd.DD(el, 'carsDDGroup', {
-                    isTarget  : false
-                });
-                Ext.apply(dd, overrides);
-            });
-
-            var rentedElements = Ext.get('rented').select('div');
-            Ext.each(rentedElements.elements, function(el) {
-                var dd = new Ext.dd.DD(el, 'rentedDDGroup', {
-                    isTarget  : false
-                });
-                Ext.apply(dd, overrides);
-            });
-
-            var repairElements = Ext.get('repair').select('div');
-            Ext.each(repairElements.elements, function(el) {
-                var dd = new Ext.dd.DD(el, 'repairDDGroup', {
-                    isTarget  : false
-                });
-                Ext.apply(dd, overrides);
-            });
-
-            var carsDDTarget    = new Ext.dd.DDTarget('cars','carsDDGroup');
-            var rentedDDTarget  = new Ext.dd.DDTarget('rented', 'rentedDDGroup');
-            var repairDDTarget  = new Ext.dd.DDTarget('repair', 'repairDDGroup');
-
-            rentedDDTarget.addToGroup('carsDDGroup');
-            carsDDTarget.addToGroup('rentedDDGroup');
-
-            rentedDDTarget.addToGroup('repairDDGroup');
-            repairDDTarget.addToGroup('rentedDDGroup');
-
-            repairDDTarget.addToGroup('carsDDGroup');
-            carsDDTarget.addToGroup('repairDDGroup');
-
-          };
-          
-          // button 处理函数
-          var saveBasic = function() {
-            var form = Ext.getCmp('plan_panel_id').getForm();
-            
-            var plan_id = form.findField('plan_id').getValue();
-            var xclx = form.findField('xclx').getValue();
-            var xcry = form.findField('xcry').getValue();
-            var xcnr = form.findField('xcnr').getValue();
-            var xcjg = form.findField('xcjg').getValue();
-            var clyj = form.findField('clyj').getValue();
-            
-            pars = {plan_id:plan_id, xclx:xclx, xcry:xcry, xcnr:xcnr, xcjg:xcjg, clyj:clyj};
-            new Ajax.Request("/desktop/save_plan_basic", { 
-              method: "POST",
-              parameters: pars,
-              onComplete:  function(request) {
-                if (request.responseText == 'Success') {
-                  //plan_win.close();
-                  plan_store.load();
-                  alert ('保存成功！')
-                } else {
-                  //msg('失败', '新增任务失败!');
-                }
-              }
-            });
-            
-          }; 
-          
-          var refreshPhoto = function() {
-            var form = Ext.getCmp('plan_panel_id').getForm();
-            plan_id = form.findField('plan_id').getValue();
-            
-            pars = {id:plan_id};
-            new Ajax.Request("/desktop/get_xcimage", { 
-              method: "POST",
-              parameters: pars,
-              onComplete:  function(request) {
-                setImages(request);
-              }  
-            });            
-          }
-          
-          var addPhoto = function() {
-              var fp = new Ext.FormPanel({
-                  fileUpload: true,
-                  width: 500,
-                  frame: true,
-                  autoHeight: true,
-                  bodyStyle: 'padding: 10px 10px 0 10px;',
-                  labelWidth: 50,
-                  defaults: {
-                      anchor: '95%',
-                      //allowBlank: false,
-                      msgTarget: 'side'
-                  },
-                  items: [{
-                      xtype: 'textfield',
-                      name: 'photo-desc',
-                      fieldLabel: '描述'
-                  },{
-                      xtype: 'fileuploadfield',
-                      id: 'form-file',
-                      emptyText: '选择一幅图像',
-                      fieldLabel: '图像',
-                      name: 'photo-path',
-                      buttonText: '',
-                      buttonCfg: {
-                          iconCls: 'upload-icon'
-                      }
-                  }],
-                  buttons: [{
-                      text: '上传',
-                      handler: function(){
-                          if(fp.getForm().isValid()){
-                            fp.getForm().submit({
-                                url: '/desktop/upload_file',
-                                waitMsg: '文件上传中...',
-                                success: function(form, action){
-                                  var isSuc = action.result.success; 
-                                  if (isSuc) {
-                                     msg('成功', '文件上传成功.');
-                                  } else { 
-                                    msg('失败', '文件上传失败.');
-                                  }
-                                }, 
-                                failure: function(){
-                                  msg('失败', '文件上传失败.');
-                                }
-                            });
-                          }
-                      }
-                  },{
-                      text: '重置',
-                      handler: function(){
-                          fp.getForm().reset();
-                      }
-                  }]
-              });
-              var yysc_win = new Ext.Window({
-                id : 'yysc_win',
-                iconCls : 'add',
-                title: '影像上传',
-                floating: true,
-                shadow: true,
-                draggable: true,
-                closable: true,
-                modal: true,
-                width: 350,
-                height: 140,
-                layout: 'fit',
-                plain: true,
-                items:[fp]
-              });
-              yysc_win.show();
-          }
-          
-          var savePhoto = function() {
-            
-            xcElements = Ext.get('cars').select('img');
-            pp = '';
-            Ext.each(xcElements.elements, function(el) {
-              pp = pp + el.src + '|';
-            });
-
-            pars = {imgs:pp, id:gsm.selections.items[0].data.id};
-            new Ajax.Request("/desktop/save_selected_photo", { 
-              method: "POST",
-              parameters: pars,
-              onComplete:  function(request) {
-                setImages(request);
-              }
-            });
-          }
-          
-          var emptyHsz = function() {
-            
-            xcElements = Ext.get('repair').select('img');
-            pp = '';
-            Ext.each(xcElements.elements, function(el) {
-              pp = pp + el.src + '|';
-            });
-
-            pars = {imgs:pp, id:gsm.selections.items[0].data.id};
-            new Ajax.Request("/desktop/delete_selected_photo", { 
-              method: "POST",
-              parameters: pars,
-              onComplete:  function(request) {
-                setImages(request);
-              }
-            });
-            
-          }
-          
-          var saveXcdInfo = function() {
-            var form = Ext.getCmp('plan_panel_id').getForm();
-            var plan_id = form.findField('plan_id').getValue();
-            var inspect_id = form.findField('inspect_id').getValue();
-            
-            var jszt = form.findField('jszt').getValue();
-            var xkz = form.findField('xkz' ).getValue();
-            var yjx = form.findField('yjx' ).getValue();
-            var sjyt = form.findField('sjyt').getValue();
-            var gdmj = form.findField('gdmj').getValue();
-            var sfwf = form.findField('sfwf').getValue();
-            var wfmj = form.findField('wfmj').getValue();
-            var clyj = form.findField('clyj_3').getValue();
-            
-            pars = {inspect_id:inspect_id, jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
-            new Ajax.Request("/desktop/save_inspect_basic", { 
-              method: "POST",
-              parameters: pars,
-              onComplete:  function(request) {
-                if (request.responseText == 'Success') {
-                  xcd_store.load();
-                  msg('成功', '保存成功！');
-                } else {
-                }
-              }
-            });
-            
-          }
-          
-          var addPhoto2 = function() {
-            //alert ('add Photo2  clicked!');
-          }
-          
-          var prevPhoto = function() {
-            alert ('prev Photo clicked!');
-          }
-          
-          var nextPhoto = function() {
-            alert ('next Photo clicked!');
-          }
-          
-          //store for xcd
-          var xcd_store = new Ext.data.Store({
-            proxy: new Ext.data.HttpProxy({
-              url: '/desktop/get_xcd_xmdk'
-            }),
-            reader: new Ext.data.JsonReader({
-              totalProperty: 'results', 
-              root: 'rows',             
-              fields: [
-                {name: 'gid',    type: 'integer'},
-                {name: 'xmmc',  type: 'string'}
-              ]    
-            }),
-            sortInfo:{field: 'gid', direction: "ASC"}
-          });
-          
-          var xcd_grid = new Ext.grid.GridPanel({
-            id: 'xcd_grid_id',
-            store: xcd_store,
-            height:460,
-            columns: [           
-              { header : '编号',    width : 50, sortable : true, dataIndex: 'gid', hidden:'true'},            
-              { header : '项目名称',  width : 100, sortable : true, dataIndex: 'xmmc'}
-            ], 
-            columnLines: true,
-            layout:'fit',
-            viewConfig: {
-              stripeRows:true,
-            }
-          });
-          
-          xcd_grid.on('rowclick', function(grid, row, e){
-            var data = grid.store.data.items[row].data;
-
-            var form = Ext.getCmp('plan_panel_id').getForm();
-            form.findField("xmmc").setValue(data.xmmc);
-            
-            plan_id = form.findField('plan_id').getValue();
-            pars = {xmdk_id:data.gid,plan_id:plan_id};
-            
-            new Ajax.Request("/desktop/get_inspect_data",{
-              method: "POST",
-              parameters : pars,
-              onComplete: function(request) {
-                data = eval('('+request.responseText+')')[0];
-
-                var form = Ext.getCmp('plan_panel_id').getForm();
-                form.findField("xcrq").setValue(new Date(data.xcrq));
-                form.findField("jszt").setValue(data.jszt);
-                form.findField("xkz" ).setValue(data.xkz);
-                form.findField("yjx" ).setValue(data.yjx);
-                form.findField("sjyt").setValue(data.sjyt);
-                form.findField("gdmj").setValue(data.gdmj);
-                form.findField("sfwf").setValue(data.sfwf);
-                form.findField("wfmj").setValue(data.wfmj);
-                form.findField("clyj_3").setValue(data.clyj);
-                form.findField("inspect_id").setValue(data.id);
-                
-              }  
-            });
-          });
-
-          xcd_store.on('load', function(){
-            
-            if (xcd_store.data.items.length > 0) {
-              
-              var xcd_grid = Ext.getCmp('xcd_grid_id');
-              var gsm = xcd_grid.getSelectionModel();
-              
-              gsm.selectFirstRow();
-              var data = xcd_grid.store.data.items[0]['data'];
-              
-              var form = Ext.getCmp('plan_panel_id').getForm();
-              form.findField("xmmc").setValue(data.xmmc);
-              
-              // get inspect data
-              plan_id = form.findField('plan_id').getValue();
-              pars = {xmdk_id:data.gid,plan_id:plan_id};
-              new Ajax.Request("/desktop/get_inspect_data",{ 
-                method: "POST",
-                parameters : pars,
-                onComplete: function(request) {
-                  data = eval('('+request.responseText+')')[0];
-
-                  var form = Ext.getCmp('plan_panel_id').getForm();
-                  form.findField("xcrq").setValue(new Date(data.xcrq));
-                  form.findField("jszt").setValue(data.jszt);
-                  form.findField("xkz" ).setValue(data.xkz);
-                  form.findField("yjx" ).setValue(data.yjx);
-                  form.findField("sjyt").setValue(data.sjyt);
-                  form.findField("gdmj").setValue(data.gdmj);
-                  form.findField("sfwf").setValue(data.sfwf);
-                  form.findField("wfmj").setValue(data.wfmj);
-                  form.findField("clyj_3").setValue(data.clyj);
-                  form.findField("inspect_id").setValue(data.id);
-                }  
-              });
-              // get inspect images 
-              
-            } else {
-              console.log("no data loaded")
-            }
-          });
-
-          
-          // end of xcd_grid 
-          var planPanel = new Ext.form.FormPanel({
-              xtype:"panel",
-              id:'plan_panel_id',
-              closable : true,
-              layout: 'absolute',
-              width:800,
-              height:600,
-              border: 'true',
-              items:[{
-                  xtype:"tabpanel",
-                  deferredRender:false,
-                  activeTab:0,
-                  width:800,
-                  height:600,
-                  items :[{
-                    xtype:"panel",
-                    title:"基本信息",
-                    layout:"absolute", 
-                    items:[{
-                       xtype:"textfield", name:"plan_id", x:"0", y:"0",  width:0, height:0, hidden:true},
-                      { xtype:"label", text:"开始时间:", x:"25",  y:"15"  },
-                      { xtype:"label", text:"结束时间:", x:"325", y:"15"  },
-                      { xtype:"label", text:"巡查路线:", x:"25",  y:"65"  },
-                      { xtype:"label", text:"协查人员:", x:"25",  y:"165" },
-                      { xtype:"label", text:"巡查内容:", x:"25",  y:"265" },
-                      { xtype:"label", text:"巡查结果:", x:"25",  y:"365" },
-                      { xtype:"label", text:"处理意见:", x:"25",  y:"465" },
-                      
-                      { xtype:"button",  x:"620", y:"10",  height:30,  width:75,  text:"保存", handler : saveBasic}, 
-                      
-                      
-                      { xtype:"textfield", name:"kssj", x:"100", y:"10",  width:200, height:30},
-                      { xtype:"textfield", name:"jssj", x:"400", y:"10",  width:200, height:30},
-                      { xtype:"textarea",  name:"xclx", x:"100",  y:"60",  width:300, height:90},
-                      { xtype:"textarea",  name:"xcry", x:"100",  y:"160", width:300, height:90},
-                      { xtype:"textarea",  name:"xcnr", x:"100",  y:"260", width:625, height:90},
-                      { xtype:"textarea",  name:"xcjg", x:"100",  y:"360", width:625, height:90},
-                      { xtype:"textarea",  name:"clyj", x:"100",  y:"460", width:625, height:90},
-                      { xtype : 'box',  x: 425 , y: 60,  width: 300, height: 190, id: 'xclxt', 
-                        autoEl: {tag: 'div', html:''} 
-                    }]                 
-                  },{
-                    xtype:"panel",
-                    title:"照片管理",
-                    layout:"absolute",
-                    items:[{
-                      
-                        xtype : 'box', id : 'drop-img',  border : true, x: 25 , y: 70,  width: 240, height: 445, name: 'xctx', autoEl: {tag: 'div', id : 'drop-img',html: ''} },
-                      { xtype : 'box', id : 'drag-img',  border : true, x: 285, y: 70,  width: 240, height: 445, name: 'kytx', autoEl: {tag: 'div', id : 'drag-img',html: ''} },
-                      { xtype : 'box', id : 'hsz-img' ,  border : true, x: 545, y: 70,  width: 240, height: 445, name: 'hsz' , autoEl: {tag: 'div', id : 'hsz-img' ,html: '' } },
-
-                      { xtype:"button",  x:"25",  y:"10",  height:30,  width:75,  text:"添加照片" , handler : addPhoto}, 
-                      { xtype:"button",  x:"115", y:"10",  height:30,  width:75,  text:"刷新图片" , handler : refreshPhoto}, 
-                      { xtype:"button",  x:"200", y:"10",  height:30,  width:75,  text:"保存"   , handler : savePhoto}, 
-                      { xtype:"button",  x:"700", y:"10",  height:30,  width:75,  text:"清空"   , handler : emptyHsz}, 
-                      
-
-                      { xtype:"label", text:"巡查照片:", x:"25",   y:"55" },
-                      { xtype:"label", text:"可用照片:", x:"285",  y:"55" },
-                      { xtype:"label", text:"回收站:",  x:"545",  y:"55"
-                    
-                    }]
-                  },{
-                    xtype:"panel",
-                    title:"巡查点",
-                    layout:"absolute",
-                    items:[{
-                        xtype:"textfield", name:"xmmc", x:"250", y:"45",   width:200, height:30},
-                      { xtype:"datefield", name:"xcrq", x:"250", y:"85",  width:200, height:30, format:'Y-m-d'},
-                      { xtype:"textfield", name:"jszt", x:"250", y:"125",  width:200, height:30},
-                      { xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
-                      { xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
-                      { xtype:"textfield", name:"sjyt", x:"250", y:"245",  width:200, height:30},
-                      { xtype:"textfield", name:"gdmj", x:"250", y:"285",  width:200, height:30},
-                      { xtype:"textfield", name:"sfwf", x:"250", y:"325",  width:200, height:30},
-                      { xtype:"textfield", name:"wfmj", x:"250", y:"365",  width:200, height:30},
-                      { xtype:"textarea",  name:"clyj_3", x:"250", y:"405",  width:525, height:100},
-                      { xtype:"textarea",  name:"inspect_id", x:"0", y:"0",  hidden:'true'},
-                      
-
-                      { xtype:"label", text:"项目名称", x:"175", y:"50" },
-                      { xtype:"label", text:"检查日期", x:"175", y:"90"},
-                      { xtype:"label", text:"建设状态", x:"175", y:"130"},
-                      { xtype:"label", text:"许可证" , x:"175", y:"170"},
-                      { xtype:"label", text:"永久性" , x:"175", y:"210"},
-                      { xtype:"label", text:"实际用途", x:"175", y:"250"},
-                      { xtype:"label", text:"耕地面积", x:"175", y:"290"},
-                      { xtype:"label", text:"是否违法", x:"175", y:"330"},
-                      { xtype:"label", text:"违法面积", x:"175", y:"370"},
-                      { xtype:"label", text:"处理意见", x:"175", y:"410"},
-
-                      { xtype:"label", text:"巡查点列表", x:"25", y:"20"},
-                      { xtype:"label", text:"巡查照片",  x:"480", y:"20"},
-                      
-                      { xtype : 'panel',  x: 25 , y: 45,  width: 120, height: 470, id:'box-xcd-list', items:xcd_grid},
-                        
-                      { xtype : 'box',  x: 480 , y: 45,  width: 290, height: 270, name: 'xctp', id:'box-xctp',
-                        autoEl: {tag: 'div', html:''}},
-                        
-                      { xtype:"button",  x:"690", y:"10",  height:30,  width:75,  text:"添加照片"  ,  handler : addPhoto2}, 
-                      { xtype:"button",  x:"175", y:"10",   height:30,  width:75,  text:"保存修改" ,  handler : saveXcdInfo}, 
-                      { xtype:"button",  x:"480", y:"330",  height:55,  width:25,  text:"<<"   ,  handler : prevPhoto}, 
-                      { xtype : 'box',  x: 510 , y: 330,  width: 235, height: 55, name: 'xctp_s', id:'box-xctp-s',
-                        autoEl: {tag: 'div', html:''}},
-                      { xtype:"button",  x:"750", y:"330",  height:55,  width:25,  text:">>"   ,  handler : nextPhoto
-                    }]
-                  }]
-              }]
-          });
-
-          var plan_win = new Ext.Window({
-            id : 'add_plan_win',
-            iconCls : 'add',
-            title: '计划任务',
-            floating: true,
-            shadow: true,
-            draggable: true,
-            resizable :false,
-            closable: true,
-            modal: true,
-            width: 820,
-            height: 625,
-            layout: 'fit',
-            plain: true,
-            items:[planPanel]
-          });
-
-          if (gsm == undefined) {
-            //Ext.getCmp('add_plan_win').setTitle('计划任务');
-          } else {
-            Ext.getCmp('add_plan_win').setTitle('修改任务');
-            var form = Ext.getCmp('plan_panel_id').getForm();
-            data = gsm.selections.items[0]['data'];
-            
-            form.findField('plan_id').setValue(data.id);
-            form.findField('kssj').setValue(data.qrq);
-            form.findField('jssj').setValue(data.zrq);
-            form.findField('xclx').setValue(data.xclx);
-            form.findField('xcry').setValue(data.xcry);
-            form.findField('xcnr').setValue(data.xcnr);
-            form.findField('xcjg').setValue(data.xcjg);
-            form.findField('clyj').setValue(data.clyj);
-            
-          };
-
-          plan_win.show();
-          plan_win.setZIndex(9020);
-          
-          //设置巡查图像
-          pars = {id:data.id};
-          new Ajax.Request("/desktop/get_xcimage", { 
-            method: "POST",
-            parameters: pars,
-            onComplete:  function(request) {
-              setImages(request);
-            }  
-          }); 
-          
-          //设置巡查点
-          xcd_store.baseParams = {plan_id:data.id};
-          xcd_store.load();
-                     
-        };
-
-        // Load Store 
         plan_store.load();
+        
+        var xsTree = new Ext.tree.TreePanel({
+            rootVisible:false,
+            lines:false,
+            title:'按单位部门',
+            autoScroll:true,
+            loader: new Ext.tree.TreeLoader({
+              dataUrl: '/desktop/get_xstree_plan?username='+currentUser.username,     
+              baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
+            }),
+            root: {
+              nodeType: 'async',
+              text: '人员',
+              draggable:false,
+              id:'root'
+            }
+        });
+
+        xsTree.on("click", function(node,e) {
+          e.stopEvent();
+          node.select();
+          if (node.isLeaf()) {
+            var ss = node.id.split("|");
+            //plan_store.baseParams.username  = currentUser.username;
+            //plan_store.baseParams.xcqy  = ss[0]
+            plan_store.baseParams.xcry  = ss[1]
+            plan_store.load();
+          } 
+        }, xsTree);
         
         var formPanel = new Ext.form.FormPanel({
           xtype:"panel",
@@ -1325,21 +1351,30 @@ function myTask(id) {
           closeAction: 'hide',
           title:"任务管理",
           layout: 'fit',
-          items:[planGrid]
+          items:[{
+        		layout:"border",
+        		width:800,
+        		height:600,
+        		items:[{
+        				region:"center", layout:"fit", border:false, width:500, height:600,items:[planGrid]},
+        			{ region:"west",   layout:"fit", border:false, width:200, height:600,items:[xsTree]
+        		}]
+        	}]
         });
+
 
         tabPanel.add(formPanel);
         tabPanel.doLayout();
         
-        
         tabPanel.setActiveTab(formPanel);
+        
       } else {
         formPanel = Ext.getCmp('mytask-tab1');
         tabPanel.setActiveTab(formPanel);
       }
     } 
     break;
-    case 2 : //计划任务
+    case 2 : //统计汇总
     {
         var tabPanel = Ext.getCmp("mytask-tab");
 
@@ -3152,7 +3187,25 @@ function myTask(id) {
           tbar:[{
               text : '查看详细', iconCls : 'edit', handler : view_xmdk_handler
             }, '-',
-            '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
+            '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查过滤</span>:&nbsp;&nbsp;', { 
+              xtype: 'combo',
+              width: 75,
+              store: xcgl_store,
+              emptyText:'请选择',
+              mode: 'local',
+              minChars : 2,
+              multiSelect: true,
+              valueField:'text',
+              displayField:'text',
+              triggerAction:'all',
+              listeners:{
+                select:function(combo, records, index) {
+                  var key = combo.getValue();
+                  xmdks_store.baseParams.xcgl = key;
+                  xmdks_store.load();
+                }
+              }
+            },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
               id: 'xcqy_filter_id',
@@ -3224,19 +3277,7 @@ function myTask(id) {
           } 
         }, xsTree);
         
-        
-        /*
-        var formPanel = new Ext.form.FormPanel({
-          xtype:"panel",
-          id:'mytask-tab41',
-          //iconCls: 'tabs',
-          closable : true,
-          closeAction: 'hide',
-          title:"我的巡查地块",
-          layout: 'fit',
-          items:[sysXmdksGrid]
-        });
-        */
+
         var formPanel = new Ext.form.FormPanel({
           xtype:"panel",
           id:'mytask-tab41',
@@ -3336,7 +3377,25 @@ function myTask(id) {
           tbar:[{
               text : '查看详细', iconCls : 'edit', handler : view_xmdk_handler
             }, '-',
-            '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
+            '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查过滤</span>:&nbsp;&nbsp;', { 
+              xtype: 'combo',
+              width: 75,
+              store: xcgl_store,
+              emptyText:'请选择',
+              mode: 'local',
+              minChars : 2,
+              multiSelect: true,
+              valueField:'text',
+              displayField:'text',
+              triggerAction:'all',
+              listeners:{
+                select:function(combo, records, index) {
+                  var key = combo.getValue();
+                  xmdks_store.baseParams.xcgl = key;
+                  xmdks_store.load();
+                }
+              }
+            },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
               id: 'xcqy_filter_id',
@@ -3373,7 +3432,7 @@ function myTask(id) {
         ///=============================
         // Load Store 
         xmdks_store.baseParams.xcqy   = "全部";
-        xmdks_store.baseParams.username = "全部";
+        xmdks_store.baseParams.username = currentUser.username;
         xmdks_store.baseParams.limit  = "20";
         xmdks_store.load();
         
@@ -3394,8 +3453,7 @@ function myTask(id) {
             title:'按单位部门',
             autoScroll:true,
             loader: new Ext.tree.TreeLoader({
-              dataUrl: '/desktop/get_xstree?username='+currentUser.username,     //基于currentUser的权限
-              //dataUrl: '/desktop/get_xstree?username=金云平',     //基于currentUser的权限
+              dataUrl: '/desktop/get_xstree?username='+currentUser.username,  
               baseAttrs: { uiProvider: Ext.ux.TreeCheckNodeUI } 
             }),
             root: {
@@ -3412,8 +3470,14 @@ function myTask(id) {
           if (node.isLeaf()) {
             var ss = node.id.split("|");
             xmdks_store.baseParams.username  = currentUser.username;
-            xmdks_store.baseParams.xcqy      = ss[0]
-            xmdks_store.baseParams.xcry      = ss[1]
+            xmdks_store.baseParams.xcqy      = ss[0];
+            xmdks_store.baseParams.xcry      = ss[1];
+            xmdks_store.load();
+          } else {
+            var ss = node.id.split("|");
+            xmdks_store.baseParams.username  = currentUser.username;
+            xmdks_store.baseParams.xcqy      = ss[0];
+            xmdks_store.baseParams.xcry      = "全部";
             xmdks_store.load();
           } 
         }, xsTree);

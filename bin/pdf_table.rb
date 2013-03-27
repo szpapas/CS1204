@@ -85,7 +85,11 @@ def gen_pdf(plan_id)
     
     for k in 0..ss.count/2-1
       table([[{:image => "./dady/xctx/#{ss[k*2]}", :position => :center, :fit => [200,200] },{:image => "./dady/xctx/#{ss[k*2+1]}", :position => :center, :fit => [200,200]}]], :position => :center, :width => 520)
-    end  
+    end 
+    
+    if (ss.count%2 == 1)
+      table([[{:image => "./dady/xctx/#{ss[ss.count-1]}", :position => :center, :fit => [200,200] },{:image => "./dady/xctx/blank.png", :position => :center, :fit => [200,200]}]], :position => :center, :width => 520)
+    end 
  
     move_down 30
     table([["巡查人签名：______________________"]], :position => :center, :width => 520, :cell_style => {:padding => [5,0,5,300],:inline_format => true, :border_width => 0})

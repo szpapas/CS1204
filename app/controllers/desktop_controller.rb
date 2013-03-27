@@ -132,7 +132,7 @@ class DesktopController < ApplicationController
     cond << "zt2='#{params['zt2']}'" if params['zt2'] != '全部'
     cond << "xcqy='#{params['xcqy']}'" if params['xcqy'] != '全部'
     cond << "xcfs='#{params['xcfs']}'" if params['xcfs'] != '全部'
-    cond << "xcry='#{params['xcry']}'" if params['xcry'] != '全部'
+    cond << "username='#{params['xcry']}'" if params['xcry'] != '全部'
     cond << "EXTRACT( YEAR from zrq) = '#{params['year']}'" if params['year'] != '全部'
     
     if params['del_tag'] != '全部'
@@ -392,7 +392,32 @@ class DesktopController < ApplicationController
 
   # get all current_active user postion, 当前Area内的。
   def get_user_position
-    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL;")
+    
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+    
+    if user.qxcode == '管理员'
+      if params['zt'] == "在线"
+        cond = " and (now() + interval '12 hour') < last_seen"
+      elsif params['zt'] == "不在线"
+        cond = " and (now() + interval '12 hour') > last_seen"
+      else 
+        cond = ''
+      end
+    else
+      if params['zt'] == "在线"
+        cond = " and (now() + interval '12 hour') < last_seen and dw = '#{user.dw}' "
+      elsif params['zt'] == "不在线"
+        cond = " and (now() + interval '12 hour') > last_seen and dw = '#{user.dw}' "
+      else 
+        cond = " and dw = '#{User.current.dw}' "
+      end
+    end
+    
+    puts User.current.qxcode
+          
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '12 hour') < last_seen as zt from users where last_seen is not NULL #{cond};")
+    
     render :text => user.to_json
   end
   
@@ -767,32 +792,63 @@ class DesktopController < ApplicationController
 	  render :text => txt
 	end
  
-  # 部门， 人员， 路线
+  # 部门， 人员， 路线, 
   def get_phone_tree
     text = []
     node = params["node"]
     
-    if node == "root"
-      data = User.find_by_sql("select distinct dw from users where dw is not null;")
-      data.each do |dd|
-        text << {:text => " #{dd['dw']}", :id => "#{dd["dw"]}", :cls => "folder" }
-      end
-    else
-      pars = node.split('|') || []
-      
-      if pars.length == 1
-        data = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL and dw = '#{pars[0]}';")
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+   
+    ss = node.split('|')
+    if user.qxcode == '管理员'
+      if node == "root"
+        data = User.find_by_sql("select distinct dw from users where dw is not null;")
         data.each do |dd|
-          if dd['zt'] == 'f'
-            text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "offline", :checked => false}
-          else
-            text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "online", :checked => false}
-          end    
+          text << {:text => " #{dd['dw']}", :id => "#{dd["dw"]}", :cls => "folder" }
         end
-      elsif pars.length == 2
-        data = User.find_by_sql("select id, rwmc as xcmc, zt, astext(the_lines) as the_lines, report_at  from plans where xcry like '%#{pars[0]}%' and the_lines is not null order by report_at;")
+      else
+        pars = node.split('|') || []
+
+        if pars.length == 1
+          data = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL and dw = '#{pars[0]}';")
+          data.each do |dd|
+            if dd['zt'] == 'f'
+              text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "offline", :checked => false}
+            else
+              text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "online", :checked => false}
+            end    
+          end
+        elsif pars.length == 2
+          data = User.find_by_sql("select id, rwmc as xcmc, zt, astext(the_lines) as the_lines, report_at  from plans where xcry like '%#{pars[0]}%' and the_lines is not null order by report_at;")
+          data.each do |dd|
+              text << {:text => "#{dd['xcmc']}", :id => "#{dd["id"]}|#{dd["zt"]}|#{dd['report_at']}", :leaf => true, :cls => "file", :checked => false}
+          end
+        end
+      end
+    else user.qxcode = '监察员'
+      if node == "root"
+        data = User.find_by_sql("select distinct dw from users where dw = '#{user.dw}' ;")
         data.each do |dd|
-            text << {:text => "#{dd['xcmc']}", :id => "#{dd["id"]}|#{dd["zt"]}|#{dd['report_at']}", :leaf => true, :cls => "file", :checked => false}
+          text << {:text => " #{dd['dw']}", :id => "#{dd["dw"]}", :cls => "folder" }
+        end
+      else
+        pars = node.split('|') || []
+
+        if pars.length == 1
+          data = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '7 hour') < last_seen as zt from users where last_seen is not NULL and dw = '#{pars[0]}';")
+          data.each do |dd|
+            if dd['zt'] == 'f'
+              text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "offline", :checked => false}
+            else
+              text << {:text => " #{dd['username']}", :id => "#{dd["username"]}|#{dd['lon_lat']}", :cls => "folder", :iconCls => "online", :checked => false}
+            end    
+          end
+        elsif pars.length == 2
+          data = User.find_by_sql("select id, rwmc as xcmc, zt, astext(the_lines) as the_lines, report_at  from plans where xcry like '%#{pars[0]}%' and the_lines is not null order by report_at;")
+          data.each do |dd|
+              text << {:text => "#{dd['xcmc']}", :id => "#{dd["id"]}|#{dd["zt"]}|#{dd['report_at']}", :leaf => true, :cls => "file", :checked => false}
+          end
         end
       end
     end
@@ -1416,6 +1472,8 @@ class DesktopController < ApplicationController
     params['xz_tag']  = params['xz_tag'] || "全部"
     params['xcqy']    = params['xcqy']   || "全部"
     params['xcry']    = params['xcry']   || "全部"
+    params['xcgl']    = params['xcgl']   || "全部"
+    
     #params['username']    = params['username'] || "全部"
     
     cond=[]
@@ -1424,10 +1482,19 @@ class DesktopController < ApplicationController
       cond << "xz_tag='是'"
       cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
       cond << "username='#{params['xcry']}'"     if params['xcry'] != '全部'
-    else 
+    else #system xmdks 
       cond << "(xz_tag != '是' or xz_tag is null)"
       cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
-      cond << "gid in (select xmdk_id from inspects where iphone='#{params['xcry']}')" if params['xcry'] != '全部'
+
+      if params['xcry'] != '全部'
+        if params['xcgl'] == '已巡查'
+          cond << "gid in (select xmdk_id from inspects where iphone='#{params['xcry']}')" 
+        elsif params['xcgl'] == '未巡查'
+          cond << "gid not in (select xmdk_id from inspects where iphone='#{params['xcry']}')" 
+        end
+      else
+          
+      end    
     end
     
       
@@ -1522,6 +1589,45 @@ class DesktopController < ApplicationController
     
     render :text => 'Success'
   end
+
+  def get_xstree_plan
+    text = []
+    node = params["node"].chomp
+    
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+   
+    ss = node.split('|')
+    if user.qxcode == '管理员'
+      if node == "root"
+        #text << {:text => user.dw, :id => user.dw, :cls  => "folder"}
+        data = User.find_by_sql("select distinct dw, xzqmc from users;")
+        data.each do |dd|
+          text << {:text => dd["dw"], :id => "#{dd['xzqmc']}",  :cls  => "folder",  :leaf => false }  
+        end
+      else
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{ss[0]}';")
+        data.each do |dd|
+          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['username']}",  :iconCls => "text",  :leaf => true } 
+        end
+      end
+    elsif user.qxcode == '监察员'  
+      if node == "root"
+        text << {:text => user.dw, :id => user.xzqmc, :cls  => "folder"}
+      else
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{user.dw}';")
+        data.each do |dd|
+          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['username']}",  :iconCls => "text",  :leaf => true }
+        end
+      end
+    else user.qxcode == '巡查员'
+      dd = user
+      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['xcry']}",   :iconCls => "text",  :leaf => true }
+    end    
+
+    render :text => text.to_json
+  end
+
   
   def get_xstree
     text = []
@@ -1529,10 +1635,24 @@ class DesktopController < ApplicationController
     
     username = params['username'];
     user = User.find_by_sql("select * from users where username = '#{username}';")[0]
-    
-    if user.qxcode == '监察员'
+   
+    ss = node.split('|')
+    if user.qxcode == '管理员'
       if node == "root"
-        text << {:text => user.dw, :id => user.dw, :cls  => "folder"}
+        #text << {:text => user.dw, :id => user.dw, :cls  => "folder"}
+        data = User.find_by_sql("select distinct dw,xzqmc from users;")
+        data.each do |dd|
+          text << {:text => dd["dw"], :id => "#{dd['xzqmc']}",  :cls  => "folder",  :leaf => false }  
+        end
+      else
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{ss[0]}';")
+        data.each do |dd|
+          text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['iphone']}",  :iconCls => "text",  :leaf => true } 
+        end
+      end
+    elsif user.qxcode == '监察员'  
+      if node == "root"
+        text << {:text => user.dw, :id => user.xzqmc, :cls  => "folder"}
       else
         data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{user.dw}';")
         data.each do |dd|
