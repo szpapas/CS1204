@@ -1261,7 +1261,6 @@ function myTask(id) {
             '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
-              id: 'xcqy_filter_id',
               store: xcqy_store,
               emptyText:'请选择',
               mode: 'local',
@@ -1272,7 +1271,7 @@ function myTask(id) {
               triggerAction:'all',
               listeners:{
                 select:function(combo, records, index) {
-                  var key = Ext.getCmp('xcqy_filter_id').getValue();
+                  var key = combo.getValue();
                   plan_store.baseParams.xcqy = key;
                   plan_store.load();
                 }
@@ -1281,7 +1280,6 @@ function myTask(id) {
             '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查方式</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
-              id: 'xcfs_filter_id',
               store: xcfs_store,
               emptyText:'请选择',
               mode: 'local',
@@ -1292,7 +1290,7 @@ function myTask(id) {
               triggerAction:'all',
               listeners:{
                 select:function(combo, records, index) {
-                  var key = Ext.getCmp('xcfs_filter_id').getValue();
+                  var key = combo.getValue();
                   plan_store.baseParams.xcfs = key;
                   plan_store.load();
                 }
@@ -3208,7 +3206,6 @@ function myTask(id) {
             },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
-              id: 'xcqy_filter_id',
               store: xcqy_store,
               emptyText:'请选择',
               mode: 'local',
@@ -3219,7 +3216,7 @@ function myTask(id) {
               triggerAction:'all',
               listeners:{
                 select:function(combo, records, index) {
-                  var key = Ext.getCmp('xcqy_filter_id').getValue();
+                  var key = combo.getValue();
                   xmdks_store.baseParams.xcqy = key;
                   xmdks_store.load();
                 }
@@ -3398,7 +3395,6 @@ function myTask(id) {
             },'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
               width: 75,
-              id: 'xcqy_filter_id',
               store: xcqy_store,
               emptyText:'请选择',
               mode: 'local',
@@ -3409,7 +3405,7 @@ function myTask(id) {
               triggerAction:'all',
               listeners:{
                 select:function(combo, records, index) {
-                  var key = Ext.getCmp('xcqy_filter_id').getValue();
+                  var key = combo.getValue();
                   xmdks_store.baseParams.xcqy = key;
                   xmdks_store.load();
                 }
