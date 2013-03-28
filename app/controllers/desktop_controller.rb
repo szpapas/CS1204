@@ -1645,7 +1645,7 @@ class DesktopController < ApplicationController
           text << {:text => dd["dw"], :id => "#{dd['xzqmc']}",  :cls  => "folder",  :leaf => false }  
         end
       else
-        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and dw = '#{ss[0]}';")
+        data = User.find_by_sql("select  bm || '-' || username as dwbm, xzqmc, username, iphone from users where (qxcode='巡查员' or qxcode='监察员') and xzqmc = '#{ss[0]}';")
         data.each do |dd|
           text << {:text => dd["dwbm"], :id => "#{dd['xzqmc']}|#{dd['iphone']}",  :iconCls => "text",  :leaf => true } 
         end
