@@ -187,19 +187,17 @@ MyDesktop.MyTask = Ext.extend(Ext.app.Module, {
                         cls:'link-panel',
                         links:[{
                              text:'我的巡查点',
+                             icon:'marker-red16.png',
                              id:"mytask_4",
                              action:"myTask(41)"
                         },{
                              text:'系统巡查点',
+                             icon:'marker-green16.png',
                              id:"mytask_5",
                              action:"myTask(42)"
-                        },{
-                             text:'巡查点统计',
-                             id:"mytask_6",
-                             action:"myTask(43)"
                         }],
                         layout:'fit', 
-                        tpl:new Ext.XTemplate('<tpl for="links"><div id="{link_id}"><a class="examplelink" onclick="{action}" >{text}</a></div></tpl>'),  //
+                          tpl:new Ext.XTemplate('<tpl for="links"><div id="{link_id}"><a class="examplelink" onclick="{action}" ><span><img src=/images/{icon}></img</span>&nbsp;&nbsp;{text}</a></div></tpl>'),  //
                         afterRender:function() {
                             MyDesktop.LinksPanel.superclass.afterRender.apply(this, arguments);
                             this.tpl.overwrite(this.body, {links:this.links});

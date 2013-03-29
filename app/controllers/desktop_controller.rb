@@ -376,6 +376,9 @@ class DesktopController < ApplicationController
       User.find_by_sql "insert into inspects (plan_id, xmdk_id) values (#{plan_id}, #{data.gid});"
       User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{plan_id};"
       User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{plan_id};"
+      
+      User.find_by_sql "update xmdks set xc_count = (select count(*) from inspects where xmdks.gid = inspects.xmdk_id);"
+      
     end 
   end
   
@@ -1497,8 +1500,6 @@ class DesktopController < ApplicationController
       end    
     end
     
-      
-      
     case cond.size
     when 0
         conds = ''
@@ -1682,4 +1683,18 @@ class DesktopController < ApplicationController
     render :text => txt
   end
   
+  
+  def delete_selected_xmdks
+    params['id'].split(",").each do |dd|
+      user = User.find_by_sql("select count(*) from inspects where xmdk_id=#{dd};")
+      if user[0].count.to_i == 0
+        xmdk = User.find_by_sql("select * from xmdks where gid = #{dd};")
+        User.find_by_sql("delete from a_xmdks where gdqkid = '#{xmdk[0].gdqkid}';")
+        User.find_by_sql("delete from xmdks where gid = #{dd}");
+      end  
+    end
+    render :text => 'Success'
+  end
+  
+    
 end

@@ -160,6 +160,8 @@ class MapController < ApplicationController
       User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{plan_id};"
       User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{plan_id};"
       
+      User.find_by_sql "update xmdks set xc_count = (select count(*) from inspects where xmdks.gid = inspects.xmdk_id);"
+      
     else
       user = User.find_by_sql("select count(*) from xcimage where plan_id = #{plan_id} and xmdk_id = #{xmdk_id};")
       User.find_by_sql("update inspects set tpsl = #{user[0].count}")
@@ -438,6 +440,9 @@ class MapController < ApplicationController
     if task_id.to_i != 0
       User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{task_id};"
       User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{task_id};"
+      
+      User.find_by_sql "update xmdks set xc_count = (select count(*) from inspects where xmdks.gid = inspects.xmdk_id);"
+      
     end
     
     inspect_id = user[0]['id']
@@ -577,6 +582,8 @@ class MapController < ApplicationController
       task_id = params['task_id']
       User.find_by_sql "update inspects set username = plans.xcry from plans where inspects.plan_id = #{task_id};"
       User.find_by_sql "update inspects set iphone = users.iphone from users where inspects.username = users.username and inspects.plan_id = #{task_id};"
+      
+      User.find_by_sql "update xmdks set xc_count = (select count(*) from inspects where xmdks.gid = inspects.xmdk_id);"
       
       render :text => "保存成功"
     else

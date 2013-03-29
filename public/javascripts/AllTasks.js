@@ -539,6 +539,30 @@ var view_xmdks = function(sys_grid_id) {
   
 }
 
+
+var delete_xmdks = function(sys_grid_id) {
+   var xmdks_grid = Ext.getCmp(sys_grid_id);
+   var gsm =Ext.getCmp(sys_grid_id).getSelectionModel();
+   var items = gsm.selections.items;
+   id_str = '';
+   for (var i=0; i < items.length; i ++) {
+     if (i==0) {
+       id_str = id_str+items[i].data.gid;
+     } else {
+       id_str = id_str + ',' +items[i].data.gid ;
+     }
+
+   };
+   pars = {id:id_str};
+   new Ajax.Request("/desktop/delete_selected_xmdks", { 
+     method: "POST",
+     parameters: pars,
+     onComplete:  function(request) {
+       xmdks_grid.store.load();
+     }
+   });
+ };
+
 // 修改任务窗口
 var view_plans = function (sys_grid_id) {
   
@@ -3123,7 +3147,12 @@ function myTask(id) {
         //Helper functions
         var view_xmdk_handler = function(){
           view_xmdks('sys_xmdks_grid_41');
-        }       
+        };  
+        
+        var delete_xmdk_handler = function(){
+          delete_xmdks('sys_xmdks_grid_41');
+        };        
+ 
        
         //========Main Grid ============ 
         var  xmdks_store = new Ext.data.Store({
@@ -3135,6 +3164,7 @@ function myTask(id) {
             root: 'rows',             
             fields: [
               {name: 'gid',    type: 'integer'},
+              {name: 'xc_count',type: 'integer'},
               {name: 'xmmc',   type: 'string'},
               {name: 'pzwh',   type: 'string'},
               {name: 'sfjs',   type: 'string'},
@@ -3154,6 +3184,8 @@ function myTask(id) {
           sortInfo:{field: 'gid', direction: "ASC"}
         });
 
+
+
         
         var sm = new Ext.grid.CheckboxSelectionModel();
         var sysXmdksGrid = new Ext.grid.GridPanel({
@@ -3163,6 +3195,7 @@ function myTask(id) {
             sm,
             { header : 'gid',    width : 75, sortable : true, dataIndex: 'gid', hidden:true},
             { header : '项目名称',   width : 200, sortable : true, dataIndex: 'xmmc'},
+            { header : '巡查次数',   width : 75, sortable : true, dataIndex: 'xc_count'},
             { header : '批准文号',   width : 200, sortable : true, dataIndex: 'pzwh', hidden:true},
             { header : '是否建设',   width : 75, sortable : true,  dataIndex: 'sfjs', hidden:true},
             { header : '用地单位',   width : 150, sortable : true,  dataIndex: 'yddw'},
@@ -3184,6 +3217,8 @@ function myTask(id) {
           },
           tbar:[{
               text : '查看详细', iconCls : 'edit', handler : view_xmdk_handler
+            }, {
+              text : '删除选择', iconCls : 'delete', handler : delete_xmdk_handler 
             }, '-',
             '<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查过滤</span>:&nbsp;&nbsp;', { 
               xtype: 'combo',
@@ -3235,6 +3270,9 @@ function myTask(id) {
             })
           ]
         });
+        
+        
+
         
         ///=============================
         // Load Store 
@@ -3324,6 +3362,7 @@ function myTask(id) {
             root: 'rows',             
             fields: [
               {name: 'gid',    type: 'integer'},
+              {name: 'xc_count',    type: 'integer'},
               {name: 'xmmc',   type: 'string'},
               {name: 'pzwh',   type: 'string'},
               {name: 'sfjs',   type: 'string'},
@@ -3352,6 +3391,7 @@ function myTask(id) {
             sm,
             { header : 'gid',    width : 75, sortable : true, dataIndex: 'gid', hidden:true},
             { header : '项目名称',   width : 200, sortable : true, dataIndex: 'xmmc'},
+            { header : '巡查次数',   width : 75, sortable : true, dataIndex: 'xc_count'},
             { header : '批准文号',   width : 200, sortable : true, dataIndex: 'pzwh', hidden:true},
             { header : '是否建设',   width : 75, sortable : true,  dataIndex: 'sfjs', hidden:true},
             { header : '用地单位',   width : 150, sortable : true,  dataIndex: 'yddw'},
