@@ -1480,7 +1480,7 @@ class DesktopController < ApplicationController
     
     if params['xz_tag'] == '是'
       cond << "xz_tag='是'"
-      cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
+      #cond << "xzqmc='#{params['xcqy']}'"        if params['xcqy'] != '全部'
       cond << "username='#{params['xcry']}'"     if params['xcry'] != '全部'
     else #system xmdks 
       cond << "(xz_tag != '是' or xz_tag is null)"
