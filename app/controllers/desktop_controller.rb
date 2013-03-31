@@ -1544,7 +1544,7 @@ class DesktopController < ApplicationController
     if size > 0
       txt = "{results:#{size},rows:["
       puts "select * from xmdks #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select * from xmdks #{conds} order by gid limit #{params['limit']} offset #{params['start']} ;")
+      user = User.find_by_sql("select *, st_asgeojson(the_google)  as geom_string from xmdks #{conds} order by gid limit #{params['limit']} offset #{params['start']} ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end

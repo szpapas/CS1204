@@ -80,10 +80,41 @@ var show_images = function (url) {
   }
 } 
 
+//=====
 var view_xmdks = function(sys_grid_id) {
   var xmdks_grid = Ext.getCmp(sys_grid_id);
   var gsm =Ext.getCmp(sys_grid_id).getSelectionModel();
   
+  
+  var draw_marker = function(lon,lat) {
+    markers.clearMarkers();
+
+    var x0 = parseFloat(lon);
+    var y0 = parseFloat(lat);
+
+    var size = new OpenLayers.Size(16,26);
+    var offset = new OpenLayers.Pixel(-(size.w/2), -20);
+    var icon = new OpenLayers.Icon('/img/mobile-green.png',size,offset);
+    var marker =new OpenLayers.Marker(new OpenLayers.LonLat(x0, y0));
+    marker.id = data.gid;
+    marker.icon = icon;
+    //marker.events.register("mousedown", marker, function() { yt_click(); });
+    markers.addMarker(marker);  //水库
+    map.setCenter(new OpenLayers.LonLat(lon,lat), 17);
+  };
+  
+  var draw_xmdks  = function(geom_string){
+    
+    if (xmdk_vectors.features.length > 0){
+      while (xmdk_vectors.features.length > 0) {
+        var vectorFeature = xmdk_vectors.features[0];
+        xmdk_vectors.removeFeatures(vectorFeature);
+      };
+    };
+    
+    var geojson_format = new OpenLayers.Format.GeoJSON();
+    xmdk_vectors.addFeatures(geojson_format.read(geom_string));
+  };
 
   //====helper function
   var saveBasic = function() {
@@ -151,16 +182,7 @@ var view_xmdks = function(sys_grid_id) {
     
   };
   
-  var nextPhoto  = function() {
-    
-  };
-  
-  var prevPhoto = function() {
-    
-  };
-  
   var refreshXcjl = function() {
-    
   };
   
   var saveXcjl = function() {
@@ -260,6 +282,11 @@ var view_xmdks = function(sys_grid_id) {
 
       }  
     }); 
+    
+    ss = data.the_center.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
+    draw_marker(parseFloat(ss[1]), parseFloat(ss[2]) ); 
+
+    draw_xmdks(data.geom_string);
     
   };
   
@@ -377,7 +404,7 @@ var view_xmdks = function(sys_grid_id) {
   xcjl_store.baseParams.xmdk_id = data.gid;
   xcjl_store.load();
   
-  var xmdk_panel_img = new Ext.ux.Image ({ id: 'imgPreview', url: Ext.BLANK_IMAGE_URL });
+  //var xmdk_panel_img = new Ext.ux.Image ({ id: 'imgPreview', url: Ext.BLANK_IMAGE_URL });
   
   //demo dataview for 
   var img_store = new Ext.data.Store({
@@ -431,6 +458,33 @@ var view_xmdks = function(sys_grid_id) {
       }
   });
   
+  //componets for map_view 
+  var options = {
+    projection: new OpenLayers.Projection('EPSG:900913'), units: "m", maxResolution: 152.87405654296876,
+    maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7) 
+  };
+  //Add markers 
+  var map  = new OpenLayers.Map($('sat_check'), options);
+  var gsat = new OpenLayers.Layer.Google( "谷歌卫星图", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22} );
+  var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", { isBaseLayer: false, styleMap: styles });
+  var markers = new OpenLayers.Layer.Markers( "检查点" );
+
+  map.addLayers([gsat,xmdk_vectors, markers]);
+  
+  var map_view = new Ext.Panel({
+    id : 'sat_check',
+    autoScroll: true,
+    xtype:"panel",
+    height:400,
+    width:400,
+    style:'margin:0px 0px',
+    layout:'fit',
+    items: [{
+        xtype: 'gx_mappanel',
+        map: map
+    }]
+  });
+  
   var xmdksPanel = new Ext.form.FormPanel({
       xtype:"panel",
       id:'xmdks-panel-id',
@@ -474,7 +528,7 @@ var view_xmdks = function(sys_grid_id) {
                 {text:"图斑周长", x:"15", y:"375", xtype:"label"},
                 {text:"创建日期", x:"15", y:"415", xtype:"label"},
   
-                { xtype:"panel", name:"xmdk_pic", x:"320", y:"50", width:400, height:400, items:[xmdk_panel_img] },
+                { xtype:"panel", name:"xmdk_pic", x:"320", y:"50", width:400, height:400, items:[map_view] },
                 
                 { xtype:"button",  x:"10",  y:"10",  height:30,  width:100,  text:"前一条", handler:showPrev },
                 { xtype:"button",  x:"120",  y:"10",  height:30,  width:100,  text:"后一条", handler:showNext },
@@ -561,7 +615,7 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"textfield", name:"h_sjzdmj", x:"100", y:"410", width:250 },
                 { xtype:"textfield", name:"h_gdmj", x:"100", y:"440", width:250 },
                 { xtype:"textfield", name:"h_wfmj", x:"100", y:"470", width:250 },
-                { xtype:"textarea",  name:"h_bz", x:"100", y:"500", width:250, height:50},
+                { xtype:"textarea" , name:"h_bz",   x:"100", y:"500", width:250, height:50},
                 
   
                 { xtype:"label", text:"项目名称", x:"15", y:"200"},
@@ -666,8 +720,11 @@ var view_xmdks = function(sys_grid_id) {
     }  
   }); 
   
-  //设置inspect_grid 
+  // 设置地图
+  ss = data.the_center.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
+  draw_marker(parseFloat(ss[1]), parseFloat(ss[2]) ); 
   
+  draw_xmdks(data.geom_string);
   //panel xmdk_pic
   //xmdk_panel_img.setSrc('/images/xctx/0_0_IMAGE_0011.JPG');
   
@@ -3442,6 +3499,7 @@ function myTask(id) {
               {name: 'username'  ,  type: 'string'},
               {name: 'xz_tag'    ,  type: 'string'},
               {name: 'the_center',  type: 'string'},
+              {name: 'geom_string',  type: 'string'},
               {name: 'gdqkid'    ,  type: 'string'}
             ]    
           }),
@@ -3640,6 +3698,7 @@ function myTask(id) {
               {name: 'username'  ,  type: 'string'},
               {name: 'xz_tag'    ,  type: 'string'},
               {name: 'the_center',  type: 'string'},
+              {name: 'geom_string',  type: 'string'},
               {name: 'gdqkid'    ,  type: 'string'}
             ]    
           }),
