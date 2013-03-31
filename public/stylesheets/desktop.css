@@ -862,10 +862,16 @@ td.ux-taskButtons-edge {
     padding-bottom: 3px;
 }
 
-.thumb img{
+.thumb img1{
     height: 140px;
     width: 180px;
 }
+
+.thumb img{
+    height: 220px;
+    width: 260px;
+}
+
 .thumb-wrap{
     float: left;
     margin: 4px;
@@ -877,7 +883,7 @@ td.ux-taskButtons-edge {
     display: block;
     overflow: hidden;
     text-align: center;
-    width: 180px; /* for ie to ensure that the text is centered */
+    width: 260px; /* for ie to ensure that the text is centered */
 }
 
 .x-item-over{

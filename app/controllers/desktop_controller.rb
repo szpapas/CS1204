@@ -127,7 +127,7 @@ class DesktopController < ApplicationController
     params['username'] = params['username'] || "全部"
     params['del_tag'] = params['del_tag'] || "全部"
     
-    cond=[]
+    cond, conds = [], ''
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
     cond << "zt2='#{params['zt2']}'" if params['zt2'] != '全部'
     cond << "xcqy='#{params['xcqy']}'" if params['xcqy'] != '全部'
@@ -141,14 +141,7 @@ class DesktopController < ApplicationController
       cond << "(del_tag is null or del_tag <> '是')"   
     end
     
-    case cond.size
-    when 0
-        conds = ''
-    when 1
-        conds = "where #{cond[0]}"
-    else
-        conds = "where #{cond.join(' and ')}"
-    end
+    conds = cond.size==1 ? "where #{cond[0]}" : "where #{cond.join(' and ')}"  if cond.size > 0
     
     user = User.find_by_sql("select count(*) from plans #{conds} ;")[0]
     size = user.count.to_i;
@@ -686,7 +679,7 @@ class DesktopController < ApplicationController
     params['zt']    = params['zt'] || "全部"
     params['filter'] = params['filter'] || "全部"
     
-    cond=[]
+    cond, conds = [], ''
     cond << "zt='#{params['zt']}'" if params['zt'] != '全部'
     cond << "nd='#{params['nd']}'" if params['nd'] != '全部'
     
@@ -700,14 +693,7 @@ class DesktopController < ApplicationController
       end    
     end
     
-    case cond.size
-    when 0
-        conds = ''
-    when 1
-        conds = "where #{cond[0]}"
-    else
-        conds = "where #{cond.join(' and ')}"
-    end
+    conds = cond.size==1 ? "where #{cond[0]}" : "where #{cond.join(' and ')}"  if cond.size > 0
     
     user = User.find_by_sql("select count(*) from reports #{conds} ;")[0]
     size = user.count.to_i;
@@ -944,7 +930,7 @@ class DesktopController < ApplicationController
     c_txt = '<div id="cars" class="availableLot">'
     for k in 0..user.size-1
       dd = user[k]
-      c_txt = c_txt + "<div><img src='/images/dady/xctx/#{dd['yxmc'].gsub('PNG','JPG')}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
+      c_txt = c_txt + "<div><img src='/images/dady/xctx/#{dd['yxmc']}' class='imgThumb' qtip='#{dd['bz']}'/></div>"
     end  
     c_txt = c_txt + '</div>'
     
@@ -960,6 +946,7 @@ class DesktopController < ApplicationController
     
     render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
   end  
+  
   
   def upload_file
     params.each do |k,v|
@@ -981,6 +968,56 @@ class DesktopController < ApplicationController
       end
     end
     render :text => "{success:true}"
+  end
+  
+  #"inspect_id"=>"260", "photo-desc"=>"1212121"
+  def upload_xmdks_file
+    user = User.find_by_sql("select plan_id, xmdk_id from inspects where id = #{params['inspect_id']};")
+    
+    if user.size > 0
+      
+      params.each do |k,v|
+        #logger.debug("K: #{k} ,V: #{v}")
+        
+        if k.include?("photo-path")
+          logger.debug("#{v.original_filename}")
+          logger.debug("#{v.tempfile.path}")
+          logger.debug("#{v.content_type}")
+
+          plan_id = user[0].plan_id
+          xmdk_id = user[0].xmdk_id
+          timestr = Time.now.strftime('%y%m%d_%H%M%S')
+          rq = Time.now.strftime('%Y-%m-%d %T')
+
+          logger.debug "filename:#{v.original_filename}"
+          
+          
+          if v.original_filename.upcase.include?'PNG'
+            yxmc = "#{plan_id}_#{xmdk_id}_#{timestr}.PNG"
+          elsif v.original_filename.upcase.include?'JPG'
+            yxmc = "#{plan_id}_#{xmdk_id}_#{timestr}.JPG"
+          end    
+
+          pathname = "./dady/xctx/#{yxmc}"
+          puts pathname
+
+          ff = File.new("#{pathname}","w+")
+          ff.write(v.tempfile.read)
+          ff.close
+
+          system("convert -resize 240x180 #{pathname} #{pathname.gsub(/.jpg|.png/i, '')}-thumb.jpg")
+          User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq, bz) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{rq}', '#{params['photo-desc']}');")
+          User.find_by_sql("update inspects set tpsl = (select count(*) from xcimage where plan_id = #{plan_id}) where id = #{params['inspect_id']}")
+          
+          break
+        end
+      end
+       
+      render :text => "{success:true}"
+    else  
+      render :text => "{success:false}"
+    end
+
   end
   
   #img = http://127.0.0.1:3000/images/dady/xctx/24632_0_IMAGE_0002.JPG|http://127.0.0.1:3000/images/dady/xctx/24632_0_IMAGE_0003.JPG|
@@ -1015,8 +1052,8 @@ class DesktopController < ApplicationController
       dd = datas[k]
       r_txt = r_txt + "<div><img src='/images/#{dd}' class='imgThumb' qtip='#{dd}'/></div>"
     end  
-    r_txt = r_txt + '</div>'
     
+    r_txt = r_txt + '</div>'
     render :text => {"xctx" => c_txt, "kytx" => r_txt, "result" => 'success'}.to_json
     
   end  
@@ -1040,8 +1077,8 @@ class DesktopController < ApplicationController
         
         User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{rq}');")
         pathname = "./dady/xctx/#{yxmc}"
-        puts "mv #{userpath}/#{img_name} #{pathname}"
         system("mv #{userpath}/#{img_name} #{pathname}")
+        system("convert -resize 240x180 #{pathname} #{pathname.gsub(/jpg|png/i, '')}-thumb.jpg")
       end
     end
     
@@ -1479,7 +1516,7 @@ class DesktopController < ApplicationController
     
     #params['username']    = params['username'] || "全部"
     
-    cond=[]
+    cond, conds = [], ''
     
     if params['xz_tag'] == '是'
       cond << "xz_tag='是'"
@@ -1500,14 +1537,7 @@ class DesktopController < ApplicationController
       end    
     end
     
-    case cond.size
-    when 0
-        conds = ''
-    when 1
-        conds = "where #{cond[0]}"
-    else
-        conds = "where #{cond.join(' and ')}"
-    end
+    conds = cond.size==1 ? "where #{cond[0]}" : "where #{cond.join(' and ')}"  if cond.size > 0
     
     user = User.find_by_sql("select count(*) from xmdks #{conds} ;")[0]
     size = user.count.to_i;
@@ -1696,5 +1726,31 @@ class DesktopController < ApplicationController
     render :text => 'Success'
   end
   
+  
+  #plan_id, xmdk_id
+  def get_xcimage_json
+    params['plan_id'] = params['plan_id'] || "全部"
+    params['xmdk_id'] = params['xmdk_id'] || "全部"
+    
+    cond, conds = [], ''
+    cond << "plan_id=#{params['plan_id']}" if params['plan_id'] != '全部'
+    cond << "xmdk_id=#{params['xmdk_id']}" if params['xmdk_id'] != '全部'
+
+    conds = cond.size==1 ? "where #{cond[0]}" : "where #{cond.join(' and ')}"  if cond.size > 0
+    
+    user = User.find_by_sql("select id, yxmc, rq, tpjd, bz from xcimage #{conds};")
+    
+    size = user.size;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt.gsub('.PNG', '-thumb.jpg').gsub('.JPG', '-thumb.jpg')
+  end
     
 end

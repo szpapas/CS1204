@@ -175,6 +175,9 @@ class MapController < ApplicationController
     ff.close
     
     system ("convert #{pathname} #{pathname.gsub('PNG','JPG')}")
+    system ("convert  -resize 240x180 #{pathname} #{pathname.gsub('PNG','-thumb.jpg')}")
+    
+    
     
     txt = "Success"
     render :text => {"mode" => params['mode'], "result" => txt}.to_json
