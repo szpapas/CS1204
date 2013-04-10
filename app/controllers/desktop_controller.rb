@@ -1078,7 +1078,7 @@ class DesktopController < ApplicationController
         User.find_by_sql("insert into xcimage (plan_id, xmdk_id, yxmc, rq) values (#{plan_id}, #{xmdk_id}, '#{yxmc}', TIMESTAMP '#{rq}');")
         pathname = "./dady/xctx/#{yxmc}"
         system("mv #{userpath}/#{img_name} #{pathname}")
-        system("convert -resize 240x180 #{pathname} #{pathname.gsub(/jpg|png/i, '')}-thumb.jpg")
+        system("convert -resize 240x180 #{pathname} #{pathname.gsub(/.jpg|.png/i, '')}-thumb.jpg")
       end
     end
     

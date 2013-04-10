@@ -231,7 +231,7 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("xzqh").setValue(data.xzqh);
     form.findField("tbmj").setValue(data.shape_area);
     form.findField("tbzc").setValue(data.shape_len);
-    form.findField("jlrq").setValue(new Date(data.jlrq));
+    if (data.jlrq != null) form.findField("jlrq").setValue(new Date(data.jlrq));
     
     if (data.xz_tag != '是' || data.xz_tag == undefined) {
       form.findField("gid" ).setReadOnly(true);
@@ -266,20 +266,21 @@ var view_xmdks = function(sys_grid_id) {
         form.findField("a_zlwz").setValue(data.zlwz);
         form.findField("a_sffhztgh").setValue(data.sffhztgh);
         form.findField("a_ydl").setValue(data.ydl);
-        form.findField("a_lxsj").setValue(new Date(data.lxsj));
+        if (data.lxsj != null) form.findField("a_lxsj").setValue(new Date(data.lxsj));
         form.findField("a_lxpwh").setValue(data.lxpwh);
-        form.findField("a_ghddsj").setValue(new Date(data.ghddsj));
+        if (data.ghddsj != null) form.findField("a_ghddsj").setValue(new Date(data.ghddsj));
         form.findField("a_ghddh").setValue(data.ghddh);
-        form.findField("a_zzysj").setValue(new Date(data.zzysj));
+        if (data.zzysj != null) form.findField("a_zzysj").setValue(new Date(data.zzysj));
         form.findField("a_zzypwh").setValue(data.zzypwh);
-        form.findField("a_gdsj").setValue(new Date(data.gdsj));
+        if (data.gdsj != null) form.findField("a_gdsj").setValue(new Date(data.gdsj));
         form.findField("a_gdpwh").setValue(data.gdpwh);
         form.findField("a_pzyt").setValue(data.pzyt);
         form.findField("a_sjyt").setValue(data.sjyt);
         form.findField("a_pzmj").setValue(data.pzmj);
         form.findField("a_gdmj").setValue(data.gdmj);
-        form.findField("a_dgsj").setValue(new Date(data.dgsj));
-
+        if (data.dgsj != null) form.findField("a_dgsj").setValue(new Date(data.dgsj));
+        
+        form.findField("a_xmmc").setReadOnly(true);  
       }  
     }); 
     
@@ -358,7 +359,7 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("h_xmmc").setValue(xmmc);
   
     form.findField("h_inspect_id").setValue(data.id);  
-    form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
+    if (data.xcrq != null) form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
     form.findField("h_jszt").setValue(data.jszt); 
     form.findField("h_xkz").setValue(data.xkz); 
     form.findField("h_yjx").setValue(data.yjx); 
@@ -368,6 +369,10 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("h_gdmj").setValue(data.gdmj); 
     form.findField("h_wfmj").setValue(data.wfmj); 
     form.findField("h_bz").setValue(data.bz); 
+
+    form.findField("h_xmmc" ).setReadOnly(true);
+    form.findField("h_xcrq" ).setReadOnly(true);
+    
   });
   
   xcjl_store.on('load', function(){
@@ -384,7 +389,7 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("h_xmmc").setValue(xmmc);
   
       form.findField("h_inspect_id").setValue(data.id);  
-      form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
+      if (data.xcrq != null ) form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
       form.findField("h_jszt").setValue(data.jszt); 
       form.findField("h_xkz").setValue(data.xkz); 
       form.findField("h_yjx").setValue(data.yjx); 
@@ -394,6 +399,9 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("h_gdmj").setValue(data.gdmj); 
       form.findField("h_wfmj").setValue(data.wfmj); 
       form.findField("h_bz").setValue(data.bz); 
+      
+      form.findField("h_xmmc" ).setReadOnly(true);
+      form.findField("h_xcrq" ).setReadOnly(true);
       
     } else {
       console.log("no data loaded")
@@ -669,7 +677,7 @@ var view_xmdks = function(sys_grid_id) {
   form.findField("xzqh").setValue(data.xzqh);
   form.findField("tbmj").setValue(data.shape_area);
   form.findField("tbzc").setValue(data.shape_len);
-  form.findField("jlrq").setValue(new Date(data.jlrq));
+  if (data.jlrq != null ) form.findField("jlrq").setValue(new Date(data.jlrq));
   
   if (data.xz_tag != '是' || data.xz_tag == undefined) {
     form.findField("gid" ).setReadOnly(true);
@@ -703,19 +711,21 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("a_zlwz").setValue(data.zlwz);
       form.findField("a_sffhztgh").setValue(data.sffhztgh);
       form.findField("a_ydl").setValue(data.ydl);
-      form.findField("a_lxsj").setValue(new Date(data.lxsj));
+      if (data.lxsj != null) form.findField("a_lxsj").setValue(new Date(data.lxsj));
       form.findField("a_lxpwh").setValue(data.lxpwh);
-      form.findField("a_ghddsj").setValue(new Date(data.ghddsj));
+      if (data.ghddsj != null) form.findField("a_ghddsj").setValue(new Date(data.ghddsj));
       form.findField("a_ghddh").setValue(data.ghddh);
-      form.findField("a_zzysj").setValue(new Date(data.zzysj));
+      if (data.zzysj != null) form.findField("a_zzysj").setValue(new Date(data.zzysj));
       form.findField("a_zzypwh").setValue(data.zzypwh);
-      form.findField("a_gdsj").setValue(new Date(data.gdsj));
+      if (data.gdsj != null) form.findField("a_gdsj").setValue(new Date(data.gdsj));
       form.findField("a_gdpwh").setValue(data.gdpwh);
       form.findField("a_pzyt").setValue(data.pzyt);
       form.findField("a_sjyt").setValue(data.sjyt);
       form.findField("a_pzmj").setValue(data.pzmj);
       form.findField("a_gdmj").setValue(data.gdmj);
-      form.findField("a_dgsj").setValue(new Date(data.dgsj));
+      if (data.dgsj != null) form.findField("a_dgsj").setValue(new Date(data.dgsj));
+      
+      form.findField("a_xmmc").setReadOnly(true);
       
     }  
   }); 
