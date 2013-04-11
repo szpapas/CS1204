@@ -525,7 +525,7 @@ var view_xmdks = function(sys_grid_id) {
                 {name:"xzqh", x:"100", y:"290", xtype:"textfield", width:200, height:30},
                 {name:"tbmj", x:"100", y:"330", xtype:"textfield", width:200, height:30},
                 {name:"tbzc", x:"100", y:"370", xtype:"textfield", width:200, height:30},
-                {name:"jlrq", x:"100", y:"410", xtype:"datefield", width:200, height:30},
+                {name:"jlrq", x:"100", y:"410", xtype:"textfield", width:200, height:30},
   
                 {text:"项目名称", x:"15", y:"55",  xtype:"label"},
                 {text:"用地单位", x:"15", y:"95",  xtype:"label"},
