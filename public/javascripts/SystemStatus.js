@@ -18,7 +18,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         msg('Message','权限不够. 请与管理员联系后再试！');
         return;
       }
-    
+      
       var desktop = this.app.getDesktop();
 
       function showUserPosition(map, vectorLayer, zt) {
