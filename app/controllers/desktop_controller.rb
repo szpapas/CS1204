@@ -394,17 +394,17 @@ class DesktopController < ApplicationController
     
     if user.qxcode == '管理员'
       if params['zt'] == "在线"
-        cond = " and (now() + interval '12 hour') < last_seen"
+        cond = " and (now() - interval '12 hour') < last_seen"
       elsif params['zt'] == "不在线"
-        cond = " and (now() + interval '12 hour') > last_seen"
+        cond = " and (now() - interval '12 hour') > last_seen"
       else 
         cond = ''
       end
     else
       if params['zt'] == "在线"
-        cond = " and (now() + interval '12 hour') < last_seen and dw = '#{user.dw}' "
+        cond = " and (now() - interval '12 hour') < last_seen and dw = '#{user.dw}' "
       elsif params['zt'] == "不在线"
-        cond = " and (now() + interval '12 hour') > last_seen and dw = '#{user.dw}' "
+        cond = " and (now() - interval '12 hour') > last_seen and dw = '#{user.dw}' "
       else 
         cond = " and dw = '#{User.current.dw}' "
       end
@@ -412,7 +412,7 @@ class DesktopController < ApplicationController
     
     puts User.current.qxcode
           
-    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() + interval '12 hour') < last_seen as zt from users where last_seen is not NULL #{cond};")
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() - interval '12 hour') < last_seen as zt from users where last_seen is not NULL #{cond} and x(the_points) > 100000;")
     
     render :text => user.to_json
   end
@@ -1653,7 +1653,7 @@ class DesktopController < ApplicationController
       end
     else user.qxcode == '巡查员'
       dd = user
-      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['xcry']}",   :iconCls => "text",  :leaf => true }
+      text << {:text => "#{dd["dw"]}-#{dd['bm']}-#{dd["username"]}", :id => "#{dd['xzqmc']}|#{dd['username']}",   :iconCls => "text",  :leaf => true }
     end    
 
     render :text => text.to_json

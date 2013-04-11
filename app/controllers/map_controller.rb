@@ -128,6 +128,8 @@ class MapController < ApplicationController
     lonlat, task_id, username = params["lonlat"],params["task_id"], params['username'],  
     now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     
+    params['lonlat'] = "120.6436 31.13843"  if params['lonlat'] == "0.0 0.0" 
+    
     User.find_by_sql("update plans set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), report_at= TIMESTAMP '#{now}' where id=#{task_id};")
     if username.include?'1'
       User.find_by_sql("update users set the_points=transform(geomFromText('Point(#{lonlat})',4326),900913), last_seen= TIMESTAMP '#{now}' where iphone='#{username}'; ")
@@ -395,7 +397,7 @@ class MapController < ApplicationController
   end  
   
   def get_task_inspect
-    user = User.find_by_sql("select id, plan_id, xmdk_id, xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdks on xmdk_id = xmdk.gid where plan_id=#{params['task_id']};")
+    user = User.find_by_sql("select id, plan_id, xmdk_id, xmmc, astext( transform(geomFromText(the_center,900913),4326) ) as the_center, tpsl as c_photo from inspects inner join xmdks on xmdk_id = xmdks.gid where plan_id=#{params['task_id']};")
     
 	  txt = ''
 	  if user.size > 0
@@ -694,7 +696,11 @@ class MapController < ApplicationController
       ss = rand(36**32).to_s(36)
       gdqkid = ss[0..7]+'-'+ss[8..11]+'-'+ss[12..15]+'-'+ss[16..19]+'-'+ss[20..31]
       user = User.find_by_sql("insert into xmdks (xmmc, pzwh, sfjs, yddw, tdzl, dkmj, jlrq, xzqmc, dkh, tfh, shape_area, shape_len, the_google, the_geom, the_center, xz_tag, username, create_at, gdqkid) values ('#{params['xmmc']}','#{params['pzwh']}', '#{params['sfjs']}', '#{params['yddw']}', '#{params['tdzl']}', #{params['dkmj'].to_i}, TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{params['xzqmc']}', '#{params['dkh']}','#{params['tfh']}', #{params['shape_area']},#{params['shape_len']}, geomFromText('#{params['geom']}',900913),transform(geomFromText('#{params['geom']}',900913),2364), astext(centroid(geomFromText('#{params['geom']}',900913))), '是', '#{params['username']}',   TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', '#{gdqkid}') returning gid;")
-      User.find_by_sql("insert into dksxxs(gdqkid, dkmc, srdw, tdzl, sffhztgh) values('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['tdzl']}', '是');")
+      
+      #User.find_by_sql("insert into dksxxs(gdqkid, dkmc, srdw, tdzl, sffhztgh) values('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['tdzl']}', '是');")
+      
+      User.find_by_sql("insert into a_xmdks (gdqkid, xmmc, yddw, zlwz, sffhztgh) values ('#{gdqkid}', '#{params['xmmc']}', '#{params['yddw']}', '#{params['zlwz']}', '是');")
+      
     else
       User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}' , pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', yddw ='#{params['yddw']}', tdzl = '#{params['tdzl']}' , dkmj = '#{params['dkmj']}' , jlrq = TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}', xzqmc = '#{params['xzqmc']}', dkh = '#{params['dkh']}', tfh = '#{params['tfh']}' where gid = #{params['gid']}")
     end
