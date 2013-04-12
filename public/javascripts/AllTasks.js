@@ -913,7 +913,8 @@ var view_plans = function (sys_grid_id) {
       onComplete:  function(request) {
         if (request.responseText == 'Success') {
           //plan_win.close();
-          plan_store.load();
+          gsm.grid.store.load();
+          //plan_store.load();
           alert ('保存成功！')
         } else {
           //msg('失败', '新增任务失败!');

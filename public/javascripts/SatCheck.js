@@ -13,7 +13,7 @@ MyDesktop.SatCheck = Ext.extend(Ext.app.Module, {
   
   createWindow : function(){
        
-      var supportsDOMRanges = document.implementation.hasFeature("Range", "2.0"); 
+      //var supportsDOMRanges = document.implementation.hasFeature("Range", "2.0"); 
        
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
