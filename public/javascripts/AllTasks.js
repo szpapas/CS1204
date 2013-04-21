@@ -466,6 +466,8 @@ var view_xmdks = function(sys_grid_id) {
       }
   });
   
+  
+  
   //componets for map_view 
   var options = {
     projection: new OpenLayers.Projection('EPSG:900913'), units: "m", maxResolution: 152.87405654296876,
@@ -1323,9 +1325,100 @@ var view_plans = function (sys_grid_id) {
         }
       }
   });
-
   
   // end of xcd_grid 
+
+
+  //componets for map_view 
+  var options = {
+    projection: new OpenLayers.Projection('EPSG:900913'), units: "m", maxResolution: 152.87405654296876,
+    maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7) 
+  };
+  //Add markers 
+  
+  
+  var map  = new OpenLayers.Map($('map_route'), options);
+  var gmap = new OpenLayers.Layer.Google( "谷歌地图", { numZoomLevels: 18} );
+  var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", { isBaseLayer: false, styleMap: styles });
+  var markers = new OpenLayers.Layer.Markers( "检查点" );
+  var geocoder = new google.maps.Geocoder();
+  var infowindow = new google.maps.InfoWindow();
+
+  map.addLayers([gmap, xmdk_vectors, markers]);
+  
+  map.events.register("click", map , function(e){
+    //var opx = map.getLayerPxFromViewPortPx(e.xy) ;
+    var ll1 = map.getLonLatFromPixel(e.xy);
+    ll1.transform(new OpenLayers.Projection("EPSG:900913"),new OpenLayers.Projection("EPSG:4326"))
+    
+    var latlng = new google.maps.LatLng(ll1.lat, ll1.lon);
+    geocoder.geocode({'latLng': latlng}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          
+          var size = new OpenLayers.Size(21,25);
+          var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+          var icon = new OpenLayers.Icon('/images/marker-blue.png',size,offset);
+
+          ll1.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"))
+          markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(ll1.lon, ll1.lat),icon));
+          
+          var form = Ext.getCmp('plan_panel_id').getForm();
+          var xclx = form.findField('xclx').getValue();
+          form.findField('xclx').setValue(xclx + '->' + results[0].address_components[1].short_name +  results[0].address_components[0].short_name);
+          
+          //infowindow.setContent(results[1].formatted_address);
+          //infowindow.open(map, marker);
+        } else {
+          //alert('No results found');
+        }
+      } else {
+        alert('Geocoder 失败: ' + status);
+      }
+    });
+    
+  });
+  
+  var map_view = new Ext.Panel({
+    id : 'map_route',
+    autoScroll: true,
+    xtype:"panel",
+    width:300,
+    height:290,
+    border:false,
+    style:'margin:0px 0px',
+    layout:'fit',
+    items: [{
+        xtype: 'gx_mappanel',
+        map: map
+    }]
+  });
+  
+
+  var draw_task  = function(geom_string, bound_string){
+    
+    if (xmdk_vectors.features.length > 0){
+      while (xmdk_vectors.features.length > 0) {
+        var vectorFeature = xmdk_vectors.features[0];
+        xmdk_vectors.removeFeatures(vectorFeature);
+      };
+    };
+    
+    if (geom_string != '') {
+      var geojson_format = new OpenLayers.Format.GeoJSON();
+      xmdk_vectors.addFeatures(geojson_format.read(geom_string));
+      
+      //var pts = geojson_format.read(bound_string);
+      //BOX(13462257 3723907.25,13473980 3731119.25)
+      var ss = bound_string.match(/BOX\((.*)\s(.*),(.*)\s(.*)\)/);
+      var bounds = new OpenLayers.Bounds(ss[1],ss[2],ss[3],ss[4]);
+  
+      map.zoomToExtent (bounds);
+      
+    };
+    
+  };
+
   var planPanel = new Ext.form.FormPanel({
       xtype:"panel",
       id:'plan_panel_id',
@@ -1361,11 +1454,11 @@ var view_plans = function (sys_grid_id) {
               { xtype:"textfield", name:"jssj", x:"400", y:"10",  width:200, height:30},
               { xtype:"textarea",  name:"xclx", x:"100",  y:"60",  width:300, height:90},
               { xtype:"textarea",  name:"xcry", x:"100",  y:"160", width:300, height:90},
-              { xtype:"textarea",  name:"xcnr", x:"100",  y:"260", width:625, height:90},
+              { xtype:"textarea",  name:"xcnr", x:"100",  y:"260", width:300, height:90},
               { xtype:"textarea",  name:"xcjg", x:"100",  y:"360", width:625, height:90},
               { xtype:"textarea",  name:"clyj", x:"100",  y:"460", width:625, height:90},
-              { xtype : 'box',  x: 425 , y: 60,  width: 300, height: 190, id: 'xclxt', 
-                autoEl: {tag: 'div', html:''} 
+              { xtype:"panel",     x:"425", y:"60", width:300, height:290, items:[map_view] 
+              //{ xtype : 'box',  x: 425 , y: 60,  width: 300, height: 190, id: 'xclxt', autoEl: {tag: 'div', html:''} 
             }]                 
           },{
             xtype:"panel",
@@ -1449,6 +1542,10 @@ var view_plans = function (sys_grid_id) {
     items:[planPanel]
   });
 
+
+  plan_win.show();
+  plan_win.setZIndex(9020);
+
   if (gsm == undefined) {
     //Ext.getCmp('add_plan_win').setTitle('计划任务');
   } else {
@@ -1470,11 +1567,13 @@ var view_plans = function (sys_grid_id) {
     form.findField("jssj").setReadOnly(true);
     form.findField("xmmc" ).setReadOnly(true);
     form.findField("xcrq").setReadOnly(true);
+
+    //map.setCenter(new OpenLayers.LonLat(13370424.384,3693277.655), 14);
+    
+    draw_task(data.geom_string, data.boundary);
     
   };
 
-  plan_win.show();
-  plan_win.setZIndex(9020);
   
   //设置巡查图像
   pars = {id:data.id};
@@ -1489,7 +1588,6 @@ var view_plans = function (sys_grid_id) {
   //设置巡查点
   xcd_store.baseParams = {plan_id:data.id};
   xcd_store.load();
-  
 
              
 };
@@ -1548,6 +1646,8 @@ function myTask(id) {
               {name: 'fzr',   type: 'string'},
               {name: 'bz',    type: 'string'},
               {name: 'zt',    type: 'string'},
+              {name: 'geom_string', type:'string'},
+              {name: 'boundary', type:'string'},
               {name: 'xcrq',  type: 'date', dateFormat: 'Y-m-d H:i:s'}
             ]    
           }),
@@ -3518,9 +3618,6 @@ function myTask(id) {
           }),
           sortInfo:{field: 'gid', direction: "ASC"}
         });
-
-
-
         
         var sm = new Ext.grid.CheckboxSelectionModel();
         var sysXmdksGrid = new Ext.grid.GridPanel({

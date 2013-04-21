@@ -148,7 +148,7 @@ class DesktopController < ApplicationController
     if size > 0
       txt = "{results:#{size},rows:["
       puts "select * from plans #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select * from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
+      user = User.find_by_sql("select *, st_asgeojson(the_lines)  as geom_string, box2d(the_lines) as boundary from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end

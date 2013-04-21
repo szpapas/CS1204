@@ -626,9 +626,18 @@ class MapController < ApplicationController
   def getxmdk_iphone
     xmmc = params['xmmc']
     @xmdk  = User.find_by_sql("select * from xmdks where xmmc = '#{params['xmmc']}';")[0]
-    @dksx = User.find_by_sql("select * from dksxxs where gdqkid = '#{@xmdk.gdqkid}';")[0]
+    @dksx = User.find_by_sql("select * from a_xmdks where gdqkid = '#{@xmdk.gdqkid}';")[0]
+
+    #@dksx.lxsj  =  @dksx.lxsj.nil?   ? '' : @dksx.lxsj.gsub(' 00:00:00','')
+    #@dksx.zzysj =  @dksx.zzysj.nil?  ? '' : @dksx.zzysj.gsub(' 00:00:00','') 
+    #@dksx.ghddsj = @dksx.ghddsj.nil? ? '' : @dksx.ghddsj.gsub(' 00:00:00','')
+    #@dksx.gdsj =   @dksx.gdsj.nil?   ? '' : @dksx.gdsj.gsub(' 00:00:00','') 
+    #@dksx.dgsj =   @dksx.dgsj.nil?   ? '' : @dksx.dgsj.gsub(' 00:00:00','')
+  
     render :template => '/map/xmdk_show_iphone.html.erb'
   end
+  
+  
    
   def xmdk_feature
     @xmdks = User.find_by_sql("select *, astext(centroid(transform(the_geom,900913))) from xmdks where username is null;")
