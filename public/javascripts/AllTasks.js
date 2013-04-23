@@ -546,7 +546,7 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"button",  x:"120",  y:"10",  height:30,  width:100,  text:"后一条", handler:showNext },
                 
                 { xtype:"button",  x:"500",  y:"10",  height:30,  width:100,  text:"删除", hidden:true }, 
-                { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  id:'save-basic-42', text:"保存修改", handler: saveBasic
+                { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  id:'save-basic-42', iconCls:'save', text:"保存修改", handler: saveBasic
               }]
             },{ 
               xtype:"panel",
@@ -602,8 +602,8 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"panel", x:"10", y:"180", width:720 },
                 { xtype:"panel", x:"10", y:"340", width:720 },
   
-                { xtype:"button",  x:"500",  y:"10",  height:30,  width:100,  text:"删除", hidden:true, handler: deleteXmdks }, 
-                { xtype:"button",  x:"620",  y:"10",  height:30,  width:100,  text:"保存修改", handler : saveExtXmdks 
+                { xtype:"button",  x:"500",  y:"10",  height:30,  width:100, iconCls:'delete', text:"删除", hidden:true, handler: deleteXmdks }, 
+                { xtype:"button",  x:"620",  y:"10",  height:30,  width:100, iconCls:'save', text:"保存修改", handler : saveExtXmdks 
               }]
             },{
               xtype:"panel",
@@ -613,8 +613,8 @@ var view_xmdks = function(sys_grid_id) {
                   xtype:"panel", x:"10", y:"10", width:700, height:175, items:[xcjl_grid], id:'panel-xcgl-grid', border:false},
                 { xtype:"panel", x:"400",  y:"250", width:300, height:300, id:'panel-xctp', border:false, items:[data_view] },
                 
-                { xtype:"button", x:"400", y:"200", width:75, height:30, text:"保存修改",  handler : saveXcjl},
-                { xtype:"button", x:"500", y:"200", width:75, height:30, text:"刷新",  handler : refreshXcjl},
+                { xtype:"button", x:"400", y:"200", width:75, height:30, iconCls:'save', text:"保存修改",  handler : saveXcjl},
+                { xtype:"button", x:"500", y:"200", width:75, height:30, iconCls:'refresh',text:"刷新",  handler : refreshXcjl},
   
                 { xtype:"textfield", name:"h_inspect_id", x:"0", y:"200",hidden:true},
                 { xtype:"textfield", name:"h_xmmc", x:"100", y:"200", width:250 },
@@ -1383,8 +1383,8 @@ var view_plans = function (sys_grid_id) {
     id : 'map_route',
     autoScroll: true,
     xtype:"panel",
-    width:300,
-    height:290,
+    width:315,
+    height:310,
     border:false,
     style:'margin:0px 0px',
     layout:'fit',
@@ -1440,24 +1440,32 @@ var view_plans = function (sys_grid_id) {
             items:[{
                xtype:"textfield", name:"plan_id", x:"0", y:"0",  width:0, height:0, hidden:true},
               { xtype:"label", text:"开始时间:", x:"25",  y:"15"  },
-              { xtype:"label", text:"结束时间:", x:"325", y:"15"  },
-              { xtype:"label", text:"巡查路线:", x:"25",  y:"65"  },
-              { xtype:"label", text:"协查人员:", x:"25",  y:"165" },
+              { xtype:"label", text:"结束时间:", x:"225", y:"15"  },
+              { xtype:"label", text:"巡查时间:", x:"25",  y:"45"  },
+              { xtype:"label", text:"巡查人员:", x:"25",  y:"75"  },
+              { xtype:"label", text:"巡查区域:", x:"25",  y:"105"  },
+              { xtype:"label", text:"协查人员:", x:"25",  y:"135" },
+
+              { xtype:"label", text:"巡查路线:", x:"25",  y:"165"  },
               { xtype:"label", text:"巡查内容:", x:"25",  y:"265" },
               { xtype:"label", text:"巡查结果:", x:"25",  y:"365" },
               { xtype:"label", text:"处理意见:", x:"25",  y:"465" },
               
-              { xtype:"button",  x:"620", y:"10",  height:30,  width:75,  text:"保存", handler : saveBasic}, 
+              { xtype:"button",  iconCls:'save', x:"650", y:"10",  height:25,  width:75,  text:"&nbsp;保存", handler : saveBasic}, 
               
               
-              { xtype:"textfield", name:"kssj", x:"100", y:"10",  width:200, height:30},
-              { xtype:"textfield", name:"jssj", x:"400", y:"10",  width:200, height:30},
-              { xtype:"textarea",  name:"xclx", x:"100",  y:"60",  width:300, height:90},
-              { xtype:"textarea",  name:"xcry", x:"100",  y:"160", width:300, height:90},
+              { xtype:"textfield", name:"kssj", x:"100", y:"10",  width:100, height:25},
+              { xtype:"textfield", name:"jssj", x:"300", y:"10",  width:100, height:25},
+              { xtype:"textfield", name:"xcrq", x:"100", y:"40",  width:300, height:25},
+              { xtype:"textfield", name:"username", x:"100", y:"70",  width:300, height:25},
+              { xtype:"textfield", name:"xcqy", x:"100", y:"100",     width:300, height:25},
+              { xtype:"textfield", name:"xcry", x:"100",  y:"130",     width:300, height:25},
+
+              { xtype:"textarea",  name:"xclx", x:"100",  y:"160", width:300, height:90},
               { xtype:"textarea",  name:"xcnr", x:"100",  y:"260", width:300, height:90},
               { xtype:"textarea",  name:"xcjg", x:"100",  y:"360", width:625, height:90},
               { xtype:"textarea",  name:"clyj", x:"100",  y:"460", width:625, height:90},
-              { xtype:"panel",     x:"425", y:"60", width:300, height:290, items:[map_view] 
+              { xtype:"panel",     x:"410", y:"40", width:315, height:310, items:[map_view] 
               //{ xtype : 'box',  x: 425 , y: 60,  width: 300, height: 190, id: 'xclxt', autoEl: {tag: 'div', html:''} 
             }]                 
           },{
@@ -1470,10 +1478,10 @@ var view_plans = function (sys_grid_id) {
               { xtype : 'box', id : 'drag-img',  border : true, x: 285, y: 70,  width: 240, height: 445, name: 'kytx', autoEl: {tag: 'div', id : 'drag-img',html: ''} },
               { xtype : 'box', id : 'hsz-img' ,  border : true, x: 545, y: 70,  width: 240, height: 445, name: 'hsz' , autoEl: {tag: 'div', id : 'hsz-img' ,html: '' } },
 
-              { xtype:"button",  x:"25",  y:"10",  height:30,  width:75,  text:"添加照片" , handler : addPhoto}, 
-              { xtype:"button",  x:"115", y:"10",  height:30,  width:75,  text:"刷新图片" , handler : refreshPhoto}, 
-              { xtype:"button",  x:"200", y:"10",  height:30,  width:75,  text:"保存"   , handler : savePhoto}, 
-              { xtype:"button",  x:"700", y:"10",  height:30,  width:75,  text:"清空"   , handler : emptyHsz}, 
+              { xtype:"button",  x:"25",  y:"10",  height:30,  width:75,  iconCls:'add', text:"添加照片" , handler : addPhoto}, 
+              { xtype:"button",  x:"115", y:"10",  height:30,  width:75,  iconCls:'refresh', text:"刷新图片" , handler : refreshPhoto}, 
+              { xtype:"button",  x:"200", y:"10",  height:30,  width:75,  iconCls:'save', text:"保存"   , handler : savePhoto}, 
+              { xtype:"button",  x:"700", y:"10",  height:30,  width:75,  iconCls:'delete3',text:"清空"   , handler : emptyHsz}, 
               
 
               { xtype:"label", text:"巡查照片:", x:"25",   y:"55" },
@@ -1517,8 +1525,8 @@ var view_plans = function (sys_grid_id) {
               { xtype : 'panel',  x: 25 , y: 45,  width: 120, height: 470, id:'box-xcd-list', border:false, items:[xcd_grid]}, 
               { xtype : 'panel',  x: 470 , y: 45,  width: 300, height: 340, id:'box-xctp', items:[data_view]},
                 
-              { xtype:"button",  x:"690", y:"10",  height:30,  width:75,  text:"添加照片"  ,  handler : addPhoto2}, 
-              { xtype:"button",  x:"175", y:"10",   height:30,  width:75,  text:"保存修改" ,  handler : saveXcdInfo
+              { xtype:"button",  x:"690", y:"10",  height:30,  width:75,  iconCls:'add', text:"添加照片"  ,  handler : addPhoto2}, 
+              { xtype:"button",  x:"175", y:"10",   height:30,  width:75,  iconCls:'save', text:"保存修改" ,  handler : saveXcdInfo
               
             }]
           }]
@@ -1527,7 +1535,7 @@ var view_plans = function (sys_grid_id) {
 
   var plan_win = new Ext.Window({
     id : 'add_plan_win',
-    iconCls : 'add',
+    iconCls : 'edit',
     title: '计划任务',
     floating: true,
     shadow: true,
@@ -1558,6 +1566,10 @@ var view_plans = function (sys_grid_id) {
     form.findField('jssj').setValue(data.zrq);
     form.findField('xclx').setValue(data.xclx);
     form.findField('xcry').setValue(data.xcry);
+    form.findField('username').setValue(data.username);
+    form.findField('xcqy').setValue(data.xcqy);
+
+    
     form.findField('xcnr').setValue(data.xcnr);
     form.findField('xcjg').setValue(data.xcjg);
     form.findField('clyj').setValue(data.clyj);
@@ -1567,6 +1579,10 @@ var view_plans = function (sys_grid_id) {
     form.findField("jssj").setReadOnly(true);
     form.findField("xmmc" ).setReadOnly(true);
     form.findField("xcrq").setReadOnly(true);
+    form.findField("username").setReadOnly(true);
+    form.findField("xcqy").setReadOnly(true);
+    
+    
 
     //map.setCenter(new OpenLayers.LonLat(13370424.384,3693277.655), 14);
     
@@ -1646,6 +1662,7 @@ function myTask(id) {
               {name: 'fzr',   type: 'string'},
               {name: 'bz',    type: 'string'},
               {name: 'zt',    type: 'string'},
+              {name: 'username',  type: 'string'},
               {name: 'geom_string', type:'string'},
               {name: 'boundary', type:'string'},
               {name: 'xcrq',  type: 'date', dateFormat: 'Y-m-d H:i:s'}

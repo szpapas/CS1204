@@ -229,9 +229,27 @@ class MapController < ApplicationController
         user = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")
         #可以更新其他内容
         txt = user[0].to_json.gsub("null","\"0.0\"")
+        
+        #检查是否增加新的任务
+        u_name = plan[0].username
+        qrq    = plan[0].qrq
+
+        t_count = User.find_by_sql("select count(*) from plans where qrq = TIMESTAMP '#{qrq}' and username='#{u_name}';")
+        p_count = User.find_by_sql("select count(*) from plans where qrq = TIMESTAMP '#{qrq}' and username='#{u_name}' and zt = '完成';")
+        
+        if t_count[0].count.to_i == p_count[0].count.to_i
+          data = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")[0]
+          xcbh = data.xcbh[0..-3]+format("%02d",t_count[0].count.to_i+1)
+          rwmc = data.rwmc[0..]
+          User.find_by_sql("insert into plans (xcbh, rwmc, xcry, xcfs, xcqy, qrq, zrq, zt, session_id, username, del_tag) values()")
+          
+        end
+        
       else 
         txt = "{\"photo_count\":\"0\",\"xclc\":\"0\",\"xcys\":0,\"xmdk_count\":\"0\"}"
       end 
+      
+      
       
     elsif state == "reset" 
       #task_id, device_no, username

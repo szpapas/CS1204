@@ -252,6 +252,14 @@ html, body {
     background-image:url(/images/tabs.gif) !important;
 }
 
+.refresh {
+  background-image:url(/images/table_refresh.png) !important;
+}
+
+.delete3 {
+    background-image:url(/images/delete3.gif) !important;
+}
+
 /* IM window icons */
 
 .user {
