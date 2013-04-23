@@ -238,7 +238,7 @@ class MapController < ApplicationController
         p_count = User.find_by_sql("select count(*) from plans where qrq = TIMESTAMP '#{qrq}' and username='#{u_name}' and zt = '完成';")
         
         if t_count[0].count.to_i == p_count[0].count.to_i
-          data = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")[0]
+          data = User.find_by_sql("select * from plans where session_id = '#{session_id}';")[0]
           xcbh = data.xcbh[0..-3]+format("%02d",t_count[0].count.to_i+1)
           
           rwmc = data.rwmc.split(' ')[0..1]
