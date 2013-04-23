@@ -240,16 +240,19 @@ class MapController < ApplicationController
         if t_count[0].count.to_i == p_count[0].count.to_i
           data = User.find_by_sql("select xmdk_count, photo_count, xclc, xcys from plans where session_id = '#{session_id}';")[0]
           xcbh = data.xcbh[0..-3]+format("%02d",t_count[0].count.to_i+1)
-          rwmc = data.rwmc[0..]
-          User.find_by_sql("insert into plans (xcbh, rwmc, xcry, xcfs, xcqy, qrq, zrq, zt, session_id, username, del_tag) values()")
           
+          rwmc = data.rwmc.split(' ')[0..1]
+          rwmc << "第#{t_count[0].count.to_i+1}次巡查"
+          rwmc = rwmc.join(' ')
+          session_id =rand(36**32).to_s(36)
+          
+          User.find_by_sql("insert into plans (xcbh, rwmc, xcry, xcfs, xcqy, qrq, zrq, zt, session_id, username, del_tag) values('#{xcbh}','#{rwmc}','#{data.xcry}','#{data.xcfs}','#{data.xcqy}',TIMESTAMP '#{data.qrq}',TIMESTAMP '#{data.zrq}', '计划', '#{session_id}', '#{data.username}', '否');")
+
         end
         
       else 
         txt = "{\"photo_count\":\"0\",\"xclc\":\"0\",\"xcys\":0,\"xmdk_count\":\"0\"}"
       end 
-      
-      
       
     elsif state == "reset" 
       #task_id, device_no, username
