@@ -61,21 +61,27 @@ MyDesktop.ReportMan = Ext.extend(Ext.app.Module, {
                       items: [{
                         border:false,
                         cls:'link-panel',
-                        links:[{
+                        links:[
+						{
+                          text:'统计汇总',
+                          id:"mytask_51",
+                          icon:'chart_bar16.png',
+                          action:"myTask(51)"
+                        },{
                           text:'巡查系统考核表',
                           id:"mytask_51",
                           icon:'date_task16.png',
-                          action:"myTask(51)"
+                          action:"myTask(54)"
                         },{
                           text:'违法用地统计',
                           icon:'chart_bar16.png',
                           id:"mytask_52",
-                          action:"myTask(52)"
+                          action:"myTask(55)"
                         },{
                           text:'动态巡查原始记录统计',
                           icon:'calendar16.png',
                           id:"mytask_53",
-                          action:"myTask(53)"
+                          action:"myTask(56)"
                       }],
                       layout:'fit', 
                       tpl:new Ext.XTemplate('<tpl for="links"><div id="{id}"><a class="examplelink" onclick="{action}" ><span><img src=/images/{icon}></img</span>&nbsp;&nbsp;{text}</a></div></tpl>'),  //

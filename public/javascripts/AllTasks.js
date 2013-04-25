@@ -3311,7 +3311,7 @@ function myTask(id) {
         });
 
         //load data
-        plan_store.baseParams.xcry = currentUser.username;
+        //plan_store.baseParams.xcry = currentUser.username;
 
         var sm = new Ext.grid.CheckboxSelectionModel();
         var planGrid = new Ext.grid.GridPanel({
@@ -3319,7 +3319,7 @@ function myTask(id) {
           store: plan_store,
           columns: [           
             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},            
-            { header : '巡查主体',  width : 200, sortable : true, dataIndex: 'xczt'},
+            { header : '巡查主体',  width : 75, sortable : true, dataIndex: 'xczt'},
             { header : '巡查次数',  width : 75, sortable : true, dataIndex: 'xccs'},
             { header : '完成比例（3分）',  width : 75, sortable : true, dataIndex: 'wcbl'},
             { header : '上报次数',  width : 75, sortable : true, dataIndex: 'sbcs'},
@@ -3335,7 +3335,32 @@ function myTask(id) {
           viewConfig: {
             stripeRows:true,
           },
-          tbar:[{
+          tbar:[
+			'&nbsp;&nbsp;<span style=" font-size:12px;font-weight:600;color:#3366FF;">统计月份(例：201303)</span>:&nbsp;&nbsp;',
+			{
+				xtype:'textfield',
+				id:'tj_yf'									
+			},
+			{
+	            text : '统计',
+	            iconCls : 'query',
+				tooltip:'请输入统计月份（例：201303）',
+	            handler : function(){
+	               	if (Ext.getCmp('tj_yf').getValue()==''){
+						alert("请输入统计月份再统计。（例：201303）");											
+					}else{
+						if (Ext.getCmp('tj_yf').getValue().length==6){													
+							insert_qx=getLastDay(Ext.getCmp('tj_yf').getValue().substr(0,4),Ext.getCmp('tj_yf').getValue().substr(4,2));
+							plan_store.baseParams.rq=Ext.getCmp('tj_yf').getValue() + insert_qx;
+							plan_store.load();	
+						}else{
+							alert("统计月份有问题。请重新输入后再统计。（例：201303）");
+						}
+																							
+					}
+				}
+	        },
+			{
               text : '导出报表',
               iconCls : 'add',
               //hidden : true,
@@ -3345,7 +3370,7 @@ function myTask(id) {
           }]
         });
 
-        plan_store.load();
+        //plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
             id:'mytask-tab50',
@@ -3371,7 +3396,7 @@ function myTask(id) {
     case 55 : //执法监察动态巡查违法用地统计表
     {
       var tabPanel = Ext.getCmp("mytask-tab");
-      if (Ext.getCmp('mytask-tab51') == undefined) {
+      if (Ext.getCmp('mytask-tab55') == undefined) {
         var  plan_store = new Ext.data.Store({
           proxy: new Ext.data.HttpProxy({
               url: '/desktop/get_wfyd'
@@ -3414,7 +3439,7 @@ function myTask(id) {
           store: plan_store,
           columns: [           
             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},            
-            { header : '巡查主体',  width : 200, sortable : true, dataIndex: 'xczt'},
+            { header : '巡查主体',  width : 75, sortable : true, dataIndex: 'xczt'},
             { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'},
             { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},
             { header : '巡查区域',  width : 75, sortable : true, dataIndex: 'xcqy'},
@@ -3441,7 +3466,31 @@ function myTask(id) {
           viewConfig: {
             stripeRows:true,
           },
-          tbar:[{
+          tbar:[
+			'&nbsp;&nbsp;<span style=" font-size:12px;font-weight:600;color:#3366FF;">统计月份(例：201303)</span>:&nbsp;&nbsp;',
+			{
+				xtype:'textfield',
+				id:'wfyd_tj_yf'									
+			},
+			{
+	            text : '统计',
+	            iconCls : 'query',
+				tooltip:'请输入统计月份（例：201303）',
+	            handler : function(){
+	               	if (Ext.getCmp('wfyd_tj_yf').getValue()==''){
+						alert("请输入统计月份再统计。（例：201303）");											
+					}else{
+						if (Ext.getCmp('wfyd_tj_yf').getValue().length==6){													
+							insert_qx=getLastDay(Ext.getCmp('wfyd_tj_yf').getValue().substr(0,4),Ext.getCmp('wfyd_tj_yf').getValue().substr(4,2));
+							plan_store.baseParams.rq=Ext.getCmp('wfyd_tj_yf').getValue() + insert_qx;
+							plan_store.load();	
+						}else{
+							alert("统计月份有问题。请重新输入后再统计。（例：201303）");
+						}
+																							
+					}
+				}
+	        },{
               text : '导出报表',
               iconCls : 'add',
               //hidden : true,
@@ -3451,10 +3500,10 @@ function myTask(id) {
           }]
         });
 
-        plan_store.load();
+        //plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
-            id:'mytask-tab51',
+            id:'mytask-tab55',
             //iconCls: 'tabs',
             closable : true,
             closeAction: 'hide',
@@ -3476,9 +3525,9 @@ function myTask(id) {
     break;
     case 56 : //执法监察动态巡查原始记录表
     {
-      /*
+      
       var tabPanel = Ext.getCmp("mytask-tab");
-      if (Ext.getCmp('mytask-tab52') == undefined) {
+      if (Ext.getCmp('mytask-tab56') == undefined) {
         var  plan_store = new Ext.data.Store({
           proxy: new Ext.data.HttpProxy({
               url: '/desktop/get_ysjl'
@@ -3553,7 +3602,31 @@ function myTask(id) {
           viewConfig: {
             stripeRows:true,
           },
-          tbar:[{
+          tbar:[
+			'&nbsp;&nbsp;<span style=" font-size:12px;font-weight:600;color:#3366FF;">统计月份(例：201303)</span>:&nbsp;&nbsp;',
+			{
+				xtype:'textfield',
+				id:'ysjl_tj_yf'									
+			},
+			{
+	            text : '统计',
+	            iconCls : 'query',
+				tooltip:'请输入统计月份（例：201303）',
+	            handler : function(){
+	               	if (Ext.getCmp('ysjl_tj_yf').getValue()==''){
+						alert("请输入统计月份再统计。（例：201303）");											
+					}else{
+						if (Ext.getCmp('ysjl_tj_yf').getValue().length==6){													
+							insert_qx=getLastDay(Ext.getCmp('ysjl_tj_yf').getValue().substr(0,4),Ext.getCmp('ysjl_tj_yf').getValue().substr(4,2));
+							plan_store.baseParams.rq=Ext.getCmp('ysjl_tj_yf').getValue() + insert_qx;
+							plan_store.load();	
+						}else{
+							alert("统计月份有问题。请重新输入后再统计。（例：201303）");
+						}
+																							
+					}
+				}
+	        },{
               text : '导出报表',
               iconCls : 'add',
               //hidden : true,
@@ -3566,10 +3639,10 @@ function myTask(id) {
 
         
   
-        plan_store.load();
+        //plan_store.load();
         var formPanel = new Ext.form.FormPanel({
             xtype:"panel",
-            id:'mytask-tab52',
+            id:'mytask-tab56',
             //iconCls: 'tabs',
             closable : true,
             closeAction: 'hide',
@@ -3587,7 +3660,7 @@ function myTask(id) {
         formPanel = Ext.getCmp('mytask-tab52');
         tabPanel.setActiveTab(formPanel);
       }
-      */
+      
     } 
     break;    
     case 41 :

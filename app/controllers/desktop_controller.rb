@@ -1104,15 +1104,39 @@ class DesktopController < ApplicationController
   end
   
   def get_khb
-    #生成巡查系统考核表
-    txt = "{results:5,rows:["
-    xls="<table><tr><td>执法监察动态巡查系统考核表</td></tr><tr><td>巡查主体</td><td>巡查次数</td><td>完成比例(3分)</td><td>上报次数</td><td>上报比例（3分）</td><td>数据质量(2分)</td><td>附件质量（2分）</td><td>成绩指数</td><td>监察员</td></tr>"
-    xcqy = User.find_by_sql("select distinct xcqy,xcry from plans order by xcqy")
+    #生成巡查系统考核表,传入参数是６位的年月，如201303
+    if params['rq'].nil?
+      params['rq']='201303'
+    end
+    qrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-01 00:00:00'
+    zrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-' + params['rq'][6,2].to_s + ' 23:59:59'
+    xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center"><tr><th style="text-align: center" colspan="10"><font size = 5>执法监察动态巡查系统考核表</font></th></tr>'
+    xls=xls + '<tr><th style="text-align: center" colspan="10"><font size = 5>' + params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
+    xls=xls + "<tr><td>巡查主体</td><td>单位</td><td>巡查次数</td><td>完成比例(3分)</td><td>上报次数</td><td>上报比例（3分）</td><td>数据质量(2分)</td><td>附件质量（2分）</td><td>成绩指数</td><td>监察员</td></tr>"
+    xcqy = User.find_by_sql("select distinct username,xzqmc,bm,px from users where not (bm in ('惠山分局','新区分局','滨湖分局','锡山分局','监察支队','局领导')) order by px")
     if xcqy.size>0
+      txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
-        sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
-        txt=txt+ "{'xczt':'" + xcqy[k]['xcqy'] + "','xccs':'" + sccs[0]['count'] + "','jcy':'" + xcqy[k]['xcry'] +"'},"
-        xls=xls + "<tr><td>#{xcqy[k]['xcqy']}</td><td>#{sccs[0]['count']}</td><td></td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+        sccs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and (zt='完成' or zt='执行')")
+        sbcs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' ")
+        wcbl=sprintf("%.1f",(sccs[0]['xccs'].to_f/8)*100).to_f
+        sbbl=sprintf("%.1f",(sbcs[0]['xccs'].to_f/8)*100).to_f
+        fjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' and photo_count>0 ")
+        if sbcs[0]['xccs'].to_i>0
+          fjzlbl=sprintf("%.1f",(fjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
+        else
+          fjzlbl=0
+        end
+        sjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' and xcnr<>'' and xcjg<>'' and clyj<>'' ")
+        if sbcs[0]['xccs'].to_i>0
+          sjzlbl=sprintf("%.1f",(sjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
+        else
+          sjzlbl=0
+        end
+        cj=(3*wcbl.to_f+3*sbbl.to_f + 2*sjzlbl.to_f + 2*fjzlbl.to_f)/100
+        txt=txt.to_s + "{'xczt':'" + xcqy[k]['xzqmc'].to_s + "_" + xcqy[k]['bm'].to_s + "','xccs':'" + sccs[0]['xccs'].to_s + "','wcbl':'" + wcbl.to_s + "%','sbcs':'" + sbcs[0]['xccs'].to_s + "','sbbl':'" + sbbl.to_s+ "%','sjzl':'"+ sjzlbl.to_s + "%','fjzl':'" + fjzlbl.to_s + "%','cjzs':'" + cj.to_s+ "','jcy':'" + xcqy[k]['username'].to_s + "'},"
+        
+        xls=xls + "<tr><td>#{xcqy[k]['xzqmc']}</td><td>#{xcqy[k]['bm']}</td><td>#{sccs[0]['xccs']}</td><td>#{wcbl}%</td><td>#{sbcs[0]['xccs']}</td><td>#{sbbl}%</td><td>#{sjzlbl}%</td><td>#{fjzlbl}%</td><td>#{cj}</td><td>#{xcqy[k]['username']}</td></tr>"
       end 
       txt=txt + "]}"     
     else
@@ -1130,14 +1154,67 @@ class DesktopController < ApplicationController
     
   def get_wfyd
     #生成违法用地统计
-    txt = "{results:5,rows:["
-    xls="<table><tr><td>执法监察动态巡查违法用地统计表</td></tr><tr><td>巡查主体</td><td>巡查人员</td><td>巡查时间</td><td>巡查区域</td><td>项目名称</td><td>坐落位置</td><td>立项时间、批文号</td><td>规划定点时间、文号</td><td>转征用时间、批文号</td><td>供地时间、批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td></tr>"
-    xcqy = User.find_by_sql("select * from plans order by xcbh")
+    if params['rq'].nil?
+      params['rq']='201303'
+    end
+    qrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-01 00:00:00'
+    zrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-' + params['rq'][6,2].to_s + ' 23:59:59'
+    xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
+    xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查违法用地统计表</font></th></tr>'
+    xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
+    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
+    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id and sfwf='是' and xmdk_id=xmdks.gid and users.iphone=plans.device and inspects.xcrq>='#{qrq}' and inspects.xcrq<='#{zrq}' order by users.px")
     if xcqy.size>0
+      txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
-        #sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
-        txt=txt+ "{'xczt':'" + xcqy[k]['xcqy'] + "','xcry':'" + xcqy[k]['xcry'] + "','xcsj':'#{xcqy[k]['taskbegintime']}'},"
-        xls=xls + "<tr><td>#{xcqy[k]['xcqy']}</td><td>#{ xcqy[k]['xcry']}</td><td>#{xcqy[k]['taskbegintime']}</td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+        xcqy[k]['dgsj']="" if xcqy[k]['dgsj'].nil?
+        if xcqy[k]['gdmj'].nil?
+          xcqy[k]['gdmj']=""
+        else
+          xcqy[k]['gdmj']=(xcqy[k]['gdmj'].to_f*0.0015).to_i.to_s
+        end 
+        if xcqy[k]['pzmj'].nil?
+          xcqy[k]['pzmj']=""
+        else
+          xcqy[k]['pzmj']=(xcqy[k]['pzmj'].to_f*0.0015).to_i.to_s
+        end       
+        xcqy[k]['sjyt']="" if xcqy[k]['sjyt'].nil?
+        xcqy[k]['pzyt']="" if xcqy[k]['pzyt'].nil?
+        xcqy[k]['xcjg']="" if xcqy[k]['xcjg'].nil?
+        xcqy[k]['clyj']="" if xcqy[k]['clyj'].nil?
+        xcqy[k]['wfmj']="" if xcqy[k]['wfmj'].nil?
+        xcqy[k]['sjgdmj']="" if xcqy[k]['sjgdmj'].nil?
+        xcqy[k]['sjzdmj']="" if xcqy[k]['sjzdmj'].nil?
+        xcqy[k]['jszt']="" if xcqy[k]['jszt'].nil?
+        xcqy[k]['lxsj']="" if xcqy[k]['lxsj'].nil?
+        xcqy[k]['ghddsj']="" if xcqy[k]['ghddsj'].nil?
+        xcqy[k]['zzysj']="" if xcqy[k]['zzysj'].nil?
+        xcqy[k]['gdsj']="" if xcqy[k]['gdsj'].nil?
+               
+        xls=xls + "<tr><td>#{xcqy[k]['dw']}</td><td>#{ xcqy[k]['xcry']}</td><td>#{xcqy[k]['bm']}</td><td>#{xcqy[k]['rwmc']}</td><td>#{xcqy[k]['xcrq']}</td><td>#{xcqy[k]['xmmc']}</td><td>#{xcqy[k]['tdzl']}</td><td>#{xcqy[k]['lxsj'][0..9]}</td><td>#{xcqy[k]['lxpwh']}</td><td>#{xcqy[k]['ghddsj'][0..9]}</td><td>#{xcqy[k]['ghddh']}</td><td>#{xcqy[k]['zzysj'][0..9]}</td><td>#{xcqy[k]['zzypwh']}</td><td>#{xcqy[k]['gdsj'][0..9]}</td><td>#{xcqy[k]['gdpwh']}</td><td>#{xcqy[k]['pzyt']}</td><td>#{xcqy[k]['sjyt']}</td><td>#{xcqy[k]['pzmj']}</td><td>#{xcqy[k]['gdmj']}</td><td>#{xcqy[k]['dgsj']}</td><td>#{xcqy[k]['jszt']}</td><td>#{xcqy[k]['sjzdmj']}</td><td>#{xcqy[k]['sjgdmj']}</td><td>#{xcqy[k]['wfmj']}</td><td>#{xcqy[k]['xcjg']}</td><td>#{xcqy[k]['clyj']}</td><td>#{xcqy[k]['bz']}</td></tr>"
+        
+
+        txt=txt + "{'xczt':'" + xcqy[k]['xcqy'] + "',"
+        txt=txt + "'xcry':'" + xcqy[k]['xcry']  + "',"
+        txt=txt + "'clyj':'" + xcqy[k]['clyj'] + "',"
+        txt=txt + "'xcjg':'" + xcqy[k]['xcjg'] + "',"
+        txt=txt + "'wfmj':'" + xcqy[k]['wfmj'] + "',"
+        txt=txt + "'sjgd':'" + xcqy[k]['sjgdmj'] + "',"
+        txt=txt + "'sjzd':'" + xcqy[k]['sjzdmj'] + "',"
+        txt=txt + "'jsqk':'" + xcqy[k]['jszt'] + "',"
+        txt=txt + "'dgsj':'" + xcqy[k]['dgsj'] + "',"
+        txt=txt + "'pzgd':'" + xcqy[k]['gdmj'] + "',"
+        txt=txt + "'pzmj':'" + xcqy[k]['pzmj'] + "',"
+        txt=txt + "'sjyt':'" + xcqy[k]['sjyt'] + "',"
+        txt=txt + "'pzyt':'" + xcqy[k]['pzyt'] + "',"
+        txt=txt + "'gdpwh':'" + xcqy[k]['gdsj'].to_s + xcqy[k]['gdpwh'].to_s + "',"
+        txt=txt + "'zzpwh':'" + xcqy[k]['zzysj'].to_s + xcqy[k]['zzypwh'].to_s + "',"
+        txt=txt + "'ghwh':'" + xcqy[k]['ghddsj'].to_s + xcqy[k]['ghddh'].to_s + "',"
+        txt=txt + "'lxpwh':'" + xcqy[k]['lxsj'].to_s + xcqy[k]['lxpwh'].to_s + "',"
+        txt=txt + "'xmzl':'" + xcqy[k]['tdzl'] + "'"
+        txt=txt + ",'xcqy':'" + xcqy[k]['xcqy'] + "',"
+        txt=txt + "'xmmc':'" + xcqy[k]['xmmc'] + "',"
+        txt=txt + "'xcsj':'#{xcqy[k]['xcrq']}'},"
       end 
       txt=txt + "]}"     
     else
@@ -1154,14 +1231,72 @@ class DesktopController < ApplicationController
   
   #执法监察动态巡查原始记录表
   def get_ysjl
-    txt = "{results:5,rows:["
-    xls="<table><tr><td>执法监察动态巡查原始记录表</td></tr><tr><td>巡查时间</td><td>巡查人员</td><td>巡查区域</td><td>项目名称</td><td>用地单位</td><td>坐落位置</td><td>是否符合土地利用整体规划</td><td>原地类</td><td>立项时间、批文号</td><td>规划定点时间、文号</td><td>转征用时间、批文号</td><td>供地时间、批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处置情况</td><td>备注</td></tr>"
-    xcqy = User.find_by_sql("select * from plans order by xcbh")
+    if params['rq'].nil?
+      params['rq']='201303'
+    end
+    qrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-01 00:00:00'
+    zrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-' + params['rq'][6,2].to_s + ' 23:59:59'
+    xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
+    xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查原始记录表</font></th></tr>'
+    xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
+    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
+    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh,a_xmdks.ydl,a_xmdks.sffhztgh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id  and xmdk_id=xmdks.gid and users.iphone=plans.device  and xcrq>='#{qrq}' and xcrq<='#{zrq}' order by users.px,xcry,xcrq")
     if xcqy.size>0
+      txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
-        #sccs= User.find_by_sql("select count(*) from plans where xcqy='#{xcqy[k]['xcqy']}' and xcry='#{xcqy[k]['xcry']}'")
-        txt=txt+ "{'xcsj':'" + xcqy[k]['taskbegintime'].to_s + "','xcry':'" + xcqy[k]['xcry'] + "','xcqy':'" + xcqy[k]['xcqy'] +"'},"
-        xls=xls + "<tr><td>#{xcqy[k]['taskbegintime']}</td><td>#{xcqy[k]['xcry']}</td><td>#{xcqy[k]['xcqy']}</td><td></td><td></td><td></td><td></td><td></td><td>#{xcqy[k]['xcry']}</td></tr>"
+        xcqy[k]['dgsj']="" if xcqy[k]['dgsj'].nil?
+        if xcqy[k]['gdmj'].nil?
+          xcqy[k]['gdmj']=""
+        else
+          xcqy[k]['gdmj']=(xcqy[k]['gdmj'].to_f*0.0015).to_i.to_s
+        end 
+        if xcqy[k]['pzmj'].nil?
+          xcqy[k]['pzmj']=""
+        else
+          xcqy[k]['pzmj']=(xcqy[k]['pzmj'].to_f*0.0015).to_i.to_s
+        end       
+        xcqy[k]['sjyt']="" if xcqy[k]['sjyt'].nil?
+        xcqy[k]['pzyt']="" if xcqy[k]['pzyt'].nil?
+        xcqy[k]['xcjg']="" if xcqy[k]['xcjg'].nil?
+        xcqy[k]['clyj']="" if xcqy[k]['clyj'].nil?
+        xcqy[k]['wfmj']="" if xcqy[k]['wfmj'].nil?
+        xcqy[k]['sjgdmj']="" if xcqy[k]['sjgdmj'].nil?
+        xcqy[k]['sjzdmj']="" if xcqy[k]['sjzdmj'].nil?
+        xcqy[k]['jszt']="" if xcqy[k]['jszt'].nil?
+        xcqy[k]['lxsj']="" if xcqy[k]['lxsj'].nil?
+        xcqy[k]['ghddsj']="" if xcqy[k]['ghddsj'].nil?
+        xcqy[k]['zzysj']="" if xcqy[k]['zzysj'].nil?
+        xcqy[k]['gdsj']="" if xcqy[k]['gdsj'].nil?
+        xcqy[k]['ydl']="" if xcqy[k]['ydl'].nil?
+        xcqy[k]['sffhztgh']="" if xcqy[k]['sffhztgh'].nil?
+               
+        xls=xls + "<tr><td>#{xcqy[k]['dw']}</td><td>#{ xcqy[k]['xcry']}</td><td>#{xcqy[k]['bm']}</td><td>#{xcqy[k]['rwmc']}</td><td>#{xcqy[k]['xcrq']}</td><td>#{xcqy[k]['xmmc']}</td><td>#{xcqy[k]['tdzl']}</td><td>#{xcqy[k]['lxsj'][0..9]}</td><td>#{xcqy[k]['lxpwh']}</td><td>#{xcqy[k]['ghddsj'][0..9]}</td><td>#{xcqy[k]['ghddh']}</td><td>#{xcqy[k]['zzysj'][0..9]}</td><td>#{xcqy[k]['zzypwh']}</td><td>#{xcqy[k]['gdsj'][0..9]}</td><td>#{xcqy[k]['gdpwh']}</td><td>#{xcqy[k]['pzyt']}</td><td>#{xcqy[k]['sjyt']}</td><td>#{xcqy[k]['pzmj']}</td><td>#{xcqy[k]['gdmj']}</td><td>#{xcqy[k]['dgsj']}</td><td>#{xcqy[k]['jszt']}</td><td>#{xcqy[k]['sjzdmj']}</td><td>#{xcqy[k]['sjgdmj']}</td><td>#{xcqy[k]['wfmj']}</td><td>#{xcqy[k]['xcjg']}</td><td>#{xcqy[k]['clyj']}</td><td>#{xcqy[k]['bz']}</td></tr>"
+        
+
+        txt=txt + "{'xczt':'" + xcqy[k]['xcqy'] + "',"
+        txt=txt + "'xcry':'" + xcqy[k]['xcry']  + "',"
+        txt=txt + "'yddw':'" + xcqy[k]['yddw']  + "',"
+        txt=txt + "'sffhgh':'" + xcqy[k]['sffhztgh']  + "',"
+        txt=txt + "'czqk':'" + xcqy[k]['clyj'] + "',"
+        txt=txt + "'ydl':'" + xcqy[k]['ydl'] + "',"
+        txt=txt + "'xcjg':'" + xcqy[k]['xcjg'] + "',"
+        txt=txt + "'wfmj':'" + xcqy[k]['wfmj'] + "',"
+        txt=txt + "'sjgd':'" + xcqy[k]['sjgdmj'] + "',"
+        txt=txt + "'sjzd':'" + xcqy[k]['sjzdmj'] + "',"
+        txt=txt + "'jsqk':'" + xcqy[k]['jszt'] + "',"
+        txt=txt + "'dgsj':'" + xcqy[k]['dgsj'] + "',"
+        txt=txt + "'pzgd':'" + xcqy[k]['gdmj'] + "',"
+        txt=txt + "'pzmj':'" + xcqy[k]['pzmj'] + "',"
+        txt=txt + "'sjyt':'" + xcqy[k]['sjyt'] + "',"
+        txt=txt + "'pzyt':'" + xcqy[k]['pzyt'] + "',"
+        txt=txt + "'gdpwh':'" + xcqy[k]['gdsj'].to_s + xcqy[k]['gdpwh'].to_s + "',"
+        txt=txt + "'zzpwh':'" + xcqy[k]['zzysj'].to_s + xcqy[k]['zzypwh'].to_s + "',"
+        txt=txt + "'ghwh':'" + xcqy[k]['ghddsj'].to_s + xcqy[k]['ghddh'].to_s + "',"
+        txt=txt + "'lxpwh':'" + xcqy[k]['lxsj'].to_s + xcqy[k]['lxpwh'].to_s + "',"
+        txt=txt + "'xmzl':'" + xcqy[k]['tdzl'] + "'"
+        txt=txt + ",'xcqy':'" + xcqy[k]['xcqy'] + "',"
+        txt=txt + "'xmmc':'" + xcqy[k]['xmmc'] + "',"
+        txt=txt + "'xcsj':'#{xcqy[k]['xcrq']}'},"
       end 
       txt=txt + "]}"     
     else
@@ -1175,7 +1310,7 @@ class DesktopController < ApplicationController
     ff.close
     render :text => txt
   end
-  
+ 
   
   #=== Add on Feb.24
   # {"gid"=>"247"}
