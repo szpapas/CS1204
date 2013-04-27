@@ -3472,6 +3472,19 @@ function myTask(id) {
 				xtype:'textfield',
 				id:'wfyd_tj_yf'									
 			},
+			'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
+              xtype: 'combo',
+              width: 75,
+			  id:'wfyd_qy',
+              store: xzqymc_store,
+              emptyText:'请选择',
+              mode: 'local',
+              minChars : 2,
+              multiSelect: true,
+              valueField:'text',
+              displayField:'text',
+              triggerAction:'all'
+            },
 			{
 	            text : '统计',
 	            iconCls : 'query',
@@ -3483,6 +3496,7 @@ function myTask(id) {
 						if (Ext.getCmp('wfyd_tj_yf').getValue().length==6){													
 							insert_qx=getLastDay(Ext.getCmp('wfyd_tj_yf').getValue().substr(0,4),Ext.getCmp('wfyd_tj_yf').getValue().substr(4,2));
 							plan_store.baseParams.rq=Ext.getCmp('wfyd_tj_yf').getValue() + insert_qx;
+							plan_store.baseParams.xcqymc=Ext.getCmp('wfyd_qy').getValue();
 							plan_store.load();	
 						}else{
 							alert("统计月份有问题。请重新输入后再统计。（例：201303）");
@@ -3608,6 +3622,19 @@ function myTask(id) {
 				xtype:'textfield',
 				id:'ysjl_tj_yf'									
 			},
+			'<span style=" font-size:12px;font-weight:600;color:#3366FF;">巡查区域</span>:&nbsp;&nbsp;', { 
+              xtype: 'combo',
+              width: 75,
+			  id:'ysjl_qy',
+              store: xzqymc_store,
+              emptyText:'请选择',
+              mode: 'local',
+              minChars : 2,
+              multiSelect: true,
+              valueField:'text',
+              displayField:'text',
+              triggerAction:'all'
+            },
 			{
 	            text : '统计',
 	            iconCls : 'query',
@@ -3619,6 +3646,7 @@ function myTask(id) {
 						if (Ext.getCmp('ysjl_tj_yf').getValue().length==6){													
 							insert_qx=getLastDay(Ext.getCmp('ysjl_tj_yf').getValue().substr(0,4),Ext.getCmp('ysjl_tj_yf').getValue().substr(4,2));
 							plan_store.baseParams.rq=Ext.getCmp('ysjl_tj_yf').getValue() + insert_qx;
+							plan_store.baseParams.xcqymc=Ext.getCmp('ysjl_qy').getValue();
 							plan_store.load();	
 						}else{
 							alert("统计月份有问题。请重新输入后再统计。（例：201303）");

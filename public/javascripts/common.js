@@ -125,6 +125,17 @@ var xzqmc_data = [
   ['7', '锡山分局'  ]
 ];
 
+var xzqymc_data = [
+  ['0','全部'],
+  ['1', '崇安分局'  ],
+  ['2', '南长分局'  ],
+  ['3', '北塘分局'  ],
+  ['4', '滨湖分局'  ],
+  ['5', '新区分局' ],
+  ['6', '惠山分局'  ],
+  ['7', '锡山分局'  ]
+];
+
 /*------------------------------------------------------*/
 var msg = function(title, msg){
 		Ext.Msg.show({
@@ -172,6 +183,11 @@ var xcqy_store = new Ext.data.SimpleStore({
 var xzqmc_store = new Ext.data.SimpleStore({
 	fields: ['value', 'text'],
 	data : xzqmc_data
+});
+
+var xzqymc_store = new Ext.data.SimpleStore({
+	fields: ['value', 'text'],
+	data : xzqymc_data
 });
 
 
