@@ -1157,13 +1157,18 @@ class DesktopController < ApplicationController
     if params['rq'].nil?
       params['rq']='201303'
     end
+    if params['xcqymc']=='' || params['xcqymc']=='全部'
+      xcqymc=''
+    else
+      xcqymc=" and users.dw='" + params['xcqymc'] + "'"
+    end
     qrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-01 00:00:00'
     zrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-' + params['rq'][6,2].to_s + ' 23:59:59'
     xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查违法用地统计表</font></th></tr>'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
     xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
-    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id and sfwf='是' and xmdk_id=xmdks.gid and users.iphone=plans.device and inspects.xcrq>='#{qrq}' and inspects.xcrq<='#{zrq}' order by users.px")
+    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id and sfwf='是' and xmdk_id=xmdks.gid and users.iphone=plans.device and inspects.xcrq>='#{qrq}' and inspects.xcrq<='#{zrq}' #{xcqymc} order by users.px")
     if xcqy.size>0
       txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
@@ -1234,13 +1239,18 @@ class DesktopController < ApplicationController
     if params['rq'].nil?
       params['rq']='201303'
     end
+    if params['xcqymc']=='' || params['xcqymc']=='全部'
+      xcqymc=''
+    else
+      xcqymc=" and users.dw='" + params['xcqymc'] + "'"
+    end
     qrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-01 00:00:00'
     zrq=params['rq'][0,4].to_s + "-" + params['rq'][4,2].to_s + '-' + params['rq'][6,2].to_s + ' 23:59:59'
     xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查原始记录表</font></th></tr>'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
     xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
-    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh,a_xmdks.ydl,a_xmdks.sffhztgh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id  and xmdk_id=xmdks.gid and users.iphone=plans.device  and xcrq>='#{qrq}' and xcrq<='#{zrq}' order by users.px,xcry,xcrq")
+    xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh,a_xmdks.ydl,a_xmdks.sffhztgh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id  and xmdk_id=xmdks.gid and users.iphone=plans.device  and xcrq>='#{qrq}' and xcrq<='#{zrq}' #{xcqymc} order by users.px,xcry,xcrq")
     if xcqy.size>0
       txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
