@@ -217,7 +217,7 @@ class MapController < ApplicationController
       time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       session_id=params["session_id"]
 
-      plan = User.find_by_sql("select id, session_id, icon from plans where session_id='#{session_id}';")
+      plan = User.find_by_sql("select * from plans where session_id='#{session_id}';")
       
       if plan.size > 0
         User.find_by_sql("update plans set taskendtime=TIMESTAMP '#{time}',  zt='完成' where session_id='#{session_id}';")
