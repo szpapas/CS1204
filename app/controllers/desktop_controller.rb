@@ -147,8 +147,8 @@ class DesktopController < ApplicationController
     size = user.count.to_i;
     if size > 0
       txt = "{results:#{size},rows:["
-      puts "select * from plans #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select *, st_asgeojson(the_lines)  as geom_string, box2d(the_lines) as boundary from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
+      puts "select *, (taskbegintime || ' - ' || taskendtime) as xcrq from plans #{conds} limit #{params['limit']} offset #{params['start']};"
+      user = User.find_by_sql("select *,  (taskbegintime || ' - ' || taskendtime) as xcrq, st_asgeojson(the_lines)  as geom_string, box2d(the_lines) as boundary from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end
@@ -1708,7 +1708,7 @@ class DesktopController < ApplicationController
   
   #pars = {jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
   def save_inspect_basic
-    User.find_by_sql("update inspects set jszt = '#{params['jszt']}', xkz = '#{params['xkz']}', yjx = '#{params['yjx']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
+    User.find_by_sql("update inspects set jszt = '#{params['jszt']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
     render :text => 'Success'
   end
   
@@ -1761,7 +1761,7 @@ class DesktopController < ApplicationController
   
   def save_xcjl_basic
     
-    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',xkz='#{params['xkz']}',yjx='#{params['yjx']}',sjyt='#{params['sjyt']}',sjwf='#{params['sjwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
+    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',sjyt='#{params['sjyt']}',sfwf='#{params['sfwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
     
     render :text => 'Success'
   end
