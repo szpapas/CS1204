@@ -97,8 +97,8 @@ var xzqmc_data = [
 
 /*======================   无锡 ===========================*/
 // 
-var CENTER_LON = 13370424.384;
-var CENTER_LAT = 3693277.655;
+var CENTER_LON = 13399355.384;
+var CENTER_LAT =  3709100.655;
 
 var base_url = "http://192.168.106.129:8080/geoserver/wms";
 var host_url = "http://192.168.106.129:8080/geoserver/cs1204/wms";

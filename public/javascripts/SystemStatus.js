@@ -460,7 +460,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
         var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
-            { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
+            { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
         
         //map.addLayers([dltb, dltb_m, xmdks_map]);
@@ -767,7 +767,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       //map.addControl(layserSwitch);
       map.addControl(new OpenLayers.Control.MousePosition());
       
-      var zoomLevel = 13;
+      var zoomLevel = 11;
       map.setCenter(new OpenLayers.LonLat(CENTER_LON,CENTER_LAT), zoomLevel);
       
       win.show();
