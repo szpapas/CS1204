@@ -85,7 +85,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           }
         });                       
-
+        
+        if (zt == '在线') {
+          showActiveUser(map, vectorLayer);
+        }
+        
       };
 
       function showUserLines(map, vectorLayer, task_id) {
@@ -240,6 +244,73 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
       };
+
+      function showActiveUser(map, vectorLayer) {
+        
+        if (vectorLayer.features.length > 0){
+          while (vectorLayer.features.length > 0) {
+            var vectorFeature = vectorLayer.features[0];
+            vectorLayer.removeFeatures(vectorFeature);
+          };
+        };
+        pars = {};
+        new Ajax.Request("/desktop/get_active_lines", {
+          method: "POST",
+          parameters: pars,
+          onComplete:  function(request) {
+
+            var features = [];                        
+            var places = eval("("+request.responseText+")");
+            
+            var colors = ["blue", "green", "red", "purple"];
+
+            for (var k=0; k < places.length; k++) {
+              var place = places[k];
+              //var randomnumber=Math.floor(Math.random()*4);
+              var draw_color = colors[0];
+              
+              var pointText = place["lon_lat"]; //13470500 3683278
+              var session_id= place["session_id"];
+             
+              var username = place['username']
+              if (pointText == null || pointText == "undefined") continue;
+              
+              var pointList = []; 
+              
+              var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
+              for (var kk=0; kk < pts.length; kk++) {
+                var pt = pts[kk].split(" ");
+                var x0 = parseFloat(pt[0]);
+                var y0 = parseFloat(pt[1]);
+                var point = new OpenLayers.Geometry.Point(x0, y0);
+                pointList.push(point);
+              }
+              
+              var linearRing = new OpenLayers.Geometry.LineString(pointList);
+
+              style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
+              style_line.fillColor = draw_color;
+              style_line.strokeColor = draw_color;
+              style_line.strokeWidth = 3;
+
+              style_line.fontSize  = "12px";
+              style_line.fontFamily = "Courier New, monospace";
+              style_line.fontWeight = "bold";
+              style_line.labelAlign = "rb";           
+              //style_line.label = '巡查时间\n'+xcsj;
+              //style_line.label = username;
+              style_line.fontColor = draw_color; 
+
+              var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              vectorLayer.addFeatures([lineFeature]);
+
+            } 
+
+          }
+        });
+        
+      };
+      
 
       function showUsersBufferedLines(map, vectorLayer, task_id) {
         

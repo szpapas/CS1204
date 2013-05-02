@@ -1897,5 +1897,11 @@ class DesktopController < ApplicationController
     end
     render :text => txt.gsub('.PNG', '-thumb.jpg').gsub('.JPG', '-thumb.jpg')
   end
+  
+  #show current active users;
+  def get_active_lines
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt = '执行' and the_lines is not null order by report_at desc;")
+    render :text => user.to_json
+  end
     
 end
