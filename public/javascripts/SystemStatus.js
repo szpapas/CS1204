@@ -293,7 +293,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
               //style_line.label = '巡查时间\n'+xcsj;
-              style_line.label = username;
+              //style_line.label = username;
               style_line.fontColor = draw_color; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
