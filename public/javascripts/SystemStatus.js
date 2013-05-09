@@ -695,7 +695,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
         activeTreePanel.on('click', function(node, e){
-          showUserPosition(map,vectors,zt);
+          showUserPosition(map,vectors,'在线');
           showActiveUser(map, vectors, node.id);
         });
         
