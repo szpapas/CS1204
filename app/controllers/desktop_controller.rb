@@ -1936,7 +1936,7 @@ class DesktopController < ApplicationController
   end
   
   def get_active_lines_by_id
-    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where id = #{params['id']};")
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id, (now() - interval '12 hour') < taskbegintime as zt from plans where id = #{params['id']};")
     render :text => user.to_json
   end
     

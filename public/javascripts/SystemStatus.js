@@ -287,6 +287,12 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fillColor = draw_color;
               style_line.strokeColor = draw_color;
               style_line.strokeWidth = 3;
+              
+              if (place['zt'] == 't') {
+                style_line.externalGraphic = '/images/police_a.png?1234';  
+              } else {
+                style_line.externalGraphic = '/images/police_b.png?3456';    
+              }
 
               style_line.fontSize  = "12px";
               style_line.fontFamily = "Courier New, monospace";
@@ -695,6 +701,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
         activeTreePanel.on('click', function(node, e){
+          //showUserPosition(map,vectors,zt);
           showActiveUser(map, vectors, node.id);
         });
         
