@@ -1915,7 +1915,10 @@ class DesktopController < ApplicationController
 
     if user.qxcode == '管理员'
       if node == "root"
-        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans inner join users on  plans.username = users.username where (now() - interval '12 hour') < last_seen order by dw;")
+        
+        ids = User.find_by_sql("select username from users where  (now() - interval '12 hour') < last_seen")
+        
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans inner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime order by dw;")
         data.each do |dd|
           text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true }
         end
@@ -1923,7 +1926,7 @@ class DesktopController < ApplicationController
     else user.qxcode = '监察员'
       if node == "root"
         
-        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plansinner join users on  plans.username = users.username where (now() - interval '12 hour') < last_seen and  dw = '#{user.dw}' order by rwmc;")
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plansinner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime and  dw = '#{user.dw}' order by rwmc;")
         data.each do |dd|
           text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true}
         end
