@@ -85,11 +85,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             }
           }
         });                       
-        
-        if (zt == '在线') {
-          showActiveUser(map, vectorLayer);
-        }
-        
       };
 
       function showUserLines(map, vectorLayer, task_id) {
@@ -245,7 +240,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
       };
 
-      function showActiveUser(map, vectorLayer) {
+      function showActiveUser(map, vectorLayer, plan_id) {
         
         if (vectorLayer.features.length > 0){
           while (vectorLayer.features.length > 0) {
@@ -253,8 +248,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             vectorLayer.removeFeatures(vectorFeature);
           };
         };
-        pars = {};
-        new Ajax.Request("/desktop/get_active_lines", {
+        pars = {id:plan_id};
+        new Ajax.Request("/desktop/get_active_lines_by_id", {
           method: "POST",
           parameters: pars,
           onComplete:  function(request) {
@@ -298,11 +293,20 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontWeight = "bold";
               style_line.labelAlign = "rb";           
               //style_line.label = '巡查时间\n'+xcsj;
-              //style_line.label = username;
+              style_line.label = username;
               style_line.fontColor = draw_color; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
               vectorLayer.addFeatures([lineFeature]);
+              
+              //move to the center of line
+              var cc = pts[pts.length/2].split(" ");
+
+              var x0 = parseFloat(cc[0]);
+              var y0 = parseFloat(cc[1]);
+
+              var lonlat = new OpenLayers.LonLat(x0, y0);
+              map.panTo(lonlat,{animate: false});
 
             } 
 
@@ -608,64 +612,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               return '<img src="/images/people_16_offline.png">';
             }
         };
-        
-        /*
-        var phone_grid = new Ext.grid.GridPanel({
-          id: 'phone_grid_id',
-          store: phone_store,
-          columns: [
-            { header : 'id',  width : 75, sortable : true, dataIndex: 'id', hidden:true},
-            { header : '',  width : 30, sortable : true, dataIndex: 'zt',  renderer:renderZt},
-            { header : '人员',  width : 50, sortable : true, dataIndex: 'username'},
-            { header : '时间',  width : 150, sortable : true, dataIndex: 'report_at', renderer: Ext.util.Format.dateRenderer('Y/m/d H:i:s')},
-            { header : '手机',  width : 100, sortable : true, dataIndex: 'device', hidden:'true'}
-            ],
-          columnLines: true,
-          layout:'fit',
-          viewConfig: {
-            stripeRows:true
-          },
-          tbar:[]
-        });
-        
-        phone_grid.on('rowclick', function(grid, row, e){
-          var data = grid.store.data.items[row].data;
-          pointText = data.lon_lat;
-          ss = pointText.match(/POINT\(([-]*\d+\.*\d*)\s*([-]*\d+\.*\d*)\)/);
-          
-          var x0 = parseFloat(ss[1]);
-          var y0 = parseFloat(ss[2]);
-
-          var lonlat = new OpenLayers.LonLat(x0, y0);
-          map.panTo(lonlat,{animate: false});
-        });
-        
-        var phone_panel = new Ext.Panel({
-          id : 'phone_panel_id',
-          autoScroll: true,
-          xtype:"panel",
-          width:250,
-          height:600,
-          style:'margin:0px 0px',
-          layout:'fit',
-          tbar:[{
-            text:'在线人员',
-            iconCls : 'user16',
-            handler : function() {
-              phone_store.baseParams.zt='执行';
-              phone_store.load();
-            }
-          },{
-            text:'全部人员',
-            iconCls : 'user16',
-            handler : function() {
-              phone_store.baseParams.zt='全部';
-              phone_store.load();
-            }            
-          }],
-          items: [phone_grid]
-        });
-        */
 
         var treePanel =  new Ext.tree.TreePanel({
           useArrows:true,
@@ -693,9 +639,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         //treePanel.expandAll();
         
         treePanel.on('click', function(node, e){
-          //e.preventDefault();
-          //menu1.showAt(e.getXY());
-          //var data = grid.store.data.items[row].data;
           var datas = node.id.split('|')
           
           if (datas.size() == 2) {
@@ -729,6 +672,32 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
         
+        var activeTreePanel =  new Ext.tree.TreePanel({
+          useArrows:true,
+          animate:true,
+          //enableDD:true,
+          singleExpand:true,
+          id : 'active_user_tree_panel',
+          checkModel: 'cascade',   
+          onlyLeafCheckable: false,
+          //collapsible: true,
+          collapseMode:'mini',
+          rootVisible : false,
+          loader: new Ext.tree.TreeLoader({
+            dataUrl: '/desktop/get_activeUser?username='+currentUser.username
+          }),
+          root: {
+            nodeType: 'async',
+            text: '常熟国土',
+            draggable:false,
+            id:'root'
+          }
+        });
+        
+        activeTreePanel.on('click', function(node, e){
+          showActiveUser(map, vectors, node.id);
+        });
+        
         win = desktop.createWindow({
             id: 'systemstatus',
             title:'系统监视',
@@ -748,17 +717,33 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 items:[map_view]
               },{
                 region:"east",
+                title:"-",
                 width:250,
+                layout:'fit',
                 split:true,
-                collapsible:true,
-                //titleCollapse:true,
-                layout:"fit",
-                items:[treePanel]
+                items:[{
+                  xtype:"tabpanel",
+                  activeTab:0,
+                  items:[{
+                      xtype:"panel",
+                      height:800,
+                      title:"活动用户",
+                      layout:"fit",
+                      border:false,
+                      items:[activeTreePanel]
+                    },{
+                      xtype:"panel",
+                      title:"历史记录",
+                      layout:"fit",
+                      border:false,
+                      height:800,
+                      items:[treePanel]
+                  }]
+                }]
               }]
         });
       };
       
-      //map.addControl(layserSwitch);
       map.addControl(new OpenLayers.Control.Navigation());
       map.addControl(new OpenLayers.Control.PanZoomBar());
       //map.addControl(new OpenLayers.Control.KeyboardDefaults());

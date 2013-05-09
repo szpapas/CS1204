@@ -1903,5 +1903,36 @@ class DesktopController < ApplicationController
     user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt = '执行' and the_lines is not null order by report_at desc;")
     render :text => user.to_json
   end
+  
+  # 部门， 人员， 路线, 
+  def get_activeUser
+    text = []
+    node = params["node"]
+    
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+
+    if user.qxcode == '管理员'
+      if node == "root"
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans, users where plans.username = users.username and zt = '执行' order by dw;")
+        data.each do |dd|
+          text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true }
+        end
+      end
+    else user.qxcode = '监察员'
+      if node == "root"
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans, users where plans.username = users.username and zt = '执行' and  dw = '#{user.dw}' order by rwmc;")
+        data.each do |dd|
+          text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true}
+        end
+      end
+    end
+    render :text => text.to_json
+  end
+  
+  def get_active_lines_by_id
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where id = #{params['id']};")
+    render :text => user.to_json
+  end
     
 end
