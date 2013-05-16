@@ -306,7 +306,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var pt = pts[pts.length-1].split(" ");
               var x0 = parseFloat(pt[0])
               var y0 = parseFloat(pt[1])
-
+              
+              var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
               style.externalGraphic = '/images/police_a.png?1234'; 
               style.backgroundXOffset = 0;
               style.backgroundYOffset = 0;
