@@ -695,18 +695,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
         var tid = 0, nid = 0; 
-        
-        function showCurrentUser() {
-          showActiveUser(map, vectors, nid);
-        }
-        
         activeTreePanel.on('click', function(node, e){
           
           showUserPosition(map,vectors,'在线');
           //showActiveUser(map, vectors, node.id);
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval ("showCurrentUser()", 5000);
+          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 5000);
           
         });
         
