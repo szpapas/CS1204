@@ -521,8 +521,15 @@ class DesktopController < ApplicationController
   end
   
   def add_user
-    if !params['id'].nil? && params['id'] != ''  
+    if !params['id'].nil? && params['id'] != '' 
+      username = User.find_by_sql("select username from users where id = #{params['id']};")[0].username;
+      
+      if username != params['username']
+        User.find_by_sql("update plans set username = '#{params['username']}' where username = '#{username}';")
+      end
+       
       User.find_by_sql("update users set qxcode='#{params['qxcode']}', hide='#{params['hide']}', email='#{params['email']}', username='#{params['username']}', bgdh='#{params['bgdh']}', bm='#{params['bm']}', iphone='#{params['iphone']}' where id=#{params['id']}; ")
+      
     else
       User.find_by_sql("insert into users (username, email, qxcode, bm, bgdh, iphone) values('#{params['username']}','#{params['email']}', '#{params['qxcode']}', '#{params['bm']}', '#{params['bgdh']}', '#{params['iphone']}'); ")
     end  

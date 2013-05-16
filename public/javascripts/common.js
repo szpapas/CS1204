@@ -185,12 +185,6 @@ var xzqmc_store = new Ext.data.SimpleStore({
 	data : xzqmc_data
 });
 
-var xzqymc_store = new Ext.data.SimpleStore({
-	fields: ['value', 'text'],
-	data : xzqymc_data
-});
-
-
 var xcfs_data = [
   ['1' ,'综合巡查'],
   ['2' ,'定点巡查']
