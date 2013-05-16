@@ -273,6 +273,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var pointList = []; 
               
               var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
+              
               for (var kk=0; kk < pts.length; kk++) {
                 var pt = pts[kk].split(" ");
                 var x0 = parseFloat(pt[0]);
@@ -280,6 +281,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
                 var point = new OpenLayers.Geometry.Point(x0, y0);
                 pointList.push(point);
               }
+              
               
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
 
@@ -297,6 +299,35 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style_line.fontColor = draw_color; 
 
               var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              
+              //add Point Feature
+              //determine last point postion;
+              
+              var pt = pts[pts.length-1].split(" ");
+              var x0 = parseFloat(pt[0])
+              var y0 = parseFloat(pt[0])
+
+              style.externalGraphic = '/images/police_a.png?1234'; 
+              style.backgroundXOffset = 0;
+              style.backgroundYOffset = 0;
+              style.graphicWidth = 64;
+              style.graphicHeight = 32;
+              style.graphicZIndex = MARKER_Z_INDEX;
+              style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
+              style.fillOpacity = 1.0;
+              style.fillColor = "#ee4400";
+              //style.graphicName = "star",
+              style.pointRadius = 8;
+
+              style.fontSize   = "12px";
+              style.fontFamily = "Courier New, monospace";
+              style.fontWeight = "bold";
+              style.labelAlign = "lb";            
+              style.label = username;
+              style.fontColor = "blue";
+              
+              var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
+              
               vectorLayer.addFeatures([lineFeature]);
               
               //move to the center of line
