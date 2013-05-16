@@ -305,7 +305,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
               var pt = pts[pts.length-1].split(" ");
               var x0 = parseFloat(pt[0])
-              var y0 = parseFloat(pt[0])
+              var y0 = parseFloat(pt[1])
 
               style.externalGraphic = '/images/police_a.png?1234'; 
               style.backgroundXOffset = 0;
@@ -326,7 +326,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style.label = username;
               style.fontColor = "blue";
               
-              var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: plan_id}, style )
+              var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 0}, style )
               
               vectorLayer.addFeatures([lineFeature, pointFeature]);
               
