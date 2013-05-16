@@ -695,7 +695,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
         var tid = 0, nid = 0; 
-        function callShowActiveUser() {
+        
+        function showCurrentUser() {
           showActiveUser(map, vectors, nid);
         }
         
@@ -705,7 +706,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           //showActiveUser(map, vectors, node.id);
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval ("callShowActiveUser()", 5000);
+          tid = setInterval ("showCurrentUser()", 5000);
           
         });
         
