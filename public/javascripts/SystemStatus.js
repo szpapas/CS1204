@@ -326,9 +326,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style.label = username;
               style.fontColor = "blue";
               
-              var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: id}, style )
+              var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: plan_id}, style )
               
-              vectorLayer.addFeatures([lineFeature]);
+              vectorLayer.addFeatures([lineFeature, pointFeature]);
               
               //move to the center of line
               var cc = pts[pts.length/2].split(" ");
