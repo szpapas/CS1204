@@ -705,7 +705,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             showActiveUser(map, vectors, node.id);
           }
           
-          tid = setInterval ("callShowActiveUser();", 5000);
+          tid = setInterval ("callShowActiveUser()", 5000);
         });
         
         win = desktop.createWindow({
