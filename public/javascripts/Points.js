@@ -305,7 +305,6 @@ DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
         this.geometry.components[this.currentLineIndex].addPoint(this.currentTempPoint);
         this.vectorLayer.drawFeature(this);
         
-        
         this.movePoint();
         
         if(this.currentTempPoint.equals(this.stopPoint)) {            
@@ -320,6 +319,10 @@ DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
                     this.dynamicState = 'end';
                     
                     if (this.loopable == 1) {  this.restart(); }
+                    
+                    //pan to last point
+                    var lonlat = new OpenLayers.LonLat(this.stopPoint.x, this.stopPoint.y);
+                    this.vectorLayer.map.panTo(lonlat,{animate: false});
                     
                     return;
                 }

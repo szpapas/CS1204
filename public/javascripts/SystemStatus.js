@@ -243,7 +243,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
       };
       
-      var test_id = 0;
       function showActiveUser(map, vectorLayer, plan_id) {
         
         pars = {id:plan_id};
@@ -333,8 +332,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               vectorLayer.addFeatures([basicLineFeature]);
               
               
-              
-              
               var pointList = []; 
               var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
               for (var kk=last_position; kk < pts.length; kk++) {
@@ -355,9 +352,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               last_position = pts.length;
               
               //Pan to the center of line
+              /*
               var lonlat = new OpenLayers.LonLat(x0, y0);
               map.panTo(lonlat,{animate: false});
-
+              */
             } 
 
           }
@@ -726,7 +724,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         activeTreePanel.on('click', function(node, e){
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 30000);
+          last_position = 0;
+          tid = setInterval (function(){showActiveUser(map, vectorLines, nid);}, 30000);
         });
         
         win = desktop.createWindow({
@@ -790,9 +789,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       showUsers('在线');
       
-      //showActiveUser(map, vectors, 29975);
-      //showActiveUser(map, vectors, 29975);
-      //tid = setInterval (function(){showActiveUser(map, vectors, 29975);}, 15000);
+      showActiveUser(map, vectorLines, 29975);
+      //tid = setInterval (function(){showActiveUser(map, vectorLines, 29975);}, 15000);
       
       return win;
   }
