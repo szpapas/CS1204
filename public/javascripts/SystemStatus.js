@@ -14,6 +14,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
   
   createWindow : function(){
     
+      var tid = 0;  //show Activer User line timer id
+      var vid = 0;  //show All Users timer id
+    
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
         return;
@@ -346,15 +349,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
       };
-      
 
-      function showUsersBufferedLines(map, vectorLayer, task_id) {
-        
-      };
-      
-      function showUserMultiBufferedLines(map, vectorLayer, task_ids) {
-        
-      };
+      function showUsers(zt) {
+        if (vid > 0) clearInterval(vid);
+        vid = setInterval (function(){showUserPosition(map,vectors,zt);}, 15000);
+      }
 
       var win = desktop.getWindow('systemstatus');
       
@@ -362,7 +361,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
         var loopable=false;
         var loop_data=[];
-        
+                
         //路线回放功能
         function startCheck() {
           //initialize replay data
@@ -469,8 +468,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         
         var map  = new OpenLayers.Map($('task_track'), options);
         
-        
-        
         var gmap = new OpenLayers.Layer.Google(
             "谷歌地图", // the default
             {numZoomLevels: 18}
@@ -484,20 +481,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 18}
         );          
 
-        //var sat = new OpenLayers.Layer.WMS("航拍地图", base_url,  
-        //    { layers: 'wxgt:wx_image2', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
-
         map.addLayers([gmap, gphy, gsat]);
-
-        //var xmdks_map = new OpenLayers.Layer.WMS("项目地块", base_url, 
-        //  { layers: 'cs1204:xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8);
 
         var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
           { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
         var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
-
         
         //map.addLayers([dltb, dltb_m, xmdks_map]);
         
@@ -542,7 +532,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             styleMap: styles
         });
 
-        map.addLayers([xmdk_vectors,  vectorLines, vectors, markers]);
+        map.addLayers([xmdk_vectors, vectorLines, vectors, markers]);
         
         var layserSwitch = new OpenLayers.Control.LayerSwitcher();
         
@@ -572,7 +562,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           id : 'task_track',
           autoScroll: true,
           xtype:"panel",
-          //width:780,
           height:600,
           style:'margin:0px 0px',
           layout:'fit',
@@ -580,8 +569,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             text:'刷新人员',
             iconCls : 'user16',
             handler : function() {
-              var zt = Ext.getCmp('yhzt_combo_id').getValue();
-              showUserPosition(map,vectors,zt);
+              showUsers(Ext.getCmp('yhzt_combo_id').getValue(););
             }
           },{
             text:'路线回放',
@@ -605,8 +593,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               value :'在线',
               listeners:{
                 select:function(combo, records, index) {
-                  var zt = combo.getValue();
-                  showUserPosition(map,vectors,zt);
+                  showUsers(combo.getValue());
                 }
               }
           }],
@@ -648,12 +635,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var treePanel =  new Ext.tree.TreePanel({
           useArrows:true,
           animate:true,
-          //enableDD:true,
           singleExpand:true,
           id : 'system_status_tree_panel',
           checkModel: 'cascade',   
           onlyLeafCheckable: false,
-          //collapsible: true,
           collapseMode:'mini',
           rootVisible : false,
           loader: new Ext.tree.TreeLoader({
@@ -667,8 +652,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }
         });
         
-        
-        //treePanel.expandAll();
         
         treePanel.on('click', function(node, e){
           var datas = node.id.split('|')
@@ -707,12 +690,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         var activeTreePanel =  new Ext.tree.TreePanel({
           useArrows:true,
           animate:true,
-          //enableDD:true,
           singleExpand:true,
           id : 'active_user_tree_panel',
           checkModel: 'cascade',   
           onlyLeafCheckable: false,
-          //collapsible: true,
           collapseMode:'mini',
           rootVisible : false,
           loader: new Ext.tree.TreeLoader({
@@ -726,15 +707,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           }
         });
         
-        var tid = 0, nid = 0; 
+        var nid = 0; 
         activeTreePanel.on('click', function(node, e){
-          
-          showUserPosition(map,vectors,'在线');
-          //showActiveUser(map, vectors, node.id);
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 5000);
-          
+          tid = setInterval (function(){showActiveUser(map, vectorLines, nid);}, 30000);
         });
         
         win = desktop.createWindow({
@@ -787,8 +764,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       map.addControl(new OpenLayers.Control.PanZoomBar());
       //map.addControl(new OpenLayers.Control.KeyboardDefaults());
       //map.addControl(new OpenLayers.Control.MousePosition());
-      
       //map.addControl(layserSwitch);
+      
       map.addControl(new OpenLayers.Control.MousePosition());
       
       var zoomLevel = 11;
@@ -796,9 +773,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       win.show();
       
-      showUserPosition(map,vectors,'在线');
+      showUsers('在线');
       
       return win;
   }
+  
 });
 
