@@ -15,6 +15,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
     
       var tid = 0;  //show Activer User line timer id
       var vid = 0;  //show All Users timer id
+      var last_position = 0;
     
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
@@ -241,31 +242,25 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         });
         
       };
-
+      
+      var test_id = 0;
       function showActiveUser(map, vectorLayer, plan_id) {
         
-        if (vectorLayer.features.length > 0){
-          while (vectorLayer.features.length > 0) {
-            var vectorFeature = vectorLayer.features[0];
-            vectorLayer.removeFeatures(vectorFeature);
-          };
-        };
-
         pars = {id:plan_id};
         new Ajax.Request("/desktop/get_active_lines_by_id", {
           method: "POST",
           parameters: pars,
           onComplete:  function(request) {
-
+            
             var features = [];                        
             var places = eval("("+request.responseText+")");
             
             var colors = ["blue", "green", "red", "purple"];
-
+            
+            //Only return 1 rows
             for (var k=0; k < places.length; k++) {
               var place = places[k];
               //var randomnumber=Math.floor(Math.random()*4);
-              var draw_color = colors[0];
               
               var pointText = place["lon_lat"]; //13470500 3683278
               var session_id= place["session_id"];
@@ -273,40 +268,20 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var username = place['username']
               if (pointText == null || pointText == "undefined") continue;
               
-              var pointList = []; 
-              
               var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
               
-              for (var kk=0; kk < pts.length; kk++) {
-                var pt = pts[kk].split(" ");
-                var x0 = parseFloat(pt[0]);
-                var y0 = parseFloat(pt[1]);
-                var point = new OpenLayers.Geometry.Point(x0, y0);
-                pointList.push(point);
+              if (pts.length <= last_position) {
+                return;
               }
               
+              if (vectorLayer.features.length > 0){
+                while (vectorLayer.features.length > 0) {
+                  var vectorFeature = vectorLayer.features[0];
+                  vectorLayer.removeFeatures(vectorFeature);
+                };
+              };
               
-              var linearRing = new OpenLayers.Geometry.LineString(pointList);
-
-              style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
-              style_line.fillColor = draw_color;
-              style_line.strokeColor = draw_color;
-              style_line.strokeWidth = 3;
-              
-              style_line.fontSize  = "12px";
-              style_line.fontFamily = "Courier New, monospace";
-              style_line.fontWeight = "bold";
-              style_line.labelAlign = "rb";           
-              //style_line.label = '巡查时间\n'+xcsj;
-              //style_line.label = username;
-              style_line.fontColor = draw_color; 
-
-              //var _lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
-              var lineFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"blue"});
-              
-              //add Point Feature
-              //determine last point postion;
-              
+              // For Point Feature
               var pt = pts[pts.length-1].split(" ");
               var x0 = parseFloat(pt[0])
               var y0 = parseFloat(pt[1])
@@ -321,29 +296,65 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
               style.fillOpacity = 1.0;
               style.fillColor = "#ee4400";
-              //style.graphicName = "star",
               style.pointRadius = 8;
 
               style.fontSize   = "12px";
               style.fontFamily = "Courier New, monospace";
               style.fontWeight = "bold";
-              style.labelAlign = "lb";            
-              style.label = username;
+              style.labelAlign = "lt";            
+              style.label = " "+username;
               style.fontColor = "blue";
               
               var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 0}, style )
               
               vectorLayer.addFeatures([pointFeature]);
               
+              
+              // For whole Line
+              var pointList = []; 
+              for (var kk=0; kk < pts.length; kk++) {
+                var pt = pts[kk].split(" ");
+                var x0 = parseFloat(pt[0]);
+                var y0 = parseFloat(pt[1]);
+                var point = new OpenLayers.Geometry.Point(x0, y0);
+                pointList.push(point);
+              }
+              
+              var linearRing = new OpenLayers.Geometry.LineString(pointList);
+              var draw_color = "blue";
+              
+              style_line = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default','select']);
+              style_line.fillColor   = draw_color;
+              style_line.strokeColor = draw_color;
+              style_line.strokeWidth = 3;
+
+              var basicLineFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+
+              vectorLayer.addFeatures([basicLineFeature]);
+              
+              
+              
+              
+              var pointList = []; 
+              var pts = pointText.replace("LINESTRING(",'').replace(")","").split(",");
+              for (var kk=last_position; kk < pts.length; kk++) {
+                var pt = pts[kk].split(" ");
+                var x0 = parseFloat(pt[0]);
+                var y0 = parseFloat(pt[1]);
+                var point = new OpenLayers.Geometry.Point(x0, y0);
+                pointList.push(point);
+              }
+              
+              var linearRing = new OpenLayers.Geometry.LineString(pointList);
+              var lineFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
+              
+              //Start the dynamic move 
               lineFeature.setVectorLayer(vectorLayer);
               lineFeature.start();
               
-              //move to the center of line
-              var cc = pts[pts.length-1].split(" ");
-
-              var x0 = parseFloat(cc[0]);
-              var y0 = parseFloat(cc[1]);
-
+              last_position = pts.length;
+              
+              //Pan to the center of line
               var lonlat = new OpenLayers.LonLat(x0, y0);
               map.panTo(lonlat,{animate: false});
 
@@ -573,7 +584,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             text:'刷新人员',
             iconCls : 'user16',
             handler : function() {
-              showUsers(Ext.getCmp('yhzt_combo_id').getValue(););
+              showUsers(Ext.getCmp('yhzt_combo_id').getValue());
             }
           },{
             text:'路线回放',
@@ -715,7 +726,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         activeTreePanel.on('click', function(node, e){
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 60000);
+          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 30000);
         });
         
         win = desktop.createWindow({
@@ -780,6 +791,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       showUsers('在线');
       
       //showActiveUser(map, vectors, 29975);
+      //showActiveUser(map, vectors, 29975);
+      //tid = setInterval (function(){showActiveUser(map, vectors, 29975);}, 15000);
       
       return win;
   }

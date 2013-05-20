@@ -67,10 +67,10 @@ var y = [];
 
 
 Point.prototype.geoBearingTo = function( point ) {
-var x = new Array(2);
-var y = new Array(2);
-var bearing;
-var adjust;
+    var x = new Array(2);
+    var y = new Array(2);
+    var bearing;
+    var adjust;
 
     if( this.geoIsValid() && point.geoIsValid()) {
         x[0] = this.x * Point.DEG2RAD;    y[0] = this.y * Point.DEG2RAD;
@@ -142,7 +142,7 @@ var wp = new Point( 0, 0 );
  */
 DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
 
-    internal : 50, // 50ms
+    internal : 100, // 50ms
    
     speed : 5, // 5m/50ms, 100m/s
    
@@ -263,7 +263,7 @@ DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
         this.startPoint = this.components[0].components[0];
         this.stopPoint = this.components[0].components[1];
         this.currentTempPoint = this.startPoint;
-        this.loopable = 1;
+        this.loopable = 0;
     },
    
     start : function() {
@@ -398,14 +398,15 @@ DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
        
         var style = new OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
         
-        style.externalGraphic = '/images/blue-ball-1.png?1234'; 
+        //style.externalGraphic = '/images/blue-ball-1.png?1234'; 
         //style.backgroundXOffset = 0;
         //style.backgroundYOffset = 0;
+        style.externalGraphic = '/images/police_lamp.gif'; 
         style.graphicWidth = 12;
         style.graphicHeight = 12;
         style.graphicZIndex = MARKER_Z_INDEX;
         style.backgroundGraphicZIndex= SHADOW_Z_INDEX;
-        style.fillOpacity = 0.8;
+        style.fillOpacity = 0.9;
         //style.fillColor = "#ee4400";
         //style.graphicName = "star",
         //style.pointRadius = 8;
