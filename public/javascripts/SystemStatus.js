@@ -1,4 +1,3 @@
-
 MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
 
   id:'systemstatus',
@@ -248,6 +247,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             vectorLayer.removeFeatures(vectorFeature);
           };
         };
+
         pars = {id:plan_id};
         new Ajax.Request("/desktop/get_active_lines_by_id", {
           method: "POST",
@@ -298,7 +298,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               //style_line.label = username;
               style_line.fontColor = draw_color; 
 
-              var lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              //var _lineFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.MultiLineString([linearRing]), {fid: session_id}, style_line);
+              var lineFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"blue"});
               
               //add Point Feature
               //determine last point postion;
@@ -329,10 +330,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
               var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 0}, style )
               
-              vectorLayer.addFeatures([lineFeature, pointFeature]);
+              vectorLayer.addFeatures([pointFeature]);
+              
+              lineFeature.setVectorLayer(vectorLayer);
+              lineFeature.start();
               
               //move to the center of line
-              var cc = pts[pts.length/2].split(" ");
+              var cc = pts[pts.length-1].split(" ");
 
               var x0 = parseFloat(cc[0]);
               var y0 = parseFloat(cc[1]);
@@ -733,7 +737,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           //showActiveUser(map, vectors, node.id);
           if (tid > 0) clearInterval(tid);
           nid = node.id;
-          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 5000);
+          
+          tid = setInterval (function(){showActiveUser(map, vectors, nid);}, 60000);
           
         });
         
@@ -797,6 +802,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       win.show();
       
       showUserPosition(map,vectors,'在线');
+      
+      //showActiveUser(map, vectors, 29975);
       
       return win;
   }
