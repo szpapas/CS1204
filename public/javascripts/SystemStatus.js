@@ -16,6 +16,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       var tid = 0;  //show Activer User line timer id
       var vid = 0;  //show All Users timer id
       var last_position = 0;
+      
+      var dynamicFeature;
     
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
@@ -245,13 +247,6 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       function showActiveUser(map, vectorLayer, plan_id) {
         
-        if (vectorLayer.features.length > 0){
-          while (vectorLayer.features.length > 0) {
-            var vectorFeature = vectorLayer.features[0];
-            vectorLayer.removeFeatures(vectorFeature);
-          };
-        };
-        
         pars = {id:plan_id};
         new Ajax.Request("/desktop/get_active_lines_by_id", {
           method: "POST",
@@ -350,11 +345,14 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               }
               
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
-              var lineFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
+              
+              
+              if (dynamicFeature) vectorLayer.removeFeatures(dynamicFeature);
+              dynamicFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
               
               //Start the dynamic move 
-              lineFeature.setVectorLayer(vectorLayer);
-              lineFeature.start();
+              dynamicFeature.setVectorLayer(vectorLayer);
+              dynamicFeature.start();
               
               last_position = pts.length;
               
