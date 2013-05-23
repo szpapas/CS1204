@@ -263,7 +263,7 @@ var view_xmdks = function(sys_grid_id) {
 
         form.findField("a_id").setValue(data.id);
         form.findField("a_xmmc").setValue(data.xmmc);
-        form.findField("a_yddw").setValue(data.ysdw);
+        form.findField("a_yddw").setValue(data.yddw);
         form.findField("a_zlwz").setValue(data.zlwz);
         form.findField("a_sffhztgh").setValue(data.sffhztgh);
         form.findField("a_ydl").setValue(data.ydl);
@@ -712,7 +712,7 @@ var view_xmdks = function(sys_grid_id) {
       
       form.findField("a_id").setValue(data.id);
       form.findField("a_xmmc").setValue(data.xmmc);
-      form.findField("a_yddw").setValue(data.ysdw);
+      form.findField("a_yddw").setValue(data.yddw);
       form.findField("a_zlwz").setValue(data.zlwz);
       form.findField("a_sffhztgh").setValue(data.sffhztgh);
       form.findField("a_ydl").setValue(data.ydl);
