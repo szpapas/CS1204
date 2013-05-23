@@ -1760,6 +1760,11 @@ class DesktopController < ApplicationController
   end
   
   def save_xmdks_extra
+    params['lxsj'] =  params['lxsj'] == '' ? "NULL" : "TIMESTAMP '#{params['lxsj']}'"
+    params['ghddsj'] =  params['ghddsj'] == '' ? "NULL" : "TIMESTAMP '#{params['ghddsj']}'"
+    params['zzysj'] =  params['zzysj'] == '' ? "NULL" : "TIMESTAMP '#{params['zzysj']}'"
+    params['gdsj'] =  params['gdsj'] == '' ? "NULL" : "TIMESTAMP '#{params['gdsj']}'"
+    params['dgsj'] =  params['dgsj'] == '' ? "NULL" : "TIMESTAMP '#{params['dgsj']}'"    
     
     User.find_by_sql("update a_xmdks set xmmc='#{params['xmmc']}', yddw='#{params['yddw']}', zlwz='#{params['zlwz']}', sffhztgh='#{params['sffhztgh']}', ydl='#{params['ydl']}', lxsj='#{params['lxsj']}', lxpwh='#{params['lxpwh']}', ghddsj='#{params['ghddsj']}', ghddh='#{params['ghddh']}', zzysj='#{params['zzysj']}', zzypwh='#{params['zzypwh']}', gdsj='#{params['gdsj']}', gdpwh='#{params['gdpwh']}', pzyt='#{params['pzyt']}', sjyt='#{params['sjyt']}', pzmj='#{params['pzmj']}', gdmj='#{params['gdmj']}', dgsj='#{params['dgsj']}'   where id = #{params['id']};")
 
