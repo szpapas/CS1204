@@ -245,6 +245,13 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       function showActiveUser(map, vectorLayer, plan_id) {
         
+        if (vectorLayer.features.length > 0){
+          while (vectorLayer.features.length > 0) {
+            var vectorFeature = vectorLayer.features[0];
+            vectorLayer.removeFeatures(vectorFeature);
+          };
+        };
+        
         pars = {id:plan_id};
         new Ajax.Request("/desktop/get_active_lines_by_id", {
           method: "POST",
