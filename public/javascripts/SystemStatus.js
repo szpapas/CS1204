@@ -582,7 +582,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             text:'刷新人员',
             iconCls : 'user16',
             handler : function() {
-              showUsers(Ext.getCmp('yhzt_combo_id').getValue());
+              var zt = Ext.getCmp('yhzt_combo_id').getValue();
+              showUserPosition(map,vectors,zt);
+              //showUsers(zt);
             }
           },{
             text:'路线回放',
@@ -606,7 +608,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               value :'在线',
               listeners:{
                 select:function(combo, records, index) {
-                  showUsers(combo.getValue());
+                  var zt = Ext.getCmp('yhzt_combo_id').getValue();
+                  showUserPosition(map,vectors,zt);
+                  showUsers(zt);
                 }
               }
           }],
@@ -788,6 +792,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       win.show();
       
+      showUserPosition(map,vectors,'在线');
       showUsers('在线');
       
       //showActiveUser(map, vectorLines, 29975);
