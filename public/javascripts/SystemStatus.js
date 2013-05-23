@@ -347,7 +347,11 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
               
               
-              if (dynamicFeature) vectorLayer.removeFeatures(dynamicFeature);
+              if (dynamicFeature) {
+                //vectorLayer.removeFeatures(dynamicFeature);
+                dynamicFeature.stop();
+              }
+              
               dynamicFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
               
               //Start the dynamic move 
