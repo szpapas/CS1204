@@ -394,17 +394,17 @@ class DesktopController < ApplicationController
     
     if user.qxcode == '管理员'
       if params['zt'] == "在线"
-        cond = " and (now() - interval '12 hour') < last_seen"
+        cond = " and (now() - interval '1 hour') < last_seen"
       elsif params['zt'] == "不在线"
-        cond = " and (now() - interval '12 hour') > last_seen"
+        cond = " and (now() - interval '1 hour') > last_seen"
       else 
         cond = ''
       end
     else
       if params['zt'] == "在线"
-        cond = " and (now() - interval '12 hour') < last_seen and dw = '#{user.dw}' "
+        cond = " and (now() - interval '1 hour') < last_seen and dw = '#{user.dw}' "
       elsif params['zt'] == "不在线"
-        cond = " and (now() - interval '12 hour') > last_seen and dw = '#{user.dw}' "
+        cond = " and (now() - interval '1 hour') > last_seen and dw = '#{user.dw}' "
       else 
         cond = " and dw = '#{User.current.dw}' "
       end
@@ -412,7 +412,7 @@ class DesktopController < ApplicationController
     
     puts User.current.qxcode
           
-    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() - interval '12 hour') < last_seen as zt from users where last_seen is not NULL #{cond} and x(the_points) > 100000;")
+    user = User.find_by_sql("select id, astext(the_points) as lon_lat, username, iphone as device, last_seen as report_at, (now() - interval '1 hour') < last_seen as zt from users where last_seen is not NULL #{cond} and x(the_points) > 100000;")
     
     render :text => user.to_json
   end
@@ -1923,9 +1923,9 @@ class DesktopController < ApplicationController
     if user.qxcode == '管理员'
       if node == "root"
         
-        ids = User.find_by_sql("select username from users where  (now() - interval '12 hour') < last_seen")
+        ids = User.find_by_sql("select username from users where  (now() - interval '1 hour') < last_seen")
         
-        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans inner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime order by dw;")
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans inner join users on  plans.username = users.username where (now() - interval '1 hour') < taskbegintime order by dw;")
         data.each do |dd|
           text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true }
         end
@@ -1933,7 +1933,7 @@ class DesktopController < ApplicationController
     else user.qxcode = '监察员'
       if node == "root"
         
-        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plansinner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime and  dw = '#{user.dw}' order by rwmc;")
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plansinner join users on  plans.username = users.username where (now() - interval '1 hour') < taskbegintime and  dw = '#{user.dw}' order by rwmc;")
         data.each do |dd|
           text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true}
         end
@@ -1943,7 +1943,7 @@ class DesktopController < ApplicationController
   end
   
   def get_active_lines_by_id
-    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id, (now() - interval '12 hour') < taskbegintime as zt from plans where id = #{params['id']};")
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id, (now() - interval '1 hour') < taskbegintime as zt from plans where id = #{params['id']};")
    
     render :text => user.to_json
   end
