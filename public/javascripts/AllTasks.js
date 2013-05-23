@@ -230,8 +230,8 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("tdzl").setValue(data.tdzl);
     form.findField("dkmj").setValue(data.dkmj);
     form.findField("xzqh").setValue(data.xzqh);
-    form.findField("tbmj").setValue(data.shape_area);
-    form.findField("tbzc").setValue(data.shape_len);
+    form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
+    form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
     if (data.jlrq != null) form.findField("jlrq").setValue(new Date(data.jlrq));
     
     if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -680,8 +680,8 @@ var view_xmdks = function(sys_grid_id) {
   form.findField("tdzl").setValue(data.tdzl);
   form.findField("dkmj").setValue(data.dkmj);
   form.findField("xzqh").setValue(data.xzqh);
-  form.findField("tbmj").setValue(data.shape_area);
-  form.findField("tbzc").setValue(data.shape_len);
+  form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
+  form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
   if (data.jlrq != null ) form.findField("jlrq").setValue(new Date(data.jlrq));
   
   if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -3743,6 +3743,15 @@ function myTask(id) {
         });
         
         var sm = new Ext.grid.CheckboxSelectionModel();
+        
+        function renderArea(val) {
+            return to_mu(val)+'亩';
+        };
+        
+        function renderLength(val) {
+            return to_km(val)+'公里';
+        };
+        
         var sysXmdksGrid = new Ext.grid.GridPanel({
           id: 'sys_xmdks_grid_41',
           store: xmdks_store,
@@ -3756,10 +3765,10 @@ function myTask(id) {
             { header : '用地单位',   width : 150, sortable : true,  dataIndex: 'yddw'},
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
             { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
-            { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq'},
+            { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
             { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqmc'},
-            { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area'},
-            { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len'},
+            { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area',renderer:renderArea},
+            { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len', renderer:renderLength},
             { header : '创建人',    width : 75, sortable : true,  dataIndex: 'username', hidden:true},
             { header : '是否新增',   width : 75, sortable : true,  dataIndex: 'xz_tag', hidden:true},
             { header : '中心点',    width : 75, sortable : true,  dataIndex: 'the_center', hidden:true}
