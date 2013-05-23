@@ -306,7 +306,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
               var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 0}, style )
               
-              vectorLayer.addFeatures([pointFeature]);
+              //vectorLayer.addFeatures([pointFeature]);
               
               
               // For whole Line
