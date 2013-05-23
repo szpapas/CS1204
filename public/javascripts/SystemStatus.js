@@ -725,6 +725,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           if (tid > 0) clearInterval(tid);
           nid = node.id;
           last_position = 0;
+          showActiveUser(map, vectorLines, nid);
           tid = setInterval (function(){showActiveUser(map, vectorLines, nid);}, 30000);
         });
         
@@ -789,7 +790,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       showUsers('在线');
       
-      showActiveUser(map, vectorLines, 29975);
+      //showActiveUser(map, vectorLines, 29975);
       //tid = setInterval (function(){showActiveUser(map, vectorLines, 29975);}, 15000);
       
       return win;
