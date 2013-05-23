@@ -129,7 +129,7 @@ var view_xmdks = function(sys_grid_id) {
     var dkmj = form.findField("dkmj").getValue();
     var xzqh = form.findField("xzqh").getValue();
     
-    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqh:xzqh};
+    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqmc:xzqh};
     new Ajax.Request("/desktop/save_xmdks_basic", { 
       method: "POST",
       parameters: pars,
@@ -3729,7 +3729,7 @@ function myTask(id) {
               {name: 'tdzl',   type: 'string'},
               {name: 'dkmj',   type: 'string'},
               {name: 'jlrq',   type: 'date', dateFormat: 'Y-m-d'},
-              {name: 'xzqmc',  type: 'string'},
+              {name: 'xzqh',  type: 'string'},
               {name: 'shape_area',  type: 'float'},
               {name: 'shape_len' ,  type: 'float'},
               {name: 'username'  ,  type: 'string'},
@@ -3766,7 +3766,7 @@ function myTask(id) {
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
             { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
             { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
-            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqmc'},
+            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqh'},
             { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area',renderer:renderArea},
             { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len', renderer:renderLength},
             { header : '创建人',    width : 75, sortable : true,  dataIndex: 'username', hidden:true},
@@ -3934,7 +3934,7 @@ function myTask(id) {
               {name: 'tdzl',   type: 'string'},
               {name: 'dkmj',   type: 'string'},
               {name: 'jlrq',   type: 'date', dateFormat: 'Y-m-d'},
-              {name: 'xzqmc',  type: 'string'},
+              {name: 'xzqh',  type: 'string'},
               {name: 'shape_area',  type: 'float'},
               {name: 'shape_len' ,  type: 'float'},
               {name: 'username'  ,  type: 'string'},
@@ -3963,7 +3963,7 @@ function myTask(id) {
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
             { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
             { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq'},
-            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqmc'},
+            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqh'},
             { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area'},
             { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len'},
             { header : '创建人',    width : 75, sortable : true,  dataIndex: 'username', hidden:true},

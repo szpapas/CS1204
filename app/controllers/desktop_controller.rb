@@ -1696,7 +1696,7 @@ class DesktopController < ApplicationController
     if size > 0
       txt = "{results:#{size},rows:["
       puts "select * from xmdks #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select *, st_asgeojson(the_google)  as geom_string from xmdks #{conds} order by gid limit #{params['limit']} offset #{params['start']} ;")
+      user = User.find_by_sql("select *, xzqmc as xzqh, st_asgeojson(the_google)  as geom_string from xmdks #{conds} order by gid limit #{params['limit']} offset #{params['start']} ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end
@@ -1753,9 +1753,9 @@ class DesktopController < ApplicationController
     render :text => @a_xmdks.to_json.gsub(" 00:00:00", "")
   end
   
-  #saveBasic pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqh:xzqh};
+  #saveBasic pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqmc:xzqh};
   def save_xmdks_basic
-    User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}', yddw='#{params['yddw']}', pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', tdzl = '#{params['tdzl']}', dkmj = '#{params['tdzl']}', xzqh = '#{params['xzqh']}' where gid = #{params['gid']};")
+    User.find_by_sql("update xmdks set xmmc = '#{params['xmmc']}', yddw='#{params['yddw']}', pzwh = '#{params['pzwh']}', sfjs = '#{params['sfjs']}', tdzl = '#{params['tdzl']}', dkmj = '#{params['dkmj']}', xzqmc = '#{params['xzqmc']}' where gid = #{params['gid']};")
     render :text => 'Success'
   end
   
@@ -1952,5 +1952,4 @@ class DesktopController < ApplicationController
    
     render :text => user.to_json
   end
-    
 end
