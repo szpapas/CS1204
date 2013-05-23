@@ -1766,7 +1766,7 @@ class DesktopController < ApplicationController
     params['gdsj'] =  params['gdsj'] == '' ? "NULL" : "TIMESTAMP '#{params['gdsj']}'"
     params['dgsj'] =  params['dgsj'] == '' ? "NULL" : "TIMESTAMP '#{params['dgsj']}'"    
     
-    User.find_by_sql("update a_xmdks set xmmc='#{params['xmmc']}', yddw='#{params['yddw']}', zlwz='#{params['zlwz']}', sffhztgh='#{params['sffhztgh']}', ydl='#{params['ydl']}', lxsj='#{params['lxsj']}', lxpwh='#{params['lxpwh']}', ghddsj='#{params['ghddsj']}', ghddh='#{params['ghddh']}', zzysj='#{params['zzysj']}', zzypwh='#{params['zzypwh']}', gdsj='#{params['gdsj']}', gdpwh='#{params['gdpwh']}', pzyt='#{params['pzyt']}', sjyt='#{params['sjyt']}', pzmj='#{params['pzmj']}', gdmj='#{params['gdmj']}', dgsj='#{params['dgsj']}'   where id = #{params['id']};")
+    User.find_by_sql("update a_xmdks set xmmc='#{params['xmmc']}', yddw='#{params['yddw']}', zlwz='#{params['zlwz']}', sffhztgh='#{params['sffhztgh']}', ydl='#{params['ydl']}', lxsj=#{params['lxsj']}, lxpwh='#{params['lxpwh']}', ghddsj=#{params['ghddsj']}, ghddh='#{params['ghddh']}', zzysj=#{params['zzysj']}, zzypwh='#{params['zzypwh']}', gdsj=#{params['gdsj']}, gdpwh='#{params['gdpwh']}', pzyt='#{params['pzyt']}', sjyt='#{params['sjyt']}', pzmj='#{params['pzmj']}', gdmj='#{params['gdmj']}', dgsj=#{params['dgsj']}   where id = #{params['id']};")
 
     render :text => 'Success'
   end
