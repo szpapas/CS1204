@@ -129,7 +129,7 @@ var view_xmdks = function(sys_grid_id) {
     var dkmj = form.findField("dkmj").getValue();
     var xzqh = form.findField("xzqh").getValue();
     
-    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqh:xzqh};
+    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqmc:xzqh};
     new Ajax.Request("/desktop/save_xmdks_basic", { 
       method: "POST",
       parameters: pars,
@@ -230,8 +230,8 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("tdzl").setValue(data.tdzl);
     form.findField("dkmj").setValue(data.dkmj);
     form.findField("xzqh").setValue(data.xzqh);
-    form.findField("tbmj").setValue(data.shape_area);
-    form.findField("tbzc").setValue(data.shape_len);
+    form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
+    form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
     if (data.jlrq != null) form.findField("jlrq").setValue(new Date(data.jlrq));
     
     if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -263,7 +263,7 @@ var view_xmdks = function(sys_grid_id) {
 
         form.findField("a_id").setValue(data.id);
         form.findField("a_xmmc").setValue(data.xmmc);
-        form.findField("a_yddw").setValue(data.ysdw);
+        form.findField("a_yddw").setValue(data.yddw);
         form.findField("a_zlwz").setValue(data.zlwz);
         form.findField("a_sffhztgh").setValue(data.sffhztgh);
         form.findField("a_ydl").setValue(data.ydl);
@@ -680,8 +680,8 @@ var view_xmdks = function(sys_grid_id) {
   form.findField("tdzl").setValue(data.tdzl);
   form.findField("dkmj").setValue(data.dkmj);
   form.findField("xzqh").setValue(data.xzqh);
-  form.findField("tbmj").setValue(data.shape_area);
-  form.findField("tbzc").setValue(data.shape_len);
+  form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
+  form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
   if (data.jlrq != null ) form.findField("jlrq").setValue(new Date(data.jlrq));
   
   if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -712,7 +712,7 @@ var view_xmdks = function(sys_grid_id) {
       
       form.findField("a_id").setValue(data.id);
       form.findField("a_xmmc").setValue(data.xmmc);
-      form.findField("a_yddw").setValue(data.ysdw);
+      form.findField("a_yddw").setValue(data.yddw);
       form.findField("a_zlwz").setValue(data.zlwz);
       form.findField("a_sffhztgh").setValue(data.sffhztgh);
       form.findField("a_ydl").setValue(data.ydl);
@@ -3733,7 +3733,7 @@ function myTask(id) {
               {name: 'tdzl',   type: 'string'},
               {name: 'dkmj',   type: 'string'},
               {name: 'jlrq',   type: 'date', dateFormat: 'Y-m-d'},
-              {name: 'xzqmc',  type: 'string'},
+              {name: 'xzqh',  type: 'string'},
               {name: 'shape_area',  type: 'float'},
               {name: 'shape_len' ,  type: 'float'},
               {name: 'username'  ,  type: 'string'},
@@ -3747,6 +3747,15 @@ function myTask(id) {
         });
         
         var sm = new Ext.grid.CheckboxSelectionModel();
+        
+        function renderArea(val) {
+            return to_mu(val)+'亩';
+        };
+        
+        function renderLength(val) {
+            return to_km(val)+'公里';
+        };
+        
         var sysXmdksGrid = new Ext.grid.GridPanel({
           id: 'sys_xmdks_grid_41',
           store: xmdks_store,
@@ -3760,10 +3769,10 @@ function myTask(id) {
             { header : '用地单位',   width : 150, sortable : true,  dataIndex: 'yddw'},
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
             { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
-            { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq'},
-            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqmc'},
-            { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area'},
-            { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len'},
+            { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
+            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqh'},
+            { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area',renderer:renderArea},
+            { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len', renderer:renderLength},
             { header : '创建人',    width : 75, sortable : true,  dataIndex: 'username', hidden:true},
             { header : '是否新增',   width : 75, sortable : true,  dataIndex: 'xz_tag', hidden:true},
             { header : '中心点',    width : 75, sortable : true,  dataIndex: 'the_center', hidden:true}
@@ -3929,7 +3938,7 @@ function myTask(id) {
               {name: 'tdzl',   type: 'string'},
               {name: 'dkmj',   type: 'string'},
               {name: 'jlrq',   type: 'date', dateFormat: 'Y-m-d'},
-              {name: 'xzqmc',  type: 'string'},
+              {name: 'xzqh',  type: 'string'},
               {name: 'shape_area',  type: 'float'},
               {name: 'shape_len' ,  type: 'float'},
               {name: 'username'  ,  type: 'string'},
@@ -3958,7 +3967,7 @@ function myTask(id) {
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
             { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
             { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq'},
-            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqmc'},
+            { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqh'},
             { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area'},
             { header : '图斑周长',   width : 75, sortable : true,  dataIndex: 'shape_len'},
             { header : '创建人',    width : 75, sortable : true,  dataIndex: 'username', hidden:true},

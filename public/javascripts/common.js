@@ -384,3 +384,17 @@ function getLastDay(year,month) {
    var new_date = new Date(new_year,new_month,1);                //取当年当月中的第一天          
    return (new Date(new_date.getTime()-1000*60*60*24)).getDate();//获取当月最后一天日期          
 }
+
+
+function to_mu(area) {
+  return (parseFloat(area)/666.666666).toFixed(2);
+}
+
+function to_km(length) {
+  return (parseFloat(length)/1000.0).toFixed(2);
+}
+
+function to_pm(area) {
+  return (parseFloat(area)*666.666666).toFixed(0);
+}
+

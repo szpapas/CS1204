@@ -16,6 +16,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       var tid = 0;  //show Activer User line timer id
       var vid = 0;  //show All Users timer id
       var last_position = 0;
+      
+      var dynamicFeature;
     
       if (currentUser.qxcode == '巡查员') {
         msg('Message','权限不够. 请与管理员联系后再试！');
@@ -306,7 +308,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               
               var pointFeature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x0, y0), {fid: 0}, style )
               
-              vectorLayer.addFeatures([pointFeature]);
+              //vectorLayer.addFeatures([pointFeature]);
               
               
               // For whole Line
@@ -343,11 +345,18 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               }
               
               var linearRing = new OpenLayers.Geometry.LineString(pointList);
-              var lineFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
+              
+              
+              if (dynamicFeature) {
+                //vectorLayer.removeFeatures(dynamicFeature);
+                dynamicFeature.stop();
+              }
+              
+              dynamicFeature  = new DynamicEffectLineVector (linearRing, {name:"", color:"red"});
               
               //Start the dynamic move 
-              lineFeature.setVectorLayer(vectorLayer);
-              lineFeature.start();
+              dynamicFeature.setVectorLayer(vectorLayer);
+              dynamicFeature.start();
               
               last_position = pts.length;
               
@@ -582,7 +591,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
             text:'刷新人员',
             iconCls : 'user16',
             handler : function() {
-              showUsers(Ext.getCmp('yhzt_combo_id').getValue());
+              var zt = Ext.getCmp('yhzt_combo_id').getValue();
+              showUserPosition(map,vectors,zt);
+              //showUsers(zt);
             }
           },{
             text:'路线回放',
@@ -606,7 +617,9 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
               value :'在线',
               listeners:{
                 select:function(combo, records, index) {
-                  showUsers(combo.getValue());
+                  var zt = Ext.getCmp('yhzt_combo_id').getValue();
+                  showUserPosition(map,vectors,zt);
+                  showUsers(zt);
                 }
               }
           }],
@@ -725,7 +738,8 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           if (tid > 0) clearInterval(tid);
           nid = node.id;
           last_position = 0;
-          tid = setInterval (function(){showActiveUser(map, vectorLines, nid);}, 30000);
+          showActiveUser(map, vectorLines, nid);
+          tid = setInterval (function(){showActiveUser(map, vectorLines, nid);}, 5000);
         });
         
         win = desktop.createWindow({
@@ -787,9 +801,10 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
       
       win.show();
       
+      showUserPosition(map,vectors,'在线');
       showUsers('在线');
       
-      showActiveUser(map, vectorLines, 29975);
+      //showActiveUser(map, vectorLines, 29975);
       //tid = setInterval (function(){showActiveUser(map, vectorLines, 29975);}, 15000);
       
       return win;
