@@ -387,14 +387,18 @@ function getLastDay(year,month) {
 
 
 function to_mu(area) {
-  return (parseFloat(area)/666.666666).toFixed(2);
+  if (area == undefined) {
+    return "";
+  }
+  return (parseFloat(area)/666.666666).toFixed(2)+'亩';
 }
 
 function to_km(length) {
-  return (parseFloat(length)/1000.0).toFixed(2);
+  return (parseFloat(length)/1000.0).toFixed(2)+'公里';
 }
 
 function to_pm(area) {
+  area = area.replace('亩', '');
   return (parseFloat(area)*666.666666).toFixed(0);
 }
 

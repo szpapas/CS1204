@@ -129,13 +129,14 @@ var view_xmdks = function(sys_grid_id) {
     var dkmj = form.findField("dkmj").getValue();
     var xzqh = form.findField("xzqh").getValue();
     
-    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:dkmj, xzqmc:xzqh};
+    pars = {gid:gid, xmmc:xmmc, yddw:yddw, pzwh:pzwh, sfjs:sfjs, tdzl:tdzl, dkmj:to_pm(dkmj), xzqmc:xzqh};
     new Ajax.Request("/desktop/save_xmdks_basic", { 
       method: "POST",
       parameters: pars,
       onComplete:  function(request) {
         if (request.responseText == 'Success') {
           alert ('保存成功！')
+          xmdks_grid.store.load();
         }
       }
     });
@@ -168,7 +169,7 @@ var view_xmdks = function(sys_grid_id) {
     var gdmj     = form.findField("a_gdmj").getValue();
     var dgsj     = Ext.util.Format.date(form.findField("a_dgsj").getValue(), 'Y-m-d');
     
-    pars = {id:id,xmmc:xmmc,yddw:yddw,zlwz:zlwz,sffhztgh:sffhztgh,ydl:ydl,lxsj:lxsj,lxpwh:lxpwh,ghddsj:ghddsj,ghddh:ghddh,zzysj:zzysj,zzypwh:zzypwh,gdsj:gdsj,gdpwh:gdpwh,pzyt:pzyt,sjyt:sjyt,pzmj:pzmj,gdmj:gdmj,dgsj:dgsj};
+    pars = {id:id,xmmc:xmmc,yddw:yddw,zlwz:zlwz,sffhztgh:sffhztgh,ydl:ydl,lxsj:lxsj,lxpwh:lxpwh,ghddsj:ghddsj,ghddh:ghddh,zzysj:zzysj,zzypwh:zzypwh,gdsj:gdsj,gdpwh:gdpwh,pzyt:pzyt,sjyt:sjyt,pzmj:to_pm(pzmj),gdmj:to_pm(gdmj),dgsj:dgsj};
     
     new Ajax.Request("/desktop/save_xmdks_extra", { 
       method: "POST",
@@ -228,10 +229,10 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("pzwh").setValue(data.pzwh);
     form.findField("sfjs").setValue(data.sfjs);
     form.findField("tdzl").setValue(data.tdzl);
-    form.findField("dkmj").setValue(data.dkmj);
+    form.findField("dkmj").setValue(to_mu(data.dkmj));
     form.findField("xzqh").setValue(data.xzqh);
-    form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
-    form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
+    form.findField("tbmj").setValue(to_mu(data.shape_area));
+    form.findField("tbzc").setValue(to_km(data.shape_len));
     if (data.jlrq != null) form.findField("jlrq").setValue(new Date(data.jlrq));
     
     if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -277,8 +278,8 @@ var view_xmdks = function(sys_grid_id) {
         form.findField("a_gdpwh").setValue(data.gdpwh);
         form.findField("a_pzyt").setValue(data.pzyt);
         form.findField("a_sjyt").setValue(data.sjyt);
-        form.findField("a_pzmj").setValue(data.pzmj);
-        form.findField("a_gdmj").setValue(data.gdmj);
+        form.findField("a_pzmj").setValue(to_mu(data.pzmj));
+        form.findField("a_gdmj").setValue(to_mu(data.gdmj));
         if (data.dgsj != null) form.findField("a_dgsj").setValue(new Date(data.dgsj));
         
         form.findField("a_xmmc").setReadOnly(true);  
@@ -678,10 +679,10 @@ var view_xmdks = function(sys_grid_id) {
   form.findField("pzwh").setValue(data.pzwh);
   form.findField("sfjs").setValue(data.sfjs);
   form.findField("tdzl").setValue(data.tdzl);
-  form.findField("dkmj").setValue(data.dkmj);
+  form.findField("dkmj").setValue(to_mu(data.dkmj));
   form.findField("xzqh").setValue(data.xzqh);
-  form.findField("tbmj").setValue(to_mu(data.shape_area)+'亩');
-  form.findField("tbzc").setValue(to_km(data.shape_len)+'公里');
+  form.findField("tbmj").setValue(to_mu(data.shape_area));
+  form.findField("tbzc").setValue(to_km(data.shape_len));
   if (data.jlrq != null ) form.findField("jlrq").setValue(new Date(data.jlrq));
   
   if (data.xz_tag != '是' || data.xz_tag == undefined) {
@@ -726,8 +727,8 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("a_gdpwh").setValue(data.gdpwh);
       form.findField("a_pzyt").setValue(data.pzyt);
       form.findField("a_sjyt").setValue(data.sjyt);
-      form.findField("a_pzmj").setValue(data.pzmj);
-      form.findField("a_gdmj").setValue(data.gdmj);
+      form.findField("a_pzmj").setValue(to_mu(data.pzmj));
+      form.findField("a_gdmj").setValue(to_mu(data.gdmj));
       if (data.dgsj != null) form.findField("a_dgsj").setValue(new Date(data.dgsj));
       
       form.findField("a_xmmc").setReadOnly(true);
@@ -3749,11 +3750,11 @@ function myTask(id) {
         var sm = new Ext.grid.CheckboxSelectionModel();
         
         function renderArea(val) {
-            return to_mu(val)+'亩';
+            return to_mu(val);
         };
         
         function renderLength(val) {
-            return to_km(val)+'公里';
+            return to_km(val);
         };
         
         var sysXmdksGrid = new Ext.grid.GridPanel({
@@ -3768,7 +3769,7 @@ function myTask(id) {
             { header : '是否建设',   width : 75, sortable : true,  dataIndex: 'sfjs', hidden:true},
             { header : '用地单位',   width : 150, sortable : true,  dataIndex: 'yddw'},
             { header : '土地坐落',   width : 75, sortable : true,  dataIndex: 'tdzl'},
-            { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj'},
+            { header : '地块面积',   width : 75, sortable : true,  dataIndex: 'dkmj', renderer:renderArea},
             { header : '创建日期',   width : 75, sortable : true,  dataIndex: 'jlrq', renderer: Ext.util.Format.dateRenderer('Y-m-d')},
             { header : '行政区名称',  width : 75, sortable : true,  dataIndex: 'xzqh'},
             { header : '图班面积',   width : 75, sortable : true,  dataIndex: 'shape_area',renderer:renderArea},
