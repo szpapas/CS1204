@@ -147,8 +147,8 @@ class DesktopController < ApplicationController
     size = user.count.to_i;
     if size > 0
       txt = "{results:#{size},rows:["
-      puts "select * from plans #{conds} limit #{params['limit']} offset #{params['start']};"
-      user = User.find_by_sql("select *, st_asgeojson(the_lines)  as geom_string, box2d(the_lines) as boundary from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
+      puts "select *, (taskbegintime || ' - ' || taskendtime) as xcrq from plans #{conds} limit #{params['limit']} offset #{params['start']};"
+      user = User.find_by_sql("select *,  (taskbegintime || ' - ' || taskendtime) as xcrq, st_asgeojson(the_lines)  as geom_string, box2d(the_lines) as boundary from plans #{conds} order by id limit #{params['limit']} offset #{params['start']}  ;")
       for k in 0..user.size-1
         txt = txt + user[k].to_json + ','
       end
@@ -521,8 +521,15 @@ class DesktopController < ApplicationController
   end
   
   def add_user
-    if !params['id'].nil? && params['id'] != ''  
+    if !params['id'].nil? && params['id'] != '' 
+      username = User.find_by_sql("select username from users where id = #{params['id']};")[0].username;
+      
+      if username != params['username']
+        User.find_by_sql("update plans set username = '#{params['username']}' where username = '#{username}';")
+      end
+       
       User.find_by_sql("update users set qxcode='#{params['qxcode']}', hide='#{params['hide']}', email='#{params['email']}', username='#{params['username']}', bgdh='#{params['bgdh']}', bm='#{params['bm']}', iphone='#{params['iphone']}' where id=#{params['id']}; ")
+      
     else
       User.find_by_sql("insert into users (username, email, qxcode, bm, bgdh, iphone) values('#{params['username']}','#{params['email']}', '#{params['qxcode']}', '#{params['bm']}', '#{params['bgdh']}', '#{params['iphone']}'); ")
     end  
@@ -1117,17 +1124,25 @@ class DesktopController < ApplicationController
     if xcqy.size>0
       txt = "{results:#{xcqy.size},rows:["
       for k in 0..xcqy.size-1
-        sccs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and (zt='完成' or zt='执行')")
-        sbcs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' ")
-        wcbl=sprintf("%.1f",(sccs[0]['xccs'].to_f/8)*100).to_f
-        sbbl=sprintf("%.1f",(sbcs[0]['xccs'].to_f/8)*100).to_f
-        fjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' and photo_count>0 ")
+        sccs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and (zt='完成')")
+        sbcs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and (xcnr<>'' or xcjg<>'' or clyj<>'') ")
+        if sccs[0]['xccs'].to_i>8
+          wcbl='100%'
+        else
+          wcbl=sprintf("%.1f",(sccs[0]['xccs'].to_f/8)*100).to_f
+        end
+        if sbcs[0]['xccs'].to_i>8
+          sbbl='100%'
+        else
+          sbbl=sprintf("%.1f",(sbcs[0]['xccs'].to_f/8)*100).to_f
+        end
+        fjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and photo_count>0 ")
         if sbcs[0]['xccs'].to_i>0
           fjzlbl=sprintf("%.1f",(fjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
         else
           fjzlbl=0
         end
-        sjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and qrq>='#{qrq}' and qrq<='#{zrq}' and zt='完成' and xcnr<>'' and xcjg<>'' and clyj<>'' ")
+        sjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and xcnr<>'' and xcjg<>'' and clyj<>'' ")
         if sbcs[0]['xccs'].to_i>0
           sjzlbl=sprintf("%.1f",(sjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
         else
@@ -1167,7 +1182,7 @@ class DesktopController < ApplicationController
     xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查违法用地统计表</font></th></tr>'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
-    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
+    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>单位</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
     xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id and sfwf='是' and xmdk_id=xmdks.gid and users.iphone=plans.device and inspects.xcrq>='#{qrq}' and inspects.xcrq<='#{zrq}' #{xcqymc} order by users.px")
     if xcqy.size>0
       txt = "{results:#{xcqy.size},rows:["
@@ -1201,6 +1216,7 @@ class DesktopController < ApplicationController
 
         txt=txt + "{'xczt':'" + xcqy[k]['xcqy'] + "',"
         txt=txt + "'xcry':'" + xcqy[k]['xcry']  + "',"
+        txt=txt + "'bm':'" + xcqy[k]['bm']  + "',"
         txt=txt + "'clyj':'" + xcqy[k]['clyj'] + "',"
         txt=txt + "'xcjg':'" + xcqy[k]['xcjg'] + "',"
         txt=txt + "'wfmj':'" + xcqy[k]['wfmj'] + "',"
@@ -1249,7 +1265,7 @@ class DesktopController < ApplicationController
     xls='<table　border="1" cellpadding="0" bordercolorlight="#999999" bordercolordark="#FFFFFF"　cellspacing="0" align="center">'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>执法监察动态巡查原始记录表</font></th></tr>'
     xls=xls + '<tr><th style="text-align: center" colspan="27"><font size = 5>'+ params['rq'][0,4].to_s + '年' + params['rq'][4,2].to_s + '月份</font></th></tr>'
-    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>巡查区域</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
+    xls=xls + '<tr><td>巡查主体</td><td>巡查人员</td><td>单位</td><td>巡查任务名称</td><td>巡查时间</td><td>项目名称</td><td>坐落位置</td><td>立项时间</td><td>批文号</td><td>规划定点时间</td><td>规划定点文号</td><td>转征用时间</td><td>转征用批文号</td><td>供地时间</td><td>供地批文号</td><td>批准用途</td><td>实际用途</td><td>批准面积(亩)</td><td>其中耕地(亩)</td><td>动工时间</td><td>建设状况</td><td>实际占地面积(亩)</td><td>其中耕地(亩)</td><td>违法面积</td><td>巡查结果</td><td>处理意见</td><td>备注</td></tr>'
     xcqy = User.find_by_sql("select inspects.bz,plans.rwmc,users.dw,users.bm,inspects.sjzdmj,lxsj,lxpwh,zzysj,zzypwh,inspects.gdmj as sjgdmj,wfmj,inspects.clyj,plans.xcjg,gdsj,gdpwh,pzyt,a_xmdks.sjyt,a_xmdks.dgsj,pzmj,a_xmdks.gdmj,dgsj,inspects.jszt,plans.xcqy,plans.xcry,inspects.xcrq,plans.xcqy,sfwf,jszt,xmdks.xmmc,xmdks.yddw,tdzl,pzwh,gid,ghddsj,ghddh,a_xmdks.ydl,a_xmdks.sffhztgh from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id  and xmdk_id=xmdks.gid and users.iphone=plans.device  and xcrq>='#{qrq}' and xcrq<='#{zrq}' #{xcqymc} order by users.px,xcry,xcrq")
     if xcqy.size>0
       txt = "{results:#{xcqy.size},rows:["
@@ -1285,6 +1301,7 @@ class DesktopController < ApplicationController
 
         txt=txt + "{'xczt':'" + xcqy[k]['xcqy'] + "',"
         txt=txt + "'xcry':'" + xcqy[k]['xcry']  + "',"
+        txt=txt + "'bm':'" + xcqy[k]['bm']  + "',"
         txt=txt + "'yddw':'" + xcqy[k]['yddw']  + "',"
         txt=txt + "'sffhgh':'" + xcqy[k]['sffhztgh']  + "',"
         txt=txt + "'czqk':'" + xcqy[k]['clyj'] + "',"
@@ -1708,7 +1725,7 @@ class DesktopController < ApplicationController
   
   #pars = {jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
   def save_inspect_basic
-    User.find_by_sql("update inspects set jszt = '#{params['jszt']}', xkz = '#{params['xkz']}', yjx = '#{params['yjx']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
+    User.find_by_sql("update inspects set jszt = '#{params['jszt']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
     render :text => 'Success'
   end
   
@@ -1761,7 +1778,7 @@ class DesktopController < ApplicationController
   
   def save_xcjl_basic
     
-    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',xkz='#{params['xkz']}',yjx='#{params['yjx']}',sjyt='#{params['sjyt']}',sjwf='#{params['sjwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
+    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',sjyt='#{params['sjyt']}',sfwf='#{params['sfwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
     
     render :text => 'Success'
   end
@@ -1896,6 +1913,49 @@ class DesktopController < ApplicationController
       txt = "{results:0,rows:[]}"
     end
     render :text => txt.gsub('.PNG', '-thumb.jpg').gsub('.JPG', '-thumb.jpg')
+  end
+  
+  #show current active users;
+  def get_active_lines
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id from plans where zt = '执行' and the_lines is not null order by report_at desc;")
+    render :text => user.to_json
+  end
+  
+  # 部门， 人员， 路线, 
+  def get_activeUser
+    text = []
+    node = params["node"]
+    
+    username = params['username'];
+    user = User.find_by_sql("select * from users where username = '#{username}';")[0]
+
+
+    if user.qxcode == '管理员'
+      if node == "root"
+        
+        ids = User.find_by_sql("select username from users where  (now() - interval '12 hour') < last_seen")
+        
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plans inner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime order by dw;")
+        data.each do |dd|
+          text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true }
+        end
+      end
+    else user.qxcode = '监察员'
+      if node == "root"
+        
+        data = User.find_by_sql("select plans.id, xcbh, rwmc, plans.username, dw, bm from plansinner join users on  plans.username = users.username where (now() - interval '12 hour') < taskbegintime and  dw = '#{user.dw}' order by rwmc;")
+        data.each do |dd|
+          text << {:text => " #{dd['dw']}-#{dd['rwmc']} ", :id => "#{dd["id"]}", :iconCls => "online",  :leaf => true}
+        end
+      end
+    end
+    render :text => text.to_json
+  end
+  
+  def get_active_lines_by_id
+    user = User.find_by_sql("select id, astext(the_lines) as lon_lat, username, device, report_at, session_id, (now() - interval '12 hour') < taskbegintime as zt from plans where id = #{params['id']};")
+   
+    render :text => user.to_json
   end
     
 end

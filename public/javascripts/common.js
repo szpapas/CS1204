@@ -97,8 +97,8 @@ var xzqmc_data = [
 
 /*======================   无锡 ===========================*/
 // 
-var CENTER_LON = 13370424.384;
-var CENTER_LAT = 3693277.655;
+var CENTER_LON = 13399355.384;
+var CENTER_LAT =  3709100.655;
 
 var base_url = "http://192.168.106.129:8080/geoserver/wms";
 var host_url = "http://192.168.106.129:8080/geoserver/cs1204/wms";
@@ -120,12 +120,10 @@ var xzqmc_data = [
   ['2', '南长分局'  ],
   ['3', '北塘分局'  ],
   ['4', '滨湖分局'  ],
-  ['5', '无锡新区分局' ],
+  ['5', '新区分局' ],
   ['6', '惠山分局'  ],
   ['7', '锡山分局'  ]
 ];
-
-
 
 /*------------------------------------------------------*/
 var msg = function(title, msg){
@@ -175,8 +173,6 @@ var xzqmc_store = new Ext.data.SimpleStore({
 	fields: ['value', 'text'],
 	data : xzqmc_data
 });
-
-
 
 
 var xcfs_data = [

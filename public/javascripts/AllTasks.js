@@ -183,6 +183,7 @@ var view_xmdks = function(sys_grid_id) {
   };
   
   var refreshXcjl = function() {
+    xcjl_store.load();
   };
   
   var saveXcjl = function() {
@@ -191,16 +192,16 @@ var view_xmdks = function(sys_grid_id) {
     var id         = form.findField("h_inspect_id").getValue();  
     var xcrq       = Ext.util.Format.date(form.findField("h_xcrq").getValue()); 
     var jszt       = form.findField("h_jszt").getValue(); 
-    var xkz        = form.findField("h_xkz").getValue(); 
-    var yjx        = form.findField("h_yjx").getValue(); 
+    //var xkz        = form.findField("h_xkz").getValue(); 
+    //var yjx        = form.findField("h_yjx").getValue(); 
     var sjyt       = form.findField("h_sjyt").getValue(); 
-    var sjwf       = form.findField("h_sjwf").getValue(); 
+    var sfwf       = form.findField("h_sfwf").getValue(); 
     var sjzdmj     = form.findField("h_sjzdmj").getValue(); 
     var gdmj       = form.findField("h_gdmj").getValue(); 
     var wfmj       = form.findField("h_wfmj").getValue(); 
     var bz         = form.findField("h_bz").getValue();
     
-    pars = {id:id,xcrq:xcrq,jszt:jszt,xkz:xkz,yjx:yjx,sjyt:sjyt,sjwf:sjwf,sjzdmj:sjzdmj,gdmj:gdmj,wfmj:wfmj,bz:bz};
+    pars = {id:id,xcrq:xcrq,jszt:jszt,sjyt:sjyt,sfwf:sfwf,sjzdmj:sjzdmj,gdmj:gdmj,wfmj:wfmj,bz:bz};
     
     new Ajax.Request("/desktop/save_xcjl_basic", { 
       method: "POST",
@@ -315,8 +316,8 @@ var view_xmdks = function(sys_grid_id) {
         {name: 'plan_id',  type: 'integer'},
         {name: 'xcrq',     type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'jszt',     type: 'string'},
-        {name: 'xkz',      type: 'string'},
-        {name: 'yjx',      type: 'string'},
+        //{name: 'xkz',      type: 'string'},
+        //{name: 'yjx',      type: 'string'},
         {name: 'sjyt',     type: 'string'},
         {name: 'sfwf',     type: 'string'},
         {name: 'sjzdmj',     type: 'string'},
@@ -338,7 +339,7 @@ var view_xmdks = function(sys_grid_id) {
       { header : '巡查日期',  width : 150, sortable : true, dataIndex: 'xcrq', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},            
       { header : '建设状态',  width : 75, sortable : true, dataIndex: 'jszt'},
       { header : '实际用途',  width : 75, sortable : true, dataIndex: 'sjyt'},
-      { header : '是否违法',  width : 50, sortable : true, dataIndex: 'sjwf'},
+      { header : '是否违法',  width : 50, sortable : true, dataIndex: 'sfwf'},
       { header : '实际占地面积',  width : 100, sortable : true, dataIndex: 'sjzdmj'},
       { header : '耕地面积',  width : 100, sortable : true, dataIndex: 'gdmj'},
       { header : '违法面积',  width : 100, sortable : true, dataIndex: 'wfmj'},
@@ -361,10 +362,10 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("h_inspect_id").setValue(data.id);  
     if (data.xcrq != null) form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
     form.findField("h_jszt").setValue(data.jszt); 
-    form.findField("h_xkz").setValue(data.xkz); 
-    form.findField("h_yjx").setValue(data.yjx); 
+    //form.findField("h_xkz").setValue(data.xkz); 
+    //form.findField("h_yjx").setValue(data.yjx); 
     form.findField("h_sjyt").setValue(data.sjyt); 
-    form.findField("h_sjwf").setValue(data.sjwf); 
+    form.findField("h_sfwf").setValue(data.sfwf); 
     form.findField("h_sjzdmj").setValue(data.sjzdmj); 
     form.findField("h_gdmj").setValue(data.gdmj); 
     form.findField("h_wfmj").setValue(data.wfmj); 
@@ -391,10 +392,10 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("h_inspect_id").setValue(data.id);  
       if (data.xcrq != null ) form.findField("h_xcrq").setValue(new Date(data.xcrq)); 
       form.findField("h_jszt").setValue(data.jszt); 
-      form.findField("h_xkz").setValue(data.xkz); 
-      form.findField("h_yjx").setValue(data.yjx); 
+      //form.findField("h_xkz").setValue(data.xkz); 
+      //form.findField("h_yjx").setValue(data.yjx); 
       form.findField("h_sjyt").setValue(data.sjyt); 
-      form.findField("h_sjwf").setValue(data.sjwf); 
+      form.findField("h_sfwf").setValue(data.sfwf); 
       form.findField("h_sjzdmj").setValue(data.sjzdmj); 
       form.findField("h_gdmj").setValue(data.gdmj); 
       form.findField("h_wfmj").setValue(data.wfmj); 
@@ -620,27 +621,27 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"textfield", name:"h_xmmc", x:"100", y:"200", width:250 },
                 { xtype:"datefield", name:"h_xcrq", x:"100", y:"230", width:250, format:'Y-m-d H:i:s' },
                 { xtype:"textfield", name:"h_jszt", x:"100", y:"260", width:250 },
-                { xtype:"textfield", name:"h_xkz" , x:"100", y:"290", width:250 },
-                { xtype:"textfield", name:"h_yjx" , x:"100", y:"320", width:250 },
-                { xtype:"textfield", name:"h_sjyt", x:"100", y:"350", width:250 },
-                { xtype:"textfield", name:"h_sjwf", x:"100", y:"380", width:250 },
-                { xtype:"textfield", name:"h_sjzdmj", x:"100", y:"410", width:250 },
-                { xtype:"textfield", name:"h_gdmj", x:"100", y:"440", width:250 },
-                { xtype:"textfield", name:"h_wfmj", x:"100", y:"470", width:250 },
-                { xtype:"textarea" , name:"h_bz",   x:"100", y:"500", width:250, height:50},
+                //{ xtype:"textfield", name:"h_xkz" , x:"100", y:"290", width:250 },
+                //{ xtype:"textfield", name:"h_yjx" , x:"100", y:"320", width:250 },
+                { xtype:"textfield", name:"h_sjyt", x:"100",  y:"290", width:250 },
+                { xtype:"textfield", name:"h_sfwf", x:"100",  y:"320", width:250 },
+                { xtype:"textfield", name:"h_sjzdmj", x:"100",y:"350", width:250 },
+                { xtype:"textfield", name:"h_gdmj", x:"100",  y:"380", width:250 },
+                { xtype:"textfield", name:"h_wfmj", x:"100",  y:"410", width:250 },
+                { xtype:"textarea" , name:"h_bz",   x:"100",  y:"440", width:250, height:110},
                 
   
                 { xtype:"label", text:"项目名称", x:"15", y:"200"},
                 { xtype:"label", text:"检查日期", x:"15", y:"230"},
                 { xtype:"label", text:"建设状态", x:"15", y:"260"},
-                { xtype:"label", text:"许可证" , x:"15", y:"290"},
-                { xtype:"label", text:"永久性" , x:"15", y:"320"},
-                { xtype:"label", text:"实际用途", x:"15", y:"350"},
-                { xtype:"label", text:"是否违法", x:"15", y:"380"},
-                { xtype:"label", text:"实际占地面积", x:"15", y:"410"},
-                { xtype:"label", text:"耕地面积", x:"15", y:"440"},
-                { xtype:"label", text:"违法面积", x:"15", y:"470"},
-                { xtype:"label", text:"备注", x:"15", y:"500"
+                //{ xtype:"label", text:"许可证" , x:"15", y:"290"},
+                //{ xtype:"label", text:"永久性" , x:"15", y:"320"},
+                { xtype:"label", text:"实际用途", x:"15",  y:"290"},
+                { xtype:"label", text:"是否违法", x:"15",  y:"320"},
+                { xtype:"label", text:"实际占地面积", x:"15",y:"350"},
+                { xtype:"label", text:"耕地面积", x:"15",  y:"380"},
+                { xtype:"label", text:"违法面积", x:"15",  y:"410"},
+                { xtype:"label", text:"备注", x:"15",    y:"440"
               }]
           }]
       }]
@@ -1053,18 +1054,18 @@ var view_plans = function (sys_grid_id) {
   var saveXcdInfo = function() {
     var form = Ext.getCmp('plan_panel_id').getForm();
     var plan_id = form.findField('plan_id').getValue();
-    var inspect_id = form.findField('inspect_id').getValue();
+    var inspect_id = form.findField('x_inspect_id').getValue();
     
-    var jszt = form.findField('jszt').getValue();
-    var xkz = form.findField('xkz' ).getValue();
-    var yjx = form.findField('yjx' ).getValue();
-    var sjyt = form.findField('sjyt').getValue();
-    var gdmj = form.findField('gdmj').getValue();
-    var sfwf = form.findField('sfwf').getValue();
-    var wfmj = form.findField('wfmj').getValue();
-    var clyj = form.findField('clyj_3').getValue();
+    var jszt = form.findField('x_jszt').getValue();
+    //var xkz = form.findField('xkz' ).getValue();
+    //var yjx = form.findField('yjx' ).getValue();
+    var sjyt = form.findField('x_sjyt').getValue();
+    var gdmj = form.findField('x_gdmj').getValue();
+    var sfwf = form.findField('x_sfwf').getValue();
+    var wfmj = form.findField('x_wfmj').getValue();
+    var clyj = form.findField('x_clyj_3').getValue();
     
-    pars = {inspect_id:inspect_id, jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
+    pars = {inspect_id:inspect_id, jszt:jszt, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
     new Ajax.Request("/desktop/save_inspect_basic", { 
       method: "POST",
       parameters: pars,
@@ -1202,7 +1203,7 @@ var view_plans = function (sys_grid_id) {
     var data = grid.store.data.items[row].data;
 
     var form = Ext.getCmp('plan_panel_id').getForm();
-    form.findField("xmmc").setValue(data.xmmc);
+    form.findField("x_xmmc").setValue(data.xmmc);
     
     plan_id = form.findField('plan_id').getValue();
     pars = {xmdk_id:data.gid,plan_id:plan_id};
@@ -1214,16 +1215,16 @@ var view_plans = function (sys_grid_id) {
         data = eval('('+request.responseText+')')[0];
 
         var form = Ext.getCmp('plan_panel_id').getForm();
-        form.findField("xcrq").setValue(data.xcrq);
-        form.findField("jszt").setValue(data.jszt);
-        form.findField("xkz" ).setValue(data.xkz);
-        form.findField("yjx" ).setValue(data.yjx);
-        form.findField("sjyt").setValue(data.sjyt);
-        form.findField("gdmj").setValue(data.gdmj);
-        form.findField("sfwf").setValue(data.sfwf);
-        form.findField("wfmj").setValue(data.wfmj);
-        form.findField("clyj_3").setValue(data.clyj);
-        form.findField("inspect_id").setValue(data.id);
+        form.findField("x_xcrq").setValue(data.xcrq);
+        form.findField("x_jszt").setValue(data.jszt);
+        //form.findField("xkz" ).setValue(data.xkz);
+        //form.findField("yjx" ).setValue(data.yjx);
+        form.findField("x_sjyt").setValue(data.sjyt);
+        form.findField("x_gdmj").setValue(data.gdmj);
+        form.findField("x_sfwf").setValue(data.sfwf);
+        form.findField("x_wfmj").setValue(data.wfmj);
+        form.findField("x_clyj_3").setValue(data.clyj);
+        form.findField("x_inspect_id").setValue(data.id);
         
       }  
     });
@@ -1243,7 +1244,7 @@ var view_plans = function (sys_grid_id) {
 
       var data = xcd_grid.store.data.items[0]['data'];
       var form = Ext.getCmp('plan_panel_id').getForm();
-      form.findField("xmmc").setValue(data.xmmc);
+      form.findField("x_xmmc").setValue(data.xmmc);
       
       // get inspect data
       plan_id = form.findField('plan_id').getValue();
@@ -1255,16 +1256,16 @@ var view_plans = function (sys_grid_id) {
           data = eval('('+request.responseText+')')[0];
 
           var form = Ext.getCmp('plan_panel_id').getForm();
-          form.findField("xcrq").setValue(data.xcrq);
-          form.findField("jszt").setValue(data.jszt);
-          form.findField("xkz" ).setValue(data.xkz);
-          form.findField("yjx" ).setValue(data.yjx);
-          form.findField("sjyt").setValue(data.sjyt);
-          form.findField("gdmj").setValue(data.gdmj);
-          form.findField("sfwf").setValue(data.sfwf);
-          form.findField("wfmj").setValue(data.wfmj);
-          form.findField("clyj_3").setValue(data.clyj);
-          form.findField("inspect_id").setValue(data.id);
+          form.findField("x_xcrq").setValue(data.xcrq);
+          form.findField("x_jszt").setValue(data.jszt);
+          //form.findField("xkz" ).setValue(data.xkz);
+          //form.findField("yjx" ).setValue(data.yjx);
+          form.findField("x_sjyt").setValue(data.sjyt);
+          form.findField("x_gdmj").setValue(data.gdmj);
+          form.findField("x_sfwf").setValue(data.sfwf);
+          form.findField("x_wfmj").setValue(data.wfmj);
+          form.findField("x_clyj_3").setValue(data.clyj);
+          form.findField("x_inspect_id").setValue(data.id);
         }  
       });
       // get inspect images 
@@ -1495,28 +1496,29 @@ var view_plans = function (sys_grid_id) {
             layout:"absolute",
             height:600,
             items:[{
-                xtype:"textfield", name:"xmmc", x:"250", y:"45",   width:200, height:30},
-              { xtype:"textfield", name:"xcrq", x:"250", y:"85",  width:200, height:30},
-              { xtype:"textfield", name:"jszt", x:"250", y:"125",  width:200, height:30},
-              { xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
-              { xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
-              { xtype:"textfield", name:"sjyt", x:"250", y:"245",  width:200, height:30},
-              { xtype:"textfield", name:"gdmj", x:"250", y:"285",  width:200, height:30},
-              { xtype:"textfield", name:"sfwf", x:"250", y:"325",  width:200, height:30},
-              { xtype:"textfield", name:"wfmj", x:"250", y:"365",  width:200, height:30},
-              { xtype:"textarea",  name:"clyj_3", x:"250", y:"405",  width:525, height:100},
-              { xtype:"textarea",  name:"inspect_id", x:"0", y:"0",  hidden:'true'},
+                xtype:"textfield", name:"x_xmmc", x:"250", y:"45",   width:200, height:30},
+              { xtype:"textfield", name:"x_xcrq", x:"250", y:"85",  width:200, height:30},
+              { xtype:"textfield", name:"x_jszt", x:"250", y:"125",  width:200, height:30},
+              //{ xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
+              //{ xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
+              { xtype:"textfield", name:"x_sjyt", x:"250", y:"165",  width:200, height:30},
+              { xtype:"textfield", name:"x_gdmj", x:"250", y:"205",  width:200, height:30},
+              { xtype:"textfield", name:"x_sfwf", x:"250", y:"245",  width:200, height:30},
+              { xtype:"textfield", name:"x_wfmj", x:"250", y:"285",  width:200, height:30},
+              { xtype:"textarea",  name:"x_clyj_3", x:"250", y:"405",  width:525, height:100},
+              { xtype:"textarea",  name:"x_inspect_id", x:"0", y:"0",  hidden:'true'},
               
 
               { xtype:"label", text:"项目名称", x:"175", y:"50" },
               { xtype:"label", text:"检查日期", x:"175", y:"90"},
               { xtype:"label", text:"建设状态", x:"175", y:"130"},
-              { xtype:"label", text:"许可证" , x:"175", y:"170"},
-              { xtype:"label", text:"永久性" , x:"175", y:"210"},
-              { xtype:"label", text:"实际用途", x:"175", y:"250"},
-              { xtype:"label", text:"耕地面积", x:"175", y:"290"},
-              { xtype:"label", text:"是否违法", x:"175", y:"330"},
-              { xtype:"label", text:"违法面积", x:"175", y:"370"},
+              //{ xtype:"label", text:"许可证" , x:"175", y:"170"},
+              //{ xtype:"label", text:"永久性" , x:"175", y:"210"},
+              { xtype:"label", text:"实际用途", x:"175", y:"170"},
+              { xtype:"label", text:"耕地面积", x:"175", y:"210"},
+              { xtype:"label", text:"是否违法", x:"175", y:"250"},
+              { xtype:"label", text:"违法面积", x:"175", y:"290"},
+              
               { xtype:"label", text:"处理意见", x:"175", y:"410"},
 
               { xtype:"label", text:"巡查点列表", x:"25", y:"20"},
@@ -1568,6 +1570,7 @@ var view_plans = function (sys_grid_id) {
     form.findField('xcry').setValue(data.xcry);
     form.findField('username').setValue(data.username);
     form.findField('xcqy').setValue(data.xcqy);
+    form.findField('xcrq').setValue(data.xcrq);
 
     
     form.findField('xcnr').setValue(data.xcnr);
@@ -1577,10 +1580,12 @@ var view_plans = function (sys_grid_id) {
     
     form.findField("kssj" ).setReadOnly(true);
     form.findField("jssj").setReadOnly(true);
-    form.findField("xmmc" ).setReadOnly(true);
     form.findField("xcrq").setReadOnly(true);
     form.findField("username").setReadOnly(true);
     form.findField("xcqy").setReadOnly(true);
+    
+    form.findField("x_xmmc" ).setReadOnly(true);
+    form.findField("x_xcrq").setReadOnly(true);
     
     
 
@@ -1665,7 +1670,7 @@ function myTask(id) {
               {name: 'username',  type: 'string'},
               {name: 'geom_string', type:'string'},
               {name: 'boundary', type:'string'},
-              {name: 'xcrq',  type: 'date', dateFormat: 'Y-m-d H:i:s'}
+              {name: 'xcrq',  type: 'string'}
             ]    
           }),
           sortInfo:{field: 'id', direction: "ASC"}
@@ -1690,7 +1695,7 @@ function myTask(id) {
             { header : '巡查方式',  width : 75, sortable : true, dataIndex: 'xcfs'},
             { header : '填报单位',  width : 75, sortable : true, dataIndex: 'tbdw', hidden:true},
             { header : '巡查路线',  width : 75, sortable : true, dataIndex: 'xclx', hidden:true},
-            { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},
+            { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcrq'},
             { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'},
             { header : '巡查区域',  width : 75, sortable : true, dataIndex: 'xcqy'},
             { header : '巡查内容',  width : 75, sortable : true, dataIndex: 'xcnr'},
@@ -3407,6 +3412,7 @@ function myTask(id) {
             fields: [
               {name: 'id',    type: 'integer'},
               {name: 'xczt',  type: 'string'},
+              {name: 'bm',  type: 'string'},
               {name: 'xcry',  type: 'string'},
               {name: 'xcsj',  type: 'string'},
               {name: 'xcqy',  type: 'string'},
@@ -3440,6 +3446,7 @@ function myTask(id) {
           columns: [           
             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},            
             { header : '巡查主体',  width : 75, sortable : true, dataIndex: 'xczt'},
+            { header : '单位',  width : 75, sortable : true, dataIndex: 'bm'}, 
             { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'},
             { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},
             { header : '巡查区域',  width : 75, sortable : true, dataIndex: 'xcqy'},
@@ -3552,6 +3559,7 @@ function myTask(id) {
             fields: [
               {name: 'id',    type: 'integer'},
               {name: 'xcsj',  type: 'string'},
+			  {name: 'bm',  type: 'string'},
               {name: 'xcry',  type: 'string'},
               {name: 'xcqy',  type: 'string'},
               {name: 'xmmc',  type: 'string'},
@@ -3588,7 +3596,8 @@ function myTask(id) {
             { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},  
             { header : '巡查时间',  width : 75, sortable : true, dataIndex: 'xcsj'},          
             //{ header : '巡查主体',  width : 200, sortable : true, dataIndex: 'xczt'},
-            { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'},            
+            { header : '巡查人员',  width : 75, sortable : true, dataIndex: 'xcry'}, 
+            { header : '单位',  width : 75, sortable : true, dataIndex: 'bm'},           
             { header : '巡查区域',  width : 75, sortable : true, dataIndex: 'xcqy'},
             { header : '项目名称',  width : 75, sortable : true, dataIndex: 'xmmc'},
             { header : '用地单位',  width : 75, sortable : true, dataIndex: 'yddw'},
