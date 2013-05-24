@@ -142,7 +142,7 @@ var wp = new Point( 0, 0 );
  */
 DynamicEffectLineVector = OpenLayers.Class(OpenLayers.Feature.Vector, {
 
-    internal : 100, // 50ms
+    internal : 500, // 50ms
    
     speed : 5, // 5m/50ms, 100m/s
    
