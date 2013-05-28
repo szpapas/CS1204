@@ -1725,7 +1725,7 @@ class DesktopController < ApplicationController
   
   #pars = {jszt:jszt, xkz:xkz, yjx:yjx, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
   def save_inspect_basic
-    User.find_by_sql("update inspects set jszt = '#{params['jszt']}',sjyt = '#{params['sjyt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
+    User.find_by_sql("update inspects set jszt = '#{params['jszt']}', gdmj = '#{params['gdmj']}',sfwf = '#{params['sfwf']}', wfmj = '#{params['wfmj']}', clyj = '#{params['clyj']}' where id = #{params['inspect_id']};")
     render :text => 'Success'
   end
   
@@ -1783,7 +1783,7 @@ class DesktopController < ApplicationController
   
   def save_xcjl_basic
     
-    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',sjyt='#{params['sjyt']}',sfwf='#{params['sfwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
+    User.find_by_sql("update inspects set xcrq='#{params['xcrq']}',jszt='#{params['jszt']}',sfwf='#{params['sfwf']}',sjzdmj='#{params['sjzdmj']}',gdmj='#{params['gdmj']}',wfmj='#{params['wfmj']}',bz='#{params['bz']}' where id = #{params['id']};")
     
     render :text => 'Success'
   end

@@ -195,14 +195,14 @@ var view_xmdks = function(sys_grid_id) {
     var jszt       = form.findField("h_jszt").getValue(); 
     //var xkz        = form.findField("h_xkz").getValue(); 
     //var yjx        = form.findField("h_yjx").getValue(); 
-    var sjyt       = form.findField("h_sjyt").getValue(); 
+    //var sjyt       = form.findField("h_sjyt").getValue(); 
     var sfwf       = form.findField("h_sfwf").getValue(); 
     var sjzdmj     = form.findField("h_sjzdmj").getValue(); 
     var gdmj       = form.findField("h_gdmj").getValue(); 
     var wfmj       = form.findField("h_wfmj").getValue(); 
     var bz         = form.findField("h_bz").getValue();
     
-    pars = {id:id,xcrq:xcrq,jszt:jszt,sjyt:sjyt,sfwf:sfwf,sjzdmj:sjzdmj,gdmj:gdmj,wfmj:wfmj,bz:bz};
+    pars = {id:id,xcrq:xcrq,jszt:jszt,sfwf:sfwf,sjzdmj:sjzdmj,gdmj:gdmj,wfmj:wfmj,bz:bz};
     
     new Ajax.Request("/desktop/save_xcjl_basic", { 
       method: "POST",
@@ -339,7 +339,7 @@ var view_xmdks = function(sys_grid_id) {
       sm,           
       { header : '巡查日期',  width : 150, sortable : true, dataIndex: 'xcrq', renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},            
       { header : '建设状态',  width : 75, sortable : true, dataIndex: 'jszt'},
-      { header : '实际用途',  width : 75, sortable : true, dataIndex: 'sjyt'},
+      //{ header : '实际用途',  width : 75, sortable : true, dataIndex: 'sjyt'},
       { header : '是否违法',  width : 50, sortable : true, dataIndex: 'sfwf'},
       { header : '实际占地面积',  width : 100, sortable : true, dataIndex: 'sjzdmj'},
       { header : '耕地面积',  width : 100, sortable : true, dataIndex: 'gdmj'},
@@ -365,7 +365,7 @@ var view_xmdks = function(sys_grid_id) {
     form.findField("h_jszt").setValue(data.jszt); 
     //form.findField("h_xkz").setValue(data.xkz); 
     //form.findField("h_yjx").setValue(data.yjx); 
-    form.findField("h_sjyt").setValue(data.sjyt); 
+    //form.findField("h_sjyt").setValue(data.sjyt); 
     form.findField("h_sfwf").setValue(data.sfwf); 
     form.findField("h_sjzdmj").setValue(data.sjzdmj); 
     form.findField("h_gdmj").setValue(data.gdmj); 
@@ -395,7 +395,7 @@ var view_xmdks = function(sys_grid_id) {
       form.findField("h_jszt").setValue(data.jszt); 
       //form.findField("h_xkz").setValue(data.xkz); 
       //form.findField("h_yjx").setValue(data.yjx); 
-      form.findField("h_sjyt").setValue(data.sjyt); 
+      //form.findField("h_sjyt").setValue(data.sjyt); 
       form.findField("h_sfwf").setValue(data.sfwf); 
       form.findField("h_sjzdmj").setValue(data.sjzdmj); 
       form.findField("h_gdmj").setValue(data.gdmj); 
@@ -624,12 +624,13 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"textfield", name:"h_jszt", x:"100", y:"260", width:250 },
                 //{ xtype:"textfield", name:"h_xkz" , x:"100", y:"290", width:250 },
                 //{ xtype:"textfield", name:"h_yjx" , x:"100", y:"320", width:250 },
-                { xtype:"textfield", name:"h_sjyt", x:"100",  y:"290", width:250 },
-                { xtype:"textfield", name:"h_sfwf", x:"100",  y:"320", width:250 },
-                { xtype:"textfield", name:"h_sjzdmj", x:"100",y:"350", width:250 },
-                { xtype:"textfield", name:"h_gdmj", x:"100",  y:"380", width:250 },
-                { xtype:"textfield", name:"h_wfmj", x:"100",  y:"410", width:250 },
-                { xtype:"textarea" , name:"h_bz",   x:"100",  y:"440", width:250, height:110},
+                //{ xtype:"textfield", name:"h_sjyt", x:"100",  y:"290", width:250 },
+                
+                { xtype:"textfield", name:"h_sfwf", x:"100",  y:"290", width:250 },
+                { xtype:"textfield", name:"h_sjzdmj", x:"100",y:"320", width:250 },
+                { xtype:"textfield", name:"h_gdmj", x:"100",  y:"350", width:250 },
+                { xtype:"textfield", name:"h_wfmj", x:"100",  y:"380", width:250 },
+                { xtype:"textarea" , name:"h_bz",   x:"100",  y:"410", width:250, height:110},
                 
   
                 { xtype:"label", text:"项目名称", x:"15", y:"200"},
@@ -637,12 +638,12 @@ var view_xmdks = function(sys_grid_id) {
                 { xtype:"label", text:"建设状态", x:"15", y:"260"},
                 //{ xtype:"label", text:"许可证" , x:"15", y:"290"},
                 //{ xtype:"label", text:"永久性" , x:"15", y:"320"},
-                { xtype:"label", text:"实际用途", x:"15",  y:"290"},
-                { xtype:"label", text:"是否违法", x:"15",  y:"320"},
-                { xtype:"label", text:"实际占地面积", x:"15",y:"350"},
-                { xtype:"label", text:"耕地面积", x:"15",  y:"380"},
-                { xtype:"label", text:"违法面积", x:"15",  y:"410"},
-                { xtype:"label", text:"备注", x:"15",    y:"440"
+                //{ xtype:"label", text:"实际用途", x:"15",  y:"290"},
+                { xtype:"label", text:"是否违法", x:"15",  y:"290"},
+                { xtype:"label", text:"实际占地面积", x:"15",y:"320"},
+                { xtype:"label", text:"耕地面积", x:"15",  y:"350"},
+                { xtype:"label", text:"违法面积", x:"15",  y:"380"},
+                { xtype:"label", text:"备注", x:"15",    y:"410"
               }]
           }]
       }]
@@ -1060,13 +1061,13 @@ var view_plans = function (sys_grid_id) {
     var jszt = form.findField('x_jszt').getValue();
     //var xkz = form.findField('xkz' ).getValue();
     //var yjx = form.findField('yjx' ).getValue();
-    var sjyt = form.findField('x_sjyt').getValue();
+    //var sjyt = form.findField('x_sjyt').getValue();
     var gdmj = form.findField('x_gdmj').getValue();
     var sfwf = form.findField('x_sfwf').getValue();
     var wfmj = form.findField('x_wfmj').getValue();
     var clyj = form.findField('x_clyj_3').getValue();
     
-    pars = {inspect_id:inspect_id, jszt:jszt, sjyt:sjyt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
+    pars = {inspect_id:inspect_id, jszt:jszt, gdmj:gdmj, sfwf:sfwf, wfmj:wfmj, clyj:clyj};
     new Ajax.Request("/desktop/save_inspect_basic", { 
       method: "POST",
       parameters: pars,
@@ -1220,7 +1221,7 @@ var view_plans = function (sys_grid_id) {
         form.findField("x_jszt").setValue(data.jszt);
         //form.findField("xkz" ).setValue(data.xkz);
         //form.findField("yjx" ).setValue(data.yjx);
-        form.findField("x_sjyt").setValue(data.sjyt);
+        //form.findField("x_sjyt").setValue(data.sjyt);
         form.findField("x_gdmj").setValue(data.gdmj);
         form.findField("x_sfwf").setValue(data.sfwf);
         form.findField("x_wfmj").setValue(data.wfmj);
@@ -1261,7 +1262,7 @@ var view_plans = function (sys_grid_id) {
           form.findField("x_jszt").setValue(data.jszt);
           //form.findField("xkz" ).setValue(data.xkz);
           //form.findField("yjx" ).setValue(data.yjx);
-          form.findField("x_sjyt").setValue(data.sjyt);
+          //form.findField("x_sjyt").setValue(data.sjyt);
           form.findField("x_gdmj").setValue(data.gdmj);
           form.findField("x_sfwf").setValue(data.sfwf);
           form.findField("x_wfmj").setValue(data.wfmj);
@@ -1502,10 +1503,10 @@ var view_plans = function (sys_grid_id) {
               { xtype:"textfield", name:"x_jszt", x:"250", y:"125",  width:200, height:30},
               //{ xtype:"textfield", name:"xkz" , x:"250", y:"165",  width:200, height:30},
               //{ xtype:"textfield", name:"yjx" , x:"250", y:"205",  width:200, height:30},
-              { xtype:"textfield", name:"x_sjyt", x:"250", y:"165",  width:200, height:30},
-              { xtype:"textfield", name:"x_gdmj", x:"250", y:"205",  width:200, height:30},
-              { xtype:"textfield", name:"x_sfwf", x:"250", y:"245",  width:200, height:30},
-              { xtype:"textfield", name:"x_wfmj", x:"250", y:"285",  width:200, height:30},
+              //{ xtype:"textfield", name:"x_sjyt", x:"250", y:"165",  width:200, height:30},
+              { xtype:"textfield", name:"x_gdmj", x:"250", y:"165",  width:200, height:30},
+              { xtype:"textfield", name:"x_sfwf", x:"250", y:"205",  width:200, height:30},
+              { xtype:"textfield", name:"x_wfmj", x:"250", y:"245",  width:200, height:30},
               { xtype:"textarea",  name:"x_clyj_3", x:"250", y:"405",  width:525, height:100},
               { xtype:"textarea",  name:"x_inspect_id", x:"0", y:"0",  hidden:'true'},
               
@@ -1515,10 +1516,10 @@ var view_plans = function (sys_grid_id) {
               { xtype:"label", text:"建设状态", x:"175", y:"130"},
               //{ xtype:"label", text:"许可证" , x:"175", y:"170"},
               //{ xtype:"label", text:"永久性" , x:"175", y:"210"},
-              { xtype:"label", text:"实际用途", x:"175", y:"170"},
-              { xtype:"label", text:"耕地面积", x:"175", y:"210"},
-              { xtype:"label", text:"是否违法", x:"175", y:"250"},
-              { xtype:"label", text:"违法面积", x:"175", y:"290"},
+              //{ xtype:"label", text:"实际用途", x:"175", y:"170"},
+              { xtype:"label", text:"耕地面积", x:"175", y:"170"},
+              { xtype:"label", text:"是否违法", x:"175", y:"210"},
+              { xtype:"label", text:"违法面积", x:"175", y:"250"},
               
               { xtype:"label", text:"处理意见", x:"175", y:"410"},
 
