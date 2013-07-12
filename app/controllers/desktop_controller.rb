@@ -1127,20 +1127,31 @@ class DesktopController < ApplicationController
         sccs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and (zt='完成')")
         sbcs= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and (xcnr<>'' or xcjg<>'' or clyj<>'') ")
         if sccs[0]['xccs'].to_i>8
-          wcbl='100%'
+          wcbl='100'
         else
           wcbl=sprintf("%.1f",(sccs[0]['xccs'].to_f/8)*100).to_f
         end
         if sbcs[0]['xccs'].to_i>8
-          sbbl='100%'
+          sbbl='100'
         else
           sbbl=sprintf("%.1f",(sbcs[0]['xccs'].to_f/8)*100).to_f
         end
-        fjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and photo_count>0 ")
-        if sbcs[0]['xccs'].to_i>0
-          fjzlbl=sprintf("%.1f",(fjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
+       # fjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and photo_count>0 ")
+       # if sbcs[0]['xccs'].to_i>0
+       #   fjzlbl=sprintf("%.1f",(fjzl[0]['xccs'].to_f/sbcs[0]['xccs'].to_f)*100).to_f
+       # else
+       #   fjzlbl=0
+       # end
+        fjzl= User.find_by_sql("select sum(photo_count) as photo_count from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and photo_count>0 ")
+        xmdks=User.find_by_sql("select count(*) as xmdks from inspects,plans,xmdks,a_xmdks,users where a_xmdks.gdqkid=xmdks.gdqkid and inspects.plan_id=plans.id and xmdk_id=xmdks.gid and users.iphone=plans.device and xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}'")
+        if fjzl[0]['photo_count'].to_i<xmdks[0]['xmdks'].to_i
+          if xmdks[0]['xmdks'].to_i>0
+            fjzlbl=sprintf("%.1f",(fjzl[0]['photo_count'].to_f/xmdks[0]['xmdks'].to_f)*100).to_f
+          else
+            fjzlbl='0'
+          end
         else
-          fjzlbl=0
+          fjzlbl='100'
         end
         sjzl= User.find_by_sql("select count(*) as xccs from plans where  xcry='#{xcqy[k]['username']}' and taskendtime>='#{qrq}' and taskendtime<='#{zrq}' and zt='完成' and xcnr<>'' and xcjg<>'' and clyj<>'' ")
         if sbcs[0]['xccs'].to_i>0
