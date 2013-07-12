@@ -839,6 +839,21 @@ td.ux-taskButtons-edge {
 
 
 /*
+  WqltCheck
+*/
+
+#wqltcheck-shortcut img {
+    background-image: url(/images/wqlt_46.png);
+    width: 46px;
+    height: 46px;
+}
+
+.wqltcheck {
+	background-image: url(/images/wqlt_16.png ) !important;
+}
+
+
+/*
   MyTask
 */
 

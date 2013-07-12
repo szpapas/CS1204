@@ -28,6 +28,7 @@ MyDesktop = new Ext.app.App({
       new MyDesktop.MyTask(),
       new MyDesktop.SystemStatus(),
       new MyDesktop.SatCheck(),
+      new MyDesktop.WqltCheck(),
       new MyDesktop.ReportMan(),
       new MyDesktop.SystemMan(),
       new MyDesktop.AccordionWindow()

@@ -1962,4 +1962,30 @@ class DesktopController < ApplicationController
    
     render :text => user.to_json
   end
+  
+  def get_wqlt_list
+    user = User.find_by_sql("select gid, xh, xmmc, xzqmc, the_center, st_asgeojson(the_geom) as geom_string, to_char(ST_area(the_geom)/666.666, '99999D99') as area from wqlt;")
+    size = user.count.to_i;
+    if size > 0
+      txt = "{results:#{size},rows:["
+      for k in 0..user.size-1
+        txt = txt + user[k].to_json + ','
+      end
+      txt = txt[0..-2] + "]}"
+    else
+      txt = "{results:0,rows:[]}"
+    end
+    render :text => txt
+  end  
+  
+  def update_all_wqlt
+    user = User.find_by_sql("select gid, xmmc from wqlt;" )
+    for k in 0..user.size-1
+      xmmc = user[k]['xmmc'].center(10)
+      convert_str = "convert ./dady/popup_back.png -fill white -pointsize 24 -font ./dady/SimHei.ttf -draw \"text 15, 40 '#{xmmc}' \" ./public/images/wqlt/popup_#{user[k]['gid']}.png "
+      puts convert_str
+      system convert_str
+    end
+    render :text=>'Success'
+  end
 end
