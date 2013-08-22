@@ -43,7 +43,9 @@
         </ul>
 	    </div>
 			<div class="grid_6">
-					<input type="search" name="yd_search" id="yd_search" placeholder="搜索用地" value="" />
+				<form>
+					<input  name="yd_search" id="yd_search" placeholder="搜索用地" value="" />
+				</form>
 			</div>	   
 		</fieldset>
 		<fieldset class="container_12">
@@ -76,10 +78,40 @@
 </body>
 <script>
 
-	$('#yd_search').blur(function(){
-	    if (this.value == '') {
-	        this.value = '搜索用地';
-	    }
+  $('#yd_search').blur(function(){
+    $("#ul_ydb").empty();
+    if (this.value == '') {
+      pars = {search:'', offset:0};
+      $.ajax({
+        type: "POST",
+        url: "/map/more_ydb",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+						$("#ul_ydb").append(data);
+            $("#ul_ydb").listview('refresh');
+          }
+        }
+      });
+    } else {
+      yd_search = $('#yd_search').val();
+      pars = {search:yd_search, offset:0};
+      $.ajax({
+        type: "POST",
+        url: "/map/more_ydb",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+						$("#ul_ydb").append(data);
+            $("#ul_ydb").listview('refresh');
+          }
+        }
+      });
+    }
 	});
 
 	$("#home").bind('swipeleft',function(e){
@@ -141,6 +173,10 @@
 	$("#home").bind('scrollstop', function(e){
 	 // console.log("end");
 	//$ ('#pfwh').val('scroll down end.');
+	});
+	
+	$("h-search").on('click', function(){
+		alert("search clicked.");
 	});
 	
 </script>

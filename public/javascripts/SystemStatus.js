@@ -504,16 +504,29 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
         );          
 
         map.addLayers([gmap, gphy, gsat]);
-
+        
+        //二调图
         var dltb = new OpenLayers.Layer.WMS("二调数据", base_url, 
           { layers: 'cs1204:dltb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
 
         var dltb_m = new OpenLayers.Layer.WMS("二调数据2", base_url, 
             { layers: 'cs1204:dltb_m', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
-        
-        //map.addLayers([dltb, dltb_m, xmdks_map]);
-        
+            
+
         map.addLayers([dltb, dltb_m]);
+
+        //建设用地
+        var jsyd_xmdk = new OpenLayers.Layer.WMS("建设用地", base_url, 
+          { layers: 'cs1204:jsyd_xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+            
+        var landuse_xmdk = new OpenLayers.Layer.WMS("用地", base_url, 
+          { layers: 'cs1204:landuse_xmdk', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+
+        var jctb = new OpenLayers.Layer.WMS("检查图班", base_url, 
+          { layers: 'cs1204:jctb', srs: 'EPSG:900913', transparent: true, format: format }, s_option8f);
+
+        map.addLayers([jsyd_xmdk, landuse_xmdk, jctb]);
+
         
         var xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", {
             isBaseLayer: false,

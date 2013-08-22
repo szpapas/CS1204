@@ -10,8 +10,18 @@
 <body> 
 
 <div data-role="page">
-
 	<div data-role="content">	
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+            <input type="radio" name="tbl_name" id="dltb" value="dltb" checked="checked">
+            <label for="dltb">二调数据</label>
+            <input type="radio" name="tbl_name" id="jsyd" value="jsyd">
+            <label for="jsyd">建设用地</label>
+            <input type="radio" name="tbl_name" id="landuse" value="landuse">
+            <label for="landuse">用地数据</label>
+        </fieldset>
+    </div>
+		
 		<div data-role="collapsible" data-inset="false">
 		   <h3><strong>&#12288;&#12288;编号：</strong> <%= @user['gid'] %>  </h3>
 		</div>
@@ -28,7 +38,6 @@
 		   <h3><strong>责任单位：</strong> <%= @user['zldwmc'] %>  </h3>
 		</div>
 		<div data-role="collapsible" data-inset="false">
-		</p>
 		   <h3><strong>&#12288;&#12288;周长：</strong> <%= format("%.3f", @user['shape_leng'].to_i/666.67) %>公里</h3>
 		</div>
 		<div data-role="collapsible" data-inset="false">
@@ -40,4 +49,17 @@
 </div><!-- /page -->
 
 </body>
+
+<script>
+	$("input[name='tbl_name']").bind( "change", function(event, ui) {
+		var select	 = $.trim($("input[name='tbl_name']:checked").val());
+		if (select == 'dltb') {
+			window.location = '/map/get2dinfo_wx?lon=<%= @lon %>&lat=<%= @lat %>';
+		} else if (select == 'jsyd') {
+			window.location = "/map/get_jsyd_wx?lon=<%= @lon %>&lat=<%= @lat %>'";
+		} else if (select == 'landuse') {
+			window.location = "/map/get_landuse_wx?lon=<%= @lon %>&lat=<%= @lat %>'";
+		}
+	});
+</script>
 </html>

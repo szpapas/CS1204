@@ -32,11 +32,54 @@ class MapController < ApplicationController
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
     if user.size > 0 
       @user =  user[0]
+      @lon = lon
+      @lat = lat
       render :template => "/map/get2dinfo_wx.html.erb"
     else
       render :template => "/map/2derror.html.erb"
     end  
   end
+  
+  def get_landuse_wx
+    #lon,lat=params['lon'],params['lat']
+    if params['map_type'].to_i == 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end     
+    lon = '120.0' if lon.nil?
+    lat = '30.0'  if lat.nil?
+    user = User.find_by_sql("select gid, dkh, xmmc, yddw, tdzl, dkmj, jlrq, tfh, tdyt, shape_leng, shape_area from landuse_xmdk where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    if user.size > 0 
+      @user =  user[0]
+      @lon = lon
+      @lat = lat
+      render :template => "/map/get_landuse_wx.html.erb"
+    else
+      render :template => "/map/2derror.html.erb"
+    end  
+  end
+  
+  def get_jsyd_wx
+    #lon,lat=params['lon'],params['lat']
+    if params['map_type'].to_i == 1
+      lon, lat = params['lon'].to_f - 0.004228694067, params['lat'].to_f + 0.0020264277677
+    else
+      lon, lat = params['lon'].to_f , params['lat'].to_f 
+    end     
+    lon = '120.0' if lon.nil?
+    lat = '30.0'  if lat.nil?
+    user = User.find_by_sql("select gid, dkh, xmmc, yddw, tdzl, dkmj, jlrq, tfh, tdyt, ssxzqmc, bjbh, bjmc, bjsj, pzwh, pzsj, bplx, shape_leng, shape_area  from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    if user.size > 0 
+      @user =  user[0]
+      @lon = lon
+      @lat = lat
+      render :template => "/map/get_jsyd_wx.html.erb"
+    else
+      render :template => "/map/2derror.html.erb"
+    end  
+  end
+  
   
   def getxmdk_wx_old
     
@@ -562,7 +605,7 @@ class MapController < ApplicationController
   def more_ydb
     params['offset'] = 0 if params['offset'].nil?
     if params['search'] != ''
-      @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb where jsxmmc like '%#{params['search']}%' offset #{params['offset']} limit 10 ;")
+      @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb where srf like '%#{params['search']}%' offset #{params['offset']} limit 10 ;")
     else                                                                 
       @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb offset #{params['offset']} limit 10 ;")
     end    
