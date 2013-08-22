@@ -30,10 +30,10 @@ class MapController < ApplicationController
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, tbbh, dlmc, qsxz, qsdwmc, zldwmc, shape_leng, shape_area from dltb where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    @lon = lon
+    @lat = lat
     if user.size > 0 
       @user =  user[0]
-      @lon = lon
-      @lat = lat
       render :template => "/map/get2dinfo_wx.html.erb"
     else
       render :template => "/map/2derror.html.erb"
@@ -50,10 +50,10 @@ class MapController < ApplicationController
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, dkh, xmmc, yddw, tdzl, dkmj, jlrq, tfh, tdyt, shape_leng, shape_area from landuse_xmdk where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    @lon = lon
+    @lat = lat
     if user.size > 0 
       @user =  user[0]
-      @lon = lon
-      @lat = lat
       render :template => "/map/get_landuse_wx.html.erb"
     else
       render :template => "/map/2derror.html.erb"
@@ -70,10 +70,10 @@ class MapController < ApplicationController
     lon = '120.0' if lon.nil?
     lat = '30.0'  if lat.nil?
     user = User.find_by_sql("select gid, dkh, xmmc, yddw, tdzl, dkmj, jlrq, tfh, tdyt, ssxzqmc, bjbh, bjmc, bjsj, pzwh, pzsj, bplx, shape_leng, shape_area  from jsyd_xmdk where ST_within( transform(geomFromText('POINT(#{lon} #{lat})',4326),2364), the_geom);")
+    @lon = lon
+    @lat = lat
     if user.size > 0 
       @user =  user[0]
-      @lon = lon
-      @lat = lat
       render :template => "/map/get_jsyd_wx.html.erb"
     else
       render :template => "/map/2derror.html.erb"
