@@ -1,0 +1,94 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>二调数据</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="/jquery/jquery.mobile-1.2.0.min.css" />
+	<script src="/jquery/jquery-1.8.2.min.js"></script>
+	<script src="/jquery/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+<body> 
+
+<div data-role="page">
+	<div data-role="content">	
+    <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+            <input type="radio" name="tbl_name" id="dltb" value="dltb">
+            <label for="dltb">二调数据</label>
+            <input type="radio" name="tbl_name" id="jsyd" value="jsyd"  checked="checked">
+            <label for="jsyd">建设用地</label>
+            <input type="radio" name="tbl_name" id="landuse" value="landuse">
+            <label for="landuse">用地数据</label>
+        </fieldset>
+    </div>
+		
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>&#12288;&#12288;编号：</strong> <%= @user['gid'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>地块号：</strong> <%= @user['dkh'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>项目名称：</strong> <%= @user['xmmc'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>用地单位：</strong> <%= @user['yddw'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>土地坐落：</strong> <%= @user['tdzl'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>建立日期：</strong> <%= @user['jlrq'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>图幅号：</strong> <%= @user['tfh'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>土地用途：</strong> <%= @user['tdyt'] %>  </h3>
+		</div>
+		 
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>所属行政区名称：</strong> <%= @user['ssxzqmc'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>建字编号：</strong> <%= @user['bjbh'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>建字名称：</strong> <%= @user['bjmc'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>批准文号：</strong> <%= @user['pzwh'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>批准时间：</strong> <%= @user['pzsj'] %>  </h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>批准类型：</strong> <%= @user['bplx'] %>  </h3>
+		</div>
+
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>&#12288;&#12288;周长：</strong> <%= format("%.3f", @user['shape_leng'].to_i/666.67) %>公里</h3>
+		</div>
+		<div data-role="collapsible" data-inset="false">
+		   <h3><strong>&#12288;&#12288;面积：</strong>	<%= format("%.3f", @user['shape_area'].to_i/666.67) %>亩</h3>
+		</div>
+			
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+
+<script>
+	$("input[name='tbl_name']").bind( "change", function(event, ui) {
+		var select	 = $.trim($("input[name='tbl_name']:checked").val());
+		if (select == 'dltb') {
+			window.location = '/map/get2dinfo_wx?lon=<%= @lon %>&lat=<%= @lat %>';
+		} else if (select == 'jsyd') {
+			window.location = "/map/get_jsyd_wx?lon=<%= @lon %>&lat=<%= @lat %>'";
+		} else if (select == 'landuse') {
+			window.location = "/map/get_landuse_wx?lon=<%= @lon %>&lat=<%= @lat %>'";
+		}
+	});
+</script>
+</html>
