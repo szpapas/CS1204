@@ -113,9 +113,6 @@ class MapController < ApplicationController
     @xmdks  = User.find_by_sql("select xmdks.* from inspects inner join xmdks on inspects.xmdk_Id = xmdks.gid where plan_id = #{params['task_id']};")
   end  
   
-  def demoajax
-  end
-  
   def callajax_draft
     User.find_by_sql("update plans set xcnr='#{params['xcnr']}', xcjg='#{params['xcjg']}', clyj='#{params['clyj']}', zt2 = '草稿' where id=#{params['task_id']}")
     render :text => "保存成功"
@@ -584,12 +581,6 @@ class MapController < ApplicationController
     render :text => "#{ydb_id}"
   end
   
-  def kcwp
-  end
-  
-  def kcwp_dd
-  end    
-  
   def ydb
     @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb limit 10;")
   end
@@ -626,7 +617,6 @@ class MapController < ApplicationController
   def measure
     @username = params['username'] || ''
   end  
-  
 
   #device, task_id
   def addInspect
