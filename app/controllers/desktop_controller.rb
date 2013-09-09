@@ -624,7 +624,7 @@ class DesktopController < ApplicationController
     text = []
     node = params["node"].chomp
     if node == "root"
-      data = User.find_by_sql("select distinct dw from users;")
+      data = User.find_by_sql("select distinct dw from users where dw is not null;")
       data.each do |dd|
         text << {:text => dd["dw"], :id => dd["dw"], :cls  => "folder"}
       end

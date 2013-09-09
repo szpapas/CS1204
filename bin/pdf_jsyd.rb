@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 #coding: utf-8 
-BASE_DIR="/Library/Ruby/Gems/1.8/gems"
-#BASE_DIR="/usr/local/lib/ruby/gems/1.8/gems"
+#BASE_DIR="/Library/Ruby/Gems/1.8/gems"
+BASE_DIR="/usr/local/lib/ruby/gems/1.8/gems"
 $: << "#{BASE_DIR}/prawn-1.0.0.rc1" << "#{BASE_DIR}/ttfunk-1.0.3/lib" << "#{BASE_DIR}/pdf-reader-1.2.0/lib" << "#{BASE_DIR}/Ascii85-1.0.2/lib"  << "#{BASE_DIR}/hashery-2.0.1/lib" << "#{BASE_DIR}/ruby-rc4-0.1.5/lib" << "#{BASE_DIR}/pg-0.12.2/lib"
 
 require 'rubygems'
