@@ -1,0 +1,631 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>点名时间 - 中国最大众筹平台！一切从这里开始！</title>
+<meta http-equiv="X-UA-Compatible" content="IE=7, IE=9">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="apple-touch-icon" href="http://assets.demohour.com/assets/57_icon-c332fee81f2e72b16961f10ca0ecc6d0.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="http://assets.demohour.com/assets/72_icon-405ccd3d1e4e6ed052e142dc484e9b1a.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="http://assets.demohour.com/assets/114_icon-c329c91ebc51b168fe1ac70a5ed9f6b7.png" />
+
+<link href="/demotime/css/application.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/demotime/css/projects.css" media="screen" rel="stylesheet" type="text/css" />
+
+</head>
+<body class="layout_projects_discover">
+<div id="headwrap">
+<div class="head">
+<div class="layer-message" id="ui_notification" style="display:none">
+<a href="/notifications/close_all" data-remote="true" class="layer-message-close">关闭</a>
+<ul><li>没有消息</li></ul>
+</div>
+<a href="/" class="logo"><img src="http://assets.demohour.com/assets/logo-5af45a5a816b116ece5ae45f49c0f1d7.png" title="点名时间"></a>
+<div class="head-l">
+<div class="head-l-menu">
+<a href="/" class="menu-h">首页</a>
+<a href="/projects" class="menu-p">浏览项目</a>
+<a href="/projects/new" class="menu-n">发起项目</a>
+</div>
+</div>
+<div class="head-search">
+<form action="/search" method="get">
+<input name="q" value="" class="head-search-l" autocomplete="off" placeholder="搜索项目">
+<input value="" type="submit" class="head-search-r" onfocus="this.blur()">
+</form>
+</div>
+<div class="head-r">
+<ul class="head-r-menu">
+<li class="head-myproject ui-dropbox"><a href="#"><span>我的项目</span></a>
+<ul class="menulist" style="display:none;">
+<li class="toplines"><img src="http://assets.demohour.com/assets/toplines-77db07bc10a3e6f451da4b801840616c.gif"></li>
+<li><a href="/projects/created">发起的(0)</a></li>
+<li><a href="/projects/backed">支持的(1)</a></li>
+<li><a href="/projects/favorite">关注的(4)</a></li>
+</ul>
+</li>
+<li class="head-messages ui-dropbox"><a href="#"><span>消息</span></a>
+<ul class="menulist" style="display:none;">
+<li class="toplines"><img src="http://assets.demohour.com/assets/toplines-77db07bc10a3e6f451da4b801840616c.gif"></li>
+<li><a href="/posts">我的话题</a></li>
+<li><a href="/comments">我的评论</a></li>
+<li><a href="/messages">我的私信</a></li>
+<li><a href="/notifications">站内通知</a></li>
+</ul>
+</li>
+<li class="head-mydemohour ui-dropbox">
+<a href="#"><img src="http://aliyun.demohour.com/demohour-upload/user_avatars-files-000-093-658-93658-small.gif?1370509151" align="absmiddle"><span>szpapas</span></a>
+<ul class="menulist" id="mydemohour_list" style="display:none;">
+<li class="toplines"><img src="http://assets.demohour.com/assets/toplines-77db07bc10a3e6f451da4b801840616c.gif"></li>
+<li><a href="/transactions">支持记录</a></li>
+<li><a href="/settings">帐号设置</a></li>
+<li><a href="/1101852" target="_blank">个人主页</a></li>
+</ul>
+</li>
+<li><a href="/logout">登出</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="ui-tab">
+<div class="categories-top">
+<a href="/projects/discover/0_0_0_0">浏览项目</a>
+<span>/</span>
+推荐项目
+</div>
+</div>
+<div class="ui-categories">
+<div class="ui-categories-l">
+<div class="ui-categories-icon-1">属性：</div>
+<div class="ui-categories-l-line"></div>
+<div class="ui-categories-icon-1">分类：</div>
+<div class="ui-categories-l-line"></div>
+<div class="ui-categories-icon-1">地区：</div>
+<div class="ui-categories-l-line"></div>
+<div class="ui-categories-icon-2">排序：</div>
+</div>
+<div class="ui-categories-r">
+<a href="/projects/discover/0_0_0_0" id="attribute_0">所有项目</a>
+<a href="/projects/discover/1_0_0_0" id="attribute_1">推荐项目</a>
+<a href="/projects/discover/2_0_0_0" id="attribute_2">经典项目</a>
+<a href="/projects/discover/3_0_0_0" id="attribute_3">预热中</a>
+<a href="/projects/discover/4_0_0_0" id="attribute_4">筹资中</a>
+<a href="/projects/discover/5_0_0_0" id="attribute_5">筹资成功</a>
+<a href="/projects/discover/6_0_0_0" id="attribute_6">筹资失败</a>
+<div class="ui-categories-r-line"></div>
+<a href="/projects/discover/1_0_0_0" id="category_0">所有分类</a>
+<a href="/projects/discover/1_927151_0_0" id="category_927151">设计</a>
+<a href="/projects/discover/1_927158_0_0" id="category_927158">科技</a>
+<a href="/projects/discover/1_927159_0_0" id="category_927159">音乐</a>
+<a href="/projects/discover/1_927156_0_0" id="category_927156">影视</a>
+<a href="/projects/discover/1_927163_0_0" id="category_927163">食品</a>
+<a href="/projects/discover/1_927152_0_0" id="category_927152">动漫</a>
+<a href="/projects/discover/1_927161_0_0" id="category_927161">出版</a>
+<a href="/projects/discover/1_927164_0_0" id="category_927164">游戏</a>
+<a href="/projects/discover/1_927157_0_0" id="category_927157">摄影</a>
+<a href="/projects/discover/1_927162_0_0" id="category_927162">其他</a>
+<div class="ui-categories-r-line"></div>
+<a href="/projects/discover/1_0_0_0" id="location_0">所有地区</a>
+<a href="/projects/discover/1_0_北京_0" id="location_北京">北京</a>
+<a href="/projects/discover/1_0_广东_0" id="location_广东">广东</a>
+<a href="/projects/discover/1_0_上海_0" id="location_上海">上海</a>
+<a href="/projects/discover/1_0_浙江_0" id="location_浙江">浙江</a>
+<a href="/projects/discover/1_0_江苏_0" id="location_江苏">江苏</a>
+<a href="/projects/discover/1_0_四川_0" id="location_四川">四川</a>
+<a href="/projects/discover/1_0_海外_0" id="location_海外">海外</a>
+<a href="/projects/discover/1_0_山东_0" id="location_山东">山东</a>
+<a href="/projects/discover/1_0_福建_0" id="location_福建">福建</a>
+<a href="/projects/discover/1_0_湖南_0" id="location_湖南">湖南</a>
+<a href="/projects/discover/1_0_湖北_0" id="location_湖北">湖北</a>
+<a href="/projects/discover/1_0_天津_0" id="location_天津">天津</a>
+<a href="/projects/discover/1_0_重庆_0" id="location_重庆">重庆</a>
+<a href="/projects/discover/1_0_云南_0" id="location_云南">云南</a>
+<a href="/projects/discover/1_0_陕西_0" id="location_陕西">陕西</a>
+<a href="/projects/discover/1_0_辽宁_0" id="location_辽宁">辽宁</a>
+<div class="ui-categories-r-line"></div>
+<a href="/projects/discover/1_0_0_0" id="sort_0">最近更新</a>
+<a href="/projects/discover/1_0_0_1" id="sort_1">金额最高</a>
+<a href="/projects/discover/1_0_0_2" id="sort_2">话题最多</a>
+<a href="/projects/discover/1_0_0_3" id="sort_3">支持最多</a>
+<a href="/projects/discover/1_0_0_4" id="sort_4">关注最多</a>
+<a href="/projects/discover/1_0_0_5" id="sort_5">评价最高</a>
+<a href="/projects/discover/1_0_0_6" id="sort_6">最新上线</a>
+</div>
+</div>
+
+<div class="categorieswrap">
+<div id="projects" class="project-list">
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/322452" title="【小C智能手环】" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-526-12526-medium.jpg?1376298945"></a></li>
+<li class="project-titile"><a href="/projects/322452" title="【小C智能手环】">【小C智能手环】</a></li>
+<li class="project-function">
+<a href="/projects/322452/posts" title="此项目有31个话题" class="project-p-on">话题：31</a>
+<a href="/projects/322452/subscribers" title="332用户关注此项目" class="project-g-on">关注：332</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:49%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>49%</strong>热度</p>
+<p class="widthb"><strong><span>3344</span></strong>浏览人数</p>
+<p class="widthc"><strong>15天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/322733" title="《文艺生活周刊100期精华珍藏版》" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-577-12577-medium.jpg?1376495712"></a></li>
+<li class="project-titile"><a href="/projects/322733" title="《文艺生活周刊100期精华珍藏版》">《文艺生活周刊100期精华珍藏版》</a></li>
+<li class="project-function">
+<a href="/projects/322733/posts" title="此项目有21个话题" class="project-p-on">话题：21</a>
+<a href="/projects/322733/backers" title="274用户支持此项目" class="project-g-on">支持：274</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:87%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>87%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>43,784</span></strong>已获支持</p>
+<p class="widthc"><strong>
+50天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/320375" title="UShare Music：唤醒你的音箱，让音乐Wi-Fi起来" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-011-870-11870-medium.jpg?1373455710"></a></li>
+<li class="project-titile"><a href="/projects/320375" title="UShare Music：唤醒你的音箱，让音乐Wi-Fi起来">UShare Music：唤醒你的音箱，让音乐Wi-Fi起来</a></li>
+<li class="project-function">
+<a href="/projects/320375/posts" title="此项目有85个话题" class="project-p-on">话题：85</a>
+<a href="/projects/320375/backers" title="176用户支持此项目" class="project-g-on">支持：176</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:100%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>145%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>29,039</span></strong>已获支持</p>
+<p class="widthc"><strong>
+45天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/321238" title="迷你四旋翼飞行器" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-147-12147-medium.JPG?1376319108"></a></li>
+<li class="project-titile"><a href="/projects/321238" title="迷你四旋翼飞行器">迷你四旋翼飞行器</a></li>
+<li class="project-function">
+<a href="/projects/321238/posts" title="此项目有44个话题" class="project-p-on">话题：44</a>
+<a href="/projects/321238/backers" title="44用户支持此项目" class="project-g-on">支持：44</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:100%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>163%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>8,192</span></strong>已获支持</p>
+<p class="widthc"><strong>
+52天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/318267" title="我们心中的iwatch——@watch智能手表" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-010-497-10497-medium.JPG?1372315095"></a></li>
+<li class="project-titile"><a href="/projects/318267" title="我们心中的iwatch——@watch智能手表">我们心中的iwatch——@watch智能手表</a></li>
+<li class="project-function">
+<a href="/projects/318267/posts" title="此项目有103个话题" class="project-p-on">话题：103</a>
+<a href="/projects/318267/subscribers" title="672用户关注此项目" class="project-g-on">关注：672</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:83%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>83%</strong>热度</p>
+<p class="widthb"><strong><span>23696</span></strong>浏览人数</p>
+<p class="widthc"><strong>133天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/317996" title="智能家居从未如此简单！这一次我们将重新定义智能家居。" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-010-913-10913-medium.gif?1376916352"></a></li>
+<li class="project-titile"><a href="/projects/317996" title="智能家居从未如此简单！这一次我们将重新定义智能家居。">智能家居从未如此简单！这一次我们将重新定义智能家居。</a></li>
+<li class="project-function">
+<a href="/projects/317996/posts" title="此项目有67个话题" class="project-p-on">话题：67</a>
+<a href="/projects/317996/subscribers" title="729用户关注此项目" class="project-g-on">关注：729</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:54%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>54%</strong>热度</p>
+<p class="widthb"><strong><span>13211</span></strong>浏览人数</p>
+<p class="widthc"><strong>70天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/321583" title="T-EYE， 让智能手机变身google眼镜" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-069-12069-medium.jpg?1374656402"></a></li>
+<li class="project-titile"><a href="/projects/321583" title="T-EYE， 让智能手机变身google眼镜">T-EYE， 让智能手机变身google眼镜</a></li>
+<li class="project-function">
+<a href="/projects/321583/posts" title="此项目有50个话题" class="project-p-on">话题：50</a>
+<a href="/projects/321583/subscribers" title="385用户关注此项目" class="project-g-on">关注：385</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:47%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>47%</strong>热度</p>
+<p class="widthb"><strong><span>8104</span></strong>浏览人数</p>
+<p class="widthc"><strong>36天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/320148" title="股票医生Android版 - 炒股不再是赌博" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-011-426-11426-medium.jpg?1370865527"></a></li>
+<li class="project-titile"><a href="/projects/320148" title="股票医生Android版 - 炒股不再是赌博">股票医生Android版 - 炒股不再是赌博</a></li>
+<li class="project-function">
+<a href="/projects/320148/posts" title="此项目有58个话题" class="project-p-on">话题：58</a>
+<a href="/projects/320148/backers" title="15用户支持此项目" class="project-g-on">支持：15</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:84%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>84%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>3,365</span></strong>已获支持</p>
+<p class="widthc"><strong>
+48天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/321772" title="复刻经典 Petzval 匹兹瓦镜头 适用尼康佳能单反相机" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-212-12212-medium.jpg?1374736510"></a></li>
+<li class="project-titile"><a href="/projects/321772" title="复刻经典 Petzval 匹兹瓦镜头 适用尼康佳能单反相机">复刻经典 Petzval 匹兹瓦镜头 适用尼康佳能单反相机</a></li>
+<li class="project-function">
+<a href="/projects/321772/posts" title="此项目有71个话题" class="project-p-on">话题：71</a>
+<a href="/projects/321772/backers" title="106用户支持此项目" class="project-g-on">支持：106</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:100%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>2603%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>260,394</span></strong>已获支持</p>
+<p class="widthc"><strong>
+26天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/322531" title="Feltouch magic  革命性的智能电视控制设备" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-486-12486-medium.jpg?1376018047"></a></li>
+<li class="project-titile"><a href="/projects/322531" title="Feltouch magic  革命性的智能电视控制设备">Feltouch magic  革命性的智能电视控制设备</a></li>
+<li class="project-function">
+<a href="/projects/322531/posts" title="此项目有37个话题" class="project-p-on">话题：37</a>
+<a href="/projects/322531/backers" title="8用户支持此项目" class="project-g-on">支持：8</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:12%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>12%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>379</span></strong>已获支持</p>
+<p class="widthc"><strong>
+16天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/322611" title="四和定位-Find" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-563-12563-medium.jpg?1376626745"></a></li>
+<li class="project-titile"><a href="/projects/322611" title="四和定位-Find">四和定位-Find</a></li>
+<li class="project-function">
+<a href="/projects/322611/posts" title="此项目有11个话题" class="project-p-on">话题：11</a>
+<a href="/projects/322611/subscribers" title="48用户关注此项目" class="project-g-on">关注：48</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:8%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>8%</strong>热度</p>
+<p class="widthb"><strong><span>1943</span></strong>浏览人数</p>
+<p class="widthc"><strong>9天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/320816" title="多用途定位器--“找找”让我们不再失去彼此！" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-011-739-11739-medium.jpg?1374568713"></a></li>
+<li class="project-titile"><a href="/projects/320816" title="多用途定位器--“找找”让我们不再失去彼此！">多用途定位器--“找找”让我们不再失去彼此！</a></li>
+<li class="project-function">
+<a href="/projects/320816/posts" title="此项目有37个话题" class="project-p-on">话题：37</a>
+<a href="/projects/320816/backers" title="4用户支持此项目" class="project-g-on">支持：4</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:5%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>5%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>1,020</span></strong>已获支持</p>
+<p class="widthc"><strong>
+46天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/316683" title="防弹衣材料的背包" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-009-725-9725-medium.jpg?1362553719"></a></li>
+<li class="project-titile"><a href="/projects/316683" title="防弹衣材料的背包">防弹衣材料的背包</a></li>
+<li class="project-function">
+<a href="/projects/316683/posts" title="此项目有94个话题" class="project-p-on">话题：94</a>
+<a href="/projects/316683/subscribers" title="785用户关注此项目" class="project-g-on">关注：785</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:100%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>117%</strong>热度</p>
+<p class="widthb"><strong><span>24339</span></strong>浏览人数</p>
+<p class="widthc"><strong>170天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/320255" title="纪录片《无尽头之旅》---缅甸金三角的黑色镜头" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-011-952-11952-medium.jpg?1376223477"></a></li>
+<li class="project-titile"><a href="/projects/320255" title="纪录片《无尽头之旅》---缅甸金三角的黑色镜头">纪录片《无尽头之旅》---缅甸金三角的黑色镜头</a></li>
+<li class="project-function">
+<a href="/projects/320255/posts" title="此项目有18个话题" class="project-p-on">话题：18</a>
+<a href="/projects/320255/backers" title="28用户支持此项目" class="project-g-on">支持：28</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:5%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>5%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>2,100</span></strong>已获支持</p>
+<p class="widthc"><strong>
+76天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/319150" title="充电器" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-012-323-12323-medium.jpg?1377688587"></a></li>
+<li class="project-titile"><a href="/projects/319150" title="充电器">充电器</a></li>
+<li class="project-function">
+<a href="/projects/319150/posts" title="此项目有23个话题" class="project-p-on">话题：23</a>
+<a href="/projects/319150/subscribers" title="89用户关注此项目" class="project-g-on">关注：89</a>
+<a href="/projects/discover/3_0_0_0" class="project-g-funding">预热中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:8%;" class="projectpledged projectpledged-funding"></div>
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>8%</strong>热度</p>
+<p class="widthb"><strong><span>4880</span></strong>浏览人数</p>
+<p class="widthc"><strong>21天</strong>已经预热</p>
+</div>
+</li>
+</ul>
+
+<ul class="project-one">
+<li class="project-thumbnail">
+<a href="/projects/317437" title="20年无处安放的青春？《茗记-尘封追忆》做给父辈们的一部动画" target="_blank"><img src="http://aliyun.demohour.com/demohour-upload/project_posters-files-000-010-589-10589-medium.jpg?1368011045"></a></li>
+<li class="project-titile"><a href="/projects/317437" title="20年无处安放的青春？《茗记-尘封追忆》做给父辈们的一部动画">20年无处安放的青春？《茗记-尘封追忆》做给父辈们的一部动画</a></li>
+<li class="project-function">
+<a href="/projects/317437/posts" title="此项目有31个话题" class="project-p-on">话题：31</a>
+<a href="/projects/317437/backers" title="125用户支持此项目" class="project-g-on">支持：125</a>
+<a href="/projects/discover/4_0_0_0" class="project-g-running">筹资中</a>
+</li>
+<li class="project-list-stats">
+<div class="projectpledgedwrap">
+<div style="width:42%;" class="projectpledged"></div>
+
+
+
+</div>
+<div class="projectstats">
+<p class="widtha"><strong>42%</strong>达到</p>
+<p class="widthb"><strong><span><b>¥</b>21,120</span></strong>已获支持</p>
+<p class="widthc"><strong>
+13天
+</strong>剩余时间</p>
+</div>
+</li>
+</ul>
+
+</div>
+<div id="project-list-more" class="project-list-more ui-button-ajax-more"><a href="/projects/1_0_0_0/discover?page=2" data-remote="true" rel="nofollow">查看更多</a></div>
+</div>
+<div class="footer2" style="background:#f2f2f2;">
+<div class="h-media-reports-b">
+<ul>
+<li>
+<p>点名时间的运作模式</p>     
+每个项目都有目标金额和时间限制，项目必须在发起人预设的时间内达到或超过目标金额才算成功。没有达到目标的项目，支持款项将全额退回给所有支持者。<br><br>所有项目发起人都经过实名认证。项目筹资前都已通过工作人员及大众评委审核。项目发起人会清楚标示项目的潜在风险，以及将采取的补救措施。
+</li>
+</ul>
+<ul>
+<li><p>点名时间收费吗？</p>       
+点名时间是一个开放，免费的众筹平台，无论项目成功与否点名时间都不收取任何手续费。
+<i><span>“</span>这几乎是我现在最需要的平台，并且它兼具了筹款、销售、营销推广的功能！<span>”</span><strong> —— 孙杨《纸品的美好》项目发起人</strong></i>
+</li>
+</ul>
+<ul class="h-media-reports-b-r">
+<li><p>为什么需要设置回报？</p>         
+众筹具有一定的公益属性，回报是吸引公众支持的重要因素，也是区别于传统公益的主要特征。<br><br>公众基于对项目、发起人和回报的认同，通过资助的方式参与和支持创新。项目发起人在接受支持的同时给予支持者一定的回报（可以是实物，也可以是非实物，但不能涉及资金或股权）作为感谢。
+</li>
+<li><a href="/intro" target="_blank" class="h-media-reports-b-r-more">查看完整服务介绍</a></li>
+</ul>
+</div>
+
+<div class="h-media-reports">
+<p>感谢国内外媒体报道支持</p>
+<a href="http://site.douban.com/widget/notes/4422127/note/218531103/" title="新周刊" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-01-04e39a7307d5119ac4df50d9e51dbbbd.gif"></a>
+<a href="http://site.douban.com/widget/notes/4422127/note/215977583/" title="南方都市报" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-02-39101939abd2a818f930b2c3f436e38a.gif"></a>
+<a href="http://site.douban.com/widget/notes/4422127/note/216279901/" title="南方周刊" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-03-bf5f2628a4a9548b1fd6750de0d8f05e.gif"></a>
+<a href="http://finance.cnr.cn/gs/201201/t20120112_509051989.shtml" title="经济之声" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-04-1a732a930611e6960263b399816b0a1a.gif"></a>
+<a href="http://news.xinhuanet.com/book/2012-06/25/c_123324750.htm" title="北京青年报" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-05-bd5f1c3bab1f62bd218702c792f4222c.gif"></a>
+<a href="http://site.douban.com/widget/notes/4422127/note/217068128/" title="北京晚报" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-06-dbe57a3ff106dfdc5bf5d26734595676.gif"></a>
+<a href="http://site.douban.com/widget/notes/4422127/note/213505558/" title="商业周刊/中文版" target="_blank"><img src="http://assets.demohour.com/assets/h-media-reports-07-f940ef6cca208ef3e8ca12c58aa4cc7b.gif"></a>
+<a href="http://news.xinhuanet.com/2013-04/12/c_115370793.htm" title="新华网" target="_blank"><img src="/assets/new.net.jpg"></a>
+
+
+
+</div>
+</div>
+
+<div id="ui_popup_delete" class="ui-popup ui-popup-blank ui-popup-delete">
+<div class="ui-popup-background">
+<div class="ui-popup-content">
+<table border="0" align="center" cellpadding="0" cellspacing="0" class="ui-popup-table">
+<tbody><tr><td width="25" class="ui-popup-top-l"></td>
+<td class="ui-popup-top"></td>
+<td width="25" class="ui-popup-top-r"><a href="#close" class="ui-popup-close">关闭</a></td></tr>
+<tr><td class="ui-popup-mid-l"></td>
+<td class="ui-popup-mid">
+<p class="ui-popup-text"></p>
+<div class="ui-button-green ui-button"><span><a class="ui-popup-url" href="#" data-method="delete" data-remote="true" rel="nofollow">删除</a></span></div>
+<a href="#close" class="ui-popup-close ui-popup-delete-cancel">取消</a>
+</td>
+<td class="ui-popup-mid-r"></td></tr>
+<tr><td class="ui-popup-bottom-l"></td><td class="ui-popup-bottom"></td><td class="ui-popup-bottom-r"></td></tr>
+</tbody></table>
+</div>
+</div>
+</div>
+<div id="ui_popup_message" class="ui-popup ui-popup-textarea">
+<div class="ui-popup-background">
+<div class="ui-popup-content">
+<form accept-charset="UTF-8" action="/messages" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="u5tUWBXKx5N0oCz6KmxNZPAUcRSjM6npouRpLUI35dg=" /></div>
+<table border="0" align="center" cellpadding="0" cellspacing="0" class="ui-popup-table">
+<tr><td width="25" class="ui-popup-top-l"></td>
+<td class="ui-popup-top"><span class="ui-popup-title"></span></td>
+<td width="25" class="ui-popup-top-r"><a href="#close" class="ui-popup-close">关闭</a></td></tr>
+<tr><td class="ui-popup-mid-l"></td>
+<td class="ui-popup-mid">
+<div class="ui-textarea">
+<div class="ui-textarea-border">
+<textarea id="message_content" name="message[content]" class="ui-text-fixed"></textarea>
+</div>
+</div>
+<div class="ui-popup-textarea-b">
+<span id="ui_popup_message_url"><a href="/messages">查看私信记录</a></span>
+<span id="ui_popup_message_email" style="display:none"><label><input type="checkbox" name="message[email_sync]" value="1"> 同时发送邮件</label></span>
+<span id="message_content_error"></span>
+<div class="ui-button ui-button-green ui-button-ajax"><span><button type="submit">发送</button></span></div>
+</div>
+</td>
+<td class="ui-popup-mid-r"></td></tr>
+<tr><td class="ui-popup-bottom-l"></td><td class="ui-popup-bottom"></td><td class="ui-popup-bottom-r"></td></tr>
+</table>
+</form></div>
+</div> 
+</div>
+<div class="footerwrap">
+<div class="footer">
+<a href="/projects/new">发起项目</a>
+<a href="/intro">服务介绍</a>
+<a href="/guideline">项目规范</a>
+<a href="/faq">常见问题</a>
+<a href="/terms_of_service">服务条款</a>
+<a href="/privacy_policy">隐私权政策</a>
+<a href="/about">关于我们</a>
+<a href="http://www.demohour.com/projects/313907">建议反馈</a>
+<a href="http://weibo.com/demohour" target="_blank">官方微博</a>
+<a href="http://blog.demohour.com" target="_blank">官方博客</a>
+<a href="http://www.demohour.com/?screen=mobile" class=last>手机版</a>
+<p>© 2013北京点名时间科技有限公司　Demohour.com 版权所有<br>电信与信息服务业务经营许可证120183号　京ICP备11032157号　京公网安备110105015321</p>
+<div id="backtop" class="backtop"><a href="#top"></a></div>
+</div>
+</div>
+</body>
+</html>
+<script src="/demotime/js/application.js" type="text/javascript"></script>
+<script src="/demotime/js/projects.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function(){$.ui_core.ready('dropbox', 'tab', 'popup', 'button', 'checkbox', 'radio', 'text', 'action', 'popup_preview');$('input, textarea').placeholder();$(window).scroll(function(){if($(window).scrollTop() > 48){$('#ui_notification').addClass('layer-message-fixed');}else{$('#ui_notification').removeClass('layer-message-fixed');}});$.ui_notification.ready({url:'http://nf-2.demohour.com',data:{"new_comments_count":0,"new_messages_count":0,"new_notifications_count":0,"new_posts_count":0}});$.ui_core.paginate("#project-list-more"),$("#attribute_1").addClass("ui-categories-current"),$("#category_0").addClass("ui-categories-current"),$("#location_0").addClass("ui-categories-current"),$("#sort_0").addClass("ui-categories-current"),$("#projects_tabs").length>0&&$(window).scroll(function(){$(window).scrollTop()>166?$("#projects_tabs").addClass("scrollon"):$("#projects_tabs").removeClass("scrollon")}),$("body").on("click","a.ui-popup-delete",function(e){$("#ui_popup_delete").find("div.ui-popup-content").css("top",$(window).height()/2-120),$("#ui_popup_delete").find("p.ui-popup-text").html($(e.target).attr("title")),$("#ui_popup_delete").find("a.ui-popup-url").attr("href",$(e.target).attr("href")),$("#ui_popup_delete").toggle(),e.preventDefault()}),$("body").on("click","a.ui-popup-message",function(e){$("#ui_popup_message").find("div.ui-popup-content").css("top",$(window).height()/2-150),$("#ui_popup_message").find("form").attr("action",$(e.target).attr("href")),$("#ui_popup_message").find("span.ui-popup-title").html($(e.target).attr("title")),$("#ui_popup_message").toggle(),$("#ui_popup_message").find("textarea").val($(e.target).attr("data-message-attachment")),$("#ui_popup_message").find("textarea").focus(),$(e.target).attr("href").indexOf("?recipient_id=")>0?($("#ui_popup_message_url").show(),$("#ui_popup_message_email").hide(),$("#ui_popup_message_url").find("a").attr("href",$(e.target).attr("href").replace("?recipient_id=","/"))):($("#ui_popup_message_url").hide(),$("#ui_popup_message_email").show()),e.preventDefault()});;$.ui_core.backtop('#backtop');$.ui_core.distance({now:'2013-08-29 10:53:22 +0800'});});
+//]]>
+</script>

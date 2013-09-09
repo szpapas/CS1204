@@ -584,6 +584,12 @@ class MapController < ApplicationController
     render :text => "#{ydb_id}"
   end
   
+  def kcwp
+  end
+  
+  def kcwp_dd
+  end    
+  
   def ydb
     @ydb = User.find_by_sql("select id, jsxmmc, srf, zdmj, yt from ydb limit 10;")
   end
@@ -710,8 +716,11 @@ class MapController < ApplicationController
     #@dksx.ghddsj = @dksx.ghddsj.nil? ? '' : @dksx.ghddsj.gsub(' 00:00:00','')
     #@dksx.gdsj =   @dksx.gdsj.nil?   ? '' : @dksx.gdsj.gsub(' 00:00:00','') 
     #@dksx.dgsj =   @dksx.dgsj.nil?   ? '' : @dksx.dgsj.gsub(' 00:00:00','')
-  
-    render :template => '/map/xmdk_show_iphone.html.erb'
+    if !@dkdx.nil?
+      render :template => '/map/xmdk_show_iphone.html.erb'
+    else 
+      render :template => '/map/xmdk_error.html.erb'
+    end  
   end
   
   

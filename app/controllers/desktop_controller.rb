@@ -13,6 +13,32 @@ class DesktopController < ApplicationController
   def index
   end
   
+  
+  def check_sql_table
+
+    count = User.find_by_sql("select count(*) from pg_catalog.pg_tables where tablename = 'd_rz';")[0]['count'].to_i
+    sql_cmd = "
+    CREATE TABLE d_rz  --日志表
+    (
+      id serial NOT NULL,
+      mlh character varying(100),--目录号
+      ajh character varying(100),--案卷 号
+      dalb character varying(100),--档案类别
+      qzh character varying(100),--全宗号
+      dwmc character varying(100),--全宗名称
+      rq timestamp without time zone,--日期
+      czlx character varying(100),--操作类型
+      czr character varying(100),--操作人
+      czqnr character varying(1000),--修改前内容
+      czhnr character varying(1000),--修改后内容
+      dalbmc character varying(100),--档案类别名称
+      CONSTRAINT d_rz_pkey PRIMARY KEY (id)
+    );"
+    User.find_by_sql("#{sql_cmd}") if count == 0
+
+    
+  end
+  
   def week_dates( week_num )
       year = Time.now.year
       week_start = Date.commercial( year, week_num, 1 )
@@ -160,6 +186,7 @@ class DesktopController < ApplicationController
   end
   
   def get_user
+    check_sql_table
     render :text => User.current.to_json
   end
   

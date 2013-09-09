@@ -1323,7 +1323,7 @@ var view_plans = function (sys_grid_id) {
           var data = img_store.getAt(index);
           if (typeof data == 'object') {
             //window.open('/images/dady/xctx/' + data.data.yxmc ) ;
-             show_images('/images/dady/xctx/' + data.data.yxmc.replace('-thumb', '').replace('jpg','JPG') ) ;
+             show_images('/images/dady/xctx/' + data.data.yxmc.replace('-thumb', '').replace('jpg','PNG') ) ;
           }
         }
       }

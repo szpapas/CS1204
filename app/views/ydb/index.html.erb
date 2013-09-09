@@ -1,0 +1,402 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="/jquery-bs/assets/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="/jquery-bs/css/custom-theme/jquery-ui-1.10.2.custom.css" type="text/css">
+
+<link href="/stylesheets/style.css?121" media="screen" rel="stylesheet" type="text/css">
+<link href="/stylesheets/home.css?121" media="screen" rel="stylesheet" type="text/css">
+
+<script src="/jquery-bs/assets/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/jquery-bs/assets/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+<script src="/jquery-bs/assets/js/bootstrap.min.js" type="text/javascript"></script>
+
+<!--script src="/javascripts/utls.js" type="text/javascript"></script-->
+
+<!-- Easy UI-->
+<script src="/jquery-ea/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/jquery-ea/locale/easyui-lang-zh_CN.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/jquery-ea/themes/bootstrap/easyui.css" type="text/css">
+<link rel="stylesheet" href="/jquery-ea/themes/icon.css?2323" type="text/css" >
+
+<!-- File upload Widget-->
+<link rel="stylesheet" href="/jquery-up/css/jquery.fileupload-ui.css" type="text/css">
+<script src="/jquery-up/js/vendor/jquery.ui.widget.js" type="text/javascript"></script>
+<script src="/jquery-up/js/jquery.iframe-transport.js" type="text/javascript"></script>
+<script src="/jquery-up/js/jquery.fileupload.js" type="text/javascript"></script>
+
+
+
+<!-- page related style-->
+<div id="yl-webholder">
+  <header>
+    <div id="yl-main-header">
+      <div class="yl-header-content">
+        <a href="/"><img src="/demotime/images/logo.png" title="用地监管"  style="margin-top:15px" ></a>
+        <nav class="user-status">
+          <ul>
+            <li>
+            <a href="#">欢迎您,<%= current_user.username %>！</a>
+            </li>
+            <li>
+            <a class="btn btn-danger btn-small" style="height:15px;margin-top:15px" href="/sign_out">登出</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <div id="yl-main">
+    <div class='row'>
+      <div class='span12'>
+          <div class='page-header'>
+            <h1>用地监管</h1>
+          </div>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='span3'>
+        <div class='side-box device-box' style='border:1px solid #ccc;border-radius: 3px;'>
+          <div class='small-form'>
+            <div class="form-horizontal">
+              <input name="keyword" type="text" placeholder="查找关键字"  style="width:120px" /> 
+              <input name="search" class="btn-primary btn" type="submit" value="查找" />
+            </div>
+          </div>
+        </div>
+        <div class='side-box' style="height:400px; border:1px solid #ccc;overflow:auto;border-radius: 3px;">
+          <div class='small-form'>
+            <span>查询的结果</span>
+            <ul id="tt" class="easyui-tree" data-options="url:'/ydb/get_yd_tree'"></ul>
+          </div>
+        </div>
+      </div><!-- end for span3 -->
+      <div class='span9'>
+        <div class='row'>
+          <input name="tb_fbt" class="btn-info btn"   type="submit" style="margin-left:10px;margin-top:-100px" value="用地分布图" />
+          <input name="tb_lb"  class="btn-warning btn" type="submit" style="margin-left:0px;margin-top:-100px" value="土地列表" />
+        </div>
+        <div class='row' id="tb_fbt" style="margin-top:-20px;margin-left:0px">
+          <div id="map" style="height:500px"></div>
+        </div>    
+        <div class='row' id="tb_lb" style="margin-top:-20px;margin-left:0px">
+          <div id="td_grid" style="width:700px;height:500px;border:true"> 
+          </div>
+        </div>        
+      </div><!-- end for span9 -->  
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="site-footer-content">
+    <div class="row">
+      <div class="span4">
+        <cite>
+          Copyright © 2013, Brightechs, Inc.
+            <div class="jiveVersion" style="display: none;">
+              Webgis Software Version: 33            
+            </div>
+          - <a href="mailto:szpapas@qq.com">技术支持Email</a>         
+        </cite>
+      </div>
+      <div class="span4">&nbsp;</div>
+      <div class="span4">
+        <ul class="footer-nav">
+          <li>
+            <a href="/info/terms_of_use">使用条款</a>
+          </li>
+          <li>
+            <a href="/info/q_and_a">常见问题</a>
+          </li>
+          <li>
+            <a href="/info/contact">联系我们</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="modal" id="viewSource" tabindex="-1" style="display:none; width:480px" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <span><h3 id="myModalLabel"></h3>
+    <h5 style="color:grey; margin-left:10px">设定地块的巡查人员</h5><span>
+  </div>
+  <div class="modal-body">
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>地块编号:</p></div>
+        <div class='span2'><input name="gid" type="text" style="width:160px" readonly="true" /></div>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>地块名称:</p></div>
+        <div class='span2'><input name="xmmc" type="text" style="width:160px" readonly="true" /></div>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>巡查人员:</p></div>
+        <div class='span2'>
+          <input id="cb" name="username" value="" style="width:170px; height:30px; border-radius: 3px;">  
+        </div>
+      </div>
+    </div>
+    <div id="save_info" style="margin-left:100px;color:red"></div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+      <i class="icon-ok"></i>&emsp;关闭
+    </button>
+    <button class="btn btn-primary" id="save">
+      <i class="icon-save"></i>&emsp;保存
+    </button>
+  </div>
+</div>
+
+<!-- after page loaded function-->
+<link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css" charset="utf-8">
+<script src="http://maps.google.com/maps/api/js?v=3.6&amp;sensor=false&amp;language=zh-CN"></script>
+<script src="/OpenLayers/OpenLayers.js"></script>
+
+
+
+<script>
+  function changeTitle(title) { document.title = title; }
+  changeTitle("土地卫片数据");
+
+
+  function formatPrice(val,row){  
+      if (val < 20){  
+          return '<span style="color:red;">('+val+')</span>';  
+      } else {  
+          return val;  
+      }  
+  };
+  
+  
+  function set_user(val) {
+    
+    $('#td_grid').datagrid('selectRecord',val);
+    var row = $('#td_grid').datagrid('getSelections')[0];
+
+    $('#viewSource').modal({
+         show:true,
+         keyboard:true
+     });
+
+    $("input[name='gid']").val(row.gid);
+    $("input[name='xmmc']").val(row.xmmc);
+    $('#cb').combobox('setValue', row.username);
+    $('#myModalLabel').html('设定巡查人员');
+    
+  };
+  
+  //TD Grid Data
+  function showGrid(){
+    $('#td_grid').datagrid({  
+        url:'/ydb/get_ydb_grid',
+        //fitColumns : true,
+        //rownumbers:true,
+        pagination:true,
+        pageSize:20,
+        striped:true,
+        toolbar:[{
+          text:'刷新',
+          iconCls:'icon-reload',
+          handler:function(){
+             $('#td_grid').datagrid('reload');
+           }
+        },{
+          text:'清选',
+          hidden: true,
+          iconCls:'icon-undo',
+          handler:function(){
+            $("#td_grid").datagrid("clearSelections");
+          }
+        }],
+        idField:'id',
+        singleSelect:false,
+        columns:[[  
+            {checkbox:true},
+            //{field:'gid',title:'编号',width:50,sortable:true},  
+            {field:'srf',title:'受让方',width:200,sortable:true},
+            {field:'dkwz',title:'地块位置',width:100},
+            {field:'zdmj',title:'宗地面积',width:50},
+            {field:'gdfs',title:'供地方式',width:100},
+            {field:'id', title:"操作", width:100,formatter:function(val,row,index){
+              return '<a class="icon-map" href="/ydb/ydb_dd?id='+val+'" target="_tab" title="查看详细用地信息")"></a>&nbsp;'+
+              '<a class="icon-pdf" href="/ydb/jsyd_pdf2?id='+val+'" target="_tab" title="打印报表" ></a>';
+            }}
+
+        ]],
+        onLoadSuccess:function(data){
+        }
+    });
+  }
+  
+  // TD Map
+  var map, xmdk_vectors;
+  
+  //For load grid 
+  var cx='', yt=''; 
+
+  function setOption(xzqmc) {
+    $('#cb').combobox({  
+        url:'/sat/get_cb_xzqmc?xzqmc='+xzqmc,  
+        valueField:'id',  
+        textField:'text'  
+    });
+  }
+
+  function draw_xmdks(geom_string){
+    xmdk_vectors.removeAllFeatures();
+    var geojson_format = new OpenLayers.Format.GeoJSON();
+    xmdk_vectors.addFeatures(geojson_format.read(geom_string));
+  };
+  
+  //tree node click events
+  $('#tt').tree({
+    onClick: function(node){
+      //alert(node.text);  // alert node text property when clicked
+      if ($('#tt').tree('isLeaf', node.target) == false) {
+        dd = node.id.split('|');
+        if (dd.length > 1) {
+          cx = dd[0];
+          yt = dd[1];
+        } else {
+          cx = dd[0];
+          yt = '';
+        };
+
+        //setOption(xzqmc);
+        //refesh grid
+        refreshGrid();
+        
+      } else {
+        //alert ("you clicked leaf");
+        moveto(node.id);
+      }
+    }
+  });
+  
+  //图斑分布图
+  $("input[name='tb_fbt']").on('click', function(){
+    $("#tb_fbt").show();
+    $("#tb_lb" ).hide();
+  });
+  
+  
+  function refreshGrid(){
+    $("#tb_fbt").hide();
+    $("#tb_lb" ).show();
+    
+    var filter = $("input[name='keyword']").val();
+    $('#td_grid').datagrid('load',{
+      cx: cx,
+      yt: yt,
+      filter: filter
+    });
+  }
+  
+  //土地列表
+  $("input[name='tb_lb']").on('click', function(){
+    refreshGrid();
+  });
+  
+  //查找
+  $("input[name='search']").on('click', function(){
+    refreshGrid();
+  });
+
+  
+  var styles = new OpenLayers.StyleMap({
+       "default": new OpenLayers.Style(null, {
+           rules: [
+               new OpenLayers.Rule({
+                   symbolizer: {
+                       "Point": {
+                           pointRadius: 5,
+                           graphicName: "square",
+                           fillColor: "white",
+                           fillOpacity: 0.25,
+                           strokeWidth: 1,
+                           strokeOpacity: 1,
+                           strokeColor: "#333333"
+                       },
+                       "Line": {
+                           strokeWidth: 3,
+                           strokeOpacity: 1,
+                           //strokeColor: "#666666"
+                          strokeColor: "#FF0000"
+                       }
+                   }
+               })
+           ]
+       }),
+       "select": new OpenLayers.Style({
+           strokeColor: "#00ccff",
+           strokeWidth: 4
+       }),
+       "temporary": new OpenLayers.Style(null, {
+           rules: [
+               new OpenLayers.Rule({
+                   symbolizer: {
+                       "Point": {
+                           pointRadius: 5,
+                           graphicName: "square",
+                           fillColor: "white",
+                           fillOpacity: 0.25,
+                           strokeWidth: 1,
+                           strokeOpacity: 1,
+                           strokeColor: "#333333"
+                       },
+                       "Line": {
+                           strokeWidth: 3,
+                           strokeOpacity: 1,
+                           strokeColor: "#00ccff"
+                       }
+                   }
+               })
+           ]
+       })
+  });
+
+  //初始化 Openlayers Map
+  function initMap() {
+
+    var options = {
+      projection: new OpenLayers.Projection('EPSG:900913'), units: "m", maxResolution: 152.87405654296876,
+      maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7) 
+    };
+  
+    map  = new OpenLayers.Map('map', options);
+    var gsat = new OpenLayers.Layer.Google( "谷歌卫星图", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22} );
+    var gmap = new OpenLayers.Layer.Google("谷歌地图", {numZoomLevels: 20, visibility: false});
+    
+    xmdk_vectors = new OpenLayers.Layer.Vector("任务地块", { isBaseLayer: false, styleMap: styles });
+    //var markers = new OpenLayers.Layer.Markers( "检查点" );
+
+    //map.addLayers([gsat, gmap, markers]);
+    map.addLayers([gsat, gmap, xmdk_vectors]);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    
+    
+    //map.zoomToExtent(new OpenLayers.Bounds(100.8296875, 30.54021484375, 130.6703125, 40.79021484375));
+  
+    map.setCenter(new OpenLayers.LonLat(13370424.384,3693277.655), 14);
+
+  }
+  
+  // Default Load None Map data, 根据左边的Tree的数据，然后装在相应的数据
+  function LoadMapData(){
+  };
+  
+ 
+  initMap();
+  showGrid();
+  $("#tb_lb").hide();
+  
+</script>
