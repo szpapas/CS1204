@@ -75,18 +75,20 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
               { xtype: 'textfield', name : 'id',hidden: true },
               { xtype: 'label',     x: 10, y: 10, text: '姓名'},
               { xtype: 'textfield', x: 70, y: 10, width: 200, name : 'username'},
-              { xtype: 'label',     x: 10, y: 40, text: '部门'},
-              { xtype: 'textfield', x: 70, y: 40, width: 200, name : 'bm'},
-              { xtype: 'label',     x: 10, y: 70, text: '办公电话'},
-              { xtype: 'textfield', x: 70, y: 70, width: 200, name : 'bgdh'},
-              { xtype: 'label',     x: 10, y: 100, text: '移动电话'},
-              { xtype: 'textfield', x: 70, y: 100, width: 200, name : 'iphone'},
-              { xtype: 'label',     x: 10, y: 130, text: '邮件'},
-              { xtype: 'textfield', x: 70, y: 130, width: 200, name : 'email'},
-              { xtype: 'label',     x: 10, y: 160, text: '角色'},
-              { xtype: 'combo',     x: 70, y: 160, width: 200, name : 'qxcode', store:qxcode_store, emptyText:'请选择',mode: 'local', valueField:'text', displayField:'text',triggerAction:'all'},
-              { xtype: 'label',     x: 10, y: 190, text: '隐藏'},
-              { xtype: 'combo',     x: 70, y: 190, width: 200, name : 'hide', store:hide_store, emptyText:'请选择',mode: 'local', valueField:'value', displayField:'text',triggerAction:'all'}
+              { xtype: 'label',     x: 10, y: 40, text: '单位'},
+              { xtype: 'textfield', x: 70, y: 40, width: 200, name : 'dw'},
+              { xtype: 'label',     x: 10, y: 70, text: '部门'},
+              { xtype: 'textfield', x: 70, y: 70, width: 200, name : 'bm'},
+              { xtype: 'label',     x: 10, y: 100, text: '办公电话'},
+              { xtype: 'textfield', x: 70, y: 100, width: 200, name : 'bgdh'},
+              { xtype: 'label',     x: 10, y: 130, text: '移动电话'},
+              { xtype: 'textfield', x: 70, y: 130, width: 200, name : 'iphone'},
+              { xtype: 'label',     x: 10, y: 160, text: '邮件'},
+              { xtype: 'textfield', x: 70, y: 160, width: 200, name : 'email'},
+              { xtype: 'label',     x: 10, y: 190, text: '角色'},
+              { xtype: 'combo',     x: 70, y: 190, width: 200, name : 'qxcode', store:qxcode_store, emptyText:'请选择',mode: 'local', valueField:'text', displayField:'text',triggerAction:'all'},
+              { xtype: 'label',     x: 10, y: 220, text: '隐藏'},
+              { xtype: 'combo',     x: 70, y: 220, width: 200, name : 'hide', store:hide_store, emptyText:'请选择',mode: 'local', valueField:'value', displayField:'text',triggerAction:'all'}
           ]
         });
         
@@ -119,7 +121,8 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
                   parameters: pars,
                   onComplete:  function(request) {
                     if (request.responseText == 'Success') {
-                      user_win.close();
+                      msg('成功', '修改成功!');
+                      //user_win.close();
                       user_store.load();
                     } else {
                       //msg('失败', '新增任务失败!');
@@ -153,6 +156,7 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
             fields: [
               {name: 'id',        type: 'integer'},
               {name: 'username',  type: 'string'},
+              {name: 'dw',        type: 'string'},
               {name: 'bm',        type: 'string'},
               {name: 'bgdh',      type: 'string'},
               {name: 'iphone',    type: 'string'},
@@ -184,6 +188,7 @@ MyDesktop.SystemMan = Ext.extend(Ext.app.Module, {
         columns: [ sm,
           { header : 'id',    width : 75, sortable : true, dataIndex: 'id', hidden:true},
           { header : '姓名',    width : 100, sortable : true, dataIndex: 'username'},
+          { header : '单位',    width : 100, sortable : true, dataIndex: 'dw'},
           { header : '部门',    width : 100, sortable : true, dataIndex: 'bm'},
           { header : '办公电话',  width : 100, sortable : true, dataIndex: 'bgdh'},
           { header : '手机号',   width : 100, sortable : true, dataIndex: 'iphone'},

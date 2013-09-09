@@ -555,10 +555,10 @@ class DesktopController < ApplicationController
         User.find_by_sql("update plans set username = '#{params['username']}' where username = '#{username}';")
       end
        
-      User.find_by_sql("update users set qxcode='#{params['qxcode']}', hide='#{params['hide']}', email='#{params['email']}', username='#{params['username']}', bgdh='#{params['bgdh']}', bm='#{params['bm']}', iphone='#{params['iphone']}' where id=#{params['id']}; ")
+      User.find_by_sql("update users set qxcode='#{params['qxcode']}', hide='#{params['hide']}', email='#{params['email']}', username='#{params['username']}', bgdh='#{params['bgdh']}', dw='#{params['dw']}', xzqmc='#{params['dw']}', bm='#{params['bm']}', iphone='#{params['iphone']}' where id=#{params['id']};  ")
       
     else
-      User.find_by_sql("insert into users (username, email, qxcode, bm, bgdh, iphone) values('#{params['username']}','#{params['email']}', '#{params['qxcode']}', '#{params['bm']}', '#{params['bgdh']}', '#{params['iphone']}'); ")
+      User.find_by_sql("insert into users (username, email, qxcode, dw, xzqmc, bm, bgdh, iphone) values('#{params['username']}','#{params['email']}', '#{params['qxcode']}', '#{params['dw']}', '#{params['dw']}', '#{params['bm']}', '#{params['bgdh']}', '#{params['iphone']}'); ")
     end  
     render :text => 'Success'
   end 
