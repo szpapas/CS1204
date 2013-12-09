@@ -22,10 +22,14 @@ $(document).ready(function() {
         } else {
             // initialize map
             init(function(feature) { 
-                
-                if (navigator.userAgent.match(/iPad/) == null){  
+                selectedFeature = feature; 
+                if (feature.layer.name == "批而未供"){
+                  $.mobile.changePage("#pp-xmdk", { transition: "slide"});
+                } else if(feature.layer.name == "供而未用") {
+                  $.mobile.changePage("#gg-xmdk", { transition: "slide"});
+                }
+                else if (navigator.userAgent.match(/iPad/) == null){  
                   //显示xmdks Features的特性
-                  selectedFeature = feature; 
                   $.mobile.changePage("#popup", { transition: "slide"});
                   var xz_tag = selectedFeature.attributes['是否新增'];
                   if(xz_tag.length > 0){
@@ -33,8 +37,8 @@ $(document).ready(function() {
                   } else {
                     $("#popup-grid").hide();
                   }
+                  
                 }else {
-                  selectedFeature = feature;
                   username = $.trim($("input[name='user_id']").val());
                   gid = selectedFeature.attributes['地块编号']
                   $(location).attr('href','/map/show_xmdks?username='+username+'&gid='+gid);
@@ -86,12 +90,10 @@ $(document).ready(function() {
         var layer = map.getLayersByName('项目地块')[0]
         layer.setVisibility(!layer.visibility);
         if (layer.visibility) {
-          //$('#xmdk').val("项目地块").button('refresh');
           $('#xmdk').buttonMarkup({theme: "a"}).button('refresh');
         } else {
-          //$('#xmdk').val("项目地块").button('refresh');
           $('#xmdk').buttonMarkup({theme: "b"}).button('refresh');
-        }  
+        } 
     });
     
     $("#myxmdk").click(function(){
@@ -105,6 +107,30 @@ $(document).ready(function() {
         }
     });
     
+    
+    $("#ppxmdk").click(function(){
+        var control = map.getControlsBy("id", "locate-control")[0];
+        var layer = map.getLayersByName('批而未供')[0]
+        layer.setVisibility(!layer.visibility);
+        if (layer.visibility) {
+          $('#ppxmdk').buttonMarkup({theme: "a"}).button('refresh');
+        } else {
+          $('#ppxmdk').buttonMarkup({theme: "b"}).button('refresh');
+        }
+    });
+    
+    
+    $("#ggxmdk").click(function(){
+        var control = map.getControlsBy("id", "locate-control")[0];
+        var layer = map.getLayersByName('供而未用')[0]
+        layer.setVisibility(!layer.visibility);
+        if (layer.visibility) {
+          $('#ggxmdk').buttonMarkup({theme: "a"}).button('refresh');
+        } else {
+          $('#ggxmdk').buttonMarkup({theme: "b"}).button('refresh');
+        }
+    });
+    
     $('#popup').live('pageshow',function(event, ui){
         var li = "<li data-role=\"list-divider\" data-divider-theme=\"a\">地块属性显示<span class=\"ui-li-aside\"></span></li>";
         for(var attr in selectedFeature.attributes){
@@ -112,6 +138,24 @@ $(document).ready(function() {
                + selectedFeature.attributes[attr] + "</p></li>";
         }
         $("ul#details-list").empty().append(li).listview("refresh");
+    });
+    
+    $('#pp-xmdk').live('pageshow',function(event, ui){
+        var li = "<li data-role=\"list-divider\" data-divider-theme=\"a\">地块属性显示<span class=\"ui-li-aside\"></span></li>";
+        for(var attr in selectedFeature.attributes){
+            li += "<li><p style='width:25%;float:left'>" + attr + ":</p><p style='width:75%;float:right'>" 
+               + selectedFeature.attributes[attr] + "</p></li>";
+        }
+        $("ul#pp-detail-list").empty().append(li).listview("refresh");
+    }); 
+    
+    $('#gg-xmdk').live('pageshow',function(event, ui){
+        var li = "<li data-role=\"list-divider\" data-divider-theme=\"a\">地块属性显示<span class=\"ui-li-aside\"></span></li>";
+        for(var attr in selectedFeature.attributes){
+            li += "<li><p style='width:25%;float:left'>" + attr + ":</p><p style='width:75%;float:right'>" 
+               + selectedFeature.attributes[attr] + "</p></li>";
+        }
+        $("ul#gg-detail-list").empty().append(li).listview("refresh");
     });
     
 
@@ -216,6 +260,74 @@ $(document).ready(function() {
         $("input[name='xz_tag']").val(selectedFeature.attributes['是否新增']);
     });  
     
+    
+    $("#modify-pp").click(function() {
+        $.mobile.changePage("#pp-xmdk-change", "pop"); 
+        //selectedFeature
+        $("input[name='gid']").val(selectedFeature.attributes['地块编号']);
+        $("input[name='wy_sfkly_p']").val(selectedFeature.attributes['外页核查结果']);
+        $("input[name='wy_qkms_p']").val(selectedFeature.attributes['外页核查备注']);
+    });
+    
+    $("#modify-gg").click(function() {
+        $.mobile.changePage("#gg-xmdk-change", "pop"); 
+        //selectedFeature
+        $("input[name='gid']").val(selectedFeature.attributes['地块编号']);
+        $("input[name='wy_sfkly_g']").val(selectedFeature.attributes['外页核查结果']);
+        $("input[name='wy_qkms_g']").val(selectedFeature.attributes['外页核查备注']);
+    });
+
+
+    $("#save-pp").click(function() {
+      var gid   = $.trim($("input[name='gid']").val());
+      var wy_sfkly = $.trim($("input[name='wy_sfkly_p']").val());
+      var wy_qkms   = $.trim($("input[name='wy_qkms_p']").val());
+
+      if(wy_sfkly.length > 0){
+          $.ajax({
+            type: "POST",
+            url: "/map/save_pp_xmdk",
+            data: ({gid:gid, wy_sfkly:wy_sfkly, wy_qkms:wy_qkms}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              //var username = $.trim($("input[name='user_id']").val());
+              //$(location).attr('href','/map/measure?username='+username);
+              selectedFeature.attributes['外页核查结果'] = wy_sfkly;
+              selectedFeature.attributes['外页核查备注'] = wy_qkms;
+              $.mobile.back();
+            }
+          });
+       } else {
+         alert("外页核查结果不能为空！");
+       };
+    });
+    
+    
+    $("#save-gg").click(function() {
+      var gid   = $.trim($("input[name='gid']").val());
+      var wy_sfkly = $.trim($("input[name='wy_sfkly_g']").val());
+      var wy_qkms   = $.trim($("input[name='wy_qkms_g']").val());
+
+      if(wy_sfkly.length > 0){
+          $.ajax({
+            type: "POST",
+            url: "/map/save_gg_xmdk",
+            data: ({gid:gid, wy_sfkly:wy_sfkly, wy_qkms:wy_qkms}),
+            cache: false,
+            dataType: "text",
+            success: function(data){
+              //var username = $.trim($("input[name='user_id']").val());
+              //$(location).attr('href','/map/measure?username='+username);
+              selectedFeature.attributes['外页核查结果'] = wy_sfkly;
+              selectedFeature.attributes['外页核查备注'] = wy_qkms;
+              $.mobile.back();
+            }
+          });
+       } else {
+         alert("外页核查结果不能为空！");
+       };
+    });
 
   	$("#deleteXmdk").click(function() {
 			$.mobile.changePage("#sure", "pop");
@@ -289,7 +401,7 @@ function addLayerToList(layer) {
         .append($('<a />', {
             text: layer.name
         })
-            .click(function() {
+        .click(function() {
                 $.mobile.changePage('#mappage');
                 if (layer.isBaseLayer) {
                     layer.map.setBaseLayer(layer);
@@ -299,6 +411,7 @@ function addLayerToList(layer) {
             })
         )
         .appendTo('#layerslist');
+        
     layer.events.on({
         'visibilitychanged': function() {
             $(item).toggleClass('checked');

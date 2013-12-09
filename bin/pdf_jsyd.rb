@@ -15,6 +15,8 @@ require 'pg'
 $conn = PGconn.open(:dbname=>'CS1204', :user=>'postgres', :password=>'brightechs', :host=>'localhost', :port=>'5432')
 $conn.exec("set standard_conforming_strings = off")
 
+JDDH = {"虞山镇"=>"52020913","海虞镇"=>"52560729,52560728,52560725","碧溪镇"=>"52293449","梅李镇"=>"52261966","辛庄镇"=>"52487020","古里镇"=>"52536922","支塘镇"=>"52511385","沙家浜镇"=>"52195712","董浜镇"=>"52684491","尚湖镇"=>"52418397","经济开发区"=>"52699829","东南开发区"=>"52579929","度假区"=>"51532293"}
+
 
 def gen_pdf(plan_id)
   
@@ -33,16 +35,29 @@ def gen_pdf(plan_id)
   ydmj = dd['ydmj']   || ""
   tdyt = dd['tdyt']   || ""
   jsgq = dd['jsgq']   || ""
-  tdzl = dd['tdzl']   || ""
+  tdzl = dd['dkwz']   || ""
   
-  puts ("#{dybt}, #{yddw}, #{xmmc}, #{pzwh}, #{gdfs}, #{ydmj}, #{tdyt}, #{jsgq}")
+  dz   = dd['dkdz']   || ""
+  xz   = dd['dkxz']   || ""
+  nz   = dd['dknz']   || ""
+  bz   = dd['dkbz']   || ""
+
+  cx   = dd['cx']     || ""
+  jbdh = JDDH[cx] || "0512-8888888"
   
-  xmfzr = "张三"
-  lxdh = "0512-11111111"
-  gldw =  "市国土资源局 虞山 分局"
-  jbdh = "0512-8888888"
+  #puts ("#{dybt}, #{yddw}, #{xmmc}, #{pzwh}, #{gdfs}, #{ydmj}, #{tdyt}, #{jsgq}")
+  
+  xmfzr = dd['lxr']   || ""
+  lxdh =  dd['dh']   || ""
+  
+  gldw =  "常数市国土资源局 #{cx} 分局"
   
   pdf_url = "./dady/yd_xkz/jsyd_#{plan_id}.pdf"
+  
+  img = $conn.exec("select id, yxmc, rq, tpjd, bz from gh_image where ydb_id = #{plan_id}")[0]
+  
+  img_path = "./dady/ghtx/#{img['yxmc']}"
+  puts img_path
   
   Prawn::Document.generate("#{pdf_url}") do 
     self.font_size = 12
@@ -62,11 +77,11 @@ def gen_pdf(plan_id)
       table([["<font size='14'>土地坐落</font>", "#{tdzl}"]], 
             :position => :center, :width => 520, :column_widths => [90, 430], :cell_style => {:padding => [15,0,15,15],:inline_format => true}) 
       table([
-          [{:content => "<font size='14'>　四\n\n　址\n\n　位\n\n　置</font>", :rowspan => 4}, "东：", {:content => "1x4", :rowspan => 4}, {:content => "规划图", :rowspan => 4}],
-          ["南："],
-          ["西："],
-          ["北："]],
-          :position => :center, :width => 520, :column_widths => [90, 200, 50, 180], :cell_style => {:padding => [15,0,15,15], :valign => :center, :inline_format => true})
+          [{:content => "<font size='14'>　四\n\n　址\n\n　位\n\n　置</font>", :rowspan => 4, :valign => :center,:inline_format => true}, "东：#{dz}", {:image => img_path, :fit => [220, 220], :rowspan => 4}],
+          ["南：#{nz}"],
+          ["西：#{xz}"],
+          ["北：#{bz}"]],
+          :position => :center, :width => 520, :column_widths => [90, 200, 230], :cell_style => {:padding => [15,0,15,15]})
       table([["<font size='14'>用地单位\n项目负责人</font>", "#{xmfzr}",  "<font size='14'>联系电话</font>", "#{lxdh}"],
              ["<font size='14'>跟踪管理\n单　　位</font>", "#{gldw}",  "<font size='14'>举报电话</font>", "#{jbdh}"]], 
              :position => :center, :width => 520, :column_widths => [90, 200, 50, 180], :cell_style => {:padding => [15,0,15,15],:valign => :center,:inline_format => true})

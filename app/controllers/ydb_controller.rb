@@ -103,6 +103,55 @@ class YdbController < ApplicationController
     puts("ruby ./dady/bin/pdf_jsyd.rb #{ydb_id}")
     system("ruby ./dady/bin/pdf_jsyd.rb #{ydb_id}")
     redirect_to "/images/dady/yd_xkz/jsyd_#{ydb_id}.pdf"
-  end  
+  end
   
+  #{"id"=>"1", "points"=>"LINESTRING(13418996.149928998 3714637.9865068975,13418756.089887 3714571.1041072025,13418672.486887002 3714786.083249198,13418838.498557998 3714841.0223633,13418855.219158 3714764.5853349976,13418996.149928998 3714637.9865068975)"}
+  def save_zb
+    poly_str = params['points'].gsub('LINESTRING','POLYGON(')+')'
+    User.find_by_sql("update ydb set the_geom = transform(geomFromText('#{poly_str}',900913),2364);")
+    render :text => 'Success'
+  end
+  
+  def load_xmdk
+    xmdk_str = User.find_by_sql("select x(transform(centroid(the_geom), 4326)) as lng, y(transform(centroid(the_geom), 4326)) as lat, st_asgeojson(transform(the_geom,4326)) as geom_string from ydb where id = #{params['id']};")
+    render :text => xmdk_str.to_json #.gsub('],[',"\n").gsub(/\[|\]/,'')
+  end
+  
+  
+  def upload_gh_file
+    u_id = params['user_id']
+    ydb_id = params['ydb_id']
+    
+    txt = ''
+    params.each do |k,v|
+      logger.debug("K: #{k} ,V: #{v}")
+
+      if k.include?("files")
+        pathname = "./dady/ghtx/#{ydb_id}_#{v[0].original_filename}"
+        ff = File.new(pathname,"w+")
+        ff.write(v[0].tempfile.read)
+        ff.close
+
+        system ("convert #{pathname} #{pathname.gsub(/PNG|JPG/i,'jpg')}")
+
+        yxmc = "#{ydb_id}_#{v[0].original_filename}"
+        
+        img_id = User.find_by_sql("insert into gh_image (ydb_id, yxmc, rq) values (#{ydb_id}, '#{yxmc}', TIMESTAMP '#{Time.now.strftime('%Y-%m-%d %H:%m:%S')}') returning id;")[0].id
+        
+        @img = User.find_by_sql("select id, yxmc, rq, tpjd, bz from gh_image where id = '#{img_id}';")[0];
+        txt = @img.to_json
+      end
+    end
+    render :text => txt
+  end
+  
+  def del_gh_photo
+    user = User.find_by_sql("delete from gh_image where id = #{params['id']};")
+    render :text => 'Success'
+  end
+  
+  def get_gh_list
+    @imgs = User.find_by_sql("select id, yxmc, rq, tpjd, bz from gh_image where ydb_id = #{params['id']}");
+    render :text => @imgs.to_json
+  end
 end

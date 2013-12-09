@@ -15,7 +15,6 @@
 <link rel="stylesheet" href="/jquery-ea/themes/bootstrap/easyui.css" type="text/css">
 <link rel="stylesheet" href="/jquery-ea/themes/icon.css" type="text/css" >
 
-
 <link rel="stylesheet" href="/photoswipe/photoswipe.css" type="text/css">
 <script src="/photoswipe/lib/klass.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/photoswipe/code.photoswipe-3.0.5.js" type="text/javascript" charset="utf-8"></script>
@@ -27,6 +26,8 @@
 <script src="/jquery-up/js/vendor/jquery.ui.widget.js" type="text/javascript"></script>
 <script src="/jquery-up/js/jquery.iframe-transport.js" type="text/javascript"></script>
 <script src="/jquery-up/js/jquery.fileupload.js" type="text/javascript"></script>
+
+<script src="/proj4js/lib/proj4js.js"></script>
 
 <!-- page related style-->
 <style type=text/css> 
@@ -49,12 +50,12 @@
   .gallery li img { display: block; width: 100%; height: auto; }
 
   .ui-buttonset .ui-button {
-		padding-top:1px;
-		padding-bottom:1px;
-		margin-bottom:3px;
-	}
-	
-	fieldset {
+    padding-top:1px;
+    padding-bottom:1px;
+    margin-bottom:3px;
+  }
+  
+  fieldset {
     border:1px solid #CCC;
     padding-top:5px;
   }
@@ -66,7 +67,7 @@
   <header>
     <div id="yl-main-header">
       <div class="yl-header-content">
-				<a href="/"><img src="/demotime/images/logo.png" title="用地监管"  style="margin-top:15px" ></a>
+        <a href="/ydb"><img src="/demotime/images/logo.png" title="用地监管"  style="margin-top:15px" ></a>
         <nav class="user-status">
           <ul>
             <li>
@@ -98,9 +99,10 @@
       <ul class="nav nav-tabs" id="myTab" >
         <li id="li1" class='active'><a href="#" data-toggle="tab">用地情况表</a></li>
         <li id="li2"><a href="#" data-toggle="tab">地理信息</a></li>
+        <li id="li3"><a href="#" data-toggle="tab">图片信息</a></li>
       </ul>
       <div style="float:right; font-size:18px;  width:100px; margin-right:-20px; margin-top:-40px">
-        <input id="print_report" class="btn btn-primary btn-small"  type="submit" data-theme="e" value="打印预览">
+        <input id="print_report" class="btn btn-primary btn-small"  type="submit" data-theme="e" value="打印许可证">
       </div>
       <div>
         <div id="tab1" class="tab-panel active" >
@@ -117,45 +119,44 @@
               <p align="right">城乡:</p>
             </div>  
             <div class="grid_4">
-							<select data-native-menu=false data-theme="c" data-mini="false" name="cx" id='cx' style="width:200px">
+              <select data-native-menu=false data-theme="c" data-mini="false" name="cx" id='cx' style="width:200px">
 
-								<option value="虞山镇">  虞山镇  </option>
-								<option value="古里">  古里   </option>
-								<option value="支塘">  支塘   </option>
-								<option value="沙家浜">  沙家浜  </option>
-								<option value="梅李">  梅李   </option>
-								<option value="董浜">  董浜   </option>
-								<option value="碧溪">  碧溪   </option>
-								<option value="尚湖">  尚湖   </option>
-								<option value="海虞">  海虞   </option>
-								<option value="辛庄">  辛庄   </option>
-								<option value="林场">  林场   </option>
-								<option value="沿江">  沿江   </option>
-								<option value="东南">  东南   </option>
-								<option value="服装城">  服装城  </option>
-								<option value="城区">  城区   </option>
+                <option value="虞山镇">  虞山镇  </option>
+                <option value="古里镇">  古里镇   </option>
+                <option value="支塘镇">  支塘镇   </option>
+                <option value="沙家浜镇">  沙家浜镇  </option>
+                <option value="梅李镇">  梅李镇   </option>
+                <option value="董浜镇">  董浜镇   </option>
+                <option value="碧溪镇">  碧溪镇  </option>
+                <option value="尚湖镇">  尚湖镇   </option>
+                <option value="海虞镇">  海虞镇   </option>
+                <option value="辛庄镇">  辛庄镇   </option>
+                <option value="林场镇">  林场镇   </option>
+                <option value="经济开发区">  经济开发区   </option>
+                <option value="东南开发区">  东南开发区   </option>
+                <option value="度假区">  度假区   </option>
 
-							</select>
+              </select>
             </div>     
             <div class="grid_2">
               <p align="right" >供地方式: </p>
             </div>
             <div class="grid_4">
-							<select data-native-menu=false data-theme="c" data-mini="false" name="gdfs" id="gdfs">
-							  <option value="挂牌出让">	  挂牌出让	</option>
-							  <option value="招标出让">	  招标出让	 </option>
-							  <option value="拍卖出让">	  拍卖出让	 </option>
-							  <option value="协议出让">	  协议出让	 </option>
-							  <option value="补办出让">	  补办出让	 </option>
-							  <option value="国有租赁">	  国有租赁	</option>
-							  <option value="挂牌流转转让"> 挂牌流转转让 </option>
-							  <option value="协议流转转让"> 协议流转转让 </option>
-							  <option value="协议流转租赁"> 协议流转租赁 </option>
-							  <option value="划拨">	 划拨		</option>
-							  <option value="使用">	 使用		 </option>
-							  <option value="宅基地">	 宅基地	 </option>
-							  <option value="其他">	 其他		 </option>
-							</select>
+              <select data-native-menu=false data-theme="c" data-mini="false" name="gdfs" id="gdfs">
+                <option value="挂牌出让">   挂牌出让  </option>
+                <option value="招标出让">   招标出让   </option>
+                <option value="拍卖出让">   拍卖出让   </option>
+                <option value="协议出让">   协议出让   </option>
+                <option value="补办出让">   补办出让   </option>
+                <option value="国有租赁">   国有租赁  </option>
+                <option value="挂牌流转转让"> 挂牌流转转让 </option>
+                <option value="协议流转转让"> 协议流转转让 </option>
+                <option value="协议流转租赁"> 协议流转租赁 </option>
+                <option value="划拨">  划拨   </option>
+                <option value="使用">  使用    </option>
+                <option value="宅基地">   宅基地   </option>
+                <option value="其他">  其他    </option>
+              </select>
             </div>                 
           </fieldset>
           <fieldset class="container_12">
@@ -163,13 +164,13 @@
               <p align="right">出让(流转)<br />方案批准日期: </p>
             </div>  
             <div class="grid_4">
-							<input name="tbrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+              <input name="tbrq" type="text" class="easyui-datebox" style="height:28px"></input> 
             </div>     
             <div class="grid_2">
               <p align="right">公告日期: </p>
             </div>
             <div class="grid_4">
-							<input name="ggrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+              <input name="ggrq" type="text" class="easyui-datebox" style="height:28px"></input> 
             </div>                 
           </fieldset>
           <fieldset class="container_12">
@@ -200,421 +201,457 @@
               <input name="cjqrsbh" type="text" />
             </div>                 
           </fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 合同(划拨决<br />定书)编号: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="htbh" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 批复文号: </p>
-						</div>
-						<div class="grid_4">
-							<input name="pfwh" id="pfwh" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 出让(流转)方: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="crf" id="crf" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 受让方: </p>
-						</div>
-						<div class="grid_4">
-								<input name="srf" id="srf" type="text"	/>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 联系人: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="lxr" id="lxr" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 电话: </p>
-						</div>
-						<div class="grid_4">
-								<input name="dh" id="dh" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 建设项目名称: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="jsxmmc" id="jsxmmc" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 地块位置: </p>
-						</div>
-						<div class="grid_4">
-								<input name="dkwz" id="dkwz" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 地块编号: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="dkbh" id="dkbh" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 宗地面积: </p>
-						</div>
-						<div class="grid_4">
-								<input name="zdmj" id="zdmj" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 地块东至: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="dkdz" id="dkdz" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 地块西至: </p>
-						</div>
-						<div class="grid_4">
-								<input name="dkxz" id="dkxz" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 地块南至: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="dknz" id="dknz" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 地块北至: </p>
-						</div>
-						<div class="grid_4">
-								<input name="dkbz" id="dkbz" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 评估价: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="pgj" id="pgj" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 底价(单价): </p>
-						</div>
-						<div class="grid_4">
-								<input name="dj_dj" id="dj_dj" type="text"	/>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 底价(亩/万元): </p>
-						</div>	
-						<div class="grid_4">
-								<input name="dj_mwj" id="dj_mwj" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 底价(起始总价): </p>
-						</div>
-						<div class="grid_4">
-								<input name="dj_qszj" id="dj_qszj" type="text"	/>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 底价(楼面价): </p>
-						</div>	
-						<div class="grid_4">
-								<input name="dj_lmj" id="dj_lmj" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 成交价(单价): </p>
-						</div>
-						<div class="grid_4">
-								<input name="cjj_dj" id="cjj_dj" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 成交价(亩/万元): </p>
-						</div>	
-						<div class="grid_4">
-								<input name="cjj_mwj" id="cjj_mwj" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 成交价(楼面价): </p>
-						</div>
-						<div class="grid_4">
-								<input name="cjj_lmj" id="cjj_lmj" type="text"	/>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 成交总价: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="cjzj" id="cjzj" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 溢价率: </p>
-						</div>
-						<div class="grid_4">
-								<input name="yjl" id="yjl" type="text"	/>
-						</div>					 
-					</fieldset>
-					
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 出让(流转)年限: </p>
-						</div>	
-						<div class="grid_4">
-								<input name="cr" id="cr" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 用途: </p>
-						</div>
-						<div class="grid_4">
-							<select data-native-menu=false data-theme="c" data-mini="false" name="yt" id='yt'>
-							  <option value="住宅用地"> 住宅用地	   </option>
-							  <option value="商服用地"> 商服用地		</option>
-							  <option value="工矿仓储用地"> 工矿仓储用地	  </option>
-							  <option value="交通运输用地"> 交通运输用地	  </option>
-							  <option value="水利设施用地"> 水利设施用地	  </option>
-							  <option value="电力工程"> 电力工程	   </option>
-							  <option value="公共管理与公共服务用地"> 公共管理与公共服务用地 </option>
-							  <option value="特殊用地"> 特殊用地		</option>
-							</select>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 产业门类: </p>
-						</div>	
-						<div class="grid_4">
-							<select data-native-menu=false data-theme="c" data-mini="false" name="cyml" id='cyml'>
-							</select>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 权属来源: </p>
-						</div>
-					  <div class="grid_4" id="qsly">
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 合同(划拨决<br />定书)编号: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="htbh" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 批复文号: </p>
+            </div>
+            <div class="grid_4">
+              <input name="pfwh" id="pfwh" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 出让(流转)方: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="crf" id="crf" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 受让方: </p>
+            </div>
+            <div class="grid_4">
+                <input name="srf" id="srf" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 联系人: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="lxr" id="lxr" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 电话: </p>
+            </div>
+            <div class="grid_4">
+                <input name="dh" id="dh" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 建设项目名称: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="jsxmmc" id="jsxmmc" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 地块位置: </p>
+            </div>
+            <div class="grid_4">
+                <input name="dkwz" id="dkwz" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 地块编号: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="dkbh" id="dkbh" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 宗地面积: </p>
+            </div>
+            <div class="grid_4">
+                <input name="zdmj" id="zdmj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 地块东至: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="dkdz" id="dkdz" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 地块西至: </p>
+            </div>
+            <div class="grid_4">
+                <input name="dkxz" id="dkxz" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 地块南至: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="dknz" id="dknz" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 地块北至: </p>
+            </div>
+            <div class="grid_4">
+                <input name="dkbz" id="dkbz" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 评估价: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="pgj" id="pgj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 底价(单价): </p>
+            </div>
+            <div class="grid_4">
+                <input name="dj_dj" id="dj_dj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 底价(亩/万元): </p>
+            </div>  
+            <div class="grid_4">
+                <input name="dj_mwj" id="dj_mwj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 底价(起始总价): </p>
+            </div>
+            <div class="grid_4">
+                <input name="dj_qszj" id="dj_qszj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 底价(楼面价): </p>
+            </div>  
+            <div class="grid_4">
+                <input name="dj_lmj" id="dj_lmj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 成交价(单价): </p>
+            </div>
+            <div class="grid_4">
+                <input name="cjj_dj" id="cjj_dj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 成交价(亩/万元): </p>
+            </div>  
+            <div class="grid_4">
+                <input name="cjj_mwj" id="cjj_mwj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 成交价(楼面价): </p>
+            </div>
+            <div class="grid_4">
+                <input name="cjj_lmj" id="cjj_lmj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 成交总价: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="cjzj" id="cjzj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 溢价率: </p>
+            </div>
+            <div class="grid_4">
+                <input name="yjl" id="yjl" type="text"  />
+            </div>           
+          </fieldset>
+          
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 出让(流转)年限: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="cr" id="cr" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 用途: </p>
+            </div>
+            <div class="grid_4">
+              <select data-native-menu=false data-theme="c" data-mini="false" name="yt" id='yt'>
+                <option value="住宅用地"> 住宅用地     </option>
+                <option value="商服用地"> 商服用地    </option>
+                <option value="工矿仓储用地"> 工矿仓储用地    </option>
+                <option value="交通运输用地"> 交通运输用地    </option>
+                <option value="水利设施用地"> 水利设施用地    </option>
+                <option value="电力工程"> 电力工程     </option>
+                <option value="公共管理与公共服务用地"> 公共管理与公共服务用地 </option>
+                <option value="特殊用地"> 特殊用地    </option>
+              </select>
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 产业门类: </p>
+            </div>  
+            <div class="grid_4">
+              <select data-native-menu=false data-theme="c" data-mini="false" name="cyml" id='cyml'>
+              </select>
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 权属来源: </p>
+            </div>
+            <div class="grid_4" id="qsly">
               <input id= "qsly_radio1" name="qsly" value="增量" type="radio" checked="true">
               <label for="qsly_radio1">增量</label>
               <input id= "qsly_radio2" name="qsly" value="存量" type="radio" >
               <label for="qsly_radio2">存量</label>
             </div>
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 投资体系: </p>	
-						</div>	
-					  <div class="grid_4" id="tztx">
-						  <input id ="tztx_radio1" name="tztx" value="内资" type="radio" checked="true">
-						  <label for="tztx_radio1">内资</label>
-						  <input id ="tztx_radio2" name="tztx" value="外资" type="radio">
-						  <label for="tztx_radio2">外资</label>
-            </div>						
-						<div class="grid_2">
-							<p align="right"> 保证金: </p>
-						</div>
-						<div class="grid_4">
-							<input name="bzj" id="bzj" type="text"	/>
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 约定交款时间: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="ydjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 实际交款时间: </p>
-						</div>
-						<div class="grid_4">
-							<input name="sjjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 滞纳金情况: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="znjqk" id="znjqk" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 欠款金额: </p>
-						</div>
-						<div class="grid_4">
-							<input name="qkje" id="qkje" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 未到期款: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="wdqk" id="wdqk" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 催缴情况: </p>
-						</div>
-						<div class="grid_4">
-							<input name="cjqk" id="cjqk" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 约定交地时间: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="ydjdsj" type="text" class="easyui-datebox" style="height:28px"></input> 							
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 实际交地时间: </p>
-						</div>
-						<div class="grid_4">
-							<input name="sjjdsj" type="text" class="easyui-datebox" style="height:28px"></input> 	
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 约定开工时间: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="ydkgsj" type="text" class="easyui-datebox" style="height:28px"></input> 	
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 实际开工时间: </p>
-						</div>
-						<div class="grid_4">
-							<input name="sjkgsj" type="text" class="easyui-datebox" style="height:28px"></input> 	
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 约定竣工时间: </p>	
-						</div>	
-						<div class="grid_4">
-							<input name="ydjgsj" type="text" class="easyui-datebox" style="height:28px"></input> 	
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 实际竣工时间: </p>
-						</div>
-						<div class="grid_4">
-							<input name="sjjgsj" type="text" class="easyui-datebox" style="height:28px"></input> 	
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 投资额: </p>
-						</div>	
-						<div class="grid_4">
-							<input name="tze" id="tze" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 注册资本: </p>
-						</div>
-						<div class="grid_4">
-							<input name="zczb" id="zczb" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 容积率: </p>
-						</div>	
-						<div class="grid_4">
-							<input name="rjl" id="rjl" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 建设密度: </p>
-						</div>
-						<div class="grid_4">
-							<input name="jsmd" id="jsmd" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 绿化率: </p>
-						</div>	
-						<div class="grid_4">
-							<input name="lhl" id="lhl" type="text"	/>
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 其他要求: </p>
-						</div>
-						<div class="grid_4">
-							<input name="qtyq" id="qtyq" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 可建建筑面积: </p>
-						</div>	
-						<div class="grid_4">
-							<input name="kjjzmj" id="kjjzmj" type="text"  />
-						</div>	   
-						<div class="grid_2">
-							<p align="right"> 中小套型比例: </p>
-						</div>
-						<div class="grid_4">
-							<input name="zxtxbl" id="zxtxbl" type="text"  />
-						</div>					 
-					</fieldset>
-					<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 中小套型面积: </p>
-						</div>	
-						<div class="grid_4">
-							<input name="zxtxmj" id="zxtxmj" type="text"  />
-						</div>	   
-				 
-					</fieldset>
-						<fieldset class="container_12">
-						<div class="grid_2">
-							<p align="right"> 备注: </p>
-						</div>
-						<div class="grid_10">
-								<input name="bz" id="bz" type="text"  />
-						</div>
-					</fieldset>
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 投资体系: </p>  
+            </div>  
+            <div class="grid_4" id="tztx">
+              <input id ="tztx_radio1" name="tztx" value="内资" type="radio" checked="true">
+              <label for="tztx_radio1">内资</label>
+              <input id ="tztx_radio2" name="tztx" value="外资" type="radio">
+              <label for="tztx_radio2">外资</label>
+            </div>            
+            <div class="grid_2">
+              <p align="right"> 保证金: </p>
+            </div>
+            <div class="grid_4">
+              <input name="bzj" id="bzj" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 约定交款时间: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="ydjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 实际交款时间: </p>
+            </div>
+            <div class="grid_4">
+              <input name="sjjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 滞纳金情况: </p> 
+            </div>  
+            <div class="grid_4">
+              <input name="znjqk" id="znjqk" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 欠款金额: </p>
+            </div>
+            <div class="grid_4">
+              <input name="qkje" id="qkje" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 未到期款: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="wdqk" id="wdqk" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 催缴情况: </p>
+            </div>
+            <div class="grid_4">
+              <input name="cjqk" id="cjqk" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 约定交地时间: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="ydjdsj" type="text" class="easyui-datebox" style="height:28px"></input>              
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 实际交地时间: </p>
+            </div>
+            <div class="grid_4">
+              <input name="sjjdsj" type="text" class="easyui-datebox" style="height:28px"></input>  
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 约定开工时间: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="ydkgsj" type="text" class="easyui-datebox" style="height:28px"></input>  
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 实际开工时间: </p>
+            </div>
+            <div class="grid_4">
+              <input name="sjkgsj" type="text" class="easyui-datebox" style="height:28px"></input>  
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 约定竣工时间: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="ydjgsj" type="text" class="easyui-datebox" style="height:28px"></input>  
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 实际竣工时间: </p>
+            </div>
+            <div class="grid_4">
+              <input name="sjjgsj" type="text" class="easyui-datebox" style="height:28px"></input>  
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 投资额: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="tze" id="tze" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 注册资本: </p>
+            </div>
+            <div class="grid_4">
+              <input name="zczb" id="zczb" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 容积率: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="rjl" id="rjl" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 建设密度: </p>
+            </div>
+            <div class="grid_4">
+              <input name="jsmd" id="jsmd" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 绿化率: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="lhl" id="lhl" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 其他要求: </p>
+            </div>
+            <div class="grid_4">
+              <input name="qtyq" id="qtyq" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 可建建筑面积: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="kjjzmj" id="kjjzmj" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 中小套型比例: </p>
+            </div>
+            <div class="grid_4">
+              <input name="zxtxbl" id="zxtxbl" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 中小套型面积: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="zxtxmj" id="zxtxmj" type="text"  />
+            </div>     
+         
+          </fieldset>
+            <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 备注: </p>
+            </div>
+            <div class="grid_10">
+                <input name="bz" id="bz" type="text"  />
+            </div>
+          </fieldset>
             
         </div> 
         <div id="tab2" class="tab-panel">
           <div class='row' style="margin-top:5px">
             <div class="span12">
                 <div class="alert alert-info"><strong>地理信息</strong></div>
-	              <div style="float:right; font-size:18px;  width:100px; margin-right:-20px; margin-top:-50px">
-	                <span class="btn btn-success fileinput-button">
-	                    <span>导入坐标</span>
-	                    <input id="add_zb" type="file" name="files[]" multiple >
-	                </span>
-	              </div>
+                <div style="float:right; font-size:18px;  width:100px; margin-right:80px; margin-top:-50px">
+                  <span class="btn btn-success fileinput-button">
+                      <span>刷新地块</span>
+                      <input name='refresh_zb' type="submit">
+                  </span>
+                </div>
+                <div style="float:right; font-size:18px;  width:100px; margin-right:-20px; margin-top:-50px">
+                  <span class="btn btn-success fileinput-button">
+                      <span>保存坐标</span>
+                      <!--input id="add_zb" type="file" name="files[]" multiple -->
+                      <input name='save_zb' type="submit">
+                  </span>
+                </div>
             </div>
           </div>
-					<div class='row'>
-						<div style="margin-left:20px">
-							<div id='qt_grid' style="width:940px;height:450px;scroll:auto"></div>
-						</div>	
-					</div>	
-          <div class='row' hidden='true'>
-            <div class="span4">
-							<div id="tt_grid" style="width:300px;height:450px"> 
-		          </div>
-            </div>
+          <div class='row' hidden="true">
+            <div style="margin-left:20px">
+              <div id='qt_grid' style="width:940px;height:450px;scroll:auto">qt_grid</div>
+            </div>  
+          </div>  
+          <div class='row'>
             <div class="span8">
-              <div class="side-box">
-                <div id="map_canvas" style="height:430px; background-color:#FFF;">地图加载中，请稍候...</div>
+              <div style="height:450px; background-color:#FFF; border='1'">
+                <div id="map_canvas"></div>
+              </div>
+            </div>
+            <div class="span4">
+              <div id="" style="width:300px;height:450px">
+                <textarea id ="zb_info_id"  name="zb_info" style="width:300px;height:450px;"></textarea> 
               </div>
             </div>
           </div>
         </div>
+        <div id="tab3" class="tab-panel" >
+          <div class='row' style="margin-top:5px">
+            <div class="span12">
+              <div class="alert alert-info"><strong>用地照片</strong></div>
+              <div style="float:right; font-size:18px;  width:100px; margin-right:60px; margin-top:-50px">
+                <input id="delete_photo1" class="btn btn-warning btn-small"  type="submit"value="删除图片">
+              </div>
+              <div style="float:right; font-size:18px;  width:100px; margin-right:-20px; margin-top:-50px">
+                <span class="btn btn-success fileinput-button">
+                    <span>添加图片</span>
+                    <input id="fileupload1" type="file" name="files[]" multiple >
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class='row'>
+            <div class="span12">
+              <div class="border_box">
+                <div>
+                  <ul id="Gallery1" class="gallery">
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>  
+        </div>
+
+
       </div>
     </div>
     
@@ -623,6 +660,23 @@
 
 <div hidden="true">
   <input name="ydb_id" type="text"  />
+</div>
+
+<div class="modal" id="photo_delete" tabindex="-1" style="display:none; width:480px" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <span><h3 id="myModalLabel">删除照片</h3>
+    <h5 style="color:grey; margin-left:10px">直接点击剪刀图标删除</h5><span>
+  </div>
+  <div class="modal-body">
+    <div id='pd_grid' style="width:450px;height:300px"></div>
+    <div id="save_info" style="margin-left:100px;color:red"></div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+      <i class="icon-ok"></i>&emsp;关闭
+    </button>
+  </div>
 </div>
 
 <!-- ui-dialog -->
@@ -657,7 +711,7 @@
 
 
 <!-- after page loaded function-->
-<link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css" charset="utf-8">
 <script src="http://maps.google.com/maps/api/js?v=3.6&amp;sensor=false&amp;language=zh-CN"></script>
 <script src="/OpenLayers/OpenLayers.js"></script>
 
@@ -665,6 +719,7 @@
 
   var map;
   var poly;
+  var bbLayer;
   
   function changeTitle(title) { document.title = title; }
   
@@ -696,30 +751,47 @@
     });
   };
   
-	function showTab2() {
-		
-	}
+  function showTab2() {
+    initMap();
+  };
+
 
  //tab分页
   $('#myTab li:eq(0) a').click(function (e)  {
     $('#li1').addClass('active');
     $('#li2').removeClass('active');
+    $('#li3').removeClass('active');
     
     $('#tab2').hide();
+    $('#tab3').hide();
     $('#tab1').show();
+
   });
 
   $('#myTab li:eq(1) a').click(function (e)  {
     $('#li2').addClass('active');
     $('#li1').removeClass('active');
+    $('#li3').removeClass('active');
     
     $('#tab1').hide();
+		$('#tab3').hide();
     $('#tab2').show();
 
-		showTab2();
+    showTab2();
   });
 
-  
+  $('#myTab li:eq(2) a').click(function (e)  {
+    $('#li3').addClass('active');
+    $('#li1').removeClass('active');
+    $('#li2').removeClass('active');
+    
+    $('#tab1').hide();
+		$('#tab2').hide();
+    $('#tab3').show();
+
+    showTab3();
+  });
+
   function setup() {
     // radio button setup
     $("input[name='qsly']").button ();
@@ -757,67 +829,67 @@
   
   $('#save_ydb').on('click', function(){
     //alert ("save clicked!");
- 		//console.log('save button clicked!');
-		var cx		 = $.trim($("select[name='cx']").val());
-		var gdfs	 = $.trim($("select[name='gdfs']").val());
-		var crfapzrq = $.trim($("input[name='crfapzrq']").val());
-		var ggrq	 = $.trim($("input[name='ggrq']").val());
-		var cjrq	 = $.trim($("input[name='cjrq']").val());
-		var qdhtrq	 = $.trim($("input[name='qdhtrq']").val());
-		var gdrq	 = $.trim($("input[name='gdrq']").val());
-		var cjqrsbh	 = $.trim($("input[name='cjqrsbh']").val());
-		var htbh	 = $.trim($("input[name='htbh']").val());
-		var pfwh	 = $.trim($("input[name='pfwh']").val());
-		var crf		 = $.trim($("input[name='crf']").val());
-		var srf		 = $.trim($("input[name='srf']").val());
-		var lxr		 = $.trim($("input[name='lxr']").val());
-		var dh		 = $.trim($("input[name='dh']").val());
-		var jsxmmc	 = $.trim($("input[name='jsxmmc']").val());
-		var dkwz	 = $.trim($("input[name='dkwz']").val());
-		var dkbh	 = $.trim($("input[name='dkbh']").val());
-		var zdmj	 = $.trim($("input[name='zdmj']").val());
-		var dkdz	 = $.trim($("input[name='dkdz']").val());
-		var dkxz	 = $.trim($("input[name='dkxz']").val());
-		var dknz	 = $.trim($("input[name='dknz']").val());
-		var dkbz	 = $.trim($("input[name='dkbz']").val());
-		var pgj		 = $.trim($("input[name='pgj']").val());
-		var dj_dj	 = $.trim($("input[name='dj_dj']").val());
-		var dj_mwj	 = $.trim($("input[name='dj_mwj']").val());
-		var dj_lmj	 = $.trim($("input[name='dj_lmj']").val());
-		var cjj_mwj	 = $.trim($("input[name='cjj_mwj']").val());
-		var cjj_lmj	 = $.trim($("input[name='cjj_lmj']").val());
-		var cjzj	 = $.trim($("input[name='cjzj']").val());
-		var yjl		 = $.trim($("input[name='yjl']").val());
-		var cr		 = $.trim($("input[name='cr']").val());
-		var yt		 = $.trim($("select[name='yt']").val());
-		var cyml	 = $.trim($("select[name='cyml']").val());
-		var qsly	 = $.trim($("input[name='qsly']:checked").val());
-		var tztx	 = $.trim($("input[name='tztx']:checked").val());
-		var bzj		 = $.trim($("input[name='bzj']").val());
-		var ydjkrq	 = $.trim($("input[name='ydjkrq']").val());
-		var sjjkrq	 = $.trim($("input[name='sjjkrq']").val());
-		var znjqk	 = $.trim($("input[name='znjqk']").val());
-		var qkje	 = $.trim($("input[name='qkje']").val());
-		var wdqk	 = $.trim($("input[name='wdqk']").val());
-		var cjqk	 = $.trim($("input[name='cjqk']").val());
-		var ydjdsj	 = $.trim($("input[name='ydjdsj']").val());
-		var sjjdsj	 = $.trim($("input[name='sjjdsj']").val());
-		var ydkgsj	 = $.trim($("input[name='ydkgsj']").val());
-		var sjkgsj	 = $.trim($("input[name='sjkgsj']").val());
-		var ydjgsj	 = $.trim($("input[name='ydjgsj']").val());
-		var sjjgsj	 = $.trim($("input[name='sjjgsj']").val());
-		var tze		 = $.trim($("input[name='tze']").val());
-		var zczb	 = $.trim($("input[name='zczb']").val());
-		var rjl		 = $.trim($("input[name='rjl']").val());
-		var jsmd	 = $.trim($("input[name='jsmd']").val());
-		var lhl		 = $.trim($("input[name='lhl']").val());
-		var qtyq	 = $.trim($("input[name='qtyq']").val());
-		var kjjzmj	 = $.trim($("input[name='kjjzmj']").val());
-		var zxtxbl	 = $.trim($("input[name='zxtxbl']").val());
-		var zxtxmj	 = $.trim($("input[name='zxtxmj']").val());
-		var bz		 = $.trim($("input[name='bz']").val());	 
-		var ydb_id	 = $.trim($("input[name='ydb_id']").val());
-		var pars = {cx:cx, gdfs:gdfs, crfapzrq:crfapzrq, ggrq:ggrq, cjrq:cjrq, qdhtrq:qdhtrq, gdrq:gdrq, cjqrsbh:cjqrsbh, htbh:htbh, pfwh:pfwh, crf:crf, srf:srf, lxr:lxr, dh:dh, jsxmmc:jsxmmc, dkwz:dkwz, dkbh:dkbh, zdmj:zdmj, dkdz:dkdz, dkxz:dkxz, dknz:dknz, dkbz:dkbz, pgj:pgj, dj_dj:dj_dj, dj_mwj:dj_mwj, dj_lmj:dj_lmj, cjj_mwj:cjj_mwj, cjj_lmj:cjj_lmj, cjzj:cjzj, yjl:yjl, cr:cr, yt:yt, cyml:cyml, qsly:qsly, tztx:tztx, bzj:bzj, ydjkrq:ydjkrq, sjjkrq:sjjkrq, znjqk:znjqk, qkje:qkje, wdqk:wdqk, cjqk:cjqk, ydjdsj:ydjdsj, sjjdsj:sjjdsj, ydkgsj:ydkgsj, sjkgsj:sjkgsj, ydjgsj:ydjgsj, sjjgsj:sjjgsj, tze:tze, zczb:zczb, rjl:rjl, jsmd:jsmd, lhl:lhl, qtyq:qtyq, kjjzmj:kjjzmj, zxtxbl:zxtxbl, zxtxmj:zxtxmj, bz:bz, ydb_id:ydb_id};
+    //console.log('save button clicked!');
+    var cx     = $.trim($("select[name='cx']").val());
+    var gdfs   = $.trim($("select[name='gdfs']").val());
+    var crfapzrq = $.trim($("input[name='crfapzrq']").val());
+    var ggrq   = $.trim($("input[name='ggrq']").val());
+    var cjrq   = $.trim($("input[name='cjrq']").val());
+    var qdhtrq   = $.trim($("input[name='qdhtrq']").val());
+    var gdrq   = $.trim($("input[name='gdrq']").val());
+    var cjqrsbh  = $.trim($("input[name='cjqrsbh']").val());
+    var htbh   = $.trim($("input[name='htbh']").val());
+    var pfwh   = $.trim($("input[name='pfwh']").val());
+    var crf    = $.trim($("input[name='crf']").val());
+    var srf    = $.trim($("input[name='srf']").val());
+    var lxr    = $.trim($("input[name='lxr']").val());
+    var dh     = $.trim($("input[name='dh']").val());
+    var jsxmmc   = $.trim($("input[name='jsxmmc']").val());
+    var dkwz   = $.trim($("input[name='dkwz']").val());
+    var dkbh   = $.trim($("input[name='dkbh']").val());
+    var zdmj   = $.trim($("input[name='zdmj']").val());
+    var dkdz   = $.trim($("input[name='dkdz']").val());
+    var dkxz   = $.trim($("input[name='dkxz']").val());
+    var dknz   = $.trim($("input[name='dknz']").val());
+    var dkbz   = $.trim($("input[name='dkbz']").val());
+    var pgj    = $.trim($("input[name='pgj']").val());
+    var dj_dj  = $.trim($("input[name='dj_dj']").val());
+    var dj_mwj   = $.trim($("input[name='dj_mwj']").val());
+    var dj_lmj   = $.trim($("input[name='dj_lmj']").val());
+    var cjj_mwj  = $.trim($("input[name='cjj_mwj']").val());
+    var cjj_lmj  = $.trim($("input[name='cjj_lmj']").val());
+    var cjzj   = $.trim($("input[name='cjzj']").val());
+    var yjl    = $.trim($("input[name='yjl']").val());
+    var cr     = $.trim($("input[name='cr']").val());
+    var yt     = $.trim($("select[name='yt']").val());
+    var cyml   = $.trim($("select[name='cyml']").val());
+    var qsly   = $.trim($("input[name='qsly']:checked").val());
+    var tztx   = $.trim($("input[name='tztx']:checked").val());
+    var bzj    = $.trim($("input[name='bzj']").val());
+    var ydjkrq   = $.trim($("input[name='ydjkrq']").val());
+    var sjjkrq   = $.trim($("input[name='sjjkrq']").val());
+    var znjqk  = $.trim($("input[name='znjqk']").val());
+    var qkje   = $.trim($("input[name='qkje']").val());
+    var wdqk   = $.trim($("input[name='wdqk']").val());
+    var cjqk   = $.trim($("input[name='cjqk']").val());
+    var ydjdsj   = $.trim($("input[name='ydjdsj']").val());
+    var sjjdsj   = $.trim($("input[name='sjjdsj']").val());
+    var ydkgsj   = $.trim($("input[name='ydkgsj']").val());
+    var sjkgsj   = $.trim($("input[name='sjkgsj']").val());
+    var ydjgsj   = $.trim($("input[name='ydjgsj']").val());
+    var sjjgsj   = $.trim($("input[name='sjjgsj']").val());
+    var tze    = $.trim($("input[name='tze']").val());
+    var zczb   = $.trim($("input[name='zczb']").val());
+    var rjl    = $.trim($("input[name='rjl']").val());
+    var jsmd   = $.trim($("input[name='jsmd']").val());
+    var lhl    = $.trim($("input[name='lhl']").val());
+    var qtyq   = $.trim($("input[name='qtyq']").val());
+    var kjjzmj   = $.trim($("input[name='kjjzmj']").val());
+    var zxtxbl   = $.trim($("input[name='zxtxbl']").val());
+    var zxtxmj   = $.trim($("input[name='zxtxmj']").val());
+    var bz     = $.trim($("input[name='bz']").val());  
+    var ydb_id   = $.trim($("input[name='ydb_id']").val());
+    var pars = {cx:cx, gdfs:gdfs, crfapzrq:crfapzrq, ggrq:ggrq, cjrq:cjrq, qdhtrq:qdhtrq, gdrq:gdrq, cjqrsbh:cjqrsbh, htbh:htbh, pfwh:pfwh, crf:crf, srf:srf, lxr:lxr, dh:dh, jsxmmc:jsxmmc, dkwz:dkwz, dkbh:dkbh, zdmj:zdmj, dkdz:dkdz, dkxz:dkxz, dknz:dknz, dkbz:dkbz, pgj:pgj, dj_dj:dj_dj, dj_mwj:dj_mwj, dj_lmj:dj_lmj, cjj_mwj:cjj_mwj, cjj_lmj:cjj_lmj, cjzj:cjzj, yjl:yjl, cr:cr, yt:yt, cyml:cyml, qsly:qsly, tztx:tztx, bzj:bzj, ydjkrq:ydjkrq, sjjkrq:sjjkrq, znjqk:znjqk, qkje:qkje, wdqk:wdqk, cjqk:cjqk, ydjdsj:ydjdsj, sjjdsj:sjjdsj, ydkgsj:ydkgsj, sjkgsj:sjkgsj, ydjgsj:ydjgsj, sjjgsj:sjjgsj, tze:tze, zczb:zczb, rjl:rjl, jsmd:jsmd, lhl:lhl, qtyq:qtyq, kjjzmj:kjjzmj, zxtxbl:zxtxbl, zxtxmj:zxtxmj, bz:bz, ydb_id:ydb_id};
    
     $.ajax({
       type: "POST",
@@ -835,8 +907,8 @@
   
   $('#print_report').on('click', function(){
     //alert('pdf预览！');
-		ydb_id = $.trim($("input[name='ydb_id']").val());
-		pars = {id:ydb_id}
+    ydb_id = $.trim($("input[name='ydb_id']").val());
+    pars = {id:ydb_id}
     $.ajax({
       type: "POST",
       url: "/ydb/jsyd_pdf",
@@ -844,7 +916,7 @@
       cache: false,
       dataType: "text",
       success: function(data){
-				var new_url = data;
+        var new_url = data;
         window.open(new_url,'','height=500,width=800,top=150, left=100,scrollbars=yes,status=yes');
       }
     });
@@ -852,97 +924,409 @@
   });
   
 
-	$('#yt').on('change', function() {
-	  //alert( this.value );
-		if (this.name=="yt") {
-			if (this.value == "住宅用地") {
-				$('#cyml').empty().append('<option value="别墅高档公寓">别墅高档公寓</option><option value="普通商品房">普通商品房</option><option value="经济适用房">经济适用房</option><option value="公共租赁房">公共租赁房</option><option value="限价商品房">限价商品房</option><option value="其他">其他</option>').
-				selectmenu('refresh');
-			} else if (this.value == "工矿仓储用地"){ //工业、仓储、标准厂房
-				$('#cyml').empty().append('<option value="工业">工业</option><option value="仓储">仓储</option><option value="标准厂房">标准厂房</option>').
-				selectmenu('refresh'); //机关团体用地、新闻出版用地、科教用地、医卫慈善用地、文体娱乐用地、公共设施用地、公园与绿地、风景名胜设施用地
-			} else if (this.value == "公共管理与公共服务用地") {
-				$('#cyml').empty().append('<option value="机关团体用地">机关团体用地</option><option value="新闻出版用地">新闻出版用地</option><option value="科教用地">科教用地</option>').append('<option value="医卫慈善用地">医卫慈善用地</option><option value="文体娱乐用地">文体娱乐用地</option><option value="公共设施用地">公共设施用地</option>').append('<option value="公园与绿地">公园与绿地</option><option value="风景名胜设施用地">风景名胜设施用地</option>').
-				selectmenu('refresh');
-			} else {
-				var option_string = '<option value="'+this.value+'">'+this.value+'</option>';
-				$('#cyml').empty().append(option_string).selectmenu('refresh');
-			}
-		}
-	})
+  $('#yt').on('change', function() {
+    //alert( this.value );
+    if (this.name=="yt") {
+      if (this.value == "住宅用地") {
+        $('#cyml').empty().append('<option value="别墅高档公寓">别墅高档公寓</option><option value="普通商品房">普通商品房</option><option value="经济适用房">经济适用房</option><option value="公共租赁房">公共租赁房</option><option value="限价商品房">限价商品房</option><option value="其他">其他</option>').
+        selectmenu('refresh');
+      } else if (this.value == "工矿仓储用地"){ //工业、仓储、标准厂房
+        $('#cyml').empty().append('<option value="工业">工业</option><option value="仓储">仓储</option><option value="标准厂房">标准厂房</option>').
+        selectmenu('refresh'); //机关团体用地、新闻出版用地、科教用地、医卫慈善用地、文体娱乐用地、公共设施用地、公园与绿地、风景名胜设施用地
+      } else if (this.value == "公共管理与公共服务用地") {
+        $('#cyml').empty().append('<option value="机关团体用地">机关团体用地</option><option value="新闻出版用地">新闻出版用地</option><option value="科教用地">科教用地</option>').append('<option value="医卫慈善用地">医卫慈善用地</option><option value="文体娱乐用地">文体娱乐用地</option><option value="公共设施用地">公共设施用地</option>').append('<option value="公园与绿地">公园与绿地</option><option value="风景名胜设施用地">风景名胜设施用地</option>').
+        selectmenu('refresh');
+      } else {
+        var option_string = '<option value="'+this.value+'">'+this.value+'</option>';
+        $('#cyml').empty().append(option_string).selectmenu('refresh');
+      }
+    }
+  })
     
   function loadYdb() {
     <% if @ydb %>
       console.log('got here');
-		  //$("select[name='cx']").val('<%= @ydb.cx %>');
-			$("select[name='cx']").val('<%= @ydb.cx %>');
-		  $("select[name='gdfs']").val('<%= @ydb.gdfs %>');
-			
-		  $("input[name='crfapzrq']").val('<%= @ydb.crfapzrq %>'.replace(' 00:00:00',''));
-			$("input[name='ggrq']").val('<%= @ydb.ggrq %>'.replace(' 00:00:00',''));
-			$("input[name='cjrq']").val('<%= @ydb.cjrq %>'.replace(' 00:00:00',''));
-			$("input[name='qdhtrq']").val('<%= @ydb.qdhtrq %>'.replace(' 00:00:00',''));
-			$("input[name='gdrq']").val('<%= @ydb.gdrq %>'.replace(' 00:00:00',''));
-			$("input[name='cjqrsbh']").val('<%= @ydb.cjqrsbh %>');
-			$("input[name='htbh']").val('<%= @ydb.htbh %>');
-			$("input[name='pfwh']").val('<%= @ydb.pfwh %>');
-			$("input[name='crf']").val('<%= @ydb.crf %>');
-			$("input[name='srf']").val('<%= @ydb.srf %>');
-			$("input[name='lxr']").val('<%= @ydb.lxr %>');
-			$("input[name='dh']").val('<%= @ydb.dh %>');
-			$("input[name='jsxmmc']").val('<%= @ydb.jsxmmc %>');
-			$("input[name='dkwz']").val('<%= @ydb.dkwz %>');
-			$("input[name='dkbh']").val('<%= @ydb.dkbh %>');
-			$("input[name='zdmj']").val('<%= @ydb.zdmj %>');
-			$("input[name='dkdz']").val('<%= @ydb.dkdz %>');
-			$("input[name='dkxz']").val('<%= @ydb.dkxz %>');
-			$("input[name='dknz']").val('<%= @ydb.dknz %>');
-			$("input[name='dkbz']").val('<%= @ydb.dkbz %>');
-			$("input[name='pgj']").val('<%= @ydb.pgj %>');
-			$("input[name='dj_dj']").val('<%= @ydb.dj_dj %>');
-			$("input[name='dj_mwj']").val('<%= @ydb.dj_mwj %>');
-			$("input[name='dj_lmj']").val('<%= @ydb.dj_lmj %>');
-			$("input[name='cjj_mwj']").val('<%= @ydb.cjj_mwj %>');
-			$("input[name='cjj_lmj']").val('<%= @ydb.cjj_lmj %>');
-			$("input[name='cjzj']").val('<%= @ydb.cjzj %>');
-			$("input[name='yjl']").val('<%= @ydb.yjl %>');
-			$("input[name='cr']").val('<%= @ydb.cr %>');
-			$("select[name='yt']").val('<%= @ydb.yt %>');
-			$("select[name='cyml']").val('<%= @ydb.cyml %>');
-			$("input[name='qsly'][value='<%= @ydb.qsly %>']").attr('checked', true);
-			$("input[name='tztx'][value='<%= @ydb.tztx %>']").attr('checked', true);
-			$("input[name='bzj']").val('<%= @ydb.bzj %>');
-			$("input[name='ydjkrq']").val('<%= @ydb.ydjkrq %>'.replace(' 00:00:00',''));
-			$("input[name='sjjkrq']").val('<%= @ydb.sjjkrq %>'.replace(' 00:00:00',''));
-			$("input[name='znjqk']").val('<%= @ydb.znjqk %>');
-			$("input[name='qkje']").val('<%= @ydb.qkje %>');
-			$("input[name='wdqk']").val('<%= @ydb.wdqk %>');
-			$("input[name='cjqk']").val('<%= @ydb.cjqk %>');
-			$("input[name='ydjdsj']").val('<%= @ydb.ydjdsj %>'.replace(' 00:00:00',''));
-			$("input[name='sjjdsj']").val('<%= @ydb.sjjdsj %>'.replace(' 00:00:00',''));
-			$("input[name='ydkgsj']").val('<%= @ydb.ydkgsj %>'.replace(' 00:00:00',''));
-			$("input[name='sjkgsj']").val('<%= @ydb.sjkgsj %>'.replace(' 00:00:00',''));
-			$("input[name='ydjgsj']").val('<%= @ydb.ydjgsj %>'.replace(' 00:00:00',''));
-			$("input[name='sjjgsj']").val('<%= @ydb.sjjgsj %>'.replace(' 00:00:00',''));
-			$("input[name='tze']").val('<%= @ydb.tze %>');
-			$("input[name='zczb']").val('<%= @ydb.zczb %>');
-			$("input[name='rjl']").val('<%= @ydb.rjl %>');
-			$("input[name='jsmd']").val('<%= @ydb.jsmd %>');
-			$("input[name='lhl']").val('<%= @ydb.lhl %>');
-			$("input[name='qtyq']").val('<%= @ydb.qtyq %>');
-			$("input[name='kjjzmj']").val('<%= @ydb.kjjzmj %>');
-			$("input[name='zxtxbl']").val('<%= @ydb.zxtxbl %>');
-			$("input[name='zxtxmj']").val('<%= @ydb.zxtxmj %>');
-			$("input[name='bz']").val('<%= @ydb.bz %>');  
-			$("input[name='ydb_id']").val('<%= @ydb.id %>');
+      //$("select[name='cx']").val('<%= @ydb.cx %>');
+      $("select[name='cx']").val('<%= @ydb.cx %>');
+      $("select[name='gdfs']").val('<%= @ydb.gdfs %>');
+      
+      $("input[name='crfapzrq']").val('<%= @ydb.crfapzrq %>'.replace(' 00:00:00',''));
+      $("input[name='ggrq']").val('<%= @ydb.ggrq %>'.replace(' 00:00:00',''));
+      $("input[name='cjrq']").val('<%= @ydb.cjrq %>'.replace(' 00:00:00',''));
+      $("input[name='qdhtrq']").val('<%= @ydb.qdhtrq %>'.replace(' 00:00:00',''));
+      $("input[name='gdrq']").val('<%= @ydb.gdrq %>'.replace(' 00:00:00',''));
+      $("input[name='cjqrsbh']").val('<%= @ydb.cjqrsbh %>');
+      $("input[name='htbh']").val('<%= @ydb.htbh %>');
+      $("input[name='pfwh']").val('<%= @ydb.pfwh %>');
+      $("input[name='crf']").val('<%= @ydb.crf %>');
+      $("input[name='srf']").val('<%= @ydb.srf %>');
+      $("input[name='lxr']").val('<%= @ydb.lxr %>');
+      $("input[name='dh']").val('<%= @ydb.dh %>');
+      $("input[name='jsxmmc']").val('<%= @ydb.jsxmmc %>');
+      $("input[name='dkwz']").val('<%= @ydb.dkwz %>');
+      $("input[name='dkbh']").val('<%= @ydb.dkbh %>');
+      $("input[name='zdmj']").val('<%= @ydb.zdmj %>');
+      $("input[name='dkdz']").val('<%= @ydb.dkdz %>');
+      $("input[name='dkxz']").val('<%= @ydb.dkxz %>');
+      $("input[name='dknz']").val('<%= @ydb.dknz %>');
+      $("input[name='dkbz']").val('<%= @ydb.dkbz %>');
+      $("input[name='pgj']").val('<%= @ydb.pgj %>');
+      $("input[name='dj_dj']").val('<%= @ydb.dj_dj %>');
+      $("input[name='dj_mwj']").val('<%= @ydb.dj_mwj %>');
+      $("input[name='dj_lmj']").val('<%= @ydb.dj_lmj %>');
+      $("input[name='cjj_mwj']").val('<%= @ydb.cjj_mwj %>');
+      $("input[name='cjj_lmj']").val('<%= @ydb.cjj_lmj %>');
+      $("input[name='cjzj']").val('<%= @ydb.cjzj %>');
+      $("input[name='yjl']").val('<%= @ydb.yjl %>');
+      $("input[name='cr']").val('<%= @ydb.cr %>');
+      $("select[name='yt']").val('<%= @ydb.yt %>');
+      $("select[name='cyml']").val('<%= @ydb.cyml %>');
+      $("input[name='qsly'][value='<%= @ydb.qsly %>']").attr('checked', true);
+      $("input[name='tztx'][value='<%= @ydb.tztx %>']").attr('checked', true);
+      $("input[name='bzj']").val('<%= @ydb.bzj %>');
+      $("input[name='ydjkrq']").val('<%= @ydb.ydjkrq %>'.replace(' 00:00:00',''));
+      $("input[name='sjjkrq']").val('<%= @ydb.sjjkrq %>'.replace(' 00:00:00',''));
+      $("input[name='znjqk']").val('<%= @ydb.znjqk %>');
+      $("input[name='qkje']").val('<%= @ydb.qkje %>');
+      $("input[name='wdqk']").val('<%= @ydb.wdqk %>');
+      $("input[name='cjqk']").val('<%= @ydb.cjqk %>');
+      $("input[name='ydjdsj']").val('<%= @ydb.ydjdsj %>'.replace(' 00:00:00',''));
+      $("input[name='sjjdsj']").val('<%= @ydb.sjjdsj %>'.replace(' 00:00:00',''));
+      $("input[name='ydkgsj']").val('<%= @ydb.ydkgsj %>'.replace(' 00:00:00',''));
+      $("input[name='sjkgsj']").val('<%= @ydb.sjkgsj %>'.replace(' 00:00:00',''));
+      $("input[name='ydjgsj']").val('<%= @ydb.ydjgsj %>'.replace(' 00:00:00',''));
+      $("input[name='sjjgsj']").val('<%= @ydb.sjjgsj %>'.replace(' 00:00:00',''));
+      $("input[name='tze']").val('<%= @ydb.tze %>');
+      $("input[name='zczb']").val('<%= @ydb.zczb %>');
+      $("input[name='rjl']").val('<%= @ydb.rjl %>');
+      $("input[name='jsmd']").val('<%= @ydb.jsmd %>');
+      $("input[name='lhl']").val('<%= @ydb.lhl %>');
+      $("input[name='qtyq']").val('<%= @ydb.qtyq %>');
+      $("input[name='kjjzmj']").val('<%= @ydb.kjjzmj %>');
+      $("input[name='zxtxbl']").val('<%= @ydb.zxtxbl %>');
+      $("input[name='zxtxmj']").val('<%= @ydb.zxtxmj %>');
+      $("input[name='bz']").val('<%= @ydb.bz %>');  
+      $("input[name='ydb_id']").val('<%= @ydb.id %>');
     <% else %>
     <% end %>
     //$("input[name='dkh']").attr('readonly', true);
     //$("input[name='xmmc']").attr('readonly', true);
   }
-  
-  loadYdb();
 
+
+  var styles = new OpenLayers.StyleMap({
+       "default": new OpenLayers.Style(null, {
+           rules: [
+               new OpenLayers.Rule({
+                   symbolizer: {
+                       "Point": {
+                           pointRadius: 5,
+                           graphicName: "square",
+                           fillColor: "white",
+                           fillOpacity: 0.25,
+                           strokeWidth: 1,
+                           strokeOpacity: 1,
+                           strokeColor: "#333333"
+                       },
+                       "Line": {
+                           strokeWidth: 3,
+                           strokeOpacity: 1,
+                           //strokeColor: "#666666"
+                          strokeColor: "#FF0000"
+                       }
+                   }
+               })
+           ]
+       }),
+       "select": new OpenLayers.Style({
+           strokeColor: "#00ccff",
+           strokeWidth: 4
+       }),
+       "temporary": new OpenLayers.Style(null, {
+           rules: [
+               new OpenLayers.Rule({
+                   symbolizer: {
+                       "Point": {
+                           pointRadius: 5,
+                           graphicName: "square",
+                           fillColor: "white",
+                           fillOpacity: 0.25,
+                           strokeWidth: 1,
+                           strokeOpacity: 1,
+                           strokeColor: "#333333"
+                       },
+                       "Line": {
+                           strokeWidth: 3,
+                           strokeOpacity: 1,
+                           strokeColor: "#00ccff"
+                       }
+                   }
+               })
+           ]
+       })
+  });
+
+  function loadXmdk(){
+    var id = $.trim($("input[name='ydb_id']").val());
+    var pars = {id:id};
+    $.ajax({
+      type: "POST",
+      url: "/ydb/load_xmdk",
+      data: pars,
+      cache: false,
+      dataType: "text",
+      success: function(data){
+        var tbb = eval("("+data+")")[0];
+        center = new OpenLayers.Geometry.Point(tbb.lng,tbb.lat);
+        map.panTo(center);
+        var paths = eval("("+tbb.geom_string+")").coordinates[0];
+        var path_str = '';
+        for (var i=0; i< paths.length; i++){
+          path_str = path_str + paths[i][0]+"  "+paths[i][1]+"\n";
+        }
+        $("textarea[name='zb_info']").val(path_str);
+        
+        refesh_map();
+      }
+    });
+  };
+
+  var projHash = {};
+  function initProj4js() {
+    var optIndex = 0;
+    for (var def in Proj4js.defs) {
+       projHash[def] = new Proj4js.Proj(def);    //create a Proj for each definition
+    }  // for
+  }
+
+  //初始化 Openlayers Map
+  function initMap() {
+  
+    if (map != undefined) {
+      return;
+    }
+
+    var options = {
+      projection: new OpenLayers.Projection('EPSG:4326'), units: "m", maxResolution: 152.87405654296876,
+      maxExtent: new OpenLayers.Bounds(-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7) 
+    };
+  
+    map  = new OpenLayers.Map('map_canvas', options);
+    var gsat = new OpenLayers.Layer.Google( "谷歌卫星图", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22} );
+    var gmap = new OpenLayers.Layer.Google("谷歌地图", {numZoomLevels: 20, visibility: false});
+    
+    bbLayer = new OpenLayers.Layer.Vector("任务地块", { isBaseLayer: false, styleMap: styles });
+    //var markers = new OpenLayers.Layer.Markers( "检查点" );
+
+    //map.addLayers([gsat, gmap, markers]);
+    map.addLayers([gsat, gmap, bbLayer]);
+    //map.addControl(new OpenLayers.Control.LayerSwitcher());
+    //map.zoomToExtent(new OpenLayers.Bounds(120.8296875, 30.54021484375, 130.6703125, 40.79021484375));
+
+    map.setCenter(new OpenLayers.LonLat(13370424.384,3693277.655), 14);
+
+    var polyOptions = {
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    };
+
+    loadXmdk();
+    
+    initProj4js();
+  }
+  
+  // Default Load None Map data, 根据左边的Tree的数据，然后装在相应的数据
+  function LoadMapData(){
+  };
+  
+  var style_green = {
+      strokeColor: "#00FF00",
+      strokeWidth: 2,
+      //strokeDashstyle: "dashdot",
+      pointRadius: 4,
+      pointerEvents: "visiblePainted",
+      title: "this is a green line"
+  };
+
+
+  function refesh_map(){
+    var points = $.trim($("textarea[name='zb_info']").val()).split("\n");
+    // create a line feature from a list of points
+    var pointList = [];
+    var newPoint;
+    
+    var proj_84 = new OpenLayers.Projection("EPSG:4326");
+    var proj_80 = new OpenLayers.Projection("EPSG:2364");
+    var epsg900913 = new OpenLayers.Projection('EPSG:900913');
+    
+    for (var i=0; i < points.length; i++) {
+      pts = points[i].split(/\s+|,/);
+      if (parseFloat(pts[0]) > 3000000) {
+        lon = parseFloat(pts[1]);
+        lat = parseFloat(pts[0]);
+      } else {
+        lon = parseFloat(pts[0]);
+        lat = parseFloat(pts[1]);
+      }
+      
+      newPoint = new OpenLayers.Geometry.Point(lon,lat);
+      if (lon < 180 && lat < 180){
+        newPoint = newPoint.transform(proj_84, epsg900913);
+      } else if(lon > 40000000) {
+        newPoint = newPoint.transform(proj_80, epsg900913);
+        
+        var pointSource = new Proj4js.Point(lon +", " +lat);
+        var projSource = projHash['EPSG:2364']
+        var projDest  =  projHash['EPSG:900913']
+        var pointDest = Proj4js.transform(projSource, projDest, pointSource);
+    
+        newPoint = new OpenLayers.Geometry.Point(pointDest.x+117,pointDest.y);
+      }
+      pointList.push(newPoint);
+    }
+
+    var lineFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(pointList),null,style_green);
+    bbLayer.removeAllFeatures();    
+    bbLayer.addFeatures([lineFeature]);
+
+    var lonlat = new OpenLayers.LonLat(newPoint.x, newPoint.y);
+    map.panTo(lonlat);
+
+    bbLayer.refresh();
+  }
+
+  $("input[name='refresh_zb']").on('click', function(){
+    refesh_map();
+  });
+
+  $("input[name='save_zb']").on('click', function(){
+    //var points = $.trim($("textarea[name='zb_info']").val());
+		var points = bbLayer.features[0].geometry.toString();
+    var id = $.trim($("input[name='ydb_id']").val());
+    var pars = {points:points, id:id};
+    $.ajax({
+      type: "POST",
+      url: "/ydb/save_zb",
+      data: pars,
+      cache: false,
+      dataType: "text",
+      success: function(data){
+        alert("坐标保存成功。");
+      }
+    });
+    
+  });
+
+
+  $("[id='fileupload1']").fileupload({
+    url: '/ydb/upload_gh_file',
+    dataType: 'json',
+    formData: [
+        {
+            name: 'ydb_id',
+            value: <%= @ydb.id %>
+        },{
+            name: 'user_id',
+            value: <%= current_user.id %>
+        }
+    ],
+    done: function (e, data) {
+      //alert ('upload finished.');
+      img = data.result;
+      cell_html = '<li><a  href="/images/ghtx/'+img.yxmc+'"><img src="/images/ghtx/'+ img.yxmc + '" alt="' + img.rq + ' ' + img.tpjd + ' ' + img.bz + '" /></a></li>';
+
+      $("#Gallery1").append(cell_html);
+      
+      (function(window, $, PhotoSwipe){
+        $(document).ready(function(){
+          var options = {};
+          $("#Gallery1 a").photoSwipe(options);
+        });
+      }(window, window.jQuery, window.Code.PhotoSwipe));
+      $("#Gallery1 a").photoSwipe({ enableMouseWheel: true , enableKeyboard: true });
+    }
+  });
+
+
+  function showTab3() {
+    var pars = {id:<%= @ydb.id %>};
+    $.ajax({
+      type: "POST",
+      url: "/ydb/get_gh_list",
+      data: pars,
+      cache: false,
+      dataType: "text",
+      success: function(data){
+        var cell_html = '';
+        var imgs = eval(data);
+        for (var k=0; k < imgs.length; k++){
+          var img = imgs[k];
+          cell_html = cell_html+'<li><a  href="/images/ghtx/'+img.yxmc+'"><img src="/images/ghtx/'+ img.yxmc + '" alt="' + img.rq + ' ' + img.tpjd + ' ' + img.bz + '" /></a></li>';
+        }
+        $("#Gallery1").empty().append(cell_html);
+        
+        (function(window, $, PhotoSwipe){
+          $(document).ready(function(){
+            var options = {};
+            $("#Gallery1 a").photoSwipe(options);
+          });
+        }(window, window.jQuery, window.Code.PhotoSwipe));
+        $("#Gallery1 a").photoSwipe({ enableMouseWheel: true , enableKeyboard: true });
+      }
+    });
+    
+  }
+
+  function delete_photo1(val) {
+    pars = {id:val}
+    $.ajax({
+      type: "POST",
+      url: "/ydb/del_gh_photo",
+      data: pars,
+      cache: false,
+      dataType: "text",
+      success: function(data){
+        $('#pd_grid').datagrid('reload'); 
+				showTab3();
+      }
+    });
+  };
+
+	$("#delete_photo1").on('click', function(){
+   
+    $('#pd_grid').datagrid({  
+        url:'/ydb/get_gh_list',
+        striped:true,
+        idField:'id',
+        //singleSelect:false,
+        queryParams: {
+          id:  <%= @ydb.id %>
+        },
+        columns:[[  
+            {field:'rq', title:'图像',width:64,formatter:function(val,row,index){
+              return '<img src="/images/ghtx/' + row.yxmc+ '"  height="64" width="64" />';
+            }},
+            {field:'yxmc',title:'属性',width:300,sortable:true},
+            {field:'id', title:"操作", width:50,align:'center',formatter:function(val,row,index){
+              return '<a class="icon-cut" href="javascript:void(0)" onclick="delete_photo1('+val+')"></a>'
+            }}
+        ]],
+        onLoadSuccess:function(data){
+        }
+    });
+
+    $('#photo_delete').modal({
+        show:true,
+        keyboard:true
+     });
+
+    $('#myModalLabel').html('删除规划图片');
+  });
+
+  
+
+  loadYdb();
   setup();
   
 </script>

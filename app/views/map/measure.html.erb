@@ -21,9 +21,11 @@
         
         <script src="/map/mobile-base.js?123456"></script>
         <script src="/map/mobile-jq.js?123456"></script>
+
     </head>
     <body>
         <h1 id="title">项目地块</h1>
+
         <div data-role="page" id="mappage">
           <div data-role="content">
             <div id="map"></div>
@@ -37,6 +39,9 @@
             <a href="#" id="layer" data-icon="layers" data-role="button">切换</a>
             <input type="button" id="xmdk" data-theme="a" value="项目地块" />
             <input type="button" id="myxmdk" data-theme="a" value="我的地块" />
+            <!-- add for wuxi -->
+            <input type="button" id="ppxmdk" data-theme="a" value="批而未供" />
+            <input type="button" id="ggxmdk" data-theme="a" value="供而未用" />
           </div>
           <div id="navigation" data-role="controlgroup" data-type="vertical" hidden="true">
             <a href="#" data-role="button" data-icon="plus" id="plus"
@@ -81,6 +86,75 @@
               </div>
                <ul id="details-list" data-role="listview" data-inset="true" >
                </ul>
+            </div>
+        </div>
+
+        <div data-role="page" id="pp-xmdk" data-add-back-btn="true" data-back-btn-text="返回">
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>批而未供详细情况</h1>
+            </div>
+            <div data-theme="c" data-role="content"  >
+              <div class="ui-grid-a" >
+                 <input id="modify-pp" type="button" data-inline="false" value="外页核查修改" data-theme="b"/>
+              </div>
+               <ul id="pp-detail-list" data-role="listview" data-inset="true" >
+               </ul>
+            </div>
+        </div>
+
+        <div data-role="page" id="pp-xmdk-change" data-add-back-btn="true" data-back-btn-text="返回">
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>修改批而未供</h1>
+            </div>
+            <div data-theme="c" data-role="content">
+                <div class="ui-grid-a ">
+                   <input id="save-pp" type="button" data-inline="false" value="保存修改" data-theme="b"/>
+                </div>
+                <ul data-role="listview" data-inset="true" data-divider-theme="b">
+                  <li>
+                    <p>外页核查结果:</p>
+                    <input name="wy_sfkly_p"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>外页核查备注:</p>
+                    <input name="wy_qkms_p"  placeholder="" value="" type="text">
+                  </li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="page" id="gg-xmdk" data-add-back-btn="true" data-back-btn-text="返回">
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>供而未用详细情况</h1>
+            </div>
+            <div data-theme="c" data-role="content"  >
+              <div class="ui-grid-a" >
+                 <input id="modify-gg" type="button" data-inline="false" value="供而未用外页核查修改" data-theme="b"/>
+              </div>
+               <ul id="gg-detail-list" data-role="listview" data-inset="true" >
+               </ul>
+            </div>
+        </div>
+
+
+        <div data-role="page" id="gg-xmdk-change" data-add-back-btn="true" data-back-btn-text="返回">
+            <div data-position="inline" data-theme="d" data-role="header">
+                <h1>修改供而未用</h1>
+            </div>
+            <div data-theme="c" data-role="content">
+                <div class="ui-grid-a ">
+                   <input id="save-gg" type="button" data-inline="false" value="保存修改" data-theme="b"/>
+                </div>
+                <ul data-role="listview" data-inset="true" data-divider-theme="b">
+                  <li>
+                    <p>外页核查结果:</p>
+                    <input name="wy_sfkly_g"  placeholder="" value="" type="text">
+                  </li>
+                  <li>
+                    <p>外页核查备注:</p>
+                    <input name="wy_qkms_g"  placeholder="" value="" type="text">
+                  </li>
+                </ul>
             </div>
         </div>
 

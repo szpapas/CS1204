@@ -49,7 +49,6 @@ var init = function (onSelectFeatureFunction) {
         CLASS_NAME: "OpenLayers.Control.DeleteFeature"
     });
     
-    
     var navigate = new OpenLayers.Control.Navigation({
         title: "移动地图"
     });
@@ -69,7 +68,6 @@ var init = function (onSelectFeatureFunction) {
         title: "删除图形", 
         displayClass: "olControlDrawFeaturePoint" 
     });
-
 
     function numberWithCommas(x) {
         return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -133,7 +131,7 @@ var init = function (onSelectFeatureFunction) {
 
     vectors.events.register("afterfeaturemodified", vectors, function  (e) {
       //dragFeature.activate();
-      console.log("Draw Feature modified.");
+      //console.log("Draw Feature modified.");
       //toolbar.activateControl(navigate);
       if (vectors.features.length > 0){
         var area = vectors.features[0].geometry.getArea()/666.67;
@@ -145,7 +143,6 @@ var init = function (onSelectFeatureFunction) {
     navigate.defaultClick = function(){
       map.getLayersByName('项目')[0].setVisibility(true);
     };
-    
     
     var myButton = new OpenLayers.Control.Button({  
         title: "增加巡查点", displayClass: "myClass",trigger: function() {  
@@ -184,7 +181,7 @@ var init = function (onSelectFeatureFunction) {
     
     toolbar.addControls([navigate, del, edit, drawPoly, myButton]);
 
-    var sprintersLayer = new OpenLayers.Layer.Vector("项目地块", {
+    var bbLayer = new OpenLayers.Layer.Vector("项目地块", {
         styleMap: new OpenLayers.StyleMap({
             externalGraphic: "/img/mobile-green.png",
             graphicOpacity: 1.0,
@@ -194,7 +191,7 @@ var init = function (onSelectFeatureFunction) {
         })
     });
 
-    var myxmdkLayer = new OpenLayers.Layer.Vector("我的地块", {
+    var myLayer = new OpenLayers.Layer.Vector("我的地块", {
         styleMap: new OpenLayers.StyleMap({
             externalGraphic: "/img/mobile-red.png",
             graphicOpacity: 1.0,
@@ -205,18 +202,127 @@ var init = function (onSelectFeatureFunction) {
     });
     
     
+    
+    var ggStyle = new OpenLayers.Style(
+        // the first argument is a base symbolizer
+        // all other symbolizers in rules will extend this one
+        {
+            graphicOpacity: 1.0,
+            graphicWidth: 16,
+            graphicHeight: 16,
+            graphicYOffset: -16
+        },
+        // the second argument will include all rules
+        {
+            rules: [
+                new OpenLayers.Rule({
+                    // a rule contains an optional filter
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "外页核查结果", // the "foo" feature attribute
+                        value: ""
+                    }),
+                    // if a feature matches the above filter, use this symbolizer
+                    symbolizer: {
+                        externalGraphic: "/img/m_blue16.png"
+                    }
+                }),
+                new OpenLayers.Rule({
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                        property: "外页核查结果", // the "foo" feature attribute
+                        value: ""
+                    }),
+                    symbolizer: {
+                        externalGraphic: "/img/m_blue.png"
+                    }
+                })
+            ]
+        }
+    );
+    
+    
+    var ggLayer = new OpenLayers.Layer.Vector("供而未用", {
+        styleMap: new OpenLayers.StyleMap(ggStyle)
+    });
+    
+    var ppStyle = new OpenLayers.Style(
+        // the first argument is a base symbolizer
+        // all other symbolizers in rules will extend this one
+        {
+            graphicOpacity: 1.0,
+            graphicWidth: 16,
+            graphicHeight: 16,
+            graphicYOffset: -16
+        },
+        // the second argument will include all rules
+        {
+            rules: [
+                new OpenLayers.Rule({
+                    // a rule contains an optional filter
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "外页核查结果", // the "foo" feature attribute
+                        value: ""
+                    }),
+                    // if a feature matches the above filter, use this symbolizer
+                    symbolizer: {
+                        externalGraphic: "/img/m_purple16.png"
+                    }
+                }),
+                new OpenLayers.Rule({
+                    filter: new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                        property: "外页核查结果", // the "foo" feature attribute
+                        value: ""
+                    }),
+                    symbolizer: {
+                        externalGraphic: "/img/m_purple.png"
+                    }
+                })
+            ]
+        }
+    );
+    
+    var ppLayer = new OpenLayers.Layer.Vector("批而未供", {
+      styleMap: new OpenLayers.StyleMap(ppStyle)
+    });
 
     var sprinters = getFeatures();
     var myxmdk = getMyXmdkFeature();
+    var ppxmdk = getppFeature();
+    var ggxmdk = getggFeature();
 
-    var selectControl = new OpenLayers.Control.SelectFeature(sprintersLayer, {
-        autoActivate:true,
-        onSelect: onSelectFeatureFunction});
-        
-    var mySelectControl = new OpenLayers.Control.SelectFeature(myxmdkLayer, {
-        autoActivate:true,
-        onSelect: onSelectFeatureFunction});
-
+    var report = function(e) {
+        console.log(e.type, e.feature.id);
+    };
+    
+    var multiSelectControl = new OpenLayers.Control.SelectFeature(
+        [bbLayer, myLayer, ppLayer, ggLayer],
+        {
+            clickout: true, 
+            //toggle: false,
+            //multiple: false, 
+            //hover: true,
+            //toggleKey: "ctrlKey", // ctrl key removes from selection
+            //multipleKey: "shiftKey", // shift key adds to selection
+            onSelect: onSelectFeatureFunction
+        }
+    );
+    
+    var highlightCtrl = new OpenLayers.Control.SelectFeature(
+        [bbLayer, myLayer, ppLayer, ggLayer],
+        {
+        hover: true,
+        highlightOnly: true,
+        renderIntent: "temporary",
+        eventListeners: {
+            beforefeaturehighlighted: report,
+            featurehighlighted: report,
+            featureunhighlighted: report
+        }
+    });      
+         
     var geolocate = new OpenLayers.Control.Geolocate({
         id: 'locate-control',
         geolocationOptions: {
@@ -228,7 +334,6 @@ var init = function (onSelectFeatureFunction) {
     
     var gmap = new OpenLayers.Layer.Google("谷歌地图", {type: google.maps.MapTypeId.ROADMAP, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
     var gsat = new OpenLayers.Layer.Google("谷歌卫星", {type: google.maps.MapTypeId.SATELLITE, "sphericalMercator": true,  opacity: 1, numZoomLevels: 20});
-    
     
     // create map
     map = new OpenLayers.Map({
@@ -242,23 +347,29 @@ var init = function (onSelectFeatureFunction) {
                 dragPanOptions: { enableKinetic: true }
             }),
             toolbar,
-            geolocate,
-            selectControl,
-            mySelectControl
+            geolocate
         ],
         
         layers: [
             gsat,gmap, 
             vector,
             vectors,
-            sprintersLayer,
-            myxmdkLayer
+            bbLayer,
+            myLayer,
+            ppLayer,
+            ggLayer
         ],
         center: new OpenLayers.LonLat(13443943.5836129, 3720371.36079192),  // 常熟
         //center: new OpenLayers.LonLat(13410089, 3713641),
         zoom: 15
     });
+    
+    map.addControl(multiSelectControl);
+    //map.addControl(highlightCtrl);
 
+    //highlightCtrl.activate();
+    multiSelectControl.activate();
+ 
     var style = {
         fillOpacity: 0.1,
         fillColor: '#000',
@@ -307,8 +418,8 @@ var init = function (onSelectFeatureFunction) {
           if (data.length > 0) {
             var features = eval("("+data+")");
             var reader = new OpenLayers.Format.GeoJSON();
-            var sprinters = reader.read(features);
-            sprintersLayer.addFeatures(sprinters);
+            var bb_feature = reader.read(features);
+            bbLayer.addFeatures(bb_feature);
           }
         }
       });
@@ -327,11 +438,48 @@ var init = function (onSelectFeatureFunction) {
           if (data.length > 0) {
             var features = eval("("+data+")");
             var reader = new OpenLayers.Format.GeoJSON();
-            var sprinters = reader.read(features);
-            myxmdkLayer.addFeatures(sprinters);
+            var my_feature = reader.read(features);
+            myLayer.addFeatures(my_feature);
           }
         }
       });
     }
 
+    function getppFeature() {
+      pars = {};
+      $.ajax({
+        type: "POST",
+        url: "/map/pp_feature",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+            var features = eval("("+data+")");
+            var reader = new OpenLayers.Format.GeoJSON();
+            var pp_feature = reader.read(features);
+            ppLayer.addFeatures(pp_feature);
+          }
+        }
+      });
+    }
+
+    function getggFeature() {
+      pars = {};
+      $.ajax({
+        type: "POST",
+        url: "/map/gg_feature",
+        data: pars,
+        cache: false,
+        dataType: "text",
+        success: function(data){
+          if (data.length > 0) {
+            var features = eval("("+data+")");
+            var reader = new OpenLayers.Format.GeoJSON();
+            var gg_feature = reader.read(features);
+            ggLayer.addFeatures(gg_feature);
+          }
+        }
+      });
+    }
 };
