@@ -3,8 +3,8 @@
 #BASE_DIR="/Library/Ruby/Gems/1.8/gems"
 BASE_DIR="/usr/local/lib/ruby/gems/1.8/gems"
 $: << "#{BASE_DIR}/prawn-1.0.0.rc1/lib" << "#{BASE_DIR}/ttfunk-1.0.3/lib" << "#{BASE_DIR}/pdf-reader-1.2.0/lib" << "#{BASE_DIR}/Ascii85-1.0.2/lib"  << "#{BASE_DIR}/hashery-2.0.1/lib" << "#{BASE_DIR}/ruby-rc4-0.1.5/lib" << "#{BASE_DIR}/pg-0.12.2/lib"
-
 $: << "#{BASE_DIR}/bundler-1.2.1/lib" << "#{BASE_DIR}/rubygems-update-1.8.24/lib"
+
 require 'rubygems'
 require 'bundler'
 
@@ -60,7 +60,7 @@ def gen_pdf(plan_id)
   if imgs.count > 0 
     img_path = "./dady/ghtx/#{imgs[0]['yxmc']}"
   else 
-    img_path = ""
+    img_path = "./public/img/upload_photo_first.png"
   end    
   puts img_path
   
