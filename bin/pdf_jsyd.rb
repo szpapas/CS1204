@@ -54,9 +54,13 @@ def gen_pdf(plan_id)
   
   pdf_url = "./dady/yd_xkz/jsyd_#{plan_id}.pdf"
   
-  img = $conn.exec("select id, yxmc, rq, tpjd, bz from gh_image where ydb_id = #{plan_id}")[0]
+  imgs = $conn.exec("select id, yxmc, rq, tpjd, bz from gh_image where ydb_id = #{plan_id}")
   
-  img_path = "./dady/ghtx/#{img['yxmc']}"
+  if imgs.count > 0 
+    img_path = "./dady/ghtx/#{imgs[0]['yxmc']}"
+  else 
+    img_path = ""
+  end    
   puts img_path
   
   Prawn::Document.generate("#{pdf_url}") do 
