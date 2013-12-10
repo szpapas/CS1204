@@ -58,7 +58,7 @@ class YdbController < ApplicationController
     if params['id'].nil?
       render :template => "error.html.erb"
     else
-      #@xmdk = User.find_by_sql("select *, x(transform(centroid(the_geom), 4326)) as lng, y(transform(centroid(the_geom), 4326)) as lat, st_asgeojson(transform(the_geom,4326)) as geom_string from xmdks where gid = #{params['id']};")[0]
+      params['id'] = -1 if params['id'] == ''
       @ydb = User.find_by_sql("select * from ydb where id = #{params['id']}")
       @ydb = @ydb[0] if @ydb != nil
     end
@@ -80,7 +80,7 @@ class YdbController < ApplicationController
     params['sjjkrq'] = params['sjjkrq'] == '' ? "NULL" : "TIMESTAMP '#{params['sjjkrq']}'"
     params['ydjkrq'] = params['ydjkrq'] == '' ? "NULL" : "TIMESTAMP '#{params['ydjkrq']}'"
                                                                                               
-    if params['ydb_id']=="" 
+    if params['ydb_id']=="" ||  params['ydb_id']=="-1"
       user = User.find_by_sql("insert into ydb (cx, gdfs, crfapzrq, ggrq, cjrq, qdhtrq, gdrq, cjqrsbh, htbh, pfwh, crf, srf, lxr, dh, jsxmmc, dkwz, dkbh, zdmj, dkdz, dkxz, dknz, dkbz, pgj, dj_dj, dj_mwj, dj_lmj, cjj_mwj, cjj_lmj, cjzj, yjl, cr, yt, cyml, qsly, tztx, bzj, ydjkrq, sjjkrq, znjqk, qkje, wdqk, cjqk, ydjdsj, sjjdsj, ydkgsj, sjkgsj, ydjgsj, sjjgsj, tze, zczb, rjl, jsmd, lhl, qtyq, kjjzmj, zxtxbl, zxtxmj, bz) values ('#{params['cx']}','#{params['gdfs']}',#{params['crfapzrq']}, #{params['ggrq']},#{params['cjrq']},#{params['qdhtrq']}, #{params['gdrq']},'#{params['cjqrsbh']}','#{params['htbh']}','#{params['pfwh']}','#{params['crf']}','#{params['srf']}','#{params['lxr']}','#{params['dh']}','#{params['jsxmmc']}','#{params['dkwz']}','#{params['dkbh']}','#{params['zdmj']}','#{params['dkdz']}','#{params['dkxz']}','#{params['dknz']}','#{params['dkbz']}','#{params['pgj']}','#{params['dj_dj']}','#{params['dj_mwj']}','#{params['dj_lmj']}','#{params['cjj_mwj']}','#{params['cjj_lmj']}','#{params['cjzj']}','#{params['yjl']}','#{params['cr']}','#{params['yt']}','#{params['cyml']}','#{params['qsly']}','#{params['tztx']}','#{params['bzj']}',#{params['ydjkrq']}, #{params['sjjkrq']},'#{params['znjqk']}','#{params['qkje']}','#{params['wdqk']}','#{params['cjqk']}', #{params['ydjdsj']},  #{params['sjjdsj']},  #{params['ydkgsj']}, #{params['sjkgsj']}, #{params['ydjgsj']}, #{params['sjjgsj']}, '#{params['tze']}','#{params['zczb']}','#{params['rjl']}','#{params['jsmd']}','#{params['lhl']}','#{params['qtyq']}','#{params['kjjzmj']}','#{params['zxtxbl']}','#{params['zxtxmj']}','#{params['bz']}') returning id;")
       ydb_id = user[0]['id']
     else 

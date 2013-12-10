@@ -74,6 +74,7 @@
         <div class='row'>
           <input name="tb_fbt" class="btn-info btn"   type="submit" style="margin-left:10px;margin-top:-100px" value="用地分布图" />
           <input name="tb_lb"  class="btn-warning btn" type="submit" style="margin-left:0px;margin-top:-100px" value="土地列表" />
+          <input name="tb_add"  class="btn-primary btn" type="submit" style="margin-right:100px;margin-top:-100px" value="新增用地" />
         </div>
         <div class='row' id="tb_fbt" style="margin-top:-20px;margin-left:0px">
           <div id="map" style="height:500px"></div>
@@ -311,6 +312,10 @@
     refreshGrid();
   });
 
+  //土地列表
+  $("input[name='tb_add']").on('click', function(){
+    window.open("/ydb/ydb_dd?id=-1");
+  });
   
   var styles = new OpenLayers.StyleMap({
        "default": new OpenLayers.Style(null, {
