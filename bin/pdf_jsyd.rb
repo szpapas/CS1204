@@ -34,7 +34,7 @@ def gen_pdf(plan_id)
   pzwh = dd['pfwh']   || ""
   gdfs = dd['gdfs']   || ""
   ydmj = dd['zdmj']   || ""
-  tdyt = dd['tdyt']   || ""
+  tdyt = dd['yt']   || ""
   jsgq = dd['jsgq']   || ""
   tdzl = dd['dkwz']   || ""
   
