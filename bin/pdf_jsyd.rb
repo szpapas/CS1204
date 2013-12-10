@@ -32,7 +32,7 @@ def gen_pdf(plan_id)
   xmmc = dd['jsxmmc'] || ""
   pzwh = dd['pfwh']   || ""
   gdfs = dd['gdfs']   || ""
-  ydmj = dd['ydmj']   || ""
+  ydmj = dd['zdmj']   || ""
   tdyt = dd['tdyt']   || ""
   jsgq = dd['jsgq']   || ""
   tdzl = dd['dkwz']   || ""
