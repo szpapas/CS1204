@@ -235,13 +235,27 @@
           </fieldset>
           <fieldset class="container_12">
             <div class="grid_2">
+              <p align="right"> 项目负责人: </p>
+            </div>  
+            <div class="grid_4">
+                <input name="xmfzr" id="xmfzr" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 负责人电话: </p>
+            </div>
+            <div class="grid_4">
+                <input name="fzrdh" id="fzrdh" type="text"  />
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
               <p align="right"> 联系人: </p>
             </div>  
             <div class="grid_4">
                 <input name="lxr" id="lxr" type="text"  />
             </div>     
             <div class="grid_2">
-              <p align="right"> 电话: </p>
+              <p align="right"> 联系人电话: </p>
             </div>
             <div class="grid_4">
                 <input name="dh" id="dh" type="text"  />
@@ -434,34 +448,6 @@
           </fieldset>
           <fieldset class="container_12">
             <div class="grid_2">
-              <p align="right"> 约定交款时间: </p>  
-            </div>  
-            <div class="grid_4">
-              <input name="ydjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
-            </div>     
-            <div class="grid_2">
-              <p align="right"> 实际交款时间: </p>
-            </div>
-            <div class="grid_4">
-              <input name="sjjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
-            </div>           
-          </fieldset>
-          <fieldset class="container_12">
-            <div class="grid_2">
-              <p align="right"> 滞纳金情况: </p> 
-            </div>  
-            <div class="grid_4">
-              <input name="znjqk" id="znjqk" type="text"  />
-            </div>     
-            <div class="grid_2">
-              <p align="right"> 欠款金额: </p>
-            </div>
-            <div class="grid_4">
-              <input name="qkje" id="qkje" type="text"  />
-            </div>           
-          </fieldset>
-          <fieldset class="container_12">
-            <div class="grid_2">
               <p align="right"> 未到期款: </p>  
             </div>  
             <div class="grid_4">
@@ -579,9 +565,9 @@
             <div class="grid_4">
               <input name="zxtxmj" id="zxtxmj" type="text"  />
             </div>     
-         
           </fieldset>
-            <fieldset class="container_12">
+          
+          <fieldset class="container_12">
             <div class="grid_2">
               <p align="right"> 备注: </p>
             </div>
@@ -589,7 +575,117 @@
                 <input name="bz" id="bz" type="text"  />
             </div>
           </fieldset>
-            
+
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 是否分期: </p>  
+            </div>  
+            <div class="grid_4" id="sffq">
+              <input id ="sffq_radio1" name="sffq" value="是" type="radio" checked="true">
+              <label for="sffq_radio1">是</label>
+              <input id ="sffq_radio2" name="sffq" value="否" type="radio">
+              <label for="sffq_radio2">否</label>
+            </div>            
+            <div class="grid_2">
+              <p align="right"> 期数: </p>
+            </div>
+            <div class="grid_4">
+              <input name="qs" id="qs" type="text"  />
+            </div>           
+          </fieldset>
+          
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 已交金额: </p>
+            </div>  
+            <div class="grid_4">
+              <input name="yjje" id="yjje" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 欠款金额: </p>
+            </div>
+            <div class="grid_4">
+              <input name="qkje" id="qkje" type="text"  />
+            </div>           
+          </fieldset>
+          
+        <% if @ydb.sffq == '否' %>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 约定交款时间: </p>  
+            </div>  
+            <div class="grid_4">
+              <input name="ydjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 实际交款时间: </p>
+            </div>
+            <div class="grid_4">
+              <input name="sjjkrq" type="text" class="easyui-datebox" style="height:28px"></input> 
+            </div>           
+          </fieldset>
+          <fieldset class="container_12">
+            <div class="grid_2">
+              <p align="right"> 滞纳金情况: </p> 
+            </div>  
+            <div class="grid_4">
+              <input name="znjqk" id="znjqk" type="text"  />
+            </div>     
+            <div class="grid_2">
+              <p align="right"> 欠款金额: </p>
+            </div>
+            <div class="grid_4">
+              <input name="qkje" id="qkje" type="text"  />
+            </div>           
+          </fieldset>
+        <% else %>  
+          <fieldset class="container_12">
+            <div class="grid_1">
+              <p align="center"></p>
+            </div>
+            <div class="grid_1">
+              <p align="center"> 期数: </p>
+            </div>
+            <div class="grid_3">
+              <p align="center"> 约定时间: </p>
+            </div>  
+            <div class="grid_2">
+              <p align="center"> 金额: </p>
+            </div>     
+            <div class="grid_3">
+              <p align="center"> 交款时间: </p>
+            </div>
+            <div class="grid_2">
+              <p align="center"> 交款金额: </p>
+            </div>           
+          </fieldset>
+
+          <% @ydb.qs.to_i.times do |i| %>
+            <fieldset class="container_12">
+              <div class="grid_1">
+               <p align="center"><%= @fq_id %></p>
+              </div>
+              <div class="grid_1">
+               <p align="center"> <%= i %> </p>
+              </div>  
+              <div class="grid_3" width="100" >
+                <input name="ydrq_<%= i %>" type="text" class="easyui-datebox" style="height:28px"></input> 
+              </div>     
+              <div class="grid_2">
+                <input name="ydje_<%= i %>" id="ydje_<%= i %>" type="text" style="width:150px" />
+              </div>
+              <div class="grid_3">
+                <input name="jkrq_<%= i %>" type="text" class="easyui-datebox" style="height:28px"></input> 
+              </div>
+              <div class="grid_2">
+                <input name="jkje_<%= i %>" id="jkje_<%= i %>" type="text" style="width:150px" />
+              </div>           
+            </fieldset>
+          <% end %>
+
+        <% end %>
+          
+          
         </div> 
         <div id="tab2" class="tab-panel">
           <div class='row' style="margin-top:5px">
@@ -802,7 +898,8 @@
     $("#qsly").buttonset ();
     $("input[name='tztx']").button ();
     $("#tztx").buttonset ();
-
+    $("input[name='sffq']").button ();
+    $("#sffq").buttonset ();
     
     //setup width of textArea
     //$('#jjqksm').css('background-color', 'white').css('font-size', '18px').css('height', '130px').css('width', '730px');
@@ -814,8 +911,11 @@
     
     $('#li1').addClass('active');
     $('#li2').removeClass('active');
+    $('#li3').removeClass('active');
+    
     
     $('#tab2').hide();
+    $('#tab3').hide();
     $('#tab1').show();
     
   }
@@ -846,9 +946,11 @@
     var pfwh   = $.trim($("input[name='pfwh']").val());
     var crf    = $.trim($("input[name='crf']").val());
     var srf    = $.trim($("input[name='srf']").val());
+    var xmfzr  = $.trim($("input[name='xmfzr']").val());
+    var fzrdh  = $.trim($("input[name='fzrdh']").val());
     var lxr    = $.trim($("input[name='lxr']").val());
     var dh     = $.trim($("input[name='dh']").val());
-    var jsxmmc   = $.trim($("input[name='jsxmmc']").val());
+    var jsxmmc = $.trim($("input[name='jsxmmc']").val());
     var dkwz   = $.trim($("input[name='dkwz']").val());
     var dkbh   = $.trim($("input[name='dkbh']").val());
     var zdmj   = $.trim($("input[name='zdmj']").val());
@@ -893,7 +995,7 @@
     var zxtxmj   = $.trim($("input[name='zxtxmj']").val());
     var bz     = $.trim($("input[name='bz']").val());  
     var ydb_id   = $.trim($("input[name='ydb_id']").val());
-    var pars = {cx:cx, gdfs:gdfs, crfapzrq:crfapzrq, ggrq:ggrq, cjrq:cjrq, qdhtrq:qdhtrq, gdrq:gdrq, cjqrsbh:cjqrsbh, htbh:htbh, pfwh:pfwh, crf:crf, srf:srf, lxr:lxr, dh:dh, jsxmmc:jsxmmc, dkwz:dkwz, dkbh:dkbh, zdmj:zdmj, dkdz:dkdz, dkxz:dkxz, dknz:dknz, dkbz:dkbz, pgj:pgj, dj_dj:dj_dj, dj_mwj:dj_mwj, dj_lmj:dj_lmj, cjj_mwj:cjj_mwj, cjj_lmj:cjj_lmj, cjzj:cjzj, yjl:yjl, cr:cr, yt:yt, cyml:cyml, qsly:qsly, tztx:tztx, bzj:bzj, ydjkrq:ydjkrq, sjjkrq:sjjkrq, znjqk:znjqk, qkje:qkje, wdqk:wdqk, cjqk:cjqk, ydjdsj:ydjdsj, sjjdsj:sjjdsj, ydkgsj:ydkgsj, sjkgsj:sjkgsj, ydjgsj:ydjgsj, sjjgsj:sjjgsj, tze:tze, zczb:zczb, rjl:rjl, jsmd:jsmd, lhl:lhl, qtyq:qtyq, kjjzmj:kjjzmj, zxtxbl:zxtxbl, zxtxmj:zxtxmj, bz:bz, ydb_id:ydb_id};
+    var pars = {cx:cx, gdfs:gdfs, crfapzrq:crfapzrq, ggrq:ggrq, cjrq:cjrq, qdhtrq:qdhtrq, gdrq:gdrq, cjqrsbh:cjqrsbh, htbh:htbh, pfwh:pfwh, crf:crf, srf:srf, xmfzr:xmfzr, fzrdh:fzrdh,lxr:lxr, dh:dh, jsxmmc:jsxmmc, dkwz:dkwz, dkbh:dkbh, zdmj:zdmj, dkdz:dkdz, dkxz:dkxz, dknz:dknz, dkbz:dkbz, pgj:pgj, dj_dj:dj_dj, dj_mwj:dj_mwj, dj_lmj:dj_lmj, cjj_mwj:cjj_mwj, cjj_lmj:cjj_lmj, cjzj:cjzj, yjl:yjl, cr:cr, yt:yt, cyml:cyml, qsly:qsly, tztx:tztx, bzj:bzj, ydjkrq:ydjkrq, sjjkrq:sjjkrq, znjqk:znjqk, qkje:qkje, wdqk:wdqk, cjqk:cjqk, ydjdsj:ydjdsj, sjjdsj:sjjdsj, ydkgsj:ydkgsj, sjkgsj:sjkgsj, ydjgsj:ydjgsj, sjjgsj:sjjgsj, tze:tze, zczb:zczb, rjl:rjl, jsmd:jsmd, lhl:lhl, qtyq:qtyq, kjjzmj:kjjzmj, zxtxbl:zxtxbl, zxtxmj:zxtxmj, bz:bz, ydb_id:ydb_id};
    
     $.ajax({
       type: "POST",
@@ -964,6 +1066,8 @@
       $("input[name='pfwh']").val('<%= @ydb.pfwh %>');
       $("input[name='crf']").val('<%= @ydb.crf %>');
       $("input[name='srf']").val('<%= @ydb.srf %>');
+      $("input[name='xmfzr']").val('<%= @ydb.xmfzr %>');
+      $("input[name='fzrdh']").val('<%= @ydb.fzrdh %>');
       $("input[name='lxr']").val('<%= @ydb.lxr %>');
       $("input[name='dh']").val('<%= @ydb.dh %>');
       $("input[name='jsxmmc']").val('<%= @ydb.jsxmmc %>');
@@ -984,6 +1088,15 @@
       $("input[name='yjl']").val('<%= @ydb.yjl %>');
       $("input[name='cr']").val('<%= @ydb.cr %>');
       $("select[name='yt']").val('<%= @ydb.yt %>');
+      <% if (@ydb.yt == "住宅用地") %>
+        $('#cyml').empty().append('<option value="别墅高档公寓">别墅高档公寓</option><option value="普通商品房">普通商品房</option><option value="经济适用房">经济适用房</option><option value="公共租赁房">公共租赁房</option><option value="限价商品房">限价商品房</option><option value="其他">其他</option>');
+      <% elsif (@ydb.yt == "工矿仓储用地") %>
+        $('#cyml').empty().append('<option value="工业">工业</option><option value="仓储">仓储</option><option value="标准厂房">标准厂房</option>');
+      <% elsif (@ydb.yt == "公共管理与公共服务用地")  %>
+        $('#cyml').empty().append('<option value="机关团体用地">机关团体用地</option><option value="新闻出版用地">新闻出版用地</option><option value="科教用地">科教用地</option>').append('<option value="医卫慈善用地">医卫慈善用地</option><option value="文体娱乐用地">文体娱乐用地</option><option value="公共设施用地">公共设施用地</option>').append('<option value="公园与绿地">公园与绿地</option><option value="风景名胜设施用地">风景名胜设施用地</option>');
+      <% else %>
+        $('#cyml').empty().append('<option value="<%= @ydb.yt %>"><%= @ydb.yt %></option>');  
+      <% end %>
       $("select[name='cyml']").val('<%= @ydb.cyml %>');
       $("input[name='qsly'][value='<%= @ydb.qsly %>']").attr('checked', true);
       $("input[name='tztx'][value='<%= @ydb.tztx %>']").attr('checked', true);
@@ -1011,8 +1124,18 @@
       $("input[name='zxtxmj']").val('<%= @ydb.zxtxmj %>');
       $("input[name='bz']").val('<%= @ydb.bz %>');  
       $("input[name='ydb_id']").val('<%= @ydb.id %>');
+      <% if @ydb.sffq == '是' %>
+        <% @ydb.qs.to_i.times do |i| %>
+          $("input[name='ydrq_<%= i %>']").val('<%=  @fqs[i].ydrq %>'.replace(' 00:00:00',''));
+          $("input[name='ydje_<%= i %>']").val('<%=  @fqs[i].ydje %>');
+          $("input[name='jkrq_<%= i %>']").val('<%=  @fqs[i].jkrq %>'.replace(' 00:00:00',''));
+          $("input[name='jkje_<%= i %>']").val('<%=  @fqs[i].jkje %>');
+        <% end %>  
+      <% end %> 
     <% else %>
     <% end %>
+    
+
     //$("input[name='dkh']").attr('readonly', true);
     //$("input[name='xmmc']").attr('readonly', true);
   }

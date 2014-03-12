@@ -74,7 +74,8 @@
         <div class='row'>
           <input name="tb_fbt" class="btn-info btn"   type="submit" style="margin-left:10px;margin-top:-100px" value="用地分布图" />
           <input name="tb_lb"  class="btn-warning btn" type="submit" style="margin-left:0px;margin-top:-100px" value="土地列表" />
-          <input name="tb_add"  class="btn-primary btn" type="submit" style="margin-right:100px;margin-top:-100px" value="新增用地" />
+          <input name="tb_add"  class="btn-primary btn" type="submit" style="margin-right:400px;margin-top:-100px" value="新增用地" />
+          <input name="tb_export"  class="btn-primary btn" type="submit" style="margin-top:-100px" value="导出" />
         </div>
         <div class='row' id="tb_fbt" style="margin-top:-20px;margin-left:0px">
           <div id="map" style="height:500px"></div>
@@ -157,6 +158,101 @@
   </div>
 </div>
 
+
+<div class="modal" id="export_setting" tabindex="-1" style="display:none; width:480px" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <span><h3 id="myModalLabel"></h3>
+    <h5 style="color:grey; margin-left:10px">导出用地数据到Excel文件</h5><span>
+  </div>
+  <div class="modal-body">
+    <h2>第1步：输入查询条件</h2>
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>城乡:</p></div>
+        <!--div class='span2'><input name="cx" type="text" style="width:160px"  /></div-->
+        <div class='span2'>
+          <select  data-native-menu=false data-theme="c" data-mini="true" name="cx" id='cx' style="width:160px">
+            <option value="虞山镇">  虞山镇  </option>
+            <option value="古里镇">  古里镇   </option>
+            <option value="支塘镇">  支塘镇   </option>
+            <option value="沙家浜镇">  沙家浜镇  </option>
+            <option value="梅李镇">  梅李镇   </option>
+            <option value="董浜镇">  董浜镇   </option>
+            <option value="碧溪镇">  碧溪镇  </option>
+            <option value="尚湖镇">  尚湖镇   </option>
+            <option value="海虞镇">  海虞镇   </option>
+            <option value="辛庄镇">  辛庄镇   </option>
+            <option value="林场镇">  林场镇   </option>
+            <option value="经济开发区">  经济开发区   </option>
+            <option value="东南开发区">  东南开发区   </option>
+            <option value="度假区">  度假区   </option>
+          </select>
+        </div>  
+      </div>
+    </div>
+    
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>公告日期(开始):</p></div>
+        <div class='span2'><input name="ggrq_ks" class="easyui-datebox" style="width:160px"  /></div>
+      </div>
+    </div>
+    <br/>
+
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>公告日期(结束):</p></div>
+        <div class='span2'><input name="ggrq_js" class="easyui-datebox" style="width:160px"  /></div>
+      </div>
+    </div>
+    <br/>
+    <div class='row'>
+      <div class='span5'>
+        <div class='span2'><p align='right'>出让金:</p></div>
+        <div class='span1'><input name="crj_1" type="text" style="width:70px"  /></div>
+        <div class='span1'><input name="crj_2" type="text" style="width:70px"  /></div>
+      </div>
+    </div>
+    <!--div id='pd_grid' style="width:450px;height:300px"></div-->
+    <div id="save_info" style="margin-left:100px;color:red"></div>
+  </div>
+  <div class="modal-footer">
+    <!--button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+      <i class="icon-cancel"></i>&emsp;关闭
+    </button-->
+	  <button class="btn btn-info"  aria-hidden="true" id="export_step1">
+      <i class="icon-ok"></i>&emsp;下一步
+    </button>
+  </div>
+</div>
+
+
+
+<div class="modal" id="export_setting2" tabindex="-1" style="display:none; width:480px" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <span><h3 id="myModalLabel"></h3>
+    <h5 style="color:grey; margin-left:10px">导出用地数据到Excel文件</h5><span>
+  </div>
+  <div class="modal-body">
+    <h2>第2步：查看列表</h2>
+    <div id='pd_grid' style="width:450px;height:300px"></div>
+    <div id="save_info" style="margin-left:100px;color:red"></div>
+  </div>
+  <div class="modal-footer">
+    <!--button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+      <i class="icon-cancel"></i>&emsp;关闭
+    </button-->
+	  <button class="btn btn-info" data-dismiss="modal"  aria-hidden="true">
+      <i class="icon-ok"></i>&emsp;关闭
+    </button>
+    <div id="export_link">
+      <a href="/ydb/export_selected?ids=1">XLS</a>
+    </p>
+  </div>
+</div>
+
 <!-- after page loaded function-->
 <link rel="stylesheet" href="/OpenLayers/theme/default/style.css" type="text/css" charset="utf-8">
 <script src="http://maps.google.com/maps/api/js?v=3.6&amp;sensor=false&amp;language=zh-CN"></script>
@@ -220,6 +316,20 @@
         }],
         idField:'id',
         singleSelect:false,
+        rowStyler: function(index,row){
+          if (parseInt(row.qkje) > 0) {
+            var days = parseInt(row.days);
+  					if (days <= -60) {  // 紫色
+  						return 'background-color:#9F0BBA;color:#fff;font-weight:bold;';
+  					} else if (days <= 0) { // 红色
+  					  return 'background-color:#DD0D57;color:#fff;font-weight:bold;';
+  					} else if (days <= 10) { // 橙色
+  					  return 'background-color:#FF4B00;color:#fff;font-weight:bold;';
+  					} else {
+  					  //return 'background-color:#6293BB;color:#fff;font-weight:bold;';
+  					}
+				  }
+				},
         columns:[[  
             {checkbox:true},
             //{field:'gid',title:'编号',width:50,sortable:true},  
@@ -316,6 +426,81 @@
   $("input[name='tb_add']").on('click', function(){
     window.open("/ydb/ydb_dd?id=-1");
   });
+
+  $("input[name='tb_export']").on('click', function(){
+    $('#export_setting').modal({
+        show:true,
+        keyboard:true
+     });
+  });
+  
+  
+  $("#export_step1").on('click', function(){
+    var cx = $.trim($("select[name='cx']").val());
+    var ggrq_ks = $("input[name='ggrq_ks']").val();
+    var ggrq_js = $("input[name='ggrq_js']").val();
+    var crj_1 = $("input[name='crj_1']").val();
+    var crj_2 = $("input[name='crj_2']").val();
+
+    $('#export_setting').modal('hide');
+    
+    /*
+    var pars = {cx:cx, ggrq_ks:ggrq_ks, ggrq_js:ggrq_js, crj_1:crj_1, crj_2:crj_2};
+    $.ajax({
+      type: "POST",
+      url: "/ydb/get_select_ydb_list",
+      data: pars,
+      cache: false,
+      dataType: "text",
+      success: function(data){
+        $('#export_setting2').modal({
+            show:true,
+            keyboard:true
+        });
+         
+        //set vlaues of data
+         
+      }
+    });
+    */
+    $('#export_setting2').modal({
+        show:true,
+        keyboard:true
+    });
+    
+    $('#pd_grid').datagrid({  
+        url:'/ydb/get_select_ydb_list',
+        striped:true,
+        idField:'id',
+        singleSelect:false,
+        queryParams: {
+          cx:cx, ggrq_ks:ggrq_ks, ggrq_js:ggrq_js, crj_1:crj_1, crj_2:crj_2
+        },
+        columns:[[  
+            {field:'id', title:'编号',width:50},
+            {field:'jsxmmc',title:'项目名称',width:250,sortable:true},
+            {field:'ggrq', title:"公告日期", width:80,align:'center',formatter:function(val,row,index){
+              return row.ggrq.replace(" 00:00:00","");
+            }}
+        ]],
+        onLoadSuccess:function(data){
+          //修改 XLS Link
+          $('#pd_grid').datagrid('selectAll');
+          var ids = [];
+          var rows = $('#pd_grid').datagrid('getSelections');
+          for(var i=0; i<rows.length; i++){
+              ids.push(rows[i].id);
+          }
+          alert (ids.join(','));
+          $('#export_link').html('<a href="/ydb/export_selected?ids='+ids.join(',')+'"+>XLS</a>');
+        }
+    });
+    //$('#pd_grid').datagrid('reload'); 
+  });
+  
+  $("#export_step2").on('click', function(){
+  });
+  
   
   var styles = new OpenLayers.StyleMap({
        "default": new OpenLayers.Style(null, {

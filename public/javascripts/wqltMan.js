@@ -129,14 +129,14 @@ MyDesktop.WqltCheck = Ext.extend(Ext.app.Module, {
             };
           };
 
-          var items = wqlt_store.data.items;
-          for (var i=0; i < items.length; i++) {
-            var data = items[i]['data'];
-            var geom_string = data.geom_string;
-            var geojson_format = new OpenLayers.Format.GeoJSON();
-            wqlt_vectors.addFeatures(geojson_format.read(geom_string));
+        var items = wqlt_store.data.items;
+        for (var i=0; i < items.length; i++) {
+          var data = items[i]['data'];
+          var geom_string = data.geom_string;
+          var geojson_format = new OpenLayers.Format.GeoJSON();
+          wqlt_vectors.addFeatures(geojson_format.read(geom_string));
 
-          };
+        };
         };
         
         

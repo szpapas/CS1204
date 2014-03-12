@@ -68,4 +68,7 @@ IChad::Application.routes.draw do
 
   root :to => "desktop#index"
   match ':controller(/:action(/:id(.:format)))'
+  
+  #match 'ydb/:id' => 'ydb#show', :defaults => { :format => 'xls' }
+  match 'ydb/:id' => 'ydb#export', :defaults => { :format => 'xls' }
 end

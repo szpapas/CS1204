@@ -1,0 +1,180 @@
+<html class="Global">
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-16">
+    <link rel="stylesheet" type="text/css" href="https://solutionbuilder.juniper.net:443/QuoteBuilder/styles/StyleSheets/my_styles.css">
+    <style>
+          .Decimal
+          {
+          mso-number-format:"\0022\0022\\ \#\,\#\#0\.00";
+          TEXT-ALIGN: right;
+          FONT-FAMILY: inherit;
+          FONT-SIZE: inherit;
+          COLOR: inherit;
+          FONT-WEIGHT: inherit;
+          background-color: inherit;
+          }
+          .Percent
+          {
+          TEXT-ALIGN: right;
+          mso-number-format:Percent;
+          }
+
+          .WrapText
+          {
+          mso-height-source:userset;
+          height:36.0pt;
+          }
+
+          .Integer
+          {
+          mso-number-format:"\0022\0022\\ \#\,\#\#0";
+          TEXT-ALIGN: right;
+          FONT-FAMILY: inherit;
+          FONT-SIZE: inherit;
+          COLOR: inherit;
+          FONT-WEIGHT: inherit;
+          background-color: inherit;
+          }
+
+          .Text
+          {
+            mso-number-format:"\@";
+          }
+        </style>
+  </head>
+  <body>
+    <p align="right" class="BigTitle">3/6/2014 9:36:39 PM PST</p><br>
+    <table border="0" width="100%" class="nfxaBoldText" rules="groups">
+      <COLGROUP align="left"></COLGROUP>
+      <THEAD valign="top">
+        <th>城乡</th>
+        <th>供地方式</th>
+        <th>出让(流转)方案批准日期</th>
+        <th>公告日期</th>
+        <th>成交日期</th>
+        <th>签订合同日期</th>
+        <th>供地日期</th>
+        <th>成交确认书编号</th>
+        <th>合同(划拨决定书)编号</th>
+        <th>批复文号</th>
+        <th>出让(流转)方</th>
+        <th>受让方</th>
+        <th>联系人</th>
+        <th>电话</th>
+        <th>建设项目名称</th>
+        <th>地块位置</th>
+        <th>地块编号</th>
+        <th>宗地面积</th>
+        <th>评估价</th>
+        <th>底价(单价)</th>
+        <th>底价(亩/万元)</th>
+        <th>底价(起始总价)</th>
+        <th>底价(楼面价)</th>
+        <th>成交价(单价)</th>
+        <th>成交价(亩/万元),</th>
+        <th>成交价(楼面价),</th>
+        <th>成交总价</th>
+        <th>溢价率</th>
+        <th>出让(流转)年限</th>
+        <th>用途</th>
+        <th>产业门类</th>
+        <th>权属来源</th>
+        <th>投资体系</th>
+        <th>保证金,</th>
+        <th>约定交款时间</th>
+        <th>实际交款时间</th>
+        <th>滞纳金情况</th>
+        <th>欠款金额</th>
+        <th>未到期款</th>
+        <th>催缴情况</th>
+        <th>约定交地时间</th>
+        <th>实际交地时间</th>
+        <th>约定开工时间</th>
+        <th>实际开工时间</th>
+        <th>约定竣工时间</th>
+        <th>实际竣工时间</th>
+        <th>投资额</th>
+        <th>注册资本</th>
+        <th>容积率</th>
+        <th>建设密度</th>
+        <th>绿化率</th>
+        <th>其他要求</th>
+        <th>可建建筑面积</th>
+        <th>中小套型比例</th>
+        <th>中小套型面积</th>
+        <th>备注</th>
+        <th>地块东至</th>
+        <th>地块西至</th>
+        <th>地块南至</th>
+        <th>地块北至</th>
+      </THEAD>
+      <TBODY>
+        <% @ydb.each do |ydb| %>
+          <tr>
+            <th><%= ydb.cx     %></th>
+            <th><%= ydb.gdfs   %></th>
+            <th><%= ydb.crfapz %></th>
+            <th><%= ydb.ggrq   %></th>
+            <th><%= ydb.cjrq   %></th>
+            <th><%= ydb.qdhtrq %></th>
+            <th><%= ydb.gdrq   %></th>
+            <th><%= ydb.cjqrsb %></th>
+            <th><%= ydb.htbh   %></th>
+            <th><%= ydb.pfwh   %></th>
+            <th><%= ydb.crf    %></th>
+            <th><%= ydb.srf    %></th>
+            <th><%= ydb.lxr    %></th>
+            <th><%= ydb.dh     %></th>
+            <th><%= ydb.jsxmmc %></th>
+            <th><%= ydb.dkwz   %></th>
+            <th><%= ydb.dkbh   %></th>
+            <th><%= ydb.zdmj   %></th>
+            <th><%= ydb.pgj    %></th>
+            <th><%= ydb.dj_dj  %></th>
+            <th><%= ydb.dj_mwj %></th>
+            <th><%= ydb.dj_qsz %></th>
+            <th><%= ydb.dj_lmj %></th>
+            <th><%= ydb.cjj_dj %></th>
+            <th><%= ydb.cjj_mw %></th>
+            <th><%= ydb.cjj_lm %></th>
+            <th><%= ydb.cjzj   %></th>
+            <th><%= ydb.yjl    %></th>
+            <th><%= ydb.cr     %></th>
+            <th><%= ydb.yt     %></th>
+            <th><%= ydb.cyml   %></th>
+            <th><%= ydb.qsly   %></th>
+            <th><%= ydb.tztx   %></th>
+            <th><%= ydb.bzj    %></th>
+            <th><%= ydb.ydjkrq %></th>
+            <th><%= ydb.sjjkrq %></th>
+            <th><%= ydb.znjqk  %></th>
+            <th><%= ydb.qkje   %></th>
+            <th><%= ydb.wdqk   %></th>
+            <th><%= ydb.cjqk   %></th>
+            <th><%= ydb.ydjdsj %></th>
+            <th><%= ydb.sjjdsj %></th>
+            <th><%= ydb.ydkgsj %></th>
+            <th><%= ydb.sjkgsj %></th>
+            <th><%= ydb.ydjgsj %></th>
+            <th><%= ydb.sjjgsj %></th>
+            <th><%= ydb.tze    %></th>
+            <th><%= ydb.zczb   %></th>
+            <th><%= ydb.rjl    %></th>
+            <th><%= ydb.jsmd   %></th>
+            <th><%= ydb.lhl    %></th>
+            <th><%= ydb.qtyq   %></th>
+            <th><%= ydb.kjjzmj %></th>
+            <th><%= ydb.zxtxbl %></th>
+            <th><%= ydb.zxtxmj %></th>
+            <th><%= ydb.bz     %></th>
+            <th><%= ydb.dkdz   %></th>
+            <th><%= ydb.dkxz   %></th>
+            <th><%= ydb.dknz   %></th>
+            <th><%= ydb.dkbz   %></th>
+          </tr>
+        <% end %>
+     </TBODY>
+    </table>
+ 
+  </body>
+</html>

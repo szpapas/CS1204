@@ -18,6 +18,7 @@ $conn.exec("set standard_conforming_strings = off")
 
 JDDH = {"虞山镇"=>"48020913","海虞镇"=>"52560729,52560728,52560725","碧溪镇"=>"52293449","梅李镇"=>"52261966","辛庄镇"=>"52487020","古里镇"=>"52536922","支塘镇"=>"52511385","沙家浜镇"=>"52195712","董浜镇"=>"52684491","尚湖镇"=>"52418397","经济开发区"=>"52699829","东南开发区"=>"52579929","度假区"=>"51532293"}
 
+#2383.94 x 3370.39
 
 def gen_pdf(plan_id)
   
@@ -34,7 +35,7 @@ def gen_pdf(plan_id)
   pzwh = dd['pfwh']   || ""
   gdfs = dd['gdfs']   || ""
   ydmj = dd['zdmj']   || ""
-  tdyt = dd['yt']   || ""
+  tdyt = dd['yt']     || ""
   jsgq = dd['jsgq']   || ""
   tdzl = dd['dkwz']   || ""
   dz   = dd['dkdz']   || ""
@@ -54,7 +55,7 @@ def gen_pdf(plan_id)
   
   gldw =  "常数市国土资源局 #{cx} 分局"
   
-  pdf_url = "./dady/yd_xkz/jsyd_#{plan_id}.pdf"
+  pdf_url = "./dady/yd_xkz/jsyd_#{plan_id}_big.pdf"
   
   imgs = $conn.exec("select id, yxmc, rq, tpjd, bz from gh_image where ydb_id = #{plan_id}")
   
@@ -65,34 +66,36 @@ def gen_pdf(plan_id)
   end    
   puts img_path
   
-  Prawn::Document.generate("#{pdf_url}",{:page_size => 'A4'}) do 
-    self.font_size = 12
-    move_down 20
+  fa = 8;
+  
+  Prawn::Document.generate("#{pdf_url}",{:page_size => "4A0" }) do 
+    self.font_size = 16*fa
+    move_down 40*fa
   
     font "#{Prawn::BASEDIR}/data/fonts/simhei.ttf"
-    text "#{dybt}", :align => :center, :size => 18
-    move_down 20
-      table([["<font size='14'>用地单位</font>", "#{yddw}"],
-             ["<font size='14'>项目名称</font>", "#{xmmc}"]], 
-             :position => :center, :width => 480, :column_widths => [90, 390], :cell_style => {:padding => [15,0,15,15],:inline_format => true})
-      table([["<font size='14'>批准文号</font>", "#{pzwh}",  "<font size='14'>供地方式</font>", "#{gdfs}"],
-             ["<font size='14'>用地面积</font>", "#{ydmj}  平方米",  "<font size='14'>土地用途</font>", "#{tdyt}"],
-             ["<font size='14'>交地时间</font>", "#{sjjdsj}",  "<font size='14'>竣工时间</font>", "#{ydjgsj}"]], 
-             :position => :center, :width => 480, :column_widths => [90, 160, 90, 140], :cell_style => {:padding => [15,0,15,15],:inline_format => true})
+    text "#{dybt}", :align => :center, :size => 18*fa
+    move_down 20*fa
+      table([["<font size='112'>用地单位</font>", "#{yddw}"],
+             ["<font size='112'>项目名称</font>", "#{xmmc}"]], 
+             :position => :center, :width => 480*fa, :column_widths => [90*fa, 390*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa],:inline_format => true})
+      table([["<font size='112'>批准文号</font>", "#{pzwh}",  "<font size='112'>供地方式</font>", "#{gdfs}"],
+             ["<font size='112'>用地面积</font>", "#{ydmj}  平方米",  "<font size='112'>土地用途</font>", "#{tdyt}"],
+             ["<font size='112'>交地时间</font>", "#{sjjdsj}",  "<font size='112'>竣工时间</font>", "#{ydjgsj}"]], 
+             :position => :center, :width => 480*fa, :column_widths => [90*fa, 160*fa, 90*fa, 140*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa],:inline_format => true})
 
-      table([["<font size='14'>建设工期</font>", "#{jsgq.gsub('days','')} 天"]], 
-            :position => :center, :width => 480, :column_widths => [90, 390], :cell_style => {:padding => [15,0,15,15],:inline_format => true}) 
-      table([["<font size='14'>土地坐落</font>", "#{tdzl}"]], 
-            :position => :center, :width => 480, :column_widths => [90, 390], :cell_style => {:padding => [15,0,15,15],:inline_format => true}) 
+      table([["<font size='112'>建设工期</font>", "#{jsgq.gsub('days','')} 天"]], 
+            :position => :center, :width => 480*fa, :column_widths => [90*fa, 390*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa],:inline_format => true}) 
+      table([["<font size='112'>土地坐落</font>", "#{tdzl}"]], 
+            :position => :center, :width => 480*fa, :column_widths => [90*fa, 390*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa],:inline_format => true}) 
       table([
-          [{:content => "<font size='14'>　四\n\n　址\n\n　位\n\n　置</font>", :rowspan => 4, :valign => :center,:inline_format => true}, "东：#{dz}", {:image => img_path, :fit => [220, 220], :rowspan => 4}],
+          [{:content => "<font size='112'>　四\n\n　址\n\n　位\n\n　置</font>", :rowspan => 4, :valign => :center,:inline_format => true}, "东：#{dz}", {:image => img_path, :fit => [220*fa, 220*fa], :rowspan => 4}],
           ["南：#{nz}"],
           ["西：#{xz}"],
           ["北：#{bz}"]],
-          :position => :center, :width => 480, :column_widths => [90, 140, 250], :cell_style => {:padding => [15,0,15,15]})
-      table([["<font size='14'>用地单位\n项目负责人</font>", "#{xmfzr}",  "<font size='14'>联系电话</font>", "#{lxdh}"],
-             ["<font size='14'>跟踪管理\n单　　位</font>", "#{gldw}",  "<font size='14'>举报电话</font>", "#{jbdh}"]], 
-             :position => :center, :width => 480, :column_widths => [90, 140, 90, 160], :cell_style => {:padding => [15,0,15,15],:valign => :center,:inline_format => true})
+          :position => :center, :width => 480*fa, :column_widths => [90*fa, 140*fa, 250*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa]})
+      table([["<font size='112'>用地单位\n项目负责人</font>", "#{xmfzr}",  "<font size='112'>联系电话</font>", "#{lxdh}"],
+             ["<font size='112'>跟踪管理\n单　　位</font>", "#{gldw}",  "<font size='112'>举报电话</font>", "#{jbdh}"]], 
+             :position => :center, :width => 480*fa, :column_widths => [90*fa, 140*fa, 90*fa, 160*fa], :cell_style => {:padding => [15*fa,0,15*fa,15*fa],:valign => :center,:inline_format => true})
           
           
   end
