@@ -683,6 +683,7 @@ MyDesktop.SystemStatus = Ext.extend(Ext.app.Module, {
           loader: new Ext.tree.TreeLoader({
             dataUrl: '/desktop/get_phone_tree?username='+currentUser.username
           }),
+          autoScroll: true,
           root: {
             nodeType: 'async',
             text: '常熟国土',

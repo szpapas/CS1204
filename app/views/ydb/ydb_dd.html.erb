@@ -136,9 +136,9 @@
                 <option value="海虞镇">  海虞镇   </option>
                 <option value="辛庄镇">  辛庄镇   </option>
                 <option value="林场镇">  林场镇   </option>
-                <option value="经济开发区">  经济开发区   </option>
-                <option value="东南开发区">  东南开发区   </option>
-                <option value="度假区">  度假区   </option>
+                <option value="经济技术开发区">  经济技术开发区   </option>
+                <option value="高新技术产业开发区">  高新技术产业开发区   </option>
+                <option value="虞山尚湖旅游度假区">  虞山尚湖旅游度假区   </option>
 
               </select>
             </div>     
@@ -1308,7 +1308,7 @@
         var projDest  =  projHash['EPSG:900913']
         var pointDest = Proj4js.transform(projSource, projDest, pointSource);
     
-        newPoint = new OpenLayers.Geometry.Point(pointDest.x+117,pointDest.y);
+        newPoint = new OpenLayers.Geometry.Point(pointDest.x+137,pointDest.y-8);
       }
       pointList.push(newPoint);
     }
